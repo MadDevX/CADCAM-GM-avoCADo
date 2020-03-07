@@ -87,6 +87,7 @@
     <Compile Include="Scene.cs" />
     <Compile Include="ScreenBufferManager.cs" />
     <Compile Include="Shader.cs" />
+    <Compile Include="TorusRenderer.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ViewportManager.cs" />
     <Page Include="MainWindow.xaml">

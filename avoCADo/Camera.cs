@@ -15,7 +15,7 @@ namespace avoCADo
         private Vector3 _position = Vector3.UnitZ;
         private Vector3 _target = Vector3.Zero;
 
-        private float _yaw = -90.0f;
+        private float _yaw;
         private float _pitch;
 
         private float _nearPlane = 0.01f;
@@ -48,6 +48,7 @@ namespace avoCADo
 
         public void Rotate(float horizontal, float vertical)
         {
+            var mag = (_position - _target).Length;
             var xAngleDiff = (float)Math.PI * horizontal;
             var yAngleDiff = -(float)Math.PI * vertical;
             if (Math.Abs(_pitch + yAngleDiff) >= Math.PI * 0.499f) yAngleDiff = 0.0f; //limit camera movement
@@ -60,7 +61,7 @@ namespace avoCADo
                     (float)Math.Sin(_pitch),
                     (float)Math.Sin(_yaw) * (float)Math.Cos(_pitch)
                 );
-            _position = -direction + _target;
+            _position = -direction*mag + _target;
             UpdateViewMatrix();
         }
 
@@ -98,7 +99,7 @@ namespace avoCADo
         {
             _position = Vector3.UnitZ;
             _target = Vector3.Zero;
-            _yaw = -90.0f;
+            _yaw = (float)Math.PI*1.5f;
             _pitch = 0.0f;
 
             UpdateViewMatrix();
