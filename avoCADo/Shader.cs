@@ -10,9 +10,10 @@ namespace avoCADo
 {
     class Shader : IDisposable
     {
+        public int Handle => _handle;
+
         private int _handle;
         private bool _disposedValue = false;
-
 
         public Shader(string vertexPath, string fragmentPath)
         {

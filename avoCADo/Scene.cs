@@ -10,11 +10,11 @@ namespace avoCADo
     {
         private List<Node> _nodes = new List<Node>();
 
-        public void Render()
+        public void Render(Camera camera)
         {
             for(int i = 0; i < _nodes.Count; i++)
             {
-                _nodes[i].Render();
+                _nodes[i].Render(camera);
             }
         }
 

@@ -34,23 +34,44 @@ namespace avoCADo
             DisposeData();
         }
 
-        public void Render(Transform transform)
+        public Matrix4 GetLocalModelMatrix(Transform transform)
+        {
+            Matrix4.CreateTranslation(ref transform.position, out Matrix4 trans);
+            Matrix4.CreateScale(ref transform.scale, out Matrix4 scale);
+            Matrix4.CreateFromQuaternion(ref transform.rotation, out Matrix4 rot);
+            return scale * rot * trans;
+        }
+
+        public void Render(Transform transform, Camera camera)
         {
             _shader.Use();
             GL.BindVertexArray(VAO);
             SetModelMatrix(transform);
+            camera.SetCameraMatrices(_shader.Handle);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        }
+
+        public void Render(Transform transform, Camera camera, Matrix4 parentMatrix)
+        {
+            _shader.Use();
+            GL.BindVertexArray(VAO);
+            SetModelMatrix(transform, parentMatrix);
+            camera.SetCameraMatrices(_shader.Handle);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         }
 
         private void SetModelMatrix(Transform transform)
         {
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-            GL.Scale(transform.scale);
-            GL.Rotate(transform.rotation.Z, Vector3.UnitZ);
-            GL.Rotate(transform.rotation.Y, Vector3.UnitY);
-            GL.Rotate(transform.rotation.X, Vector3.UnitX);
-            GL.Translate(transform.position);
+            int location = GL.GetUniformLocation(_shader.Handle, "modelMatrix");
+            var model = GetLocalModelMatrix(transform);
+            GL.UniformMatrix4(location, false, ref model);
+        }
+
+        private void SetModelMatrix(Transform transform, Matrix4 parentMatrix)
+        {
+            int location = GL.GetUniformLocation(_shader.Handle, "modelMatrix");
+            var model = GetLocalModelMatrix(transform) * parentMatrix;
+            GL.UniformMatrix4(location, false, ref model);
         }
 
         private void InitializeData()
