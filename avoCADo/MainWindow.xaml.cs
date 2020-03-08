@@ -17,8 +17,10 @@ using System.Windows;
 using OpenTK.Graphics.OpenGL;
 
 using Size = System.Drawing.Size;
+using Color = System.Drawing.Color;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Windows.Media;
 
 namespace avoCADo
 {
@@ -75,9 +77,16 @@ namespace avoCADo
         private void InitLoop()
         {
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(1);
-            _timer.Tick += OnTick;
+            _timer.Interval = TimeSpan.FromMilliseconds(8);
+            _timer.Tick += SetDirty;
             _timer.Start();
+
+            CompositionTarget.Rendering += OnTick;
+        }
+
+        private void SetDirty(object sender, EventArgs e)
+        {
+            Host.InvalidateVisual();
         }
 
         private void OnTick(object sender, EventArgs e)
@@ -97,8 +106,8 @@ namespace avoCADo
             _screenBufferManager.ResetScreenBuffer();
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            float halfWidth = _glControl.Width/2.0f;
-            float halfHeight = _glControl.Height/2.0f;
+            float halfWidth = _glControl.Width / 2.0f;
+            float halfHeight = _glControl.Height / 2.0f;
             GL.Ortho(-halfWidth, halfWidth, halfHeight, -halfHeight, 1000.0f, -1000.0f);
             GL.Viewport(_glControl.Size);
 
@@ -123,11 +132,13 @@ namespace avoCADo
 
         protected override void OnClosed(EventArgs e)
         {
+            CompositionTarget.Rendering -= OnTick;
             _shader.Dispose();
             _scene.Dispose();
             _viewportManager.Dispose();
             _camMovement.Dispose();
             _camera.Dispose();
+            _timer.Tick -= SetDirty;
             _timer.Stop();
             UnbindControls();
             base.OnClosed(e);
