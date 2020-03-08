@@ -5,6 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:avoCADo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800">
-    <WindowsFormsHost x:Name="Host"/>
+        Title="MainWindow" Height="720" Width="1280">
+    <Grid Name="GridMain">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
+        <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch" >
+            <Label Content="X Subdivisions"/>
+            <Slider x:Name="torusXDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="true"/>
+            <Label Content="Y Subdivisions"/>
+            <Slider x:Name="torusYDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="True"/>
+            <Label Content="Main Radius"/>
+            <Slider x:Name="torusMainRadius" Minimum="0" Maximum="2"/>
+            <Label Content="Tube Radius"/>
+            <Slider x:Name="torusTubeRadius" Minimum="0" Maximum="2"/>
+        </StackPanel>
+    </Grid>
 </Window>

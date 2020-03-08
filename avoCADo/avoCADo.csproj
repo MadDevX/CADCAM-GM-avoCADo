@@ -81,13 +81,15 @@
     </ApplicationDefinition>
     <Compile Include="Camera.cs" />
     <Compile Include="CameraMovement.cs" />
+    <Compile Include="ControlBinding.cs" />
     <Compile Include="DisposableManager.cs" />
+    <Compile Include="IMeshGenerator.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="ScreenBufferManager.cs" />
     <Compile Include="Shader.cs" />
-    <Compile Include="TorusRenderer.cs" />
+    <Compile Include="TorusGenerator.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ViewportManager.cs" />
     <Page Include="MainWindow.xaml">

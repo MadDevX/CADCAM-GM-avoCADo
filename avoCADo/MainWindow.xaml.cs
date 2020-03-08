@@ -41,6 +41,11 @@ namespace avoCADo
         private Stopwatch _stopwatch;
 
         private int _frames = 0;
+
+        private TorusGenerator _torus;
+        private Node _parent;
+        private Node _child;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -58,10 +63,13 @@ namespace avoCADo
             _scene = new Scene();
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _glControl);
-            var parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader));
-            parent.AttachChild(new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader)));
-            _scene.AddNode(parent);
+            _torus = new TorusGenerator(0.5f, 0.2f, 30, 30);
+            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new Renderer(_shader, _torus));
+            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader, _torus));
+            _parent.AttachChild(_child);
+            _scene.AddNode(_parent);
             InitLoop();
+            BindControls();
         }
 
         private void InitLoop()
@@ -74,6 +82,8 @@ namespace avoCADo
 
         private void OnTick(object sender, EventArgs e)
         {
+            _parent.transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) * _parent.transform.rotation;
+            _child.transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.transform.rotation;
             _glControl.Invalidate();
         }
 
@@ -109,6 +119,8 @@ namespace avoCADo
             #endregion
         }
 
+
+
         protected override void OnClosed(EventArgs e)
         {
             _shader.Dispose();
@@ -117,6 +129,7 @@ namespace avoCADo
             _camMovement.Dispose();
             _camera.Dispose();
             _timer.Stop();
+            UnbindControls();
             base.OnClosed(e);
         }
     }
