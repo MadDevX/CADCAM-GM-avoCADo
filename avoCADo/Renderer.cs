@@ -19,11 +19,13 @@ namespace avoCADo
 
         protected bool _shouldDispose = false;
         protected int _indexCount;
+        protected int _shaderModelMatrixLocation = -1;
 
         public Renderer(Shader shader, IMeshGenerator generator)
         {
             _shader = shader;
             _meshGenerator = generator;
+            _shaderModelMatrixLocation = GL.GetUniformLocation(_shader.Handle, "model");
             _meshGenerator.OnParametersChanged += UpdateData;
             InitializeData();
         }
@@ -62,47 +64,43 @@ namespace avoCADo
 
         private void SetModelMatrix(Transform transform)
         {
-            int location = GL.GetUniformLocation(_shader.Handle, "modelMatrix");
             var model = GetLocalModelMatrix(transform);
-            GL.UniformMatrix4(location, false, ref model);
+            GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
         }
 
         private void SetModelMatrix(Transform transform, Matrix4 parentMatrix)
         {
-            int location = GL.GetUniformLocation(_shader.Handle, "modelMatrix");
             var model = GetLocalModelMatrix(transform) * parentMatrix;
-            GL.UniformMatrix4(location, false, ref model);
+            GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
         }
 
         private void InitializeData()
         {
-            VAO = GL.GenVertexArray();
-
-            GL.BindVertexArray(VAO);
-
             InitializeVBO();
             InitializeEBO();
-
+            InitializeVAO();
+            UpdateData();
             _shouldDispose = true;
         }
 
-        private void InitializeVBO()
+        private void InitializeVAO()
         {
-            float[] vertices = _meshGenerator.GetVertices();
-            VBO = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.DynamicDraw);
+            VAO = GL.GenVertexArray();
+            GL.BindVertexArray(VAO);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
         }
 
+        private void InitializeVBO()
+        {
+            VBO = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+        }
+
         private void InitializeEBO()
         {
-            uint[] indices = _meshGenerator.GetIndices();
-            _indexCount = indices.Length;
             EBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.DynamicDraw);
 
         }
 
@@ -113,9 +111,9 @@ namespace avoCADo
             uint[] indices = _meshGenerator.GetIndices();
             _indexCount = indices.Length;
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
         }
 
         private void DisposeData()
