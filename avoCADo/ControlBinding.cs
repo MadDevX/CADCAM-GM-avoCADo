@@ -19,6 +19,10 @@ namespace avoCADo
             torusYDivisions.ValueChanged += OnValueYChanged;
             torusMainRadius.ValueChanged += OnMainRadiusChanged;
             torusTubeRadius.ValueChanged += OnTubeRadiusChanged;
+            torusScaleX.ValueChanged += ScaleXChanged;
+            torusScaleY.ValueChanged += ScaleYChanged;
+            torusScaleZ.ValueChanged += ScaleZChanged;
+            
         }
 
         private void UnbindControls()
@@ -27,6 +31,9 @@ namespace avoCADo
             torusYDivisions.ValueChanged -= OnValueYChanged;
             torusMainRadius.ValueChanged -= OnMainRadiusChanged;
             torusTubeRadius.ValueChanged -= OnTubeRadiusChanged;
+            torusScaleX.ValueChanged -= ScaleXChanged;
+            torusScaleY.ValueChanged -= ScaleYChanged;
+            torusScaleZ.ValueChanged -= ScaleZChanged;
         }
 
         private void UpdateValues()
@@ -35,6 +42,9 @@ namespace avoCADo
             torusYDivisions.Value = _torus.YDivisions;
             torusMainRadius.Value = _torus.R;
             torusTubeRadius.Value = _torus.r;
+            torusScaleX.Value = _parent.transform.scale.X;
+            torusScaleY.Value = _parent.transform.scale.Y;
+            torusScaleZ.Value = _parent.transform.scale.Z;
         }
 
         private void OnValueXChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
@@ -55,6 +65,19 @@ namespace avoCADo
         private void OnMainRadiusChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _torus.SetMainRadius((float)e.NewValue);
+        }
+
+        private void ScaleXChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _parent.transform.scale.X = (float)e.NewValue;
+        }
+        private void ScaleYChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _parent.transform.scale.Y = (float)e.NewValue;
+        }
+        private void ScaleZChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _parent.transform.scale.Z = (float)e.NewValue;
         }
     }
 }

@@ -23,6 +23,12 @@
             <Slider x:Name="torusMainRadius" Minimum="0" Maximum="2"/>
             <Label Content="Tube Radius"/>
             <Slider x:Name="torusTubeRadius" Minimum="0" Maximum="2"/>
+            <Label Content="ScaleX"/>
+            <Slider x:Name="torusScaleX" Minimum="0" Maximum="5"/>
+            <Label Content="ScaleY"/>
+            <Slider x:Name="torusScaleY" Minimum="0" Maximum="5"/>
+            <Label Content="ScaleZ"/>
+            <Slider x:Name="torusScaleZ" Minimum="0" Maximum="5"/>
         </StackPanel>
     </Grid>
 </Window>
