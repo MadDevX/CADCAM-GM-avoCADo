@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:avoCADo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" 
+        Height="720" Width="1280">
     <Grid Name="GridMain">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>
@@ -15,19 +16,19 @@
         </Grid.ColumnDefinitions>
         <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
         <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch" >
-            <Label Content="X Subdivisions"/>
+            <TextBlock Text="X Subdivisions" Margin="5"/>
             <Slider x:Name="torusXDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="true"/>
-            <Label Content="Y Subdivisions"/>
+            <TextBlock Text="Y Subdivisions" Margin="5"/>
             <Slider x:Name="torusYDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="True"/>
-            <Label Content="Main Radius"/>
+            <TextBlock Text="Main Radius" Margin="5"/>
             <Slider x:Name="torusMainRadius" Minimum="0" Maximum="2"/>
-            <Label Content="Tube Radius"/>
+            <TextBlock Text="Tube Radius" Margin="5"/>
             <Slider x:Name="torusTubeRadius" Minimum="0" Maximum="2"/>
-            <Label Content="ScaleX"/>
+            <TextBlock Text="ScaleX" Margin="5"/>
             <Slider x:Name="torusScaleX" Minimum="0" Maximum="5"/>
-            <Label Content="ScaleY"/>
+            <TextBlock Text="ScaleY" Margin="5"/>
             <Slider x:Name="torusScaleY" Minimum="0" Maximum="5"/>
-            <Label Content="ScaleZ"/>
+            <TextBlock Text="ScaleZ" Margin="5"/>
             <Slider x:Name="torusScaleZ" Minimum="0" Maximum="5"/>
         </StackPanel>
     </Grid>
