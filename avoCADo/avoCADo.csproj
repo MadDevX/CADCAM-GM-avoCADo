@@ -82,19 +82,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Camera.cs" />
-    <Compile Include="CameraMovement.cs" />
-    <Compile Include="ControlBinding.cs" />
-    <Compile Include="DisposableManager.cs" />
-    <Compile Include="IMeshGenerator.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Renderer.cs" />
-    <Compile Include="Scene.cs" />
-    <Compile Include="ScreenBufferManager.cs" />
-    <Compile Include="Shader.cs" />
-    <Compile Include="TorusGenerator.cs" />
-    <Compile Include="Transform.cs" />
-    <Compile Include="ViewportManager.cs" />
+    <Compile Include="Camera\Camera.cs" />
+    <Compile Include="Camera\CameraMovement.cs" />
+    <Compile Include="UI\ControlBinding.cs" />
+    <Compile Include="Utility\DisposableManager.cs" />
+    <Compile Include="MeshGenerators\IMeshGenerator.cs" />
+    <Compile Include="Architecture\Node.cs" />
+    <Compile Include="Rendering\Renderer.cs" />
+    <Compile Include="Architecture\Scene.cs" />
+    <Compile Include="SceneNode.xaml.cs">
+      <DependentUpon>SceneNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\ScreenBufferManager.cs" />
+    <Compile Include="Rendering\Shader.cs" />
+    <Compile Include="MeshGenerators\TorusGenerator.cs" />
+    <Compile Include="Architecture\Transform.cs" />
+    <Compile Include="Rendering\ViewportManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -107,6 +110,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SceneNode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -126,14 +133,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="fs.frag" />
+    <None Include="Shaders\fs.frag" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="vs.vert" />
+    <None Include="Shaders\vs.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -156,9 +163,10 @@
   <ItemGroup>
     <Resource Include="Resources\avoCADo_image.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)*.frag" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)*.vert" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)Shaders\*.frag" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\*.vert" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
