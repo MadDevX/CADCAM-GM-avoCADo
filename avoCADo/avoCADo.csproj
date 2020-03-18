@@ -87,17 +87,14 @@
     <Compile Include="Hierarchy.xaml.cs">
       <DependentUpon>Hierarchy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\ControlBinding.cs" />
-    <Compile Include="UI\CustomCommands.cs" />
     <Compile Include="Utility\DisposableManager.cs" />
     <Compile Include="MeshGenerators\IMeshGenerator.cs" />
     <Compile Include="Architecture\Node.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Architecture\Scene.cs" />
-    <Compile Include="SceneNode.xaml.cs">
-      <DependentUpon>SceneNode.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Rendering\ScreenBufferManager.cs" />
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
@@ -120,10 +117,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SceneNode.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

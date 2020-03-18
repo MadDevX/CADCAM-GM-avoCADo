@@ -18,8 +18,8 @@
                 <MenuItem Header="Load scene"/>
             </MenuItem>
             <MenuItem Header="Create">
-                <MenuItem Command="local:CustomCommands.Torus"/>
-                <MenuItem Command="local:CustomCommands.Point"/>
+                <MenuItem Command="local:CommandDefinitions.Torus"/>
+                <MenuItem Command="local:CommandDefinitions.Point"/>
             </MenuItem>
         </Menu>
         <Grid Name="GridMain">
