@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
 {
-    class Renderer : IDisposable
+    public class Renderer : IDisposable
     {
         protected int VAO = 0;
         protected int VBO = 0;

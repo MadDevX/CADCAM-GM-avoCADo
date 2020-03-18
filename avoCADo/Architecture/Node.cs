@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,36 +8,42 @@ using OpenTK;
 
 namespace avoCADo
 {
-    class Node : IDisposable
+    public class Node : IDisposable
     {
-        public Transform transform;
+        public Transform Transform { get; private set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Do not modify collection through this property - use dedicated methods (AttachChild, DetachChild)
+        /// </summary>
+        public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
+
         private Renderer _renderer;
 
-        private List<Node> _children = new List<Node>();
-
-        public Node(Transform transform, Renderer renderer)
+        public Node(Transform transform, Renderer renderer, string name)
         {
-            this.transform = transform;
+            Transform = transform;
             _renderer = renderer;
+            Name = name;
         }
 
         public void Render(Camera camera)
         {
-            _renderer.Render(transform, camera);
-            var modelMat = _renderer.GetLocalModelMatrix(transform);
-            for (int i = 0; i < _children.Count; i++)
+            _renderer.Render(Transform, camera);
+            var modelMat = _renderer.GetLocalModelMatrix(Transform);
+            for (int i = 0; i < Children.Count; i++)
             {
-                _children[i].Render(camera, modelMat);
+                Children[i].Render(camera, modelMat);
             }
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix)
         {
-            _renderer.Render(transform, camera, parentMatrix);
-            var modelMat = parentMatrix * _renderer.GetLocalModelMatrix(transform);
-            for(int i = 0; i < _children.Count; i++)
+            _renderer.Render(Transform, camera, parentMatrix);
+            var modelMat = parentMatrix * _renderer.GetLocalModelMatrix(Transform);
+            for(int i = 0; i < Children.Count; i++)
             {
-                _children[i].Render(camera, modelMat);
+                Children[i].Render(camera, modelMat);
             }
         }
 
@@ -51,7 +58,7 @@ namespace avoCADo
         /// <param name="child"></param>
         public void AttachChild(Node child)
         {
-            _children.Add(child);
+            Children.Add(child);
         }
 
         /// <summary>
@@ -60,7 +67,7 @@ namespace avoCADo
         /// <param name="child"></param>
         public void DetachChild(Node child)
         {
-            _children.Remove(child);
+            Children.Remove(child);
         }
     }
 }

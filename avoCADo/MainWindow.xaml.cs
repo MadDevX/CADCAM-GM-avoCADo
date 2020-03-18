@@ -62,14 +62,17 @@ namespace avoCADo
             _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.LightBlue));
             _viewportManager = new ViewportManager(_glControl);
             _shader = new Shader("vs.vert", "fs.frag");
-            _scene = new Scene();
+            _scene = new Scene("Main");
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _glControl);
+
             _torus = new TorusGenerator(0.5f, 0.2f, 30, 30);
-            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new Renderer(_shader, _torus));
-            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader, _torus));
+            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new Renderer(_shader, _torus), "parent torus");
+            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader, _torus), "child torus");
             _parent.AttachChild(_child);
             _scene.AddNode(_parent);
+
+            hierarchy.treeView.Items.Add(_scene);
             InitLoop();
             BindControls();
         }
@@ -91,8 +94,8 @@ namespace avoCADo
 
         private void OnTick(object sender, EventArgs e)
         {
-            _parent.transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) * _parent.transform.rotation;
-            _child.transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.transform.rotation;
+            _parent.Transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) * _parent.Transform.rotation;
+            _child.Transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.Transform.rotation;
             _glControl.Invalidate();
         }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    class Shader : IDisposable
+    public class Shader : IDisposable
     {
         public int Handle => _handle;
 

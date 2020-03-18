@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="768" Width="1280">
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
+    </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Height="23">
@@ -14,8 +18,8 @@
                 <MenuItem Header="Load scene"/>
             </MenuItem>
             <MenuItem Header="Create">
-                <MenuItem Header="Torus"/>
-                <MenuItem Header="Point"/>
+                <MenuItem Command="local:CustomCommands.Torus"/>
+                <MenuItem Command="local:CustomCommands.Point"/>
             </MenuItem>
         </Menu>
         <Grid Name="GridMain">
@@ -41,6 +45,7 @@
                 <Slider x:Name="torusScaleY" Minimum="0" Maximum="5"/>
                 <TextBlock Text="ScaleZ" Margin="5"/>
                 <Slider x:Name="torusScaleZ" Minimum="0" Maximum="5"/>
+                <local:Hierarchy x:Name="hierarchy" Height="200"/>
             </StackPanel>
         </Grid>
     </DockPanel>

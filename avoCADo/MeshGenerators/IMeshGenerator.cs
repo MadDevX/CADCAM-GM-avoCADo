@@ -2,7 +2,7 @@
 
 namespace avoCADo
 {
-    internal interface IMeshGenerator
+    public interface IMeshGenerator
     {
         event Action OnParametersChanged;
         float[] GetVertices();

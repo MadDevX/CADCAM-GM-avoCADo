@@ -1,31 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    class Scene : IDisposable
+    public class Scene : IDisposable
     {
-        private List<Node> _nodes = new List<Node>();
+        public string Name { get; set; }
+        /// <summary>
+        /// Add and remove nodes by dedicated methods (AddNode and DeleteNode)
+        /// </summary>
+        public ObservableCollection<Node> Nodes { get; private set; } = new ObservableCollection<Node>();
+
+        public Scene(string name)
+        {
+            Name = name;
+        }
 
         public void Render(Camera camera)
         {
-            for(int i = 0; i < _nodes.Count; i++)
+            for(int i = 0; i < Nodes.Count; i++)
             {
-                _nodes[i].Render(camera);
+                Nodes[i].Render(camera);
             }
         }
 
         public void AddNode(Node node)
         {
-            _nodes.Add(node);
+            Nodes.Add(node);
         }
 
         public void DeleteNode(Node node)
         {
-            if(_nodes.Remove(node))
+            if(Nodes.Remove(node))
             {
                 node.Dispose();
             }
@@ -33,11 +43,11 @@ namespace avoCADo
 
         public void Dispose()
         {
-            for(int i = 0; i < _nodes.Count; i++)
+            for(int i = 0; i < Nodes.Count; i++)
             {
-                _nodes[i].Dispose();
+                Nodes[i].Dispose();
             }
-            _nodes.Clear();
+            Nodes.Clear();
         }
     }
 }

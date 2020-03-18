@@ -16,15 +16,13 @@ using System.Windows.Shapes;
 namespace avoCADo
 {
     /// <summary>
-    /// Interaction logic for SceneNode.xaml
+    /// Interaction logic for Hierarchy.xaml
     /// </summary>
-    public partial class SceneNode : UserControl
+    public partial class Hierarchy : UserControl
     {
-        public Node Node { get; set; }
-        public SceneNode()
+        public Hierarchy()
         {
             InitializeComponent();
-            DataContext = Node;
         }
     }
 }

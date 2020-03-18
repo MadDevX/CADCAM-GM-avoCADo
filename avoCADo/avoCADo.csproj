@@ -84,7 +84,12 @@
     </ApplicationDefinition>
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
+    <Compile Include="Hierarchy.xaml.cs">
+      <DependentUpon>Hierarchy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\ControlBinding.cs" />
+    <Compile Include="UI\CustomCommands.cs" />
     <Compile Include="Utility\DisposableManager.cs" />
     <Compile Include="MeshGenerators\IMeshGenerator.cs" />
     <Compile Include="Architecture\Node.cs" />
@@ -98,6 +103,11 @@
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Architecture\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
+    <Compile Include="Utility\NameGenerator.cs" />
+    <Page Include="Hierarchy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

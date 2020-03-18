@@ -42,9 +42,9 @@ namespace avoCADo
             torusYDivisions.Value = _torus.YDivisions;
             torusMainRadius.Value = _torus.R;
             torusTubeRadius.Value = _torus.r;
-            torusScaleX.Value = _parent.transform.scale.X;
-            torusScaleY.Value = _parent.transform.scale.Y;
-            torusScaleZ.Value = _parent.transform.scale.Z;
+            torusScaleX.Value = _parent.Transform.scale.X;
+            torusScaleY.Value = _parent.Transform.scale.Y;
+            torusScaleZ.Value = _parent.Transform.scale.Z;
         }
 
         private void OnValueXChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
@@ -69,15 +69,15 @@ namespace avoCADo
 
         private void ScaleXChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _parent.transform.scale.X = (float)e.NewValue;
+            _parent.Transform.scale.X = (float)e.NewValue;
         }
         private void ScaleYChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _parent.transform.scale.Y = (float)e.NewValue;
+            _parent.Transform.scale.Y = (float)e.NewValue;
         }
         private void ScaleZChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _parent.transform.scale.Z = (float)e.NewValue;
+            _parent.Transform.scale.Z = (float)e.NewValue;
         }
     }
 }

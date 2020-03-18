@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    class TorusGenerator : IMeshGenerator
+    public class TorusGenerator : IMeshGenerator
     {
         public event Action OnParametersChanged;
 
