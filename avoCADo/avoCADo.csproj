@@ -180,9 +180,7 @@
   <ItemGroup>
     <Resource Include="Resources\avoCADo_image.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WPF\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(ProjectDir)Shaders\*.frag" "$(ProjectDir)$(OutDir)"
