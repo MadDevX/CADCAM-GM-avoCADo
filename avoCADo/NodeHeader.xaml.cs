@@ -21,7 +21,7 @@ namespace avoCADo
     public partial class NodeHeader : UserControl
     {
         public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(Node), typeof(NodeHeader), new PropertyMetadata(null));
-
+        private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
         public Node Node
         {
             get { return (Node)this.GetValue(NodeProperty); }
@@ -35,6 +35,30 @@ namespace avoCADo
         public NodeHeader()
         {
             InitializeComponent();
+            NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
+            Unloaded += Dispose;
+        }
+
+        private void Dispose(object sender, RoutedEventArgs e)
+        {
+            NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
+            Unloaded -= Dispose;
+        }
+
+        private void OnSelectionChanged()
+        {
+            if(NodeSelection.Manager.MainSelection == Node)
+            {
+                this.Background = _highlight;
+            }
+            else if(NodeSelection.Manager.SelectedNodes.Contains(Node))
+            {
+                this.Background = Brushes.DodgerBlue;
+            }
+            else
+            {
+                this.Background = Brushes.White;
+            }
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -57,14 +81,12 @@ namespace avoCADo
         private void ShowLabel()
         {
             label.Visibility = Visibility.Visible;
-            //btn.Visibility = Visibility.Visible;
             textBox.Visibility = Visibility.Hidden;
         }
 
         private void ShowTextBox()
         {
             label.Visibility = Visibility.Hidden;
-            //btn.Visibility = Visibility.Hidden;
             textBox.Visibility = Visibility.Visible;
             textBox.Focus();
             textBox.SelectAll();
@@ -72,9 +94,16 @@ namespace avoCADo
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.MiddleButton == MouseButtonState.Pressed)
+            if(e.LeftButton == MouseButtonState.Pressed)
             {
-                ShowTextBox();
+                if (Keyboard.Modifiers == ModifierKeys.Shift)
+                {
+                    NodeSelection.Manager.ToggleSelection(Node);
+                }
+                else
+                {
+                    NodeSelection.Manager.Select(Node);
+                }
             }
         }
 
@@ -84,16 +113,6 @@ namespace avoCADo
             {
                 ShowTextBox();
             }
-        }
-
-        private void Button_GotFocus(object sender, RoutedEventArgs e)
-        {
-            //btn.Opacity = 0.2f;
-        }
-
-        private void Button_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //btn.Opacity = 0.0f;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

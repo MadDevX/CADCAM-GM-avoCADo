@@ -25,15 +25,21 @@ namespace avoCADo
             InitializeComponent();
         }
 
-        public void TreeView_ItemFocused(object sender, RoutedEventArgs e)
+        private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //var view = treeView.ItemContainerGenerator.ContainerFromItemRecursive(treeView.SelectedItem);
-            if (treeView.SelectedItem.GetType() == typeof(Node))
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var node = treeView.SelectedItem as Node;
-                MessageBox.Show(node.Name);
+                if (sender as TreeViewItem == null)
+                {
+                    var container = treeView.ItemContainerGenerator.ContainerFromItemRecursive(treeView.SelectedItem);
+                    if (container != null)
+                    {
+                        container.IsSelected = false;
+                    }
+                    NodeSelection.Manager.ResetSelection();
+                    treeView.Focus();
+                }
             }
-            //treeView.SelectedItem.GetType().Name - data
         }
     }
 }

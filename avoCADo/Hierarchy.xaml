@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="200">
     <GroupBox Header="Hierarchy">
         <ScrollViewer>
-            <TreeView x:Name="treeView">
+            <TreeView x:Name="treeView" MouseDown="TreeView_MouseDown">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <!-- <EventSetter Event="TreeViewItem.GotFocus" Handler="TreeView_ItemFocused"/> -->
@@ -20,8 +20,16 @@
                         <local:NodeHeader Node="{Binding}"/>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
                     </HierarchicalDataTemplate>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                      Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                      Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                      Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                      Color="Black" />
                 </TreeView.Resources>
             </TreeView>
         </ScrollViewer>

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public partial class MainWindow
+    public static class NodeSelection
     {
-        public Node CurrentSelected { get; set; }
+        public static SelectionManager Manager { get; } = new SelectionManager();
     }
 }
