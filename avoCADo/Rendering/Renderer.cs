@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,30 +8,26 @@ using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
 {
-    public class Renderer : IDisposable
+    public abstract class Renderer : IRenderer, IDisposable
     {
         protected int VAO = 0;
         protected int VBO = 0;
         protected int EBO = 0;
         protected Shader _shader;
-        protected IMeshGenerator _meshGenerator;
 
         protected bool _shouldDispose = false;
         protected int _indexCount;
         protected int _shaderModelMatrixLocation = -1;
 
-        public Renderer(Shader shader, IMeshGenerator generator)
+        public Renderer(Shader shader)
         {
             _shader = shader;
-            _meshGenerator = generator;
             _shaderModelMatrixLocation = GL.GetUniformLocation(_shader.Handle, "model");
-            _meshGenerator.OnParametersChanged += UpdateData;
-            InitializeData();
+            InitializeGLObjects();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            _meshGenerator.OnParametersChanged -= UpdateData;
             DisposeData();
         }
 
@@ -44,29 +39,18 @@ namespace avoCADo
             return scale * rot * trans;
         }
 
-        public void Render(Transform transform, Camera camera)
-        {
-            _shader.Use();
-            GL.BindVertexArray(VAO);
-            SetModelMatrix(transform);
-            camera.SetCameraMatrices(_shader.Handle);
-            GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
-        }
-
         public void Render(Transform transform, Camera camera, Matrix4 parentMatrix)
         {
             _shader.Use();
             GL.BindVertexArray(VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             SetModelMatrix(transform, parentMatrix);
             camera.SetCameraMatrices(_shader.Handle);
-            GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
+            Draw();
         }
 
-        private void SetModelMatrix(Transform transform)
-        {
-            var model = GetLocalModelMatrix(transform);
-            GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
-        }
+        protected abstract void Draw();
 
         private void SetModelMatrix(Transform transform, Matrix4 parentMatrix)
         {
@@ -74,12 +58,11 @@ namespace avoCADo
             GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
         }
 
-        private void InitializeData()
+        private void InitializeGLObjects()
         {
             InitializeVBO();
             InitializeEBO();
             InitializeVAO();
-            UpdateData();
             _shouldDispose = true;
         }
 
@@ -87,6 +70,8 @@ namespace avoCADo
         {
             VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO); //do wyjebanka potencjalnie
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO); //do wyjebanka potencjalnie
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
         }
@@ -101,20 +86,12 @@ namespace avoCADo
         {
             EBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-
         }
 
-        private void UpdateData()
-        {
-            GL.BindVertexArray(VAO);
-            float[] vertices = _meshGenerator.GetVertices();
-            uint[] indices = _meshGenerator.GetIndices();
-            _indexCount = indices.Length;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-        }
+        /// <summary>
+        /// Use at the end of constructor
+        /// </summary>
+        protected abstract void SetBufferData();
 
         private void DisposeData()
         {

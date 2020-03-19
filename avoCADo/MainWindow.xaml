@@ -10,6 +10,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">

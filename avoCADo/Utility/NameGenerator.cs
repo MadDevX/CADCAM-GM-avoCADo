@@ -8,10 +8,10 @@ namespace avoCADo
 {
     public static class NameGenerator
     {
-        public static string GenerateName(Scene scene, string genericName)
+        public static string GenerateName(INode root, string genericName)
         {
             bool found = false;
-            foreach(var node in scene.Nodes)
+            foreach(var node in root.Children)
             {
                 if(node.Name.Equals(genericName))
                 {
@@ -27,7 +27,7 @@ namespace avoCADo
                 {
                     found = false;
                     indexedName = $"{genericName} ({i})";
-                    foreach (var node in scene.Nodes)
+                    foreach (var node in root.Children)
                     {
                         if (node.Name.Equals(indexedName))
                         {

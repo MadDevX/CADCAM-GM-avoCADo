@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="avoCADo.NodeHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:avoCADo"
+             mc:Ignorable="d"
+             Focusable="True"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TextBox x:Name="textBox" Text="{Binding Name}" AcceptsReturn="False" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown" Visibility="Hidden">
+        </TextBox>
+        <TextBlock x:Name="label" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Rename" Click="MenuItem_Click"/>
+                    <MenuItem Command="local:CommandDefinitions.DeleteNode" CommandParameter="{Binding}"/>
+                    <MenuItem Header="Create">
+                        <MenuItem Command="local:CommandDefinitions.Torus" CommandParameter="{Binding}"/>
+                        <MenuItem Command="local:CommandDefinitions.Point" CommandParameter="{Binding}"/>
+                    </MenuItem>
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
+        <!--<Button x:Name="btn" Background="LightBlue" KeyDown="Label_KeyDown" Opacity="0" GotFocus="Button_GotFocus" LostFocus="Button_LostFocus"/>  Button is a hack to gain focus and process keydownevent-->
+    </Grid>
+</UserControl>

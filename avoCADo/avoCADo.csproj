@@ -82,11 +82,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Architecture\INode.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
     <Compile Include="Hierarchy.xaml.cs">
       <DependentUpon>Hierarchy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NodeHeader.xaml.cs">
+      <DependentUpon>NodeHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\IRenderer.cs" />
+    <Compile Include="Rendering\MeshRenderer.cs" />
+    <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\ControlBinding.cs" />
@@ -101,6 +108,7 @@
     <Compile Include="Architecture\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
+    <Compile Include="Utility\TreeViewExtension.cs" />
     <Page Include="Hierarchy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -117,6 +125,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NodeHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

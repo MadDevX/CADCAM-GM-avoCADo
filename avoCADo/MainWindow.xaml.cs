@@ -67,10 +67,15 @@ namespace avoCADo
             _camMovement = new CameraMovement(_camera, _glControl);
 
             _torus = new TorusGenerator(0.5f, 0.2f, 30, 30);
-            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new Renderer(_shader, _torus), "parent torus");
-            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new Renderer(_shader, _torus), "child torus");
+            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new MeshRenderer(_shader, _torus), "parent torus");
+            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "child torus");
+            var point = new Node(new Transform(Vector3.UnitX, Quaternion.Identity, Vector3.One), new PointRenderer(_shader), "point");
             _parent.AttachChild(_child);
-            _scene.AddNode(_parent);
+            _scene.AttachChild(_parent);
+            _scene.AttachChild(new Node(new Transform(-Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 20, 20)), "child torus"));
+            _scene.AttachChild(new Node(new Transform(Vector3.UnitY, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 10, 10)), "child torus"));
+            _scene.AttachChild(new Node(new Transform(-Vector3.UnitY, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 5, 5)), "child torus"));
+            _scene.AttachChild(point);
 
             hierarchy.treeView.Items.Add(_scene);
             InitLoop();

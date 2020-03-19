@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class Scene : IDisposable
+    public class Scene : IDisposable, INode
     {
         public string Name { get; set; }
         /// <summary>
         /// Add and remove nodes by dedicated methods (AddNode and DeleteNode)
         /// </summary>
-        public ObservableCollection<Node> Nodes { get; private set; } = new ObservableCollection<Node>();
+        public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
 
         public Scene(string name)
         {
@@ -22,32 +23,35 @@ namespace avoCADo
 
         public void Render(Camera camera)
         {
-            for(int i = 0; i < Nodes.Count; i++)
+            for(int i = 0; i < Children.Count; i++)
             {
-                Nodes[i].Render(camera);
+                Children[i].Render(camera, Matrix4.Identity);
             }
         }
 
-        public void AddNode(Node node)
+        public void AttachChild(Node child)
         {
-            Nodes.Add(node);
+            if (child.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+
+            child.Parent = this;
+            Children.Add(child);
+
         }
 
-        public void DeleteNode(Node node)
+        public bool DetachChild(Node child)
         {
-            if(Nodes.Remove(node))
-            {
-                node.Dispose();
-            }
+            var val = Children.Remove(child);
+            if (val) child.Parent = null;
+            return val;
         }
 
         public void Dispose()
         {
-            for(int i = 0; i < Nodes.Count; i++)
+            for(int i = Children.Count - 1; i >= 0; i--)
             {
-                Nodes[i].Dispose();
+                Children[i].Dispose();
             }
-            Nodes.Clear();
+            Children.Clear();
         }
     }
 }

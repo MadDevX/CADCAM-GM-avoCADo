@@ -30,5 +30,12 @@ namespace avoCADo
                     new KeyGesture(Key.P, ModifierKeys.Control)
                 }
             );
+
+        public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
+            (
+                "Delete",
+                "Delete",
+                typeof(CommandDefinitions)
+            );
     }
 }

@@ -25,6 +25,8 @@ namespace avoCADo
         private float[] _vertices;
         private uint[] _indices;
 
+        private static int _maxDivisions = 100;
+
         public TorusGenerator(float mainRadius, float tubeRadius, int xDivisions, int yDivisions)
         {
             _mainRadius = mainRadius;
@@ -38,13 +40,13 @@ namespace avoCADo
 
         public void SetXDivisions(int divisions)
         {
-            _xDivisions = MathHelper.Clamp(divisions, 3, 30);
+            _xDivisions = MathHelper.Clamp(divisions, 3, _maxDivisions);
             UpdateData();
         }
 
         public void SetYDivisions(int divisions)
         {
-            _yDivisions = MathHelper.Clamp(divisions, 3, 30);
+            _yDivisions = MathHelper.Clamp(divisions, 3, _maxDivisions);
             UpdateData();
         }
 
@@ -86,8 +88,8 @@ namespace avoCADo
 
         private void GenerateVertices()
         {
-            _xDivisions = MathHelper.Clamp(_xDivisions, 3, 30);
-            _yDivisions = MathHelper.Clamp(_yDivisions, 3, 30);
+            _xDivisions = MathHelper.Clamp(_xDivisions, 3, _maxDivisions);
+            _yDivisions = MathHelper.Clamp(_yDivisions, 3, _maxDivisions);
 
             var newLength = _xDivisions * _yDivisions * 3;
             if (_vertices == null || _vertices.Length != newLength)
@@ -113,8 +115,8 @@ namespace avoCADo
 
         private void GenerateIndices()
         {
-            _xDivisions = MathHelper.Clamp(_xDivisions, 3, 30);
-            _yDivisions = MathHelper.Clamp(_yDivisions, 3, 30);
+            _xDivisions = MathHelper.Clamp(_xDivisions, 3, _maxDivisions);
+            _yDivisions = MathHelper.Clamp(_yDivisions, 3, _maxDivisions);
 
             var newLength = _xDivisions * _yDivisions * 4;
             if (_indices == null || _indices.Length != newLength)

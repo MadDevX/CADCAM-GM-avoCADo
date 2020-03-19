@@ -11,14 +11,15 @@
             <TreeView x:Name="treeView">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
+                        <!-- <EventSetter Event="TreeViewItem.GotFocus" Handler="TreeView_ItemFocused"/> -->
                         <Setter Property="IsExpanded" Value="True"/>
                     </Style>
                 </TreeView.ItemContainerStyle>
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local:Node}" ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}"/>
+                        <local:NodeHeader Node="{Binding}"/>
                     </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Nodes}">
+                    <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding Name}"/>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
