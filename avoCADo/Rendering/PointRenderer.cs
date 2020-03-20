@@ -14,6 +14,11 @@ namespace avoCADo
             SetBufferData();
         }
 
+        public override IMeshGenerator GetGenerator()
+        {
+            return null;
+        }
+
         protected override void Draw()
         {
             GL.PointSize(3.0f);

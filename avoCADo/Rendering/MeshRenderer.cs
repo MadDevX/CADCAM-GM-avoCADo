@@ -24,6 +24,11 @@ namespace avoCADo
             base.Dispose();
         }
 
+        public override IMeshGenerator GetGenerator()
+        {
+            return _meshGenerator;
+        }
+
         protected override void Draw()
         {
             GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);

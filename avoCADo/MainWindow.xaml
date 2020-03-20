@@ -31,22 +31,21 @@
                 <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
             <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
-            <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch" >
-                <TextBlock Text="X Subdivisions" Margin="5"/>
-                <Slider x:Name="torusXDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="true"/>
-                <TextBlock Text="Y Subdivisions" Margin="5"/>
-                <Slider x:Name="torusYDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="True"/>
-                <TextBlock Text="Main Radius" Margin="5"/>
-                <Slider x:Name="torusMainRadius" Minimum="0" Maximum="2"/>
-                <TextBlock Text="Tube Radius" Margin="5"/>
-                <Slider x:Name="torusTubeRadius" Minimum="0" Maximum="2"/>
-                <TextBlock Text="ScaleX" Margin="5"/>
-                <Slider x:Name="torusScaleX" Minimum="0" Maximum="5"/>
-                <TextBlock Text="ScaleY" Margin="5"/>
-                <Slider x:Name="torusScaleY" Minimum="0" Maximum="5"/>
-                <TextBlock Text="ScaleZ" Margin="5"/>
-                <Slider x:Name="torusScaleZ" Minimum="0" Maximum="5"/>
+            <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch">
                 <local:Hierarchy x:Name="hierarchy" Height="200"/>
+                <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
+                <GroupBox x:Name="generatorView" Header="Torus Generator" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="X Subdivisions" Margin="5"/>
+                        <Slider x:Name="torusXDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="true"/>
+                        <TextBlock Text="Y Subdivisions" Margin="5"/>
+                        <Slider x:Name="torusYDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="True"/>
+                        <TextBlock Text="Main Radius" Margin="5"/>
+                        <Slider x:Name="torusMainRadius" Minimum="0" Maximum="2"/>
+                        <TextBlock Text="Tube Radius" Margin="5"/>
+                        <Slider x:Name="torusTubeRadius" Minimum="0" Maximum="2"/>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </Grid>
     </DockPanel>

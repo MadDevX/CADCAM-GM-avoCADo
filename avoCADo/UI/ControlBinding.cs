@@ -19,9 +19,7 @@ namespace avoCADo
             torusYDivisions.ValueChanged += OnValueYChanged;
             torusMainRadius.ValueChanged += OnMainRadiusChanged;
             torusTubeRadius.ValueChanged += OnTubeRadiusChanged;
-            torusScaleX.ValueChanged += ScaleXChanged;
-            torusScaleY.ValueChanged += ScaleYChanged;
-            torusScaleZ.ValueChanged += ScaleZChanged;
+            DataChanged += UpdateValues;
             
         }
 
@@ -31,53 +29,52 @@ namespace avoCADo
             torusYDivisions.ValueChanged -= OnValueYChanged;
             torusMainRadius.ValueChanged -= OnMainRadiusChanged;
             torusTubeRadius.ValueChanged -= OnTubeRadiusChanged;
-            torusScaleX.ValueChanged -= ScaleXChanged;
-            torusScaleY.ValueChanged -= ScaleYChanged;
-            torusScaleZ.ValueChanged -= ScaleZChanged;
+            DataChanged -= UpdateValues;
         }
 
         private void UpdateValues()
         {
-            torusXDivisions.Value = _torus.XDivisions;
-            torusYDivisions.Value = _torus.YDivisions;
-            torusMainRadius.Value = _torus.R;
-            torusTubeRadius.Value = _torus.r;
-            torusScaleX.Value = _parent.Transform.scale.X;
-            torusScaleY.Value = _parent.Transform.scale.Y;
-            torusScaleZ.Value = _parent.Transform.scale.Z;
+            var torus = Torus as TorusGenerator;
+            if (torus != null)
+            {
+                if (generatorView.Visibility != Visibility.Visible) generatorView.Visibility = Visibility.Visible;
+                torusXDivisions.Value = torus.XDivisions;
+                torusYDivisions.Value = torus.YDivisions;
+                torusMainRadius.Value = torus.R;
+                torusTubeRadius.Value = torus.r;
+            }
+            else
+            {
+                generatorView.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void OnValueXChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
         {
-            _torus.SetXDivisions((int)e.NewValue);
+            var torus = Torus as TorusGenerator;
+            if (torus != null)
+                torus.SetXDivisions((int)e.NewValue);
         }
 
         private void OnValueYChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _torus.SetYDivisions((int)e.NewValue);
+            var torus = Torus as TorusGenerator;
+            if (torus != null)
+                torus.SetYDivisions((int)e.NewValue);
         }
 
         private void OnTubeRadiusChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _torus.SetTubeRadius((float)e.NewValue);
+            var torus = Torus as TorusGenerator;
+            if (torus != null)
+                torus.SetTubeRadius((float)e.NewValue);
         }
 
         private void OnMainRadiusChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _torus.SetMainRadius((float)e.NewValue);
-        }
-
-        private void ScaleXChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _parent.Transform.scale.X = (float)e.NewValue;
-        }
-        private void ScaleYChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _parent.Transform.scale.Y = (float)e.NewValue;
-        }
-        private void ScaleZChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _parent.Transform.scale.Z = (float)e.NewValue;
+            var torus = Torus as TorusGenerator;
+            if (torus != null)
+                torus.SetMainRadius((float)e.NewValue);
         }
     }
 }

@@ -82,6 +82,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Architecture\ILoop.cs" />
+    <Compile Include="Architecture\IGeneratorDataSource.cs" />
     <Compile Include="Architecture\INode.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
@@ -94,11 +96,14 @@
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
+    <Compile Include="TransformView.xaml.cs">
+      <DependentUpon>TransformView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\ControlBinding.cs" />
     <Compile Include="UI\NodeSelection.cs" />
-    <Compile Include="Utility\DisposableManager.cs" />
+    <Compile Include="UI\TransformHandler.cs" />
     <Compile Include="MeshGenerators\IMeshGenerator.cs" />
     <Compile Include="Architecture\Node.cs" />
     <Compile Include="Rendering\Renderer.cs" />
@@ -108,6 +113,7 @@
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Architecture\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
+    <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
@@ -128,6 +134,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NodeHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TransformView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

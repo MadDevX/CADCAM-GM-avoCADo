@@ -31,11 +31,14 @@ namespace avoCADo
             DisposeData();
         }
 
+        public abstract IMeshGenerator GetGenerator();
+
         public Matrix4 GetLocalModelMatrix(Transform transform)
         {
             Matrix4.CreateTranslation(ref transform.position, out Matrix4 trans);
             Matrix4.CreateScale(ref transform.scale, out Matrix4 scale);
-            Matrix4.CreateFromQuaternion(ref transform.rotation, out Matrix4 rot);
+            var quat = Quaternion.FromEulerAngles(transform.Rotation);
+            Matrix4.CreateFromQuaternion(ref quat, out Matrix4 rot);
             return scale * rot * trans;
         }
 

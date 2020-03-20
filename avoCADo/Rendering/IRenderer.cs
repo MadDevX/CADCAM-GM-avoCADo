@@ -11,5 +11,7 @@ namespace avoCADo
     {
         Matrix4 GetLocalModelMatrix(Transform transform);
         void Render(Transform transform, Camera camera, Matrix4 parentMatrix);
+
+        IMeshGenerator GetGenerator();
     }
 }

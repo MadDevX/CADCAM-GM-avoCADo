@@ -14,6 +14,8 @@ namespace avoCADo
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Transform Transform { get; private set; }
+        public IRenderer Renderer { get; private set; }
+
         public INode Parent { get; set; }
 
         private string _name;
@@ -36,20 +38,18 @@ namespace avoCADo
         /// </summary>
         public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
 
-        private IRenderer _renderer;
-
 
         public Node(Transform transform, IRenderer renderer, string name)
         {
             Transform = transform;
-            _renderer = renderer;
+            Renderer = renderer;
             Name = name;
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix)
         {
-            _renderer.Render(Transform, camera, parentMatrix);
-            var modelMat =_renderer.GetLocalModelMatrix(Transform) * parentMatrix; //TODO : check matrix multiplication
+            Renderer.Render(Transform, camera, parentMatrix);
+            var modelMat =Renderer.GetLocalModelMatrix(Transform) * parentMatrix; //TODO : check matrix multiplication
             for(int i = 0; i < Children.Count; i++)
             {
                 Children[i].Render(camera, modelMat);
@@ -65,7 +65,7 @@ namespace avoCADo
             {
                 Parent.DetachChild(this);
             }
-            _renderer.Dispose();
+            Renderer.Dispose();
             for(int i = Children.Count - 1; i >= 0; i--)
             {
                 Children[i].Dispose();

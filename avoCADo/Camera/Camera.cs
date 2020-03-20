@@ -10,6 +10,10 @@ namespace avoCADo
 {
     public class Camera : IDisposable
     {
+        public Matrix4 ProjectionMatrix => _projectionMatrix;
+        public Matrix4 ViewMatrix => _viewMatrix;
+
+
         private ViewportManager _viewportManager;
 
         private Vector3 _position = Vector3.UnitZ;
@@ -23,8 +27,8 @@ namespace avoCADo
         private float _fov = MathHelper.DegreesToRadians(90.0f);
         private float _aspectRatio = 1.0f;
 
-        private Matrix4 projectionMatrix;
-        private Matrix4 viewMatrix;
+        private Matrix4 _projectionMatrix;
+        private Matrix4 _viewMatrix;
 
         public Camera(ViewportManager viewportManager)
         {
@@ -111,13 +115,13 @@ namespace avoCADo
         private void SetViewMatrix(int shaderHandle)
         {
             var location = GL.GetUniformLocation(shaderHandle, "view");
-            GL.UniformMatrix4(location, false, ref viewMatrix);
+            GL.UniformMatrix4(location, false, ref _viewMatrix);
         }
 
         private void SetProjectionMatrix(int shaderHandle)
         {
             var location = GL.GetUniformLocation(shaderHandle, "projection");
-            GL.UniformMatrix4(location, false, ref projectionMatrix);
+            GL.UniformMatrix4(location, false, ref _projectionMatrix);
         }
 
         private void OnViewportChanged(System.Drawing.Size obj)
@@ -128,12 +132,12 @@ namespace avoCADo
 
         private void UpdateViewMatrix()
         {
-            viewMatrix = Matrix4.LookAt(_position, _target, Vector3.UnitY);
+            _viewMatrix = Matrix4.LookAt(_position, _target, Vector3.UnitY);
         }
 
         private void UpdateProjectionMatrix()
         {
-            projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane);
+            _projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane);
         }
     }
 }

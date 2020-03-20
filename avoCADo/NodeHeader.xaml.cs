@@ -21,7 +21,6 @@ namespace avoCADo
     public partial class NodeHeader : UserControl
     {
         public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(Node), typeof(NodeHeader), new PropertyMetadata(null));
-        private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
         public Node Node
         {
             get { return (Node)this.GetValue(NodeProperty); }
@@ -31,6 +30,9 @@ namespace avoCADo
                 DataContext = value;
             }
         }
+
+
+        private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
 
         public NodeHeader()
         {

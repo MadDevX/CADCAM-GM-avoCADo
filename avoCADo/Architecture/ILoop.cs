@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    class DisposableManager
+    public interface ILoop
     {
+        event Action<float> OnUpdate;
     }
 }

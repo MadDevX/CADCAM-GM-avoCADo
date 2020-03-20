@@ -27,8 +27,22 @@ namespace avoCADo
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ILoop, ITorusGeneratorDataSource
     {
+        public event Action DataChanged;
+
+        private IMeshGenerator _torus;
+        public IMeshGenerator Torus
+        {
+            get => _torus;
+            set
+            {
+                _torus = value;
+                DataChanged?.Invoke();
+            }
+        }
+
+
         private GLControl _glControl;
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
@@ -41,17 +55,21 @@ namespace avoCADo
         private DispatcherTimer _timer;
 
         private Stopwatch _stopwatch;
+        private Stopwatch _deltaStopwatch;
 
         private int _frames = 0;
-
-        private TorusGenerator _torus;
         private Node _parent;
         private Node _child;
+        private Node _point;
+
+        public event Action<float> OnUpdate;
+        private TransformHandler _transformHandler;
 
         public MainWindow()
         {
             InitializeComponent();
             _stopwatch = new Stopwatch();
+            _deltaStopwatch = new Stopwatch();
             _glControl = new GLControl();
 
             _glControl.Paint += GLControlOnPaint;
@@ -66,20 +84,21 @@ namespace avoCADo
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _glControl);
 
-            _torus = new TorusGenerator(0.5f, 0.2f, 30, 30);
-            _parent = new Node(new Transform(Vector3.Zero, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f))), Vector3.One), new MeshRenderer(_shader, _torus), "parent torus");
-            _child = new Node(new Transform(Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "child torus");
-            var point = new Node(new Transform(Vector3.UnitX, Quaternion.Identity, Vector3.One), new PointRenderer(_shader), "point");
+            _parent = new Node(new Transform(Vector3.Zero, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f)), Vector3.One), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "parent torus");
+            _child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "child torus");
+            _point = new Node(new Transform(Vector3.UnitX, Vector3.Zero, Vector3.One), new PointRenderer(_shader), "point");
             _parent.AttachChild(_child);
             _scene.AttachChild(_parent);
-            _scene.AttachChild(new Node(new Transform(-Vector3.UnitX, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 20, 20)), "child torus"));
-            _scene.AttachChild(new Node(new Transform(Vector3.UnitY, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 10, 10)), "child torus"));
-            _scene.AttachChild(new Node(new Transform(-Vector3.UnitY, Quaternion.FromEulerAngles(new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f))), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 5, 5)), "child torus"));
-            _scene.AttachChild(point);
+            _scene.AttachChild(new Node(new Transform(-Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 20, 20)), "child torus"));
+            _scene.AttachChild(new Node(new Transform(Vector3.UnitY, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 10, 10)), "child torus"));
+            _scene.AttachChild(new Node(new Transform(-Vector3.UnitY, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 5, 5)), "child torus"));
+            _scene.AttachChild(_point);
 
             hierarchy.treeView.Items.Add(_scene);
+            transformView.Transform = _parent.Transform;
             InitLoop();
             BindControls();
+            _transformHandler = new TransformHandler(transformView, this, this);
         }
 
         private void InitLoop()
@@ -89,6 +108,7 @@ namespace avoCADo
             _timer.Tick += SetDirty;
             _timer.Start();
 
+            _deltaStopwatch.Start();
             CompositionTarget.Rendering += OnTick;
         }
 
@@ -99,8 +119,15 @@ namespace avoCADo
 
         private void OnTick(object sender, EventArgs e)
         {
-            _parent.Transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) * _parent.Transform.rotation;
-            _child.Transform.rotation = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.Transform.rotation;
+            var deltaTime = (float)_deltaStopwatch.Elapsed.TotalSeconds;
+            _deltaStopwatch.Restart();
+            //var rot = _parent.Transform.Rotation;//.Y += 0.1f;// = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) *_parent.Transform.rotation;
+            //rot.Y += 0.5f * deltaTime;
+            //_parent.Transform.Rotation = rot;
+            //rot = _child.Transform.Rotation;
+            //rot.Z += 0.5f * deltaTime;// = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.Transform.rotation;
+            //_child.Transform.Rotation = rot;
+            OnUpdate?.Invoke(deltaTime);
             _glControl.Invalidate();
         }
 
@@ -149,6 +176,7 @@ namespace avoCADo
             _timer.Tick -= SetDirty;
             _timer.Stop();
             UnbindControls();
+            _transformHandler.Dispose();
             base.OnClosed(e);
         }
     }
