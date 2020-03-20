@@ -111,6 +111,14 @@ namespace avoCADo
             UpdateProjectionMatrix();
         }
 
+        public void Move(Vector3 target)
+        {
+            var diff = _position - _target;
+            _target = target;
+            _position = _target + diff;
+            UpdateViewMatrix();
+        }
+
         #endregion
 
         private void SetViewMatrix(int shaderHandle)

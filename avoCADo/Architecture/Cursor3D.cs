@@ -106,6 +106,7 @@ namespace avoCADo
                 else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
                 else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
             }
+            if (e.KeyCode == System.Windows.Forms.Keys.G) _camera.Move(Position);
             UpdateLabel();
         }
 

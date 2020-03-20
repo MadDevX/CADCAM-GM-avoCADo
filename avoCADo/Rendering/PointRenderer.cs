@@ -21,7 +21,7 @@ namespace avoCADo
 
         protected override void Draw()
         {
-            GL.PointSize(3.0f);
+            GL.PointSize(4.0f);
             GL.Uniform4(_shaderColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
             GL.DrawArrays(PrimitiveType.Points, 0, 1);
             GL.Uniform4(_shaderColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
