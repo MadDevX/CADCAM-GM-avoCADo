@@ -149,5 +149,15 @@ namespace avoCADo
             if (sclZTextBox.IsFocused == false) sclZTextBox.Text = Transform.scale.Z.ToString(_format);
             _handleInput = true;
         }
+
+        private void PosXTextBox_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            (sender as TextBox).SelectAll();
+        }
+
+        private void SclXTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as TextBox).SelectAll();
+        }
     }
 }

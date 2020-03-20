@@ -64,6 +64,9 @@ namespace avoCADo
 
         public event Action<float> OnUpdate;
         private TransformHandler _transformHandler;
+        private ScreenSelectionManager _selectionManager;
+
+        private float _totalTime;
 
         public MainWindow()
         {
@@ -98,6 +101,7 @@ namespace avoCADo
             transformView.Transform = _parent.Transform;
             InitLoop();
             BindControls();
+            _selectionManager = new ScreenSelectionManager(_glControl, _camera, _scene);
             _transformHandler = new TransformHandler(transformView, this, this);
         }
 
@@ -121,6 +125,9 @@ namespace avoCADo
         {
             var deltaTime = (float)_deltaStopwatch.Elapsed.TotalSeconds;
             _deltaStopwatch.Restart();
+            _totalTime += deltaTime;
+            //_parent.Transform.ScaleAround(Vector3.UnitX, new Vector3(((float)Math.Cos(_totalTime)+1.0f) * 0.5f /*+ 0.1f*/, 1.0f, 1.0f));
+            
             //var rot = _parent.Transform.Rotation;//.Y += 0.1f;// = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) *_parent.Transform.rotation;
             //rot.Y += 0.5f * deltaTime;
             //_parent.Transform.Rotation = rot;
@@ -176,6 +183,7 @@ namespace avoCADo
             _timer.Tick -= SetDirty;
             _timer.Stop();
             UnbindControls();
+            _selectionManager.Dispose();
             _transformHandler.Dispose();
             base.OnClosed(e);
         }

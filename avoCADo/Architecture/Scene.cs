@@ -16,6 +16,14 @@ namespace avoCADo
         /// </summary>
         public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
 
+        public Matrix4 GlobalModelMatrix
+        {
+            get
+            {
+                return Matrix4.Identity;
+            }
+        }
+
         public Scene(string name)
         {
             Name = name;
@@ -31,9 +39,9 @@ namespace avoCADo
 
         public void AttachChild(Node child)
         {
-            if (child.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+            if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
-            child.Parent = this;
+            child.Transform.Parent = this;
             Children.Add(child);
 
         }
@@ -41,7 +49,7 @@ namespace avoCADo
         public bool DetachChild(Node child)
         {
             var val = Children.Remove(child);
-            if (val) child.Parent = null;
+            if (val) child.Transform.Parent = null;
             return val;
         }
 

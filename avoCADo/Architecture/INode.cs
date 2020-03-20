@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace avoCADo
         bool DetachChild(Node node);
         
         ObservableCollection<Node> Children { get; }
+
+        Matrix4 GlobalModelMatrix { get; }
     }
 }

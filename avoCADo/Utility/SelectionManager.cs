@@ -51,7 +51,7 @@ namespace avoCADo
 
         private void AddToSelected(Node node)
         {
-            if (SelectedNodes.Count > 0 && node.Parent == MainSelection.Parent)
+            if (SelectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
             {
                 SelectedNodes.Add(node);
                 MainSelection = node;

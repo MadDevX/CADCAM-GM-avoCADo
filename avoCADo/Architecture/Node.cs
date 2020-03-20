@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using OpenTK;
 
 namespace avoCADo
@@ -15,8 +16,6 @@ namespace avoCADo
 
         public Transform Transform { get; private set; }
         public IRenderer Renderer { get; private set; }
-
-        public INode Parent { get; set; }
 
         private string _name;
 
@@ -38,6 +37,13 @@ namespace avoCADo
         /// </summary>
         public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
 
+        public Matrix4 GlobalModelMatrix
+        {
+            get
+            {
+                return Renderer.GetLocalModelMatrix(Transform) * Transform.Parent.GlobalModelMatrix;
+            }
+        }
 
         public Node(Transform transform, IRenderer renderer, string name)
         {
@@ -49,7 +55,7 @@ namespace avoCADo
         public void Render(Camera camera, Matrix4 parentMatrix)
         {
             Renderer.Render(Transform, camera, parentMatrix);
-            var modelMat =Renderer.GetLocalModelMatrix(Transform) * parentMatrix; //TODO : check matrix multiplication
+            var modelMat = Renderer.GetLocalModelMatrix(Transform) * parentMatrix; //TODO : check matrix multiplication
             for(int i = 0; i < Children.Count; i++)
             {
                 Children[i].Render(camera, modelMat);
@@ -61,9 +67,9 @@ namespace avoCADo
         /// </summary>
         public void Dispose()
         {
-            if(Parent != null)
+            if(Transform.Parent != null)
             {
-                Parent.DetachChild(this);
+                Transform.Parent.DetachChild(this);
             }
             Renderer.Dispose();
             for(int i = Children.Count - 1; i >= 0; i--)
@@ -79,9 +85,9 @@ namespace avoCADo
         /// <param name="child"></param>
         public void AttachChild(Node child)
         {
-            if (child.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+            if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
-            child.Parent = this;
+            child.Transform.Parent = this;
             Children.Add(child);
         }
 
@@ -92,7 +98,7 @@ namespace avoCADo
         public bool DetachChild(Node child)
         {
             var val = Children.Remove(child);
-            if(val) child.Parent = null;
+            if(val) child.Transform.Parent = null;
             return val;
         }
     }

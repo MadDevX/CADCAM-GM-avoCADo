@@ -103,6 +103,7 @@
     <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\ControlBinding.cs" />
     <Compile Include="UI\NodeSelection.cs" />
+    <Compile Include="UI\SceneSelectionManager.cs" />
     <Compile Include="UI\TransformHandler.cs" />
     <Compile Include="MeshGenerators\IMeshGenerator.cs" />
     <Compile Include="Architecture\Node.cs" />
