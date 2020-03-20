@@ -51,6 +51,7 @@ namespace avoCADo
         private Scene _scene;
         private Camera _camera;
         private CameraMovement _camMovement;
+        private Cursor3D _cursor;
 
         private DispatcherTimer _timer;
 
@@ -102,6 +103,7 @@ namespace avoCADo
             InitLoop();
             BindControls();
             _selectionManager = new ScreenSelectionManager(_glControl, _camera, _scene);
+            _cursor = new Cursor3D(_glControl);
             _transformHandler = new TransformHandler(transformView, this, this);
         }
 
@@ -184,6 +186,7 @@ namespace avoCADo
             _timer.Stop();
             UnbindControls();
             _selectionManager.Dispose();
+            _cursor.Dispose();
             _transformHandler.Dispose();
             base.OnClosed(e);
         }

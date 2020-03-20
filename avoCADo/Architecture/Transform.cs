@@ -90,7 +90,18 @@ namespace avoCADo
             diff = quat * diff;
             position = pivot + diff;
             Rotation = (quat * Quaternion.FromEulerAngles(Rotation)).EulerAngles();
-            if (float.IsNaN(Rotation.X)) Rotation = prevRot;
+
+            if (float.IsNaN(Rotation.X) ||
+                float.IsNaN(Rotation.Y) ||
+                float.IsNaN(Rotation.Z))
+            {
+                Rotation = prevRot;
+            }
+        }
+
+        public void Translate(Vector3 translation)
+        {
+            position += translation;
         }
 
         public void ScaleAround(Vector3 pivot, Vector3 scale)

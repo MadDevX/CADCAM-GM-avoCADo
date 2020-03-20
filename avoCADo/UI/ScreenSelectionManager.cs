@@ -55,7 +55,7 @@ namespace avoCADo
         {
             float curDist = float.MaxValue;
             Node curSelect = null;
-            var mousePos = PixelToNDC(location);
+            var mousePos = PixelToNDC(location, _control);
             foreach (var obj in _scene.Children)
             {
                 CheckSelection(obj, mousePos, ref curDist, ref curSelect);
@@ -77,10 +77,10 @@ namespace avoCADo
             }
         }
 
-        private Vector3 PixelToNDC(Point location)
+        public static Vector3 PixelToNDC(Point location, GLControl ctrl)
         {
-            var halfX = _control.Width / 2;
-            var halfY = _control.Height / 2;
+            var halfX = ctrl.Width / 2;
+            var halfY = ctrl.Height / 2;
             var x =  (float)(location.X - halfX) / halfX;
             var y = -(float)(location.Y - halfY) / halfY;
             return new Vector3(x, y, 0.0f);
