@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace avoCADo
 {
@@ -21,6 +22,7 @@ namespace avoCADo
         public Vector3 Position;
 
         private readonly GLControl _control;
+        private readonly TextBlock _label;
 
         private Vector3 _mults = Vector3.Zero;
         private TransformationType _trType = TransformationType.None;
@@ -29,9 +31,10 @@ namespace avoCADo
         private float _rotateSensitivity = 5.0f;
         private float _translateSensitivity = 5.0f;
 
-        public Cursor3D(GLControl control)
+        public Cursor3D(GLControl control, TextBlock label)
         {
             _control = control;
+            _label = label;
             Initialize();
         }
 
@@ -39,12 +42,24 @@ namespace avoCADo
         {
             _control.KeyDown += KeyDown;
             _control.MouseMove += MouseMove;
+            UpdateLabel();
         }
 
         public void Dispose()
         {
             _control.KeyDown -= KeyDown;
             _control.MouseMove -= MouseMove;
+        }
+
+        private void UpdateLabel()
+        {
+            string axis;
+            if (_mults.X > 0.0f) axis = "X";
+            else if (_mults.Y > 0.0f) axis = "Y";
+            else if (_mults.Z > 0.0f) axis = "Z";
+            else axis = "None";
+            _label.Text = $"Current transformation: {_trType}\n" +
+                          $"Axis: {axis}";
         }
 
         private void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -66,6 +81,7 @@ namespace avoCADo
                 else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
                 else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
             }
+            UpdateLabel();
         }
 
         private void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

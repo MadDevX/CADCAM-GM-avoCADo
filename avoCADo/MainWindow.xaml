@@ -32,6 +32,9 @@
             </Grid.ColumnDefinitions>
             <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
             <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch">
+                <GroupBox Header="Transformation" FontWeight="SemiBold">
+                    <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
+                </GroupBox> 
                 <local:Hierarchy x:Name="hierarchy" Height="200"/>
                 <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
                 <GroupBox x:Name="generatorView" Header="Torus Generator" Visibility="Collapsed">

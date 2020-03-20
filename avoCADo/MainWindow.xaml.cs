@@ -103,7 +103,7 @@ namespace avoCADo
             InitLoop();
             BindControls();
             _selectionManager = new ScreenSelectionManager(_glControl, _camera, _scene);
-            _cursor = new Cursor3D(_glControl);
+            _cursor = new Cursor3D(_glControl, transformationsLabel);
             _transformHandler = new TransformHandler(transformView, this, this);
         }
 
