@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:avoCADo"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="MainWindow"
+        KeyDown="Window_KeyDown"
         Height="768" Width="1280">
     <Window.CommandBindings>
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>

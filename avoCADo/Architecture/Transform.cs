@@ -47,17 +47,23 @@ namespace avoCADo
             get
             {
                 var vec = new Vector4(position, 1.0f);
-                vec = vec * Parent.GlobalModelMatrix ;
+                if(Parent != null) vec = vec * Parent.GlobalModelMatrix;
                 return new Vector3(vec.X, vec.Y, vec.Z);
             }
         }
 
-        public float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition)
+        public Vector2 ScreenCoords(Camera camera)
         {
             Vector4 uni = new Vector4(WorldPosition, 1.0f);
             Vector4 view = uni * camera.ViewMatrix;
             var screenSpace = view * camera.ProjectionMatrix;
             screenSpace /= screenSpace.W;
+            return new Vector2(screenSpace.X, screenSpace.Y);
+        }
+
+        public float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition)
+        {
+            var screenSpace = ScreenCoords(camera);
             Vector2 diff = new Vector2(mousePosition.X - screenSpace.X, mousePosition.Y - screenSpace.Y);
             //MessageBox.Show($"Position: {position}\n" +
             //                $"Screen: {screenSpace}\n" +

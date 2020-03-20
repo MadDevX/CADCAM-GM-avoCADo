@@ -20,6 +20,14 @@ namespace avoCADo
         };
 
         public Vector3 Position => _transform.position;
+
+        public Vector2 ScreenPosition
+        {
+            get
+            {
+                return _transform.ScreenCoords(_camera);
+            }
+        }
         public bool CursorMode { get; set; } = false;
 
         private readonly GLControl _control;
@@ -53,6 +61,12 @@ namespace avoCADo
             _control.KeyDown += KeyDown;
             _control.MouseMove += MouseMove;
             _loop.OnRenderLoop += OnRender;
+            _loop.OnUpdateLoop += OnUpdate;
+            UpdateLabel();
+        }
+
+        private void OnUpdate(float deltaTime)
+        {
             UpdateLabel();
         }
 
@@ -66,6 +80,7 @@ namespace avoCADo
             _control.KeyDown -= KeyDown;
             _control.MouseMove -= MouseMove;
             _loop.OnRenderLoop -= OnRender;
+            _loop.OnUpdateLoop -= OnUpdate;
         }
 
         private void UpdateLabel()
@@ -75,8 +90,11 @@ namespace avoCADo
             else if (_mults.Y > 0.0f) axis = "Y";
             else if (_mults.Z > 0.0f) axis = "Z";
             else axis = "None";
-            _label.Text = $"Cursor position: {Position}\n" +
-                          $"Current transformation: {_trType}\n" +
+            _label.Text = $"Cursor:\n" +
+                          $"World position: {Position}\n" +
+                          $"Screen position: ({ScreenPosition.X.ToString("0.#####")}; {ScreenPosition.Y.ToString("0.#####")})\n\n" +
+                          $"Transformation:\n" +
+                          $"Type: {_trType}\n" +
                           $"Axis: {axis}";
         }
 
@@ -122,7 +140,7 @@ namespace avoCADo
                 var res = Vector3.Zero;
                 foreach(var obj in selectedNodes)
                 {
-                    res += obj.Transform.position;
+                    res += obj.Transform.WorldPosition;
                 }
                 res /= selectedNodes.Count;
                 return res;
