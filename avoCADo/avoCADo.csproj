@@ -94,6 +94,7 @@
     <Compile Include="NodeHeader.xaml.cs">
       <DependentUpon>NodeHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Rendering\GizmoRenderer.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />

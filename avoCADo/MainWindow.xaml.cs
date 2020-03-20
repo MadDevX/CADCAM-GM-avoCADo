@@ -63,7 +63,9 @@ namespace avoCADo
         private Node _child;
         private Node _point;
 
-        public event Action<float> OnUpdate;
+        public event Action<float> OnUpdateLoop;
+        public event Action OnRenderLoop;
+
         private TransformHandler _transformHandler;
         private ScreenSelectionManager _selectionManager;
 
@@ -103,7 +105,7 @@ namespace avoCADo
             InitLoop();
             BindControls();
             _selectionManager = new ScreenSelectionManager(_glControl, _camera, _scene);
-            _cursor = new Cursor3D(_glControl, transformationsLabel);
+            _cursor = new Cursor3D(_glControl, transformationsLabel, _shader, this, _camera);
             _transformHandler = new TransformHandler(transformView, this, this);
         }
 
@@ -136,7 +138,7 @@ namespace avoCADo
             //rot = _child.Transform.Rotation;
             //rot.Z += 0.5f * deltaTime;// = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.Transform.rotation;
             //_child.Transform.Rotation = rot;
-            OnUpdate?.Invoke(deltaTime);
+            OnUpdateLoop?.Invoke(deltaTime);
             _glControl.Invalidate();
         }
 
@@ -155,8 +157,8 @@ namespace avoCADo
             GL.Ortho(-halfWidth, halfWidth, halfHeight, -halfHeight, 1000.0f, -1000.0f);
             GL.Viewport(_glControl.Size);
 
+            OnRenderLoop?.Invoke();
             _scene.Render(_camera);
-
             GL.Finish();
 
             _glControl.SwapBuffers();

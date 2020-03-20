@@ -18,11 +18,13 @@ namespace avoCADo
         protected bool _shouldDispose = false;
         protected int _indexCount;
         protected int _shaderModelMatrixLocation = -1;
+        protected int _shaderColorLocation = -1;
 
         public Renderer(Shader shader)
         {
             _shader = shader;
             _shaderModelMatrixLocation = GL.GetUniformLocation(_shader.Handle, "model");
+            _shaderColorLocation = GL.GetUniformLocation(_shader.Handle, "color");
             InitializeGLObjects();
         }
 

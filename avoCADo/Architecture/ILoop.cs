@@ -8,6 +8,7 @@ namespace avoCADo
 {
     public interface ILoop
     {
-        event Action<float> OnUpdate;
+        event Action<float> OnUpdateLoop;
+        event Action OnRenderLoop;
     }
 }

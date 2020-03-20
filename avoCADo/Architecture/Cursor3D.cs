@@ -23,6 +23,10 @@ namespace avoCADo
 
         private readonly GLControl _control;
         private readonly TextBlock _label;
+        private readonly IRenderer _gizmoRenderer;
+        private readonly ILoop _loop;
+        private readonly Camera _camera;
+        private readonly Transform _transform;
 
         private Vector3 _mults = Vector3.Zero;
         private TransformationType _trType = TransformationType.None;
@@ -31,10 +35,14 @@ namespace avoCADo
         private float _rotateSensitivity = 5.0f;
         private float _translateSensitivity = 5.0f;
 
-        public Cursor3D(GLControl control, TextBlock label)
+        public Cursor3D(GLControl control, TextBlock label, Shader shader, ILoop loop, Camera camera)
         {
             _control = control;
             _label = label;
+            _loop = loop;
+            _camera = camera;
+            _transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
+            _gizmoRenderer = new GizmoRenderer(shader);
             Initialize();
         }
 
@@ -42,7 +50,13 @@ namespace avoCADo
         {
             _control.KeyDown += KeyDown;
             _control.MouseMove += MouseMove;
+            _loop.OnRenderLoop += OnRender;
             UpdateLabel();
+        }
+
+        private void OnRender()
+        {
+            _gizmoRenderer.Render(_transform, _camera, Matrix4.Identity);
         }
 
         public void Dispose()

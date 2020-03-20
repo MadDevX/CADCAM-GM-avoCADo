@@ -27,13 +27,13 @@ namespace avoCADo
         private void Initialize()
         {
             NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
-            _loop.OnUpdate += OnUpdate;
+            _loop.OnUpdateLoop += OnUpdate;
         }
 
         public void Dispose()
         {
             NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
-            _loop.OnUpdate -= OnUpdate;
+            _loop.OnUpdateLoop -= OnUpdate;
         }
 
         private void OnSelectionChanged()
