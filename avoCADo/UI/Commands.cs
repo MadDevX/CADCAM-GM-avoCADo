@@ -24,7 +24,7 @@ namespace avoCADo
             var parent = e.Parameter as INode;
             if (parent == null) parent = _scene;
             var generator = new TorusGenerator(0.5f, 0.2f, 30, 30);
-            var torusNode = new Node(new Transform(Vector3.Zero, Vector3.Zero, Vector3.One), new MeshRenderer(_shader, generator), NameGenerator.GenerateName(parent, "Torus"));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shader, generator), NameGenerator.GenerateName(parent, "Torus"));
             parent.AttachChild(torusNode);
         }
 
@@ -37,7 +37,7 @@ namespace avoCADo
         {
             var parent = e.Parameter as INode;
             if (parent == null) parent = _scene;
-            parent.AttachChild(new Node(new Transform(Vector3.Zero, Vector3.Zero, Vector3.One), new PointRenderer(_shader), NameGenerator.GenerateName(parent, "Point")));
+            parent.AttachChild(new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shader), NameGenerator.GenerateName(parent, "Point")));
         }
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)

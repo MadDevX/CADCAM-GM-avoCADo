@@ -90,7 +90,7 @@ namespace avoCADo
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _glControl);
 
-            _parent = new Node(new Transform(Vector3.Zero, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(0.0f)), Vector3.One), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "parent torus");
+            _parent = new Node(new Transform(new Vector3(1.0f, 0.0f, -1.0f), new Vector3(0.0f, MathHelper.DegreesToRadians(90.0f), 0.0f), Vector3.One), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "parent torus");
             _child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "child torus");
             _point = new Node(new Transform(Vector3.UnitX, Vector3.Zero, Vector3.One), new PointRenderer(_shader), "point");
             _parent.AttachChild(_child);

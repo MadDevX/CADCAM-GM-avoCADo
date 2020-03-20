@@ -35,6 +35,7 @@ namespace avoCADo
         private Point _prevPos;
         private float _rotateSensitivity = 5.0f;
         private float _translateSensitivity = 5.0f;
+        private float _scaleSensitivity = 5.0f;
 
         public Cursor3D(GLControl control, TextBlock label, Shader shader, ILoop loop, Camera camera)
         {
@@ -64,6 +65,7 @@ namespace avoCADo
         {
             _control.KeyDown -= KeyDown;
             _control.MouseMove -= MouseMove;
+            _loop.OnRenderLoop -= OnRender;
         }
 
         private void UpdateLabel()
@@ -84,6 +86,7 @@ namespace avoCADo
             {
                 if (e.KeyCode == System.Windows.Forms.Keys.T) _trType = TransformationType.Translation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.R) _trType = TransformationType.Rotation;
+                else if (e.KeyCode == System.Windows.Forms.Keys.S) _trType = TransformationType.Scale;
                 else if (e.KeyCode == System.Windows.Forms.Keys.Escape) { _trType = TransformationType.None; _mults = Vector3.Zero; }
 
                 if (e.KeyCode == System.Windows.Forms.Keys.F)
@@ -131,6 +134,10 @@ namespace avoCADo
             if(_trType != TransformationType.None)
             {
                 posDiff = new Point(e.Location.X - _prevPos.X, e.Location.Y - _prevPos.Y);
+                if(Math.Abs(posDiff.X) > 100 || Math.Abs(posDiff.Y) > 100)
+                {
+                    posDiff = Point.Empty;
+                }
                 if(NodeSelection.Manager.MainSelection == null)
                 {
                     _trType = TransformationType.None;
@@ -139,7 +146,8 @@ namespace avoCADo
                 }
             }
             Vector3 delta = ScreenSelectionManager.PixelToNDC(posDiff, _control);
-            switch(_trType)
+            Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X);
+            switch (_trType)
             {
                 case TransformationType.Translation:
                     foreach (var obj in NodeSelection.Manager.SelectedNodes)
@@ -152,11 +160,24 @@ namespace avoCADo
                     {
                         if (CursorMode)
                         {
-                            obj.Transform.RotateAround(Position, new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_rotateSensitivity / _control.Width));
+                            obj.Transform.RotateAround(Position, diffVector * (_rotateSensitivity / _control.Width));
                         }
                         else
                         {
-                            obj.Transform.RotateAround(obj.Transform.position, new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_rotateSensitivity / _control.Width));
+                            obj.Transform.RotateAround(obj.Transform.position, diffVector * (_rotateSensitivity / _control.Width));
+                        }
+                    }
+                    break;
+                case TransformationType.Scale:
+                    foreach(var obj in NodeSelection.Manager.SelectedNodes)
+                    {
+                        if(CursorMode)
+                        {
+                            obj.Transform.ScaleAround(Position, diffVector * (_scaleSensitivity / _control.Width));
+                        }
+                        else
+                        {
+                            obj.Transform.scale += diffVector * (_scaleSensitivity / _control.Width);
                         }
                     }
                     break;

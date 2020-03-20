@@ -108,13 +108,21 @@ namespace avoCADo
         {
             //TODO : doesn't work yet - diff goes to ridiculously large values and then zeroes itself and stays there (as in MainWindow scenario)
             var diff = position - pivot;
-            var rotScale = Quaternion.FromEulerAngles(Rotation) * scale;
-            diff.X *= scale.X;
-            diff.Y *= scale.Y;
-            diff.Z *= scale.Z;
-            this.scale.X = rotScale.X;
-            this.scale.Y = rotScale.Y;
-            this.scale.Z = rotScale.Z;
+
+            diff.X /= this.scale.X;
+            diff.Y /= this.scale.Y;
+            diff.Z /= this.scale.Z;
+
+            var newScale = this.scale + scale;
+            diff *= newScale;
+
+            var quat = Quaternion.FromEulerAngles(Rotation);
+            quat.Invert();
+            var worldScale = quat * this.scale;
+            worldScale.X += scale.X;
+            worldScale.Y += scale.Y;
+            worldScale.Z += scale.Z;
+            this.scale = Quaternion.FromEulerAngles(Rotation) * worldScale;
             position = pivot + diff;
         }
     }
