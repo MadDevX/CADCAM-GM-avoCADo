@@ -33,7 +33,11 @@
             <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
             <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch">
                 <GroupBox Header="Transformation" FontWeight="SemiBold">
-                    <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
+                    <StackPanel>
+                        <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
+                        <RadioButton x:Name="localMode" Content="Local Mode" IsChecked="True" Checked="LocalMode_Checked"/>
+                        <RadioButton x:Name="cursorMode" Content="Cursor Mode" Checked="CursorMode_Checked"/>
+                    </StackPanel>
                 </GroupBox> 
                 <local:Hierarchy x:Name="hierarchy" Height="200"/>
                 <local:TransformView x:Name="transformView" Visibility="Collapsed"/>

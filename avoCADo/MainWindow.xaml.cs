@@ -192,5 +192,17 @@ namespace avoCADo
             _transformHandler.Dispose();
             base.OnClosed(e);
         }
+
+        private void LocalMode_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_cursor != null)
+                _cursor.CursorMode = false;
+        }
+
+        private void CursorMode_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_cursor != null)
+                _cursor.CursorMode = true;
+        }
     }
 }

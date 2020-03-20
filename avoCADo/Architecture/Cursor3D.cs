@@ -19,7 +19,8 @@ namespace avoCADo
             Scale
         };
 
-        public Vector3 Position;
+        public Vector3 Position => _transform.position;
+        public bool CursorMode { get; set; } = false;
 
         private readonly GLControl _control;
         private readonly TextBlock _label;
@@ -72,7 +73,8 @@ namespace avoCADo
             else if (_mults.Y > 0.0f) axis = "Y";
             else if (_mults.Z > 0.0f) axis = "Z";
             else axis = "None";
-            _label.Text = $"Current transformation: {_trType}\n" +
+            _label.Text = $"Cursor position: {Position}\n" +
+                          $"Current transformation: {_trType}\n" +
                           $"Axis: {axis}";
         }
 
@@ -83,9 +85,15 @@ namespace avoCADo
                 if (e.KeyCode == System.Windows.Forms.Keys.T) _trType = TransformationType.Translation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.R) _trType = TransformationType.Rotation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.Escape) { _trType = TransformationType.None; _mults = Vector3.Zero; }
+
+                if (e.KeyCode == System.Windows.Forms.Keys.F)
+                {
+                    _transform.position = CalculateCenter();
+                }
             }
             else
             {
+                if (e.KeyCode == System.Windows.Forms.Keys.F) { _transform.position = _camera.Target; }
                 _trType = TransformationType.None;
                 _mults = Vector3.Zero;
             }
@@ -98,12 +106,37 @@ namespace avoCADo
             UpdateLabel();
         }
 
+        private Vector3 CalculateCenter()
+        {
+            var selectedNodes = NodeSelection.Manager.SelectedNodes;
+            if(selectedNodes.Count == 0)
+            {
+                return Vector3.Zero;
+            }
+            else
+            {
+                var res = Vector3.Zero;
+                foreach(var obj in selectedNodes)
+                {
+                    res += obj.Transform.position;
+                }
+                res /= selectedNodes.Count;
+                return res;
+            }
+        }
+
         private void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Point posDiff = new Point(0, 0);
             if(_trType != TransformationType.None)
             {
                 posDiff = new Point(e.Location.X - _prevPos.X, e.Location.Y - _prevPos.Y);
+                if(NodeSelection.Manager.MainSelection == null)
+                {
+                    _trType = TransformationType.None;
+                    _mults = Vector3.Zero;
+                    UpdateLabel();
+                }
             }
             Vector3 delta = ScreenSelectionManager.PixelToNDC(posDiff, _control);
             switch(_trType)
@@ -117,7 +150,14 @@ namespace avoCADo
                 case TransformationType.Rotation:
                     foreach(var obj in NodeSelection.Manager.SelectedNodes)
                     {
-                        obj.Transform.RotateAround(Position, new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_rotateSensitivity / _control.Width));
+                        if (CursorMode)
+                        {
+                            obj.Transform.RotateAround(Position, new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_rotateSensitivity / _control.Width));
+                        }
+                        else
+                        {
+                            obj.Transform.RotateAround(obj.Transform.position, new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_rotateSensitivity / _control.Width));
+                        }
                     }
                     break;
                 default:

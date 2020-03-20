@@ -37,16 +37,26 @@ namespace avoCADo
 
         private void SelectionOnMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && System.Windows.Input.Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Alt)
             {
                 var node = Select(e.Location);
                 if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
                 {
-                    NodeSelection.Manager.ToggleSelection(node);
+                    if (node != null)
+                    {
+                        NodeSelection.Manager.ToggleSelection(node);
+                    }
                 }
                 else
                 {
-                    NodeSelection.Manager.Select(node);
+                    if (node != null)
+                    {
+                        NodeSelection.Manager.Select(node);
+                    }
+                    else
+                    {
+                        NodeSelection.Manager.ResetSelection();
+                    }
                 }
             }
         }

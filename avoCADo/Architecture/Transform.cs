@@ -47,7 +47,7 @@ namespace avoCADo
             get
             {
                 var vec = new Vector4(position, 1.0f);
-                vec = Parent.GlobalModelMatrix * vec;
+                vec = vec * Parent.GlobalModelMatrix ;
                 return new Vector3(vec.X, vec.Y, vec.Z);
             }
         }
