@@ -9,16 +9,21 @@ namespace avoCADo
     public class SelectionManager
     {
         public event Action OnSelectionChanged;
-        /// <summary>
-        /// Only use for reading data, do not modify this collection. Use dedicated methods instead.
-        /// </summary>
-        public List<INode> SelectedNodes { get; } = new List<INode>(); //TODO : maybe use ReadOnlyCollection property
+
+        public IReadOnlyCollection<INode> SelectedNodes { get; }
         public INode MainSelection { get; private set; } = null;
 
+        private List<INode> _selectedNodes;
+
+        public SelectionManager()
+        {
+            _selectedNodes = new List<INode>();
+            SelectedNodes = _selectedNodes.AsReadOnly();
+        }
 
         public void ResetSelection()
         {
-            SelectedNodes.Clear();
+            _selectedNodes.Clear();
             MainSelection = null;
             OnSelectionChanged?.Invoke();
         }
@@ -31,7 +36,7 @@ namespace avoCADo
 
         public void ToggleSelection(INode node)
         {
-            if(SelectedNodes.Contains(node))
+            if(_selectedNodes.Contains(node))
             {
                 RemoveFromSelected(node);
             }
@@ -44,16 +49,16 @@ namespace avoCADo
 
         private void SelectInternal(INode node)
         {
-            SelectedNodes.Clear();
-            SelectedNodes.Add(node);
+            _selectedNodes.Clear();
+            _selectedNodes.Add(node);
             MainSelection = node;
         }
 
         private void AddToSelected(INode node)
         {
-            if (SelectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
+            if (_selectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
             {
-                SelectedNodes.Add(node);
+                _selectedNodes.Add(node);
                 MainSelection = node;
             }
             else
@@ -64,10 +69,10 @@ namespace avoCADo
 
         private void RemoveFromSelected(INode node)
         {
-            SelectedNodes.Remove(node);
-            if (node == MainSelection && SelectedNodes.Count > 0)
+            _selectedNodes.Remove(node);
+            if (node == MainSelection && _selectedNodes.Count > 0)
             {
-                MainSelection = SelectedNodes[SelectedNodes.Count - 1];
+                MainSelection = _selectedNodes[_selectedNodes.Count - 1];
             }
         }
     }

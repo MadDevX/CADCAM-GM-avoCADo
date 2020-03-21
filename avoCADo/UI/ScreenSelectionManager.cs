@@ -40,7 +40,6 @@ namespace avoCADo
 
         private void IgnoreFirstClick(object sender, EventArgs e)
         {
-            //TODO : check if this solution is responsive
             _ignoreClick = true;
         }
 
