@@ -15,6 +15,7 @@ namespace avoCADo
         private readonly Camera _camera;
         private readonly Scene _scene;
         private readonly float _selectionThreshold;
+        private bool _ignoreClick = false;
 
         public ScreenSelectionManager(GLControl control, Camera camera, Scene scene, float selectionThreshold = 0.2f)
         {
@@ -28,15 +29,24 @@ namespace avoCADo
         private void Initialize()
         {
             _control.MouseDown += SelectionOnMouseDown;
+            _control.GotFocus += IgnoreFirstClick;
         }
 
         public void Dispose()
         {
             _control.MouseDown -= SelectionOnMouseDown;
+            _control.GotFocus -= IgnoreFirstClick;
+        }
+
+        private void IgnoreFirstClick(object sender, EventArgs e)
+        {
+            //TODO : check if this solution is responsive
+            _ignoreClick = true;
         }
 
         private void SelectionOnMouseDown(object sender, MouseEventArgs e)
         {
+            if (_ignoreClick) { _ignoreClick = false; return; }
             if (e.Button == MouseButtons.Left && System.Windows.Input.Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Alt)
             {
                 var node = Select(e.Location);
@@ -66,10 +76,10 @@ namespace avoCADo
             float curDist = float.MaxValue;
             Node curSelect = null;
             var mousePos = PixelToNDC(location, _control);
-            foreach (var obj in _scene.Children)
+            foreach (var node in _scene.Children)
             {
-                CheckSelection(obj, mousePos, ref curDist, ref curSelect);
-                foreach (var child in obj.Children)
+                CheckSelection(node, mousePos, ref curDist, ref curSelect);
+                foreach (var child in node.Children)
                 {
                     CheckSelection(child, mousePos, ref curDist, ref curSelect);
                 }
@@ -77,14 +87,20 @@ namespace avoCADo
             return curSelect;
         }
 
-        private void CheckSelection(Node obj, Vector3 mousePosition, ref float curDist, ref Node curSelect)
+        private void CheckSelection(Node node, Vector3 mousePosition, ref float curDist, ref Node curSelect)
         {
-            var dist = obj.Transform.CheckDistanceFromScreenCoords(_camera, mousePosition);
+            var dist = CheckDistanceFromScreenCoords(_camera, mousePosition, node);
             if (dist <= _selectionThreshold && dist < curDist)
             {
                 curDist = dist;
-                curSelect = obj;
+                curSelect = node;
             }
+        }
+        private float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition, Node node)
+        {
+            var screenSpace = node.Transform.ScreenCoords(camera);
+            Vector2 diff = new Vector2(mousePosition.X - screenSpace.X, mousePosition.Y - screenSpace.Y);
+            return diff.Length;
         }
 
         public static Vector3 PixelToNDC(Point location, GLControl ctrl)

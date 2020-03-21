@@ -41,7 +41,7 @@ namespace avoCADo
         {
             get
             {
-                return Renderer.GetLocalModelMatrix(Transform) * Transform.Parent.GlobalModelMatrix;
+                return Transform.LocalModelMatrix * Transform.Parent.GlobalModelMatrix;
             }
         }
 
@@ -54,8 +54,8 @@ namespace avoCADo
 
         public void Render(Camera camera, Matrix4 parentMatrix)
         {
-            Renderer.Render(Transform, camera, parentMatrix);
-            var modelMat = Renderer.GetLocalModelMatrix(Transform) * parentMatrix; //TODO : check matrix multiplication
+            Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
+            var modelMat = Transform.LocalModelMatrix * parentMatrix;
             for(int i = 0; i < Children.Count; i++)
             {
                 Children[i].Render(camera, modelMat);

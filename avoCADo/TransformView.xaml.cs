@@ -113,12 +113,12 @@ namespace avoCADo
 
         private void SetupDictionary()
         {
-            _actionDictionary.Add(posXTextBox, (x) => Transform.position.X = x);
-            _actionDictionary.Add(posYTextBox, (x) => Transform.position.Y = x);
-            _actionDictionary.Add(posZTextBox, (x) => Transform.position.Z = x);
-            _actionDictionary.Add(sclXTextBox, (x) => Transform.scale.X = x);
-            _actionDictionary.Add(sclYTextBox, (x) => Transform.scale.Y = x);
-            _actionDictionary.Add(sclZTextBox, (x) => Transform.scale.Z = x);
+            _actionDictionary.Add(posXTextBox, (x) => Transform.Position = new Vector3(x, Transform.Position.Y, Transform.Position.Z));
+            _actionDictionary.Add(posYTextBox, (y) => Transform.Position = new Vector3(Transform.Position.X, y, Transform.Position.Z));
+            _actionDictionary.Add(posZTextBox, (z) => Transform.Position = new Vector3(Transform.Position.X, Transform.Position.Y, z));
+            _actionDictionary.Add(sclXTextBox, (x) => Transform.Scale = new Vector3(x, Transform.Scale.Y, Transform.Scale.Z));
+            _actionDictionary.Add(sclYTextBox, (y) => Transform.Scale = new Vector3(Transform.Scale.X, y, Transform.Scale.Z));
+            _actionDictionary.Add(sclZTextBox, (z) => Transform.Scale = new Vector3(Transform.Scale.X, Transform.Scale.Y, z));
             _actionDictionary.Add(rotXTextBox, UpdateRotation);
             _actionDictionary.Add(rotYTextBox, UpdateRotation);
             _actionDictionary.Add(rotZTextBox, UpdateRotation);
@@ -130,23 +130,27 @@ namespace avoCADo
             var xE = MathHelper.DegreesToRadians(Convert(rotXTextBox.Text));
             var yE = MathHelper.DegreesToRadians(Convert(rotYTextBox.Text));
             var zE = MathHelper.DegreesToRadians(Convert(rotZTextBox.Text));
-            Transform.Rotation = new Vector3(xE, yE, zE);
+            if (float.IsNaN(xE) == false && float.IsNaN(yE) == false && float.IsNaN(zE) == false)
+            {
+                Transform.RotationEulerAngles = new Vector3(xE, yE, zE);
+            }
         }
 
         public void UpdateValues()
         {
             _handleInput = false;
-            if (posXTextBox.IsFocused == false) posXTextBox.Text = Transform.position.X.ToString(_format);
-            if (posYTextBox.IsFocused == false) posYTextBox.Text = Transform.position.Y.ToString(_format);
-            if (posZTextBox.IsFocused == false) posZTextBox.Text = Transform.position.Z.ToString(_format);
+            if (posXTextBox.IsFocused == false) posXTextBox.Text = Transform.Position.X.ToString(_format);
+            if (posYTextBox.IsFocused == false) posYTextBox.Text = Transform.Position.Y.ToString(_format);
+            if (posZTextBox.IsFocused == false) posZTextBox.Text = Transform.Position.Z.ToString(_format);
 
-            if (rotXTextBox.IsFocused == false) rotXTextBox.Text = (MathHelper.RadiansToDegrees(Transform.Rotation.X)).ToString(_format);
-            if (rotYTextBox.IsFocused == false) rotYTextBox.Text = (MathHelper.RadiansToDegrees(Transform.Rotation.Y)).ToString(_format);
-            if (rotZTextBox.IsFocused == false) rotZTextBox.Text = (MathHelper.RadiansToDegrees(Transform.Rotation.Z)).ToString(_format);
+            var euler = Transform.RotationEulerAngles;
+            if (rotXTextBox.IsFocused == false) rotXTextBox.Text = (MathHelper.RadiansToDegrees(euler.X)).ToString(_format);
+            if (rotYTextBox.IsFocused == false) rotYTextBox.Text = (MathHelper.RadiansToDegrees(euler.Y)).ToString(_format);
+            if (rotZTextBox.IsFocused == false) rotZTextBox.Text = (MathHelper.RadiansToDegrees(euler.Z)).ToString(_format);
 
-            if (sclXTextBox.IsFocused == false) sclXTextBox.Text = Transform.scale.X.ToString(_format);
-            if (sclYTextBox.IsFocused == false) sclYTextBox.Text = Transform.scale.Y.ToString(_format);
-            if (sclZTextBox.IsFocused == false) sclZTextBox.Text = Transform.scale.Z.ToString(_format);
+            if (sclXTextBox.IsFocused == false) sclXTextBox.Text = Transform.Scale.X.ToString(_format);
+            if (sclYTextBox.IsFocused == false) sclYTextBox.Text = Transform.Scale.Y.ToString(_format);
+            if (sclZTextBox.IsFocused == false) sclZTextBox.Text = Transform.Scale.Z.ToString(_format);
             _handleInput = true;
         }
 

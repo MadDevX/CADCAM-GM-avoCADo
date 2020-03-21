@@ -9,9 +9,7 @@ namespace avoCADo
 {
     public interface IRenderer : IDisposable
     {
-        Matrix4 GetLocalModelMatrix(Transform transform);
-        void Render(Transform transform, Camera camera, Matrix4 parentMatrix);
-
+        void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix);
         IMeshGenerator GetGenerator();
     }
 }

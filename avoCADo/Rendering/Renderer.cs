@@ -35,31 +35,22 @@ namespace avoCADo
 
         public abstract IMeshGenerator GetGenerator();
 
-        public Matrix4 GetLocalModelMatrix(Transform transform)
-        {
-            Matrix4.CreateTranslation(ref transform.position, out Matrix4 trans);
-            Matrix4.CreateScale(ref transform.scale, out Matrix4 scale);
-            var quat = Quaternion.FromEulerAngles(transform.Rotation);
-            Matrix4.CreateFromQuaternion(ref quat, out Matrix4 rot);
-            return scale * rot * trans;
-        }
-
-        public void Render(Transform transform, Camera camera, Matrix4 parentMatrix)
+        public void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             _shader.Use();
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            SetModelMatrix(transform, parentMatrix);
+            SetModelMatrix(localMatrix, parentMatrix);
             camera.SetCameraMatrices(_shader.Handle);
             Draw();
         }
 
         protected abstract void Draw();
 
-        private void SetModelMatrix(Transform transform, Matrix4 parentMatrix)
+        private void SetModelMatrix(Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            var model = GetLocalModelMatrix(transform) * parentMatrix;
+            var model = localMatrix * parentMatrix;
             GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
         }
 
@@ -75,8 +66,6 @@ namespace avoCADo
         {
             VAO = GL.GenVertexArray();
             GL.BindVertexArray(VAO);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO); //do wyjebanka potencjalnie
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO); //do wyjebanka potencjalnie
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
         }

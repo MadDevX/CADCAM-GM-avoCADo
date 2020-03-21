@@ -10,43 +10,57 @@ namespace avoCADo
 {
     public class Transform
     {
+        public Vector3 Position { get; set; } = Vector3.Zero;
+        public Vector3 Scale { get; set; } = Vector3.One;
+        private Quaternion _rotation = Quaternion.Identity;
+
         public INode Parent { get; set; }
-
-        private Vector3 _rotation = Vector3.Zero;
-
-        public Vector3 position = Vector3.Zero;
-
-        /// <summary>
-        /// In radians
-        /// </summary>
-        public Vector3 Rotation
+        public Quaternion Rotation { get => _rotation; private set => _rotation = value.Normalized(); }
+        public Vector3 RotationEulerAngles
         {
             get
             {
-                return _rotation;
+                return Rotation.EulerAngles();
             }
             set
             {
-                _rotation = value;
-                CorrectRotation();
+                Rotation = Quaternion.FromEulerAngles(value);
             }
         }
-        public Vector3 scale = Vector3.One;
-
-        public Transform(){}
 
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            this.position = position;
+            Position = position;
+            RotationEulerAngles = rotation;
+            Scale = scale;
+        }
+
+        public Transform(Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            Position = position;
             Rotation = rotation;
-            this.scale = scale;
+            Scale = scale;
+        }
+
+        public Matrix4 LocalModelMatrix
+        {
+            get
+            {
+                var pos = Position;
+                Matrix4.CreateTranslation(ref pos, out Matrix4 trans);
+                var scl = Scale;
+                Matrix4.CreateScale(ref scl, out Matrix4 scale);
+                var quat = Rotation;
+                Matrix4.CreateFromQuaternion(ref quat, out Matrix4 rotation);
+                return scale * rotation * trans;
+            }
         }
 
         public Vector3 WorldPosition
         {
             get
             {
-                var vec = new Vector4(position, 1.0f);
+                var vec = new Vector4(Position, 1.0f);
                 if(Parent != null) vec = vec * Parent.GlobalModelMatrix;
                 return new Vector3(vec.X, vec.Y, vec.Z);
             }
@@ -61,28 +75,6 @@ namespace avoCADo
             return new Vector2(screenSpace.X, screenSpace.Y);
         }
 
-        public float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition)
-        {
-            var screenSpace = ScreenCoords(camera);
-            Vector2 diff = new Vector2(mousePosition.X - screenSpace.X, mousePosition.Y - screenSpace.Y);
-            //MessageBox.Show($"Position: {position}\n" +
-            //                $"Screen: {screenSpace}\n" +
-            //                $"MousePos: {mousePosition}\n" +
-            //                $"Diff: {diff.Length}");
-            //MessageBox.Show(camera.ProjectionMatrix.ToString());
-            //MessageBox.Show($"{view}");
-            return diff.Length;
-        }
-
-
-        private void CorrectRotation()
-        {
-            float pi2 = (float)Math.PI * 2.0f;
-            _rotation.X = (_rotation.X + pi2) % pi2;
-            _rotation.Y = (_rotation.Y + pi2) % pi2;
-            _rotation.Z = (_rotation.Z + pi2) % pi2;
-        }
-
         /// <summary>
         /// Rotates object around a pivot given in local coordinates
         /// </summary>
@@ -90,46 +82,38 @@ namespace avoCADo
         /// <param name="eulerAnglesRad">Vector representing rotation around X, Y and Z axes.</param>
         public void RotateAround(Vector3 pivot, Vector3 eulerAnglesRad)
         {
-            var prevRot = Rotation;
-            var diff = position - pivot;
+            var diff = Position - pivot;
             var quat = Quaternion.FromEulerAngles(eulerAnglesRad);
             diff = quat * diff;
-            position = pivot + diff;
-            Rotation = (quat * Quaternion.FromEulerAngles(Rotation)).EulerAngles();
-
-            if (float.IsNaN(Rotation.X) ||
-                float.IsNaN(Rotation.Y) ||
-                float.IsNaN(Rotation.Z))
-            {
-                Rotation = prevRot;
-            }
+            Position = pivot + diff;
+            Rotation = quat * Rotation;
         }
 
         public void Translate(Vector3 translation)
         {
-            position += translation;
+            Position += translation;
         }
 
         public void ScaleAround(Vector3 pivot, Vector3 scale)
         {
             //TODO : doesn't work yet - diff goes to ridiculously large values and then zeroes itself and stays there (as in MainWindow scenario)
-            var diff = position - pivot;
+            var diff = Position - pivot;
 
-            diff.X /= this.scale.X;
-            diff.Y /= this.scale.Y;
-            diff.Z /= this.scale.Z;
+            diff.X /= this.Scale.X;
+            diff.Y /= this.Scale.Y;
+            diff.Z /= this.Scale.Z;
 
-            var newScale = this.scale + scale;
+            var newScale = this.Scale + scale;
             diff *= newScale;
 
-            var quat = Quaternion.FromEulerAngles(Rotation);
+            var quat = Rotation;
             quat.Invert();
-            var worldScale = quat * this.scale;
+            var worldScale = quat * this.Scale;
             worldScale.X += scale.X;
             worldScale.Y += scale.Y;
             worldScale.Z += scale.Z;
-            this.scale = Quaternion.FromEulerAngles(Rotation) * worldScale;
-            position = pivot + diff;
+            this.Scale = Rotation * worldScale;
+            Position = pivot + diff;
         }
     }
 }

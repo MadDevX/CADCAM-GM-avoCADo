@@ -19,7 +19,7 @@ namespace avoCADo
             Scale
         };
 
-        public Vector3 Position => _transform.position;
+        public Vector3 Position => _transform.Position;
 
         public Vector2 ScreenPosition
         {
@@ -72,7 +72,7 @@ namespace avoCADo
 
         private void OnRender()
         {
-            _gizmoRenderer.Render(_transform, _camera, Matrix4.Identity);
+            _gizmoRenderer.Render(_camera, _transform.LocalModelMatrix, Matrix4.Identity);
         }
 
         public void Dispose()
@@ -109,12 +109,12 @@ namespace avoCADo
 
                 if (e.KeyCode == System.Windows.Forms.Keys.F)
                 {
-                    _transform.position = CalculateCenter();
+                    _transform.Position = CalculateCenter();
                 }
             }
             else
             {
-                if (e.KeyCode == System.Windows.Forms.Keys.F) { _transform.position = _camera.Target; }
+                if (e.KeyCode == System.Windows.Forms.Keys.F) { _transform.Position = _camera.Target; }
                 _trType = TransformationType.None;
                 _mults = Vector3.Zero;
             }
@@ -183,7 +183,7 @@ namespace avoCADo
                         }
                         else
                         {
-                            obj.Transform.RotateAround(obj.Transform.position, diffVector * (_rotateSensitivity / _control.Width));
+                            obj.Transform.RotateAround(obj.Transform.Position, diffVector * (_rotateSensitivity / _control.Width));
                         }
                     }
                     break;
@@ -196,7 +196,7 @@ namespace avoCADo
                         }
                         else
                         {
-                            obj.Transform.scale += diffVector * (_scaleSensitivity / _control.Width);
+                            obj.Transform.Scale += diffVector * (_scaleSensitivity / _control.Width);
                         }
                     }
                     break;
