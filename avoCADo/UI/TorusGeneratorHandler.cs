@@ -11,17 +11,18 @@ namespace avoCADo
     {
         private TorusGeneratorView _torusView;
         private TorusGenerator _torus;
-
+        private SelectionManager _selectionManager;
 
         public TorusGeneratorHandler(TorusGeneratorView torusView)
         {
             _torusView = torusView;
+            _selectionManager = NodeSelection.Manager;
             Initialize();
         }
 
         private void Initialize()
         {
-            NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
+            _selectionManager.OnSelectionChanged += OnSelectionChanged;
 
             _torusView.xDivisions.ValueChanged += OnValueXChanged;
             _torusView.yDivisions.ValueChanged += OnValueYChanged;
@@ -32,7 +33,7 @@ namespace avoCADo
 
         public void Dispose()
         {
-            NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
+            _selectionManager.OnSelectionChanged -= OnSelectionChanged;
 
             _torusView.xDivisions.ValueChanged -= OnValueXChanged;
             _torusView.yDivisions.ValueChanged -= OnValueYChanged;
@@ -42,9 +43,9 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            if (NodeSelection.Manager.MainSelection != null)
+            if (_selectionManager.MainSelection != null)
             {
-                _torus = NodeSelection.Manager.MainSelection.Renderer.GetGenerator() as TorusGenerator;
+                _torus = _selectionManager.MainSelection.Renderer.GetGenerator() as TorusGenerator;
             }
             else
             {

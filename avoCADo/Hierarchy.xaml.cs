@@ -20,9 +20,12 @@ namespace avoCADo
     /// </summary>
     public partial class Hierarchy : UserControl
     {
+        private SelectionManager _selectionManager;
+
         public Hierarchy()
         {
             InitializeComponent();
+            _selectionManager = NodeSelection.Manager;
         }
 
         private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
@@ -36,7 +39,7 @@ namespace avoCADo
                     {
                         container.IsSelected = false;
                     }
-                    NodeSelection.Manager.ResetSelection();
+                    _selectionManager.ResetSelection();
                     treeView.Focus();
                 }
             }

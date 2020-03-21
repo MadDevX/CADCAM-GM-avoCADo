@@ -9,19 +9,21 @@ using System.Windows.Forms;
 
 namespace avoCADo
 {
-    public class ScreenSelectionManager : IDisposable
+    public class ScreenSelectionHandler : IDisposable
     {
         private readonly GLControl _control;
         private readonly Camera _camera;
         private readonly Scene _scene;
+        private readonly SelectionManager _selectionManager;
         private readonly float _selectionThreshold;
         private bool _ignoreClick = false;
 
-        public ScreenSelectionManager(GLControl control, Camera camera, Scene scene, float selectionThreshold = 0.2f)
+        public ScreenSelectionHandler(GLControl control, Camera camera, Scene scene, float selectionThreshold = 0.2f)
         {
             _control = control;
             _camera = camera;
             _scene = scene;
+            _selectionManager = NodeSelection.Manager;
             _selectionThreshold = selectionThreshold;
             Initialize();
         }
@@ -53,18 +55,18 @@ namespace avoCADo
                 {
                     if (node != null)
                     {
-                        NodeSelection.Manager.ToggleSelection(node);
+                        _selectionManager.ToggleSelection(node);
                     }
                 }
                 else
                 {
                     if (node != null)
                     {
-                        NodeSelection.Manager.Select(node);
+                        _selectionManager.Select(node);
                     }
                     else
                     {
-                        NodeSelection.Manager.ResetSelection();
+                        _selectionManager.ResetSelection();
                     }
                 }
             }

@@ -31,29 +31,30 @@ namespace avoCADo
             }
         }
 
-
         private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
+        private SelectionManager _selectionManager;
 
         public NodeHeader()
         {
             InitializeComponent();
-            NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
+            _selectionManager = NodeSelection.Manager;
+            _selectionManager.OnSelectionChanged += OnSelectionChanged;
             Unloaded += Dispose;
         }
 
         private void Dispose(object sender, RoutedEventArgs e)
         {
-            NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
+            _selectionManager.OnSelectionChanged -= OnSelectionChanged;
             Unloaded -= Dispose;
         }
 
         private void OnSelectionChanged()
         {
-            if(NodeSelection.Manager.MainSelection == Node)
+            if(_selectionManager.MainSelection == Node)
             {
                 this.Background = _highlight;
             }
-            else if(NodeSelection.Manager.SelectedNodes.Contains(Node))
+            else if(_selectionManager.SelectedNodes.Contains(Node))
             {
                 this.Background = Brushes.DodgerBlue;
             }
@@ -100,11 +101,11 @@ namespace avoCADo
             {
                 if (Keyboard.Modifiers == ModifierKeys.Shift)
                 {
-                    NodeSelection.Manager.ToggleSelection(Node);
+                    _selectionManager.ToggleSelection(Node);
                 }
                 else
                 {
-                    NodeSelection.Manager.Select(Node);
+                    _selectionManager.Select(Node);
                 }
             }
         }

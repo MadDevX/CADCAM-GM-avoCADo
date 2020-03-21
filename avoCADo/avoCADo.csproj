@@ -83,13 +83,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
-    <Compile Include="Architecture\Cursor3D.cs" />
-    <Compile Include="Architecture\DummyRenderer.cs" />
-    <Compile Include="Architecture\DummyTransform.cs" />
-    <Compile Include="Architecture\ILoop.cs" />
-    <Compile Include="Architecture\IGeneratorDataSource.cs" />
-    <Compile Include="Architecture\INode.cs" />
-    <Compile Include="Architecture\ITransform.cs" />
+    <Compile Include="HUD\Cursor3D.cs" />
+    <Compile Include="Rendering\DummyRenderer.cs" />
+    <Compile Include="Hierarchy\DummyTransform.cs" />
+    <Compile Include="Interfaces\ILoop.cs" />
+    <Compile Include="Interfaces\INode.cs" />
+    <Compile Include="Interfaces\ITransform.cs" />
     <Compile Include="Architecture\NodeFactory.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
@@ -101,10 +100,10 @@
       <DependentUpon>NodeHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Rendering\GizmoRenderer.cs" />
-    <Compile Include="Rendering\IRenderer.cs" />
+    <Compile Include="Interfaces\IRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
-    <Compile Include="Rendering\RenderLoop.cs" />
+    <Compile Include="Architecture\RenderLoop.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>
@@ -113,19 +112,19 @@
     </Compile>
     <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
-    <Compile Include="UI\TorusGeneratorHandler.cs" />
     <Compile Include="UI\NodeSelection.cs" />
-    <Compile Include="UI\ScreenSelectionManager.cs" />
+    <Compile Include="UI\TorusGeneratorHandler.cs" />
+    <Compile Include="HUD\ScreenSelectionHandler.cs" />
     <Compile Include="UI\TransformationModeHandler.cs" />
     <Compile Include="UI\TransformHandler.cs" />
-    <Compile Include="MeshGenerators\IMeshGenerator.cs" />
-    <Compile Include="Architecture\Node.cs" />
+    <Compile Include="Interfaces\IMeshGenerator.cs" />
+    <Compile Include="Hierarchy\Node.cs" />
     <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Architecture\Scene.cs" />
+    <Compile Include="Hierarchy\Scene.cs" />
     <Compile Include="Rendering\ScreenBufferManager.cs" />
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
-    <Compile Include="Architecture\Transform.cs" />
+    <Compile Include="Hierarchy\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\NameGenerator.cs" />

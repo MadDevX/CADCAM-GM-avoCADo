@@ -11,6 +11,7 @@ namespace avoCADo
     {
         private TransformView _transformView;
         private IUpdateLoop _updateLoop;
+        private SelectionManager _selectionManager;
         private float _refreshDelay;
         private float _timer;
 
@@ -18,28 +19,29 @@ namespace avoCADo
         {
             _transformView = transformView;
             _updateLoop = updateLoop;
+            _selectionManager = NodeSelection.Manager;
             _refreshDelay = refreshDelay;
             Initialize();
         }
 
         private void Initialize()
         {
-            NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
+            _selectionManager.OnSelectionChanged += OnSelectionChanged;
             _updateLoop.OnUpdateLoop += OnUpdate;
         }
 
         public void Dispose()
         {
-            NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
+            _selectionManager.OnSelectionChanged -= OnSelectionChanged;
             _updateLoop.OnUpdateLoop -= OnUpdate;
         }
 
         private void OnSelectionChanged()
         {
-            if (NodeSelection.Manager.MainSelection != null)
+            if (_selectionManager.MainSelection != null)
             {
                 if (_transformView.Visibility != Visibility.Visible) _transformView.Visibility = Visibility.Visible;
-                _transformView.Transform = NodeSelection.Manager.MainSelection.Transform;
+                _transformView.Transform = _selectionManager.MainSelection.Transform;
             }
             else
             {

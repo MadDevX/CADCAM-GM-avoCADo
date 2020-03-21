@@ -36,6 +36,7 @@ namespace avoCADo
         private readonly IRenderLoop _renderLoop;
         private readonly IUpdateLoop _updateLoop;
         private readonly Camera _camera;
+        private readonly SelectionManager _selectionManager;
         private readonly Transform _transform;
 
         private Vector3 _mults = Vector3.Zero;
@@ -53,6 +54,7 @@ namespace avoCADo
             _renderLoop = renderLoop;
             _updateLoop = updateLoop;
             _camera = camera;
+            _selectionManager = NodeSelection.Manager;
             _transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
             _gizmoRenderer = new GizmoRenderer(shader);
             Initialize();
@@ -108,7 +110,7 @@ namespace avoCADo
 
         private void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if(NodeSelection.Manager.MainSelection != null)
+            if(_selectionManager.MainSelection != null)
             {
                 if (e.KeyCode == System.Windows.Forms.Keys.T) _trType = TransformationType.Translation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.R) _trType = TransformationType.Rotation;
@@ -138,7 +140,7 @@ namespace avoCADo
 
         private Vector3 CalculateCenter()
         {
-            var selectedNodes = NodeSelection.Manager.SelectedNodes;
+            var selectedNodes = _selectionManager.SelectedNodes;
             if(selectedNodes.Count == 0)
             {
                 return Vector3.Zero;
@@ -165,7 +167,7 @@ namespace avoCADo
                 {
                     posDiff = Point.Empty;
                 }
-                if(NodeSelection.Manager.MainSelection == null)
+                if(_selectionManager.MainSelection == null)
                 {
                     _trType = TransformationType.None;
                     _mults = Vector3.Zero;
@@ -176,13 +178,13 @@ namespace avoCADo
             switch (_trType)
             {
                 case TransformationType.Translation:
-                    foreach (var obj in NodeSelection.Manager.SelectedNodes)
+                    foreach (var obj in _selectionManager.SelectedNodes)
                     {
                         obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width));
                     }
                     break;
                 case TransformationType.Rotation:
-                    foreach(var obj in NodeSelection.Manager.SelectedNodes)
+                    foreach(var obj in _selectionManager.SelectedNodes)
                     {
                         if (CursorMode)
                         {
@@ -195,7 +197,7 @@ namespace avoCADo
                     }
                     break;
                 case TransformationType.Scale:
-                    foreach(var obj in NodeSelection.Manager.SelectedNodes)
+                    foreach(var obj in _selectionManager.SelectedNodes)
                     {
                         if(CursorMode)
                         {

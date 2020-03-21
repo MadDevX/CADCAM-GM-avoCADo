@@ -27,7 +27,7 @@ namespace avoCADo
         private TransformHandler _transformHandler;
         private TorusGeneratorHandler _torusHandler;
         private TransformationModeHandler _transformationModeHandler;
-        private ScreenSelectionManager _selectionManager;
+        private ScreenSelectionHandler _screenSelectionManager;
         private RenderLoop _renderLoop;
 
         public CompositionRoot(GLControl control, MainWindow window)
@@ -47,7 +47,7 @@ namespace avoCADo
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
 
-            _selectionManager = new ScreenSelectionManager(_control, _camera, _scene);
+            _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _shader, _renderLoop, _window, _camera);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
@@ -64,7 +64,7 @@ namespace avoCADo
             _torusHandler.Dispose();
             _transformHandler.Dispose();
             _cursor.Dispose();
-            _selectionManager.Dispose();
+            _screenSelectionManager.Dispose();
             _renderLoop.Dispose();
             _camMovement.Dispose();
             _camera.Dispose();
