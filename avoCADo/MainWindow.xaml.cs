@@ -42,7 +42,6 @@ namespace avoCADo
             }
         }
 
-
         private GLControl _glControl;
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
@@ -59,9 +58,6 @@ namespace avoCADo
         private Stopwatch _deltaStopwatch;
 
         private int _frames = 0;
-        private Node _parent;
-        private Node _child;
-        private Node _point;
 
         public event Action<float> OnUpdateLoop;
         public event Action OnRenderLoop;
@@ -90,18 +86,8 @@ namespace avoCADo
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _glControl);
 
-            _parent = new Node(new Transform(new Vector3(1.0f, 0.0f, -1.0f), new Vector3(0.0f, MathHelper.DegreesToRadians(90.0f), 0.0f), Vector3.One), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "parent torus");
-            _child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 30, 30)), "child torus");
-            _point = new Node(new Transform(Vector3.UnitX, Vector3.Zero, Vector3.One), new PointRenderer(_shader), "point");
-            _parent.AttachChild(_child);
-            _scene.AttachChild(_parent);
-            _scene.AttachChild(new Node(new Transform(-Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 20, 20)), "child torus"));
-            _scene.AttachChild(new Node(new Transform(Vector3.UnitY, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 10, 10)), "child torus"));
-            _scene.AttachChild(new Node(new Transform(-Vector3.UnitY, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(_shader, new TorusGenerator(0.5f, 0.2f, 5, 5)), "child torus"));
-            _scene.AttachChild(_point);
-
+            TestSceneInitializer.SpawnTestObjects(_scene, _shader);
             hierarchy.treeView.Items.Add(_scene);
-            transformView.Transform = _parent.Transform;
             InitLoop();
             BindControls();
             _selectionManager = new ScreenSelectionManager(_glControl, _camera, _scene);

@@ -82,6 +82,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\Cursor3D.cs" />
     <Compile Include="Architecture\DummyRenderer.cs" />
     <Compile Include="Architecture\DummyTransform.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Hierarchy.xaml.cs">
       <DependentUpon>Hierarchy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Miscellaneous\TestSceneInitializer.cs" />
     <Compile Include="NodeHeader.xaml.cs">
       <DependentUpon>NodeHeader.xaml</DependentUpon>
     </Compile>
