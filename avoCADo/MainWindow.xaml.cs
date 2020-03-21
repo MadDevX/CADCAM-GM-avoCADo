@@ -27,31 +27,14 @@ namespace avoCADo
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IUpdateLoop, ITorusGeneratorDataSource
+    public partial class MainWindow : Window, IUpdateLoop
     {
-        public event Action DataChanged;
-
-        private IMeshGenerator _torus;
-        public IMeshGenerator Torus
-        {
-            get => _torus;
-            set
-            {
-                _torus = value;
-                DataChanged?.Invoke();
-            }
-        }
-
         private GLControl _glControl;
         private CompositionRoot _compositionRoot;
-
         private DispatcherTimer _timer;
-
         private Stopwatch _deltaStopwatch;
 
         public event Action<float> OnUpdateLoop;
-
-        private float _totalTime;
 
         public MainWindow()
         {
@@ -59,8 +42,8 @@ namespace avoCADo
 
             CreateGLControl();
             _compositionRoot = new CompositionRoot(_glControl, this);
+
             InitLoop();
-            BindControls();
         }
 
         private void CreateGLControl()
@@ -93,12 +76,9 @@ namespace avoCADo
         {
             var deltaTime = (float)_deltaStopwatch.Elapsed.TotalSeconds;
             _deltaStopwatch.Restart();
-            _totalTime += deltaTime;
             OnUpdateLoop?.Invoke(deltaTime);
             _glControl.Invalidate();
         }
-
-
 
         protected override void OnClosed(EventArgs e)
         {
@@ -106,7 +86,6 @@ namespace avoCADo
             _compositionRoot.Dispose();
             _timer.Tick -= SetDirty;
             _timer.Stop();
-            UnbindControls();
             base.OnClosed(e);
         }
 

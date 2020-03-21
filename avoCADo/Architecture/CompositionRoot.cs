@@ -26,6 +26,7 @@ namespace avoCADo
         private Cursor3D _cursor;
 
         private TransformHandler _transformHandler;
+        private TorusGeneratorHandler _torusHandler;
         private TransformationModeHandler _transformationModeHandler;
         private ScreenSelectionManager _selectionManager;
         private RenderLoop _renderLoop;
@@ -51,7 +52,8 @@ namespace avoCADo
             TestSceneInitializer.SpawnTestObjects(_scene, _shader);
             _selectionManager = new ScreenSelectionManager(_control, _camera, _scene);
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _shader, _renderLoop, _window, _camera);
-            _transformHandler = new TransformHandler(_window.transformView, _window, _window);
+            _transformHandler = new TransformHandler(_window.transformView, _window);
+            _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
             NodeFactory = new NodeFactory(_scene, _cursor, _shader);
         }
@@ -59,6 +61,7 @@ namespace avoCADo
         public void Dispose()
         {
             _transformationModeHandler.Dispose();
+            _torusHandler.Dispose();
             _transformHandler.Dispose();
             _cursor.Dispose();
             _selectionManager.Dispose();

@@ -105,12 +105,15 @@
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Rendering\RenderLoop.cs" />
+    <Compile Include="TorusGeneratorView.xaml.cs">
+      <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TransformView.xaml.cs">
       <DependentUpon>TransformView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
-    <Compile Include="UI\ControlBinding.cs" />
+    <Compile Include="UI\TorusGeneratorHandler.cs" />
     <Compile Include="UI\NodeSelection.cs" />
     <Compile Include="UI\ScreenSelectionManager.cs" />
     <Compile Include="UI\TransformationModeHandler.cs" />
@@ -145,6 +148,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NodeHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TorusGeneratorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
