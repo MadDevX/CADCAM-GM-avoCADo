@@ -10,7 +10,6 @@ namespace avoCADo
 {
     public class CompositionRoot : IDisposable
     {
-
         public NodeFactory NodeFactory { get; private set; }
 
         private MainWindow _window;
@@ -48,14 +47,15 @@ namespace avoCADo
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
 
-            _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _shader);
             _selectionManager = new ScreenSelectionManager(_control, _camera, _scene);
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _shader, _renderLoop, _window, _camera);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
             NodeFactory = new NodeFactory(_scene, _cursor, _shader);
+
+            _window.hierarchy.treeView.Items.Add(_scene);
+            TestSceneInitializer.SpawnTestObjects(_scene, _shader);
         }
 
         public void Dispose()

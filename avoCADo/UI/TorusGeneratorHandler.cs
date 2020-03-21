@@ -50,6 +50,7 @@ namespace avoCADo
             {
                 _torus = null;
             }
+            UpdateValues();
         }
 
         private void UpdateValues()
