@@ -86,7 +86,7 @@
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
-    <Compile Include="Interfaces\ILoop.cs" />
+    <Compile Include="Interfaces\ILoops.cs" />
     <Compile Include="Interfaces\INode.cs" />
     <Compile Include="Interfaces\ITransform.cs" />
     <Compile Include="Architecture\NodeFactory.cs" />
@@ -112,7 +112,7 @@
     </Compile>
     <Compile Include="UI\CommandDefinitions.cs" />
     <Compile Include="UI\Commands.cs" />
-    <Compile Include="UI\NodeSelection.cs" />
+    <Compile Include="Architecture\NodeSelection.cs" />
     <Compile Include="UI\TorusGeneratorHandler.cs" />
     <Compile Include="HUD\ScreenSelectionHandler.cs" />
     <Compile Include="UI\TransformationModeHandler.cs" />
