@@ -90,9 +90,15 @@ namespace avoCADo
             else if (_mults.Y > 0.0f) axis = "Y";
             else if (_mults.Z > 0.0f) axis = "Z";
             else axis = "None";
+            var screenPos = ScreenPosition;
+            screenPos.X += 1.0f;
+            screenPos.Y += 1.0f;
+            screenPos *= 0.5f;
+            var pixels = new Point((int)(_control.Width * screenPos.X), (int)(_control.Height * (1.0f - screenPos.Y)));
             _label.Text = $"Cursor:\n" +
                           $"World position: {Position}\n" +
-                          $"Screen position: ({ScreenPosition.X.ToString("0.#####")}; {ScreenPosition.Y.ToString("0.#####")})\n\n" +
+                          $"Screen position: {pixels}\n\n" +
+                          //$"Screen position (NDC) : ({ScreenPosition.X.ToString("0.#####")}; {ScreenPosition.Y.ToString("0.#####")})\n\n" +
                           $"Transformation:\n" +
                           $"Type: {_trType}\n" +
                           $"Axis: {axis}";
