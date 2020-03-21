@@ -90,6 +90,7 @@
     <Compile Include="Architecture\IGeneratorDataSource.cs" />
     <Compile Include="Architecture\INode.cs" />
     <Compile Include="Architecture\ITransform.cs" />
+    <Compile Include="Architecture\NodeFactory.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
     <Compile Include="Hierarchy.xaml.cs">
@@ -103,6 +104,7 @@
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
+    <Compile Include="Rendering\RenderLoop.cs" />
     <Compile Include="TransformView.xaml.cs">
       <DependentUpon>TransformView.xaml</DependentUpon>
     </Compile>
@@ -111,6 +113,7 @@
     <Compile Include="UI\ControlBinding.cs" />
     <Compile Include="UI\NodeSelection.cs" />
     <Compile Include="UI\ScreenSelectionManager.cs" />
+    <Compile Include="UI\TransformationModeHandler.cs" />
     <Compile Include="UI\TransformHandler.cs" />
     <Compile Include="MeshGenerators\IMeshGenerator.cs" />
     <Compile Include="Architecture\Node.cs" />

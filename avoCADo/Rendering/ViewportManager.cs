@@ -26,6 +26,7 @@ namespace avoCADo
         public void Init()
         {
             _control.SizeChanged += SetViewport;
+            GL.Viewport(_control.Size);
         }
 
         public void Dispose()

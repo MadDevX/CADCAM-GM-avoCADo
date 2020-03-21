@@ -36,8 +36,8 @@
                 <GroupBox Header="Transformation" FontWeight="SemiBold">
                     <StackPanel>
                         <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
-                        <RadioButton x:Name="localMode" Content="Local Mode" IsChecked="True" Checked="LocalMode_Checked"/>
-                        <RadioButton x:Name="cursorMode" Content="Cursor Mode" Checked="CursorMode_Checked"/>
+                        <RadioButton x:Name="radioBtnLocalMode" Content="Local Mode" IsChecked="True"/>
+                        <RadioButton x:Name="radioBtnCursorMode" Content="Cursor Mode"/>
                     </StackPanel>
                 </GroupBox> 
                 <local:Hierarchy x:Name="hierarchy" Height="200"/>

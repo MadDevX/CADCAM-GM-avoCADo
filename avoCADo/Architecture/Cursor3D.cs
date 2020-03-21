@@ -33,7 +33,8 @@ namespace avoCADo
         private readonly GLControl _control;
         private readonly TextBlock _label;
         private readonly IRenderer _gizmoRenderer;
-        private readonly ILoop _loop;
+        private readonly IRenderLoop _renderLoop;
+        private readonly IUpdateLoop _updateLoop;
         private readonly Camera _camera;
         private readonly Transform _transform;
 
@@ -45,11 +46,12 @@ namespace avoCADo
         private float _translateSensitivity = 5.0f;
         private float _scaleSensitivity = 5.0f;
 
-        public Cursor3D(GLControl control, TextBlock label, Shader shader, ILoop loop, Camera camera)
+        public Cursor3D(GLControl control, TextBlock label, Shader shader, IRenderLoop renderLoop, IUpdateLoop updateLoop, Camera camera)
         {
             _control = control;
             _label = label;
-            _loop = loop;
+            _renderLoop = renderLoop;
+            _updateLoop = updateLoop;
             _camera = camera;
             _transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
             _gizmoRenderer = new GizmoRenderer(shader);
@@ -60,8 +62,8 @@ namespace avoCADo
         {
             _control.KeyDown += KeyDown;
             _control.MouseMove += MouseMove;
-            _loop.OnRenderLoop += OnRender;
-            _loop.OnUpdateLoop += OnUpdate;
+            _renderLoop.OnRenderLoop += OnRender;
+            _updateLoop.OnUpdateLoop += OnUpdate;
             UpdateLabel();
         }
 
@@ -79,8 +81,8 @@ namespace avoCADo
         {
             _control.KeyDown -= KeyDown;
             _control.MouseMove -= MouseMove;
-            _loop.OnRenderLoop -= OnRender;
-            _loop.OnUpdateLoop -= OnUpdate;
+            _renderLoop.OnRenderLoop -= OnRender;
+            _updateLoop.OnUpdateLoop -= OnUpdate;
         }
 
         private void UpdateLabel()
@@ -170,8 +172,7 @@ namespace avoCADo
                     UpdateLabel();
                 }
             }
-            Vector3 delta = ScreenSelectionManager.PixelToNDC(posDiff, _control);
-            Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X);
+            Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
             switch (_trType)
             {
                 case TransformationType.Translation:

@@ -11,15 +11,15 @@ namespace avoCADo
     {
         private TransformView _transformView;
         private ITorusGeneratorDataSource _torusGeneratorDataSource;
-        private ILoop _loop;
+        private IUpdateLoop _updateLoop;
         private float _refreshDelay;
         private float _timer;
 
-        public TransformHandler(TransformView transformView, ITorusGeneratorDataSource torusGeneratorDataSource, ILoop loop, float refreshDelay = 0.1f)
+        public TransformHandler(TransformView transformView, ITorusGeneratorDataSource torusGeneratorDataSource, IUpdateLoop updateLoop, float refreshDelay = 0.1f)
         {
             _transformView = transformView;
             _torusGeneratorDataSource = torusGeneratorDataSource;
-            _loop = loop;
+            _updateLoop = updateLoop;
             _refreshDelay = refreshDelay;
             Initialize();
         }
@@ -27,13 +27,13 @@ namespace avoCADo
         private void Initialize()
         {
             NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
-            _loop.OnUpdateLoop += OnUpdate;
+            _updateLoop.OnUpdateLoop += OnUpdate;
         }
 
         public void Dispose()
         {
             NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
-            _loop.OnUpdateLoop -= OnUpdate;
+            _updateLoop.OnUpdateLoop -= OnUpdate;
         }
 
         private void OnSelectionChanged()

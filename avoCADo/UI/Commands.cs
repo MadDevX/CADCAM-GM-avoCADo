@@ -22,10 +22,7 @@ namespace avoCADo
         private void CreateTorusCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) parent = _scene;
-            var generator = new TorusGenerator(0.5f, 0.2f, 30, 30);
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shader, generator), NameGenerator.GenerateName(parent, "Torus"));
-            parent.AttachChild(torusNode);
+            _compositionRoot.NodeFactory.CreateTorus(parent);
         }
 
         private void CreatePointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -36,8 +33,7 @@ namespace avoCADo
         private void CreatePointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) parent = _scene;
-            parent.AttachChild(new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shader), NameGenerator.GenerateName(parent, "Point")));
+            _compositionRoot.NodeFactory.CreatePoint(parent);
         }
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)

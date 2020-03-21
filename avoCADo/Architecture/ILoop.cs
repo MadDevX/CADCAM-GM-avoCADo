@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public interface ILoop
+    public interface IUpdateLoop
     {
         event Action<float> OnUpdateLoop;
+    }
+    public interface IRenderLoop
+    {
         event Action OnRenderLoop;
     }
 }
