@@ -20,10 +20,10 @@ namespace avoCADo
     /// </summary>
     public partial class NodeHeader : UserControl
     {
-        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(Node), typeof(NodeHeader), new PropertyMetadata(null));
-        public Node Node
+        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(INode), typeof(NodeHeader), new PropertyMetadata(null));
+        public INode Node
         {
-            get { return (Node)this.GetValue(NodeProperty); }
+            get { return (INode)this.GetValue(NodeProperty); }
             set
             {
                 this.SetValue(NodeProperty, value);

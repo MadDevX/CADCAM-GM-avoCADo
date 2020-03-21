@@ -83,7 +83,7 @@ namespace avoCADo
             Host.Child = _glControl;
 
             _glControl.MakeCurrent();
-            _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.LightBlue));
+            _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.FromArgb(40,40,40)));
             _viewportManager = new ViewportManager(_glControl);
             _shader = new Shader("vs.vert", "fs.frag");
             _scene = new Scene("Main");
@@ -130,14 +130,6 @@ namespace avoCADo
             var deltaTime = (float)_deltaStopwatch.Elapsed.TotalSeconds;
             _deltaStopwatch.Restart();
             _totalTime += deltaTime;
-            //_parent.Transform.ScaleAround(Vector3.UnitX, new Vector3(((float)Math.Cos(_totalTime)+1.0f) * 0.5f /*+ 0.1f*/, 1.0f, 1.0f));
-            
-            //var rot = _parent.Transform.Rotation;//.Y += 0.1f;// = Quaternion.FromEulerAngles(0.0f, 0.01f, 0.0f) *_parent.Transform.rotation;
-            //rot.Y += 0.5f * deltaTime;
-            //_parent.Transform.Rotation = rot;
-            //rot = _child.Transform.Rotation;
-            //rot.Z += 0.5f * deltaTime;// = Quaternion.FromEulerAngles(0.0f, 0.0f, 0.01f) * _child.Transform.rotation;
-            //_child.Transform.Rotation = rot;
             OnUpdateLoop?.Invoke(deltaTime);
             _glControl.Invalidate();
         }
@@ -179,6 +171,7 @@ namespace avoCADo
         protected override void OnClosed(EventArgs e)
         {
             CompositionTarget.Rendering -= OnTick;
+            _glControl.Paint -= GLControlOnPaint;
             _shader.Dispose();
             _scene.Dispose();
             _viewportManager.Dispose();

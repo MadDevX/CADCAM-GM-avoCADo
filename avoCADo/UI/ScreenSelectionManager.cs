@@ -71,10 +71,10 @@ namespace avoCADo
             }
         }
 
-        private Node Select(Point location)
+        private INode Select(Point location)
         {
             float curDist = float.MaxValue;
-            Node curSelect = null;
+            INode curSelect = null;
             var mousePos = PixelToNDC(location, _control);
             foreach (var node in _scene.Children)
             {
@@ -87,7 +87,7 @@ namespace avoCADo
             return curSelect;
         }
 
-        private void CheckSelection(Node node, Vector3 mousePosition, ref float curDist, ref Node curSelect)
+        private void CheckSelection(INode node, Vector3 mousePosition, ref float curDist, ref INode curSelect)
         {
             var dist = CheckDistanceFromScreenCoords(_camera, mousePosition, node);
             if (dist <= _selectionThreshold && dist < curDist)
@@ -96,7 +96,7 @@ namespace avoCADo
                 curSelect = node;
             }
         }
-        private float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition, Node node)
+        private float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition, INode node)
         {
             var screenSpace = node.Transform.ScreenCoords(camera);
             Vector2 diff = new Vector2(mousePosition.X - screenSpace.X, mousePosition.Y - screenSpace.Y);

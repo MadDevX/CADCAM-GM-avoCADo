@@ -8,14 +8,14 @@ using OpenTK;
 
 namespace avoCADo
 {
-    public class Transform
+    public class Transform : ITransform
     {
         public Vector3 Position { get; set; } = Vector3.Zero;
         public Vector3 Scale { get; set; } = Vector3.One;
         private Quaternion _rotation = Quaternion.Identity;
 
         public INode Parent { get; set; }
-        public Quaternion Rotation { get => _rotation; private set => _rotation = value.Normalized(); }
+        public Quaternion Rotation { get => _rotation; set => _rotation = value.Normalized(); }
         public Vector3 RotationEulerAngles
         {
             get
@@ -94,7 +94,7 @@ namespace avoCADo
             Position += translation;
         }
 
-        public void ScaleAround(Vector3 pivot, Vector3 scale)
+        public void ScaleAround(Vector3 pivot, Vector3 scaling)
         {
             //TODO : doesn't work yet - diff goes to ridiculously large values and then zeroes itself and stays there (as in MainWindow scenario)
             var diff = Position - pivot;
@@ -103,15 +103,15 @@ namespace avoCADo
             diff.Y /= this.Scale.Y;
             diff.Z /= this.Scale.Z;
 
-            var newScale = this.Scale + scale;
+            var newScale = this.Scale + scaling;
             diff *= newScale;
 
             var quat = Rotation;
             quat.Invert();
             var worldScale = quat * this.Scale;
-            worldScale.X += scale.X;
-            worldScale.Y += scale.Y;
-            worldScale.Z += scale.Z;
+            worldScale.X += scaling.X;
+            worldScale.Y += scaling.Y;
+            worldScale.Z += scaling.Z;
             this.Scale = Rotation * worldScale;
             Position = pivot + diff;
         }

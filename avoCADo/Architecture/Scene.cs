@@ -14,7 +14,7 @@ namespace avoCADo
         /// <summary>
         /// Add and remove nodes by dedicated methods (AddNode and DeleteNode)
         /// </summary>
-        public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
+        public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
 
         public Matrix4 GlobalModelMatrix
         {
@@ -23,6 +23,10 @@ namespace avoCADo
                 return Matrix4.Identity;
             }
         }
+
+        public ITransform Transform { get; } = new DummyTransform();
+
+        public IRenderer Renderer { get; } = new DummyRenderer();
 
         public Scene(string name)
         {
@@ -37,7 +41,7 @@ namespace avoCADo
             }
         }
 
-        public void AttachChild(Node child)
+        public void AttachChild(INode child)
         {
             if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
@@ -46,7 +50,7 @@ namespace avoCADo
 
         }
 
-        public bool DetachChild(Node child)
+        public bool DetachChild(INode child)
         {
             var val = Children.Remove(child);
             if (val) child.Transform.Parent = null;
@@ -61,5 +65,7 @@ namespace avoCADo
             }
             Children.Clear();
         }
+
+        public void Render(Camera camera, Matrix4 parentMatrix){}
     }
 }

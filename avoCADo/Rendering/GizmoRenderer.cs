@@ -32,7 +32,7 @@ namespace avoCADo
             GL.Uniform4(_shaderColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 4 * sizeof(uint));
 
-            GL.Uniform4(_shaderColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+            GL.Uniform4(_shaderColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
             GL.LineWidth(1.0f);
         }
 

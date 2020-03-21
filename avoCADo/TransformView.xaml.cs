@@ -23,10 +23,10 @@ namespace avoCADo
     public partial class TransformView : UserControl
     {
         private static string _format = "0.0#####";
-        public static readonly DependencyProperty TransformProperty = DependencyProperty.Register("Transform", typeof(Transform), typeof(TransformView), new PropertyMetadata(null));
-        public Transform Transform
+        public static readonly DependencyProperty TransformProperty = DependencyProperty.Register("Transform", typeof(ITransform), typeof(TransformView), new PropertyMetadata(null));
+        public ITransform Transform
         {
-            get { return (Transform)this.GetValue(TransformProperty); }
+            get { return (ITransform)this.GetValue(TransformProperty); }
             set
             {
                 this.SetValue(TransformProperty, value);

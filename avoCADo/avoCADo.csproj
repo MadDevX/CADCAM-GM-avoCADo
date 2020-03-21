@@ -83,9 +83,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\Cursor3D.cs" />
+    <Compile Include="Architecture\DummyRenderer.cs" />
+    <Compile Include="Architecture\DummyTransform.cs" />
     <Compile Include="Architecture\ILoop.cs" />
     <Compile Include="Architecture\IGeneratorDataSource.cs" />
     <Compile Include="Architecture\INode.cs" />
+    <Compile Include="Architecture\ITransform.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="Camera\CameraMovement.cs" />
     <Compile Include="Hierarchy.xaml.cs">

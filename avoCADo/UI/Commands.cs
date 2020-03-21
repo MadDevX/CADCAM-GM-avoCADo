@@ -49,7 +49,7 @@ namespace avoCADo
         {
             if (e.Parameter != null)
             {
-                var node = e.Parameter as Node;
+                var node = e.Parameter as INode;
                 if (node != null)
                 {
                     node.Dispose();

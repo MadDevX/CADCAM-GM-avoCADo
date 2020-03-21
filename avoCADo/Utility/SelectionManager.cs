@@ -12,8 +12,8 @@ namespace avoCADo
         /// <summary>
         /// Only use for reading data, do not modify this collection. Use dedicated methods instead.
         /// </summary>
-        public List<Node> SelectedNodes { get; } = new List<Node>(); //TODO : maybe use ReadOnlyCollection property
-        public Node MainSelection { get; private set; } = null;
+        public List<INode> SelectedNodes { get; } = new List<INode>(); //TODO : maybe use ReadOnlyCollection property
+        public INode MainSelection { get; private set; } = null;
 
 
         public void ResetSelection()
@@ -23,13 +23,13 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
-        public void Select(Node node)
+        public void Select(INode node)
         {
             SelectInternal(node);
             OnSelectionChanged?.Invoke();
         }
 
-        public void ToggleSelection(Node node)
+        public void ToggleSelection(INode node)
         {
             if(SelectedNodes.Contains(node))
             {
@@ -42,14 +42,14 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
-        private void SelectInternal(Node node)
+        private void SelectInternal(INode node)
         {
             SelectedNodes.Clear();
             SelectedNodes.Add(node);
             MainSelection = node;
         }
 
-        private void AddToSelected(Node node)
+        private void AddToSelected(INode node)
         {
             if (SelectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
             {
@@ -62,7 +62,7 @@ namespace avoCADo
             }
         }
 
-        private void RemoveFromSelected(Node node)
+        private void RemoveFromSelected(INode node)
         {
             SelectedNodes.Remove(node);
             if (node == MainSelection && SelectedNodes.Count > 0)

@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public interface INode
+    public interface INode : IDisposable
     {
-        void AttachChild(Node node);
-        bool DetachChild(Node node);
-        
-        ObservableCollection<Node> Children { get; }
-
+        string Name { get; set; }
+        ITransform Transform { get; }
+        IRenderer Renderer { get; }
         Matrix4 GlobalModelMatrix { get; }
+        ObservableCollection<INode> Children { get; }
+
+        void Render(Camera camera, Matrix4 parentMatrix);
+        void AttachChild(INode node);
+        bool DetachChild(INode node);
     }
 }

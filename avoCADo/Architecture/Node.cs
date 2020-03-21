@@ -10,11 +10,11 @@ using OpenTK;
 
 namespace avoCADo
 {
-    public class Node : IDisposable, INotifyPropertyChanged, INode
+    public class Node : INode, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Transform Transform { get; private set; }
+        public ITransform Transform { get; private set; }
         public IRenderer Renderer { get; private set; }
 
         private string _name;
@@ -35,7 +35,7 @@ namespace avoCADo
         /// <summary>
         /// Do not modify collection through this property - use dedicated methods (AttachChild, DetachChild)
         /// </summary>
-        public ObservableCollection<Node> Children { get; private set; } = new ObservableCollection<Node>();
+        public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
 
         public Matrix4 GlobalModelMatrix
         {
@@ -83,7 +83,7 @@ namespace avoCADo
         /// Attaches child to this node
         /// </summary>
         /// <param name="child"></param>
-        public void AttachChild(Node child)
+        public void AttachChild(INode child)
         {
             if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
@@ -95,7 +95,7 @@ namespace avoCADo
         /// Detaches child from this node
         /// </summary>
         /// <param name="child"></param>
-        public bool DetachChild(Node child)
+        public bool DetachChild(INode child)
         {
             var val = Children.Remove(child);
             if(val) child.Transform.Parent = null;
