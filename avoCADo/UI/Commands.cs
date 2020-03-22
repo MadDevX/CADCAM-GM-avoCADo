@@ -36,6 +36,24 @@ namespace avoCADo
             _compositionRoot.NodeFactory.CreatePoint(parent);
         }
 
+        private void CreateBezierCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            foreach(var node in NodeSelection.Manager.SelectedNodes)
+            {
+                if (node.Renderer is PointRenderer == false)
+                {
+                    e.CanExecute = false;
+                    return;
+                }
+            }
+            e.CanExecute = true;
+        }
+
+        private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _compositionRoot.NodeFactory.CreateBezierGroup();
+        }
+
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;

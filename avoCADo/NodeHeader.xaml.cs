@@ -31,6 +31,8 @@ namespace avoCADo
             }
         }
 
+        private INode _parentNode = null;
+
         private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
         private SelectionManager _selectionManager;
 
@@ -125,15 +127,53 @@ namespace avoCADo
 
         private void ContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            //TODO : doesn't work, because visual hierarchy should be checked, not logical (groupNode can never be a parent)
-            if(Node.Transform.Parent is BezierGroupNode)
+            if (_parentNode == null) SetParentNode();
+        }
+
+        private void SetParentNode()
+        {
+            var currentTreeView = GetSelectedTreeViewItemParent(this);
+            var parentTreeView = GetSelectedTreeViewItemParent(currentTreeView);
+            if(parentTreeView != null)
             {
-                menuItemDelete.Header = "Remove";
+                var node = parentTreeView.DataContext as INode;
+                if (node != null)
+                {
+                    _parentNode = parentTreeView.DataContext as INode;
+                    SetContextMenu(_parentNode);
+                }
+            }
+        }
+
+        private void SetContextMenu(INode parentNode)
+        {
+            if(parentNode.IsGroupNode)
+            {
+                menuItemDelete.Visibility = Visibility.Collapsed;
+                menuItemRemove.Visibility = Visibility.Visible;
             }
             else
             {
-                menuItemDelete.Header = "Delete";
+                menuItemDelete.Visibility = Visibility.Visible;
+                menuItemRemove.Visibility = Visibility.Collapsed;
             }
+        }
+
+        public TreeViewItem GetSelectedTreeViewItemParent(DependencyObject obj)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(obj);
+            while (parent is TreeViewItem == false)
+            {
+                if (parent is TreeView || parent == null) return null;
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return parent as TreeViewItem;
+        }
+
+        private void MenuItemRemove_Click(object sender, RoutedEventArgs e)
+        {
+            _parentNode.DetachChild(Node);
         }
     }
 }

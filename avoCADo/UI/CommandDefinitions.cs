@@ -31,6 +31,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand Bezier = new RoutedUICommand
+            (
+                "New Bezier Curve",
+                "Bezier",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.B, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

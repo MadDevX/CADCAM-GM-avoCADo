@@ -15,6 +15,7 @@
                 <ContextMenu IsVisibleChanged="ContextMenu_IsVisibleChanged">
                     <MenuItem Header="Rename" Click="MenuItem_Click"/>
                     <MenuItem x:Name="menuItemDelete"  Command="local:CommandDefinitions.DeleteNode" CommandParameter="{Binding}"/>
+                    <MenuItem x:Name="menuItemRemove" Header="Remove" Click="MenuItemRemove_Click" Visibility="Collapsed"/>
                     <MenuItem Header="Create">
                         <MenuItem Command="local:CommandDefinitions.Torus" CommandParameter="{Binding}"/>
                         <MenuItem Command="local:CommandDefinitions.Point" CommandParameter="{Binding}"/>

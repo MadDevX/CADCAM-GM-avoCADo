@@ -20,6 +20,16 @@ namespace avoCADo
             _shader = shader;
         }
 
+        public INode CreateTorus()
+        {
+            return CreateTorus(NodeSelection.Manager.MainSelection);
+        }
+
+        public INode CreatePoint()
+        {
+            return CreatePoint(NodeSelection.Manager.MainSelection);
+        }
+
         public INode CreateTorus(INode parent)
         {
             if (parent == null) parent = _scene;
@@ -40,7 +50,19 @@ namespace avoCADo
         //TODO : implement
         public INode CreateBezierGroup()
         {
-            return null;
+            var parent = _scene;
+            var generator = new BezierGenerator();
+            var bezierGroup = new BezierGroupNode(new LineStripRenderer(_shader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
+            var selected = NodeSelection.Manager.SelectedNodes;
+            foreach(var node in selected)
+            {
+                if(node.Renderer is PointRenderer)
+                {
+                    bezierGroup.AttachChild(node);
+                }
+            }
+            parent.AttachChild(bezierGroup);
+            return bezierGroup;
         }
 
     }

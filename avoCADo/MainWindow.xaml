@@ -12,6 +12,7 @@
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.Bezier" CanExecute="CreateBezierCmd_CanExecute" Executed="CreateBezierCmd_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -22,6 +23,7 @@
             <MenuItem Header="Create">
                 <MenuItem Command="local:CommandDefinitions.Torus"/>
                 <MenuItem Command="local:CommandDefinitions.Point"/>
+                <MenuItem Command="local:CommandDefinitions.Bezier"/>
             </MenuItem>
         </Menu>
         <Grid Name="GridMain">
