@@ -119,7 +119,14 @@ namespace avoCADo
 
                 if (e.KeyCode == System.Windows.Forms.Keys.F)
                 {
-                    _transform.Position = CalculateCenter();
+                    if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
+                    {
+                        _transform.Position = _camera.Target;
+                    }
+                    else
+                    {
+                        _transform.Position = CalculateCenter();
+                    }
                 }
             }
             else

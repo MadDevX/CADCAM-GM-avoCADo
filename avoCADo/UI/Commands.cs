@@ -22,7 +22,8 @@ namespace avoCADo
         private void CreateTorusCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            _compositionRoot.NodeFactory.CreateTorus(parent);
+            if (parent == null) _compositionRoot.NodeFactory.CreateTorus();
+            else _compositionRoot.NodeFactory.CreateTorus(parent);
         }
 
         private void CreatePointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -33,7 +34,8 @@ namespace avoCADo
         private void CreatePointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            _compositionRoot.NodeFactory.CreatePoint(parent);
+            if (parent == null) _compositionRoot.NodeFactory.CreatePoint();
+            else _compositionRoot.NodeFactory.CreatePoint(parent);
         }
 
         private void CreateBezierCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)

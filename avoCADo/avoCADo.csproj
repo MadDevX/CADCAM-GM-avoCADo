@@ -88,6 +88,7 @@
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
+    <Compile Include="Rendering\BezierRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
     <Compile Include="Interfaces\ILoops.cs" />
