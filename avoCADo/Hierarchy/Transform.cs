@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +11,39 @@ namespace avoCADo
 {
     public class Transform : ITransform
     {
-        public Vector3 Position { get; set; } = Vector3.Zero;
-        public Vector3 Scale { get; set; } = Vector3.One;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private Vector3 _position = Vector3.Zero;
+        private Vector3 _scale = Vector3.One;
         private Quaternion _rotation = Quaternion.Identity;
 
-        public INode Parent { get; set; }
-        public Quaternion Rotation { get => _rotation; set => _rotation = value.Normalized(); }
+        public Vector3 Position
+        {
+            get => _position;
+            set
+            {
+                _position = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Position)));
+            }
+        }
+        public Vector3 Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Scale)));
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => _rotation;
+            set
+            {
+                _rotation = value.Normalized();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rotation)));
+            }
+        }
         public Vector3 RotationEulerAngles
         {
             get
@@ -27,6 +55,8 @@ namespace avoCADo
                 Rotation = Quaternion.FromEulerAngles(value);
             }
         }
+
+        public INode Parent { get; set; }
 
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
         {

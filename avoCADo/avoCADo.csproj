@@ -83,7 +83,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
+    <Compile Include="Hierarchy\BezierGroupNode.cs" />
+    <Compile Include="Hierarchy\GroupNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
+    <Compile Include="Interfaces\IDependent.cs" />
+    <Compile Include="MeshGenerators\BezierGenerator.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
     <Compile Include="Interfaces\ILoops.cs" />
@@ -101,6 +105,7 @@
     </Compile>
     <Compile Include="Rendering\GizmoRenderer.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
+    <Compile Include="Rendering\LineStripRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />

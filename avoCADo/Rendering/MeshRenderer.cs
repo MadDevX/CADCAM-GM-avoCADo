@@ -21,6 +21,7 @@ namespace avoCADo
         public override void Dispose()
         {
             _meshGenerator.OnParametersChanged -= SetBufferData;
+            _meshGenerator.Dispose();
             base.Dispose();
         }
 

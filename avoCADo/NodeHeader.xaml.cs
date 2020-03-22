@@ -122,5 +122,18 @@ namespace avoCADo
         {
             ShowTextBox();
         }
+
+        private void ContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //TODO : doesn't work, because visual hierarchy should be checked, not logical (groupNode can never be a parent)
+            if(Node.Transform.Parent is BezierGroupNode)
+            {
+                menuItemDelete.Header = "Remove";
+            }
+            else
+            {
+                menuItemDelete.Header = "Delete";
+            }
+        }
     }
 }

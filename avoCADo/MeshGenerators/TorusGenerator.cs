@@ -147,5 +147,9 @@ namespace avoCADo
                 (float)((R + r * Math.Cos(beta))*Math.Sin(alpha))
                 );
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

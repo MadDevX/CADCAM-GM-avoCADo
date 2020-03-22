@@ -12,9 +12,9 @@
         </TextBox>
         <TextBlock x:Name="label" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
             <TextBlock.ContextMenu>
-                <ContextMenu>
+                <ContextMenu IsVisibleChanged="ContextMenu_IsVisibleChanged">
                     <MenuItem Header="Rename" Click="MenuItem_Click"/>
-                    <MenuItem Command="local:CommandDefinitions.DeleteNode" CommandParameter="{Binding}"/>
+                    <MenuItem x:Name="menuItemDelete"  Command="local:CommandDefinitions.DeleteNode" CommandParameter="{Binding}"/>
                     <MenuItem Header="Create">
                         <MenuItem Command="local:CommandDefinitions.Torus" CommandParameter="{Binding}"/>
                         <MenuItem Command="local:CommandDefinitions.Point" CommandParameter="{Binding}"/>

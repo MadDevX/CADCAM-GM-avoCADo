@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace avoCADo
 {
     public class DummyTransform : ITransform
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public Vector3 Position { get => Vector3.Zero; set { } }
         public Quaternion Rotation { get => Quaternion.Identity; set { } }
         public Vector3 RotationEulerAngles { get => Vector3.Zero; set { } }

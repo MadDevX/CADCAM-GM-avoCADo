@@ -13,6 +13,9 @@ namespace avoCADo
     public class Node : INode, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event Action<INode> OnDisposed;
+
+        public bool IsGroupNode => false;
 
         public ITransform Transform { get; private set; }
         public IRenderer Renderer { get; private set; }
@@ -21,10 +24,7 @@ namespace avoCADo
 
         public string Name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
             set
             {
                 _name = value;
@@ -50,6 +50,27 @@ namespace avoCADo
             Transform = transform;
             Renderer = renderer;
             Name = name;
+            Transform.PropertyChanged += TransformModified;
+        }
+
+        /// <summary>
+        /// Frees resources and detaches itself from parent node.
+        /// </summary>
+        public void Dispose()
+        {
+            Transform.PropertyChanged -= TransformModified;
+            Renderer.Dispose();
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                Children[i].Dispose();
+            }
+            Children.Clear();
+            OnDisposed?.Invoke(this);
+        }
+
+        private void TransformModified(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Transform)));
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix)
@@ -63,23 +84,6 @@ namespace avoCADo
         }
 
         /// <summary>
-        /// Frees resources and detaches itself from parent node.
-        /// </summary>
-        public void Dispose()
-        {
-            if(Transform.Parent != null)
-            {
-                Transform.Parent.DetachChild(this);
-            }
-            Renderer.Dispose();
-            for(int i = Children.Count - 1; i >= 0; i--)
-            {
-                Children[i].Dispose();
-            }
-            Children.Clear();
-        }
-
-        /// <summary>
         /// Attaches child to this node
         /// </summary>
         /// <param name="child"></param>
@@ -89,6 +93,7 @@ namespace avoCADo
 
             child.Transform.Parent = this;
             Children.Add(child);
+            child.OnDisposed += HandleChildDisposed;
         }
 
         /// <summary>
@@ -98,8 +103,17 @@ namespace avoCADo
         public bool DetachChild(INode child)
         {
             var val = Children.Remove(child);
-            if(val) child.Transform.Parent = null;
+            if (val)
+            {
+                child.Transform.Parent = null;
+                child.OnDisposed -= HandleChildDisposed;
+            }
             return val;
+        }
+
+        private void HandleChildDisposed(INode node)
+        {
+            DetachChild(node);
         }
     }
 }
