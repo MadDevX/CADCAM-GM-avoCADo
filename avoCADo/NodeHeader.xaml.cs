@@ -128,6 +128,30 @@ namespace avoCADo
         private void ContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (_parentNode == null) SetParentNode();
+            UpdateContextMenuOptions();
+        }
+
+        private void UpdateContextMenuOptions()
+        {
+            var sel = _selectionManager.MainSelection;
+            if (sel != null && sel.IsGroupNode && Node.Renderer is PointRenderer)
+            {
+                if( sel.Children.Contains(Node))
+                {
+                    menuItemDetachFromCurve.Visibility = Visibility.Visible;
+                    menuItemAttachToCurve.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    menuItemDetachFromCurve.Visibility = Visibility.Collapsed;
+                    menuItemAttachToCurve.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                menuItemAttachToCurve.Visibility = Visibility.Collapsed;
+                menuItemDetachFromCurve.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void SetParentNode()
@@ -175,5 +199,15 @@ namespace avoCADo
         {
             _parentNode.DetachChild(Node);
         }
+
+        private void MenuItemAttachToCurve_Click(object sender, RoutedEventArgs e)
+        {
+            _selectionManager.MainSelection.AttachChild(Node);
+        }
+        private void MenuItemDetachFromCurve_Click(object sender, RoutedEventArgs e)
+        {
+            _selectionManager.MainSelection.DetachChild(Node);
+        }
+        
     }
 }

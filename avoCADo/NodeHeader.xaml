@@ -13,6 +13,8 @@
         <TextBlock x:Name="label" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
             <TextBlock.ContextMenu>
                 <ContextMenu IsVisibleChanged="ContextMenu_IsVisibleChanged">
+                    <MenuItem x:Name="menuItemAttachToCurve" Header="Attach to curve" Click="MenuItemAttachToCurve_Click" Visibility="Collapsed"/>
+                    <MenuItem x:Name="menuItemDetachFromCurve" Header="Detach from curve" Click="MenuItemDetachFromCurve_Click" Visibility="Collapsed"/>
                     <MenuItem Header="Rename" Click="MenuItem_Click"/>
                     <MenuItem x:Name="menuItemDelete"  Command="local:CommandDefinitions.DeleteNode" CommandParameter="{Binding}"/>
                     <MenuItem x:Name="menuItemRemove" Header="Remove" Click="MenuItemRemove_Click" Visibility="Collapsed"/>
