@@ -48,7 +48,7 @@ namespace avoCADo
 
         private void CreateGLControl()
         {
-            _glControl = new GLControl();
+            _glControl = new GLControl(new OpenTK.Graphics.GraphicsMode(32, 24, 8, 8));
             _glControl.Dock = DockStyle.Fill;
             Host.Child = _glControl;
             _glControl.MakeCurrent();
