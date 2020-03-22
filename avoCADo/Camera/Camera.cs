@@ -31,6 +31,8 @@ namespace avoCADo
         private Matrix4 _projectionMatrix;
         private Matrix4 _viewMatrix;
 
+        private float _sensitivity = 1.5f;
+
         public Camera(ViewportManager viewportManager)
         {
             _viewportManager = viewportManager;
@@ -91,10 +93,11 @@ namespace avoCADo
 
         public void Translate(float horizontal, float vertical)
         {
+            var magnitude = (_target - _position).Length;
             var planeTr = new Vector4(-horizontal, vertical, 0.0f, 1.0f);
             var rot = Quaternion.FromMatrix(new Matrix3(Matrix4.LookAt(Vector3.Zero, _target - _position, Vector3.UnitY)));
             var trVec = Vector4.Transform(planeTr, rot);
-            var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z);
+            var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z) * magnitude * _sensitivity;
             _target += toAdd;
             _position += toAdd;
             UpdateViewMatrix();

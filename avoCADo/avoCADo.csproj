@@ -83,6 +83,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
+    <Compile Include="BezierGeneratorView.xaml.cs">
+      <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
@@ -136,6 +139,10 @@
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
+    <Page Include="BezierGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hierarchy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -45,6 +45,7 @@
                 <local:Hierarchy x:Name="hierarchy" Height="200"/>
                 <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
                 <local:TorusGeneratorView x:Name="torusGeneratorView" Visibility="Collapsed"/>
+                <local:BezierGeneratorView x:Name="bezierGeneratorView" Visibility="Collapsed"/>
             </StackPanel>
         </Grid>
     </DockPanel>

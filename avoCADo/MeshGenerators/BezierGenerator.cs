@@ -13,7 +13,19 @@ namespace avoCADo
     {
         public event Action OnParametersChanged;
 
-        public bool ShowEdges { get; set; } = true;
+        private bool _showEdges = false;
+        public bool ShowEdges
+        {
+            get => _showEdges;
+            set
+            {
+                if(value != _showEdges)
+                {
+                    _showEdges = value;
+                    DataChangedWrapper();
+                }
+            }
+        }
 
         private INode _parentNode;
 
@@ -28,7 +40,7 @@ namespace avoCADo
 
         private bool _isInitialized = false;
 
-        private int _subdivisions = 100;
+        private int _subdivisions = 500;
 
         private float _distanceSum;
         private int AdjustedSubdivisions => ((int)(_distanceSum / 50.0f) + 1) * _subdivisions;
@@ -53,13 +65,17 @@ namespace avoCADo
 
         private void SourceDataChanged(object sender, PropertyChangedEventArgs e)
         {
-            SourceDataChanged();
-            SourceDataChangedEdges();
-            CheckCombineArrays();
-            OnParametersChanged?.Invoke();
+            DataChangedWrapper();
         }
 
         private void SourceDataChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            DataChangedWrapper();
+        }
+
+        #region SourceDataChanged
+
+        private void DataChangedWrapper()
         {
             SourceDataChanged();
             SourceDataChangedEdges();
@@ -67,7 +83,6 @@ namespace avoCADo
             OnParametersChanged?.Invoke();
         }
 
-        #region SourceDataChanged
         private void SourceDataChanged()
         {
             var nodes = _parentNode.Children;
