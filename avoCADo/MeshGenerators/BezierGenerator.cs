@@ -43,7 +43,7 @@ namespace avoCADo
         private int _subdivisions = 200;
 
         private float _maxDistanceSum;
-        private int AdjustedSubdivisions => ((int)(_maxDistanceSum / 40.0f) + 1) * _subdivisions;
+        private int AdjustedSubdivisions => ((int)(_maxDistanceSum / 25.0f) + 1) * _subdivisions;
 
         public void Initialize(INode node)
         {
