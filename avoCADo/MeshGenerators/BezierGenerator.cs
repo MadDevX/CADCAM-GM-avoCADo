@@ -96,17 +96,17 @@ namespace avoCADo
                 _curveVertexData = new float[3 * fn * subdivisions];
             }
 
+            Parallel.For(0, _curveIndices.Length, (i) => _curveIndices[i] = (uint)i);
+            //for (uint i = 0; i < _curveIndices.Length; i++) _curveIndices[i] = i;
 
-            for (uint i = 0; i < _curveIndices.Length; i++) _curveIndices[i] = i;
-
-            for (int i = 0; i < nodes.Count; i+=3)
+            Parallel.For(0, nodes.Count / 3 + 1, (i3) => //for(int i3 = 0; i3 < nodes.Count/3; i3++)
             {
-                if (i + 1 == nodes.Count) break;
+                int i = i3 * 3;
+                if (i + 1 == nodes.Count) return;
                 else if (i + 2 == nodes.Count) CalcBezier1(i);
                 else if (i + 3 == nodes.Count) CalcBezier2(i);
                 else if (i + 4 <= nodes.Count) CalcBezier3(i);
-                else throw new Exception("indexing error");
-            }
+            });
 
         }
 
