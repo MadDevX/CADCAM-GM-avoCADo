@@ -40,10 +40,10 @@ namespace avoCADo
 
         private bool _isInitialized = false;
 
-        private int _subdivisions = 500;
+        private int _subdivisions = 200;
 
-        private float _distanceSum;
-        private int AdjustedSubdivisions => ((int)(_distanceSum / 50.0f) + 1) * _subdivisions;
+        private float _maxDistanceSum;
+        private int AdjustedSubdivisions => ((int)(_maxDistanceSum / 25.0f) + 1) * _subdivisions;
 
         public void Initialize(INode node)
         {
@@ -235,10 +235,18 @@ namespace avoCADo
 
         private void UpdateDistanceSum(ObservableCollection<INode> nodes)
         {
-            _distanceSum = 0.0f;
-            for (int i = 0; i < nodes.Count - 1; i++)
+            _maxDistanceSum = 0.0f;
+            for (int i = 0; i < nodes.Count - 1; i+=3)
             {
-                _distanceSum += (nodes[i].Transform.WorldPosition - nodes[i + 1].Transform.WorldPosition).Length;
+                var curDist = 0.0f;
+                if (i+1<nodes.Count) curDist += (nodes[i].Transform.WorldPosition - nodes[i + 1].Transform.WorldPosition).Length;
+                if(i+2<nodes.Count) curDist += (nodes[i+1].Transform.WorldPosition - nodes[i + 2].Transform.WorldPosition).Length;
+                if(i+3<nodes.Count) curDist += (nodes[i+2].Transform.WorldPosition - nodes[i + 3].Transform.WorldPosition).Length;
+
+                if(curDist > _maxDistanceSum)
+                {
+                    _maxDistanceSum = curDist;
+                }
             }
         }
 
