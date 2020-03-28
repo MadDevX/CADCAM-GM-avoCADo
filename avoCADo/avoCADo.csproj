@@ -197,6 +197,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Shaders\gsBezierC0.geom" />
     <None Include="Shaders\vs.vert" />
   </ItemGroup>
   <ItemGroup>
