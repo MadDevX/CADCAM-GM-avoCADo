@@ -33,7 +33,7 @@ namespace avoCADo
         public INode CreateTorus(INode parent)
         {
             if (parent == null) parent = _scene;
-            var generator = new TorusGenerator(0.5f, 0.2f, 30, 30);
+            var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shader, generator), NameGenerator.GenerateName(parent, "Torus"));
             parent.AttachChild(torusNode);
             return torusNode;

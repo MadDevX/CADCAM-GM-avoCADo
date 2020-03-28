@@ -61,8 +61,8 @@ namespace avoCADo
                 if (_torusView.Visibility != Visibility.Visible) _torusView.Visibility = Visibility.Visible;
                 _torusView.xDivisions.Value = _torus.XDivisions;
                 _torusView.yDivisions.Value = _torus.YDivisions;
-                _torusView.mainRadius.Value = _torus.R;
-                _torusView.tubeRadius.Value = _torus.r;
+                _torusView.mainRadius.Value = ((TorusSurface)_torus.Surface).MainRadius;
+                _torusView.tubeRadius.Value = ((TorusSurface)_torus.Surface).TubeRadius;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace avoCADo
         {
             if (_torus != null)
             {
-                _torus.SetXDivisions((int)e.NewValue);
+                _torus.XDivisions = (int)e.NewValue;
             }
         }
 
@@ -82,7 +82,7 @@ namespace avoCADo
         {
             if (_torus != null)
             {
-                _torus.SetYDivisions((int)e.NewValue);
+                _torus.YDivisions = (int)e.NewValue;
             }
         }
 
@@ -90,7 +90,7 @@ namespace avoCADo
         {
             if (_torus != null)
             {
-                _torus.SetTubeRadius((float)e.NewValue);
+                ((TorusSurface)_torus.Surface).TubeRadius = (float)e.NewValue;
             }
         }
 
@@ -98,7 +98,7 @@ namespace avoCADo
         {
             if (_torus != null)
             {
-                _torus.SetMainRadius((float)e.NewValue);
+                ((TorusSurface)_torus.Surface).MainRadius = (float)e.NewValue;
             }
         }
     }
