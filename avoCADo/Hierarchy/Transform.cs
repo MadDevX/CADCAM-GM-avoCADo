@@ -94,6 +94,12 @@ namespace avoCADo
                 if(Parent != null) vec = vec * Parent.GlobalModelMatrix;
                 return new Vector3(vec.X, vec.Y, vec.Z);
             }
+            set
+            {
+                var vec = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+                if (Parent != null) vec = vec * Parent.GlobalModelMatrix;
+                Position = value - new Vector3(vec.X, vec.Y, vec.Z);
+            }
         }
 
         public Vector2 ScreenCoords(Camera camera)
@@ -112,6 +118,7 @@ namespace avoCADo
         /// <param name="eulerAnglesRad">Vector representing rotation around X, Y and Z axes.</param>
         public void RotateAround(Vector3 pivot, Vector3 eulerAnglesRad)
         {
+            //does not work for nested objects
             var diff = Position - pivot;
             var quat = Quaternion.FromEulerAngles(eulerAnglesRad);
             diff = quat * diff;
