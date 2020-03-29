@@ -93,8 +93,10 @@
     <Compile Include="Interfaces\IDependent.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
+    <Compile Include="MeshGenerators\BezierGeneratorNew.cs" />
     <Compile Include="MeshGenerators\BSplineGenerator.cs" />
     <Compile Include="ParametricObjects\Curves\BezierC0Curve.cs" />
+    <Compile Include="ParametricObjects\Curves\BezierC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\BezierRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />

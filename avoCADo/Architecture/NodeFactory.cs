@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,8 +52,10 @@ namespace avoCADo
         public INode CreateBezierGroup()
         {
             var parent = _scene;
-            var generator = new BezierGenerator();
-            var bezierGroup = new BezierGroupNode(new LineStripRenderer(_shader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
+            var source = new ObservableCollection<INode>();
+            var curve = new BezierC0Curve(source);
+            var generator = new BezierGeneratorNew(curve);
+            var bezierGroup = new BezierGroupNode(source, new LineStripRenderer(_shader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach(var node in selected)
             {

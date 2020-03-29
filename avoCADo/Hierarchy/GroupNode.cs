@@ -37,11 +37,12 @@ namespace avoCADo
 
         public Matrix4 GlobalModelMatrix { get; } = Matrix4.Identity;
 
-        public ObservableCollection<INode> Children { get; } = new ObservableCollection<INode>();
+        public ObservableCollection<INode> Children { get; }
 
 
-        public GroupNode(IRenderer renderer, T dependent, string name)
+        public GroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
         {
+            Children = childrenSource;
             dependent.Initialize(this);
             Renderer = renderer;
             Name = name;

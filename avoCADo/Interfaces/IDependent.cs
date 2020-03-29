@@ -10,7 +10,7 @@ namespace avoCADo
     /// Quick hack to resolve circular dependency 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IDependent<T>
+    public interface IDependent<T> : IDisposable
     {
         void Initialize(T node);
     }

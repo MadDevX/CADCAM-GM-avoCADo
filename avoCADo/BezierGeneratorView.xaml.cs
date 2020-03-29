@@ -35,7 +35,7 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            DataContext = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
+            DataContext = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorNew;
             if (DataContext == null)
             {
                 Visibility = Visibility.Collapsed;
