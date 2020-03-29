@@ -18,7 +18,8 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
 
-        private Shader _shader;
+        private Shader _defaultShader;
+        private Shader _curveShader;
         private Scene _scene;
         private Camera _camera;
         private CameraMovement _camMovement;
@@ -41,21 +42,22 @@ namespace avoCADo
         {
             _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.FromArgb(40, 40, 40)));
             _viewportManager = new ViewportManager(_control);
-            _shader = new Shader("vs.vert", "fs.frag");
+            _defaultShader = new Shader("vs.vert", "fs.frag");
+            _curveShader = new Shader("vs.vert", "gsBezierC0.geom", "fs.frag");
             _scene = new Scene("Main");
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
-            _cursor = new Cursor3D(_control, _window.transformationsLabel, _shader, _renderLoop, _window, _camera);
+            _cursor = new Cursor3D(_control, _window.transformationsLabel, _defaultShader, _renderLoop, _window, _camera);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
-            NodeFactory = new NodeFactory(_scene, _cursor, _shader);
+            NodeFactory = new NodeFactory(_scene, _cursor, _defaultShader);
 
             _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _shader);
+            TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader);
         }
 
         public void Dispose()
@@ -69,7 +71,7 @@ namespace avoCADo
             _camMovement.Dispose();
             _camera.Dispose();
             _scene.Dispose();
-            _shader.Dispose();
+            _defaultShader.Dispose();
             _viewportManager.Dispose();
         }
     }

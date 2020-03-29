@@ -22,9 +22,6 @@
                     <HierarchicalDataTemplate DataType="{x:Type local:BezierGroupNode}" ItemsSource="{Binding Children}">
                         <local:NodeHeader Node="{Binding}"/>
                     </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:BSplineGroupNode}" ItemsSource="{Binding Children}">
-                        <local:NodeHeader Node="{Binding}"/>
-                    </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Children}">
                         <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
                     </HierarchicalDataTemplate>

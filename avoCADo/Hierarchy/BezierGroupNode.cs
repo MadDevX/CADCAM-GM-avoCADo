@@ -13,11 +13,4 @@ namespace avoCADo
         {
         }
     }
-
-    public class BSplineGroupNode : GroupNode<BSplineGenerator>
-    {
-        public BSplineGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BSplineGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)
-        {
-        }
-    }
 }

@@ -28,15 +28,9 @@ namespace avoCADo
             fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
             GL.ShaderSource(fragmentShader, fragmentShaderSource);
 
-            GL.CompileShader(vertexShader);
 
-            string infoLogVert = GL.GetShaderInfoLog(vertexShader);
-            if (infoLogVert != string.Empty) throw new ArgumentException(infoLogVert);
-
-            GL.CompileShader(fragmentShader);
-
-            string infoLogFrag = GL.GetShaderInfoLog(fragmentShader);
-            if (infoLogFrag != string.Empty) throw new ArgumentException(infoLogFrag);
+            CompileShader(vertexShader);
+            CompileShader(fragmentShader);
 
             _handle = GL.CreateProgram();
 
@@ -48,7 +42,46 @@ namespace avoCADo
 
             GL.DetachShader(_handle, vertexShader);
             GL.DetachShader(_handle, fragmentShader);
+
             GL.DeleteShader(vertexShader);
+            GL.DeleteShader(fragmentShader);
+        }
+
+        public Shader(string vertexPath, string geometryPath, string fragmentPath)
+        {
+            int vertexShader, fragmentShader, geometryShader;
+
+            string vertexShaderSource = ReadSourceCode(vertexPath);
+            string fragmentShaderSource = ReadSourceCode(fragmentPath);
+            string geometryShaderSource = ReadSourceCode(geometryPath);
+
+            vertexShader = GL.CreateShader(ShaderType.VertexShader);
+            GL.ShaderSource(vertexShader, vertexShaderSource);
+
+            geometryShader = GL.CreateShader(ShaderType.GeometryShader);
+            GL.ShaderSource(geometryShader, geometryShaderSource);
+
+            fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+            GL.ShaderSource(fragmentShader, fragmentShaderSource);
+
+            CompileShader(vertexShader);
+            CompileShader(geometryShader);
+            CompileShader(fragmentShader);
+
+            _handle = GL.CreateProgram();
+
+            GL.AttachShader(_handle, vertexShader);
+            GL.AttachShader(_handle, geometryShader);
+            GL.AttachShader(_handle, fragmentShader);
+
+            GL.LinkProgram(_handle);
+
+            GL.DetachShader(_handle, vertexShader);
+            GL.DetachShader(_handle, geometryShader);
+            GL.DetachShader(_handle, fragmentShader);
+
+            GL.DeleteShader(vertexShader);
+            GL.DeleteShader(geometryShader);
             GL.DeleteShader(fragmentShader);
         }
 
@@ -72,6 +105,14 @@ namespace avoCADo
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        private void CompileShader(int handle)
+        {
+            GL.CompileShader(handle);
+
+            string infoLog = GL.GetShaderInfoLog(handle);
+            if (infoLog != string.Empty) throw new ArgumentException(infoLog);
         }
     }
 }

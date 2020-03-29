@@ -9,12 +9,17 @@ namespace avoCADo
 {
     public interface ICurve
     {
+        int Segments { get; }
+
         Vector2 ParameterRange { get; }
         Vector3 GetVertex(float t);
 
         IList<INode> ControlPoints { get; }
 
-        IList<Vector3> ControlPointsPositions { get; }
+        bool HasVirtualControlPoints { get; }
+        IList<Vector3> VirtualControlPoints { get; }
+
+        void Refresh();
         //GetTangent
     }
 }

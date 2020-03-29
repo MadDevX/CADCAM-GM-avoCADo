@@ -28,16 +28,6 @@ namespace avoCADo
             scene.AttachChild(point3);
             scene.AttachChild(point4);
 
-
-            var bSplineSource = new ObservableCollection<INode>();
-            var generator = new BSplineGenerator();
-            var bSpline = new BSplineGroupNode(bSplineSource, new LineRenderer(shader, generator), generator, "bspline");
-            bSpline.AttachChild(point);
-            bSpline.AttachChild(point2);
-            bSpline.AttachChild(point3);
-            bSpline.AttachChild(point4);
-            scene.AttachChild(bSpline);
-
             var bezierSource = new ObservableCollection<INode>();
             var curve = new BezierC0Curve(bezierSource);
             var bezGen = new BezierGeneratorNew(curve);

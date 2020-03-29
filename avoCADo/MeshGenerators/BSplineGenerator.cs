@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
+    /// <summary>
+    /// Obsolete to delete xD
+    /// </summary>
     public class BSplineGenerator : IMeshGenerator, IDependent<INode>
     {
         public event Action OnParametersChanged;
@@ -122,6 +125,7 @@ namespace avoCADo
 
             var subdivisions = AdjustedSubdivisions;
             var fn = nodes.Count < 2 ? 0 : ((nodes.Count + 1) / 3);
+            if (fn == 0) return;
             if (fn * subdivisions != _curveIndices.Length)
             {
                 _curveIndices = new uint[fn * subdivisions * 2 - 2];

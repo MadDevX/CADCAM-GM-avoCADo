@@ -36,6 +36,9 @@ namespace avoCADo
         private uint[] _edgeIndices = new uint[0];
         private float[] _edgeVertexData = new float[0];
 
+        private uint[] _virtualEdgeIndices = new uint[0];
+        private float[] _virtualEdgeVertexData = new float[0];
+
         private uint[] _indices = new uint[0];
         private float[] _vertexData = new float[0];
 
@@ -83,9 +86,11 @@ namespace avoCADo
 
         private void DataChangedWrapper()
         {
+            Curve.Refresh();
             UpdateDistanceSum(_parentNode.Children);
             SourceDataChanged();
             SourceDataChangedEdges();
+            SourceDataChangedVirtualEdges();
             CheckCombineArrays();
             OnParametersChanged?.Invoke();
         }
@@ -95,11 +100,11 @@ namespace avoCADo
             var nodes = _parentNode.Children;
 
             var subdivisions = AdjustedSubdivisions;
-            var fn = nodes.Count < 2 ? 0 : ((nodes.Count + 1) / 3);
-            var fullDivisions = fn * subdivisions;
-            if (fullDivisions != _curveIndices.Length)
+            var segments = Curve.Segments;
+            var fullDivisions = segments * subdivisions;
+            if (fullDivisions * 3 != _curveVertexData.Length)
             {
-                _curveIndices = new uint[fullDivisions * 2 - 2];
+                _curveIndices = new uint[Math.Max(0, fullDivisions * 2 - 2)];
                 _curveVertexData = new float[3 * fullDivisions];
             }
 
@@ -114,7 +119,7 @@ namespace avoCADo
             Parallel.For(0, fullDivisions, (i) =>
             {
                 var t = ((float)i / (float)(fullDivisions - 1) * diff) + paramRange.X;
-                SetVertex(Curve.GetVertex(t), i);
+                SetVertex(_curveVertexData, Curve.GetVertex(t), i);
             });
 
         }
@@ -122,37 +127,59 @@ namespace avoCADo
         private void SourceDataChangedEdges()
         {
             var nodes = Curve.ControlPoints;
-
-            if (nodes.Count != _edgeIndices.Length)
+            if (nodes.Count * 3 != _edgeVertexData.Length)
             {
-                _edgeIndices = new uint[nodes.Count];
+                _edgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
                 _edgeVertexData = new float[3 * nodes.Count];
             }
 
 
-            for (uint i = 0; i < nodes.Count; i++) _edgeIndices[i] = (uint)_curveIndices.Length + i;
+            for (uint i = 0; i < _edgeIndices.Length; i++) _edgeIndices[i] = (uint)(_curveIndices.Length/2+1 + ((i+1)/2));
 
-            for (int i = nodes.Count - 1; i >= 0; i--)
+            for (int i = 0; i < nodes.Count; i++)
             {
-                var invI = nodes.Count - 1 - i;
-                SetEdgeVertex(nodes[i].Transform.WorldPosition, invI);
+                SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
             }
 
+        }
+
+        private void SourceDataChangedVirtualEdges()
+        {
+            if (Curve.HasVirtualControlPoints)
+            {
+                var nodes = Curve.VirtualControlPoints;
+                if (nodes.Count * 3 != _virtualEdgeVertexData.Length)
+                {
+                    _virtualEdgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
+                    _virtualEdgeVertexData = new float[3 * nodes.Count];
+                }
+
+
+                var offset = (_curveIndices.Length / 2 + 1) + (_edgeIndices.Length / 2 + 1);
+                for (uint i = 0; i < _virtualEdgeIndices.Length; i++) _virtualEdgeIndices[i] = (uint)(offset + ((i + 1) / 2));
+
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    SetVertex(_virtualEdgeVertexData, nodes[i], i);
+                }
+            }
         }
 
         private void CheckCombineArrays()
         {
             if (ShowEdges)
             {
-                if (_vertexData.Length != _curveVertexData.Length + _edgeVertexData.Length)
+                if (_vertexData.Length != _curveVertexData.Length + _edgeVertexData.Length + _virtualEdgeVertexData.Length)
                 {
-                    _vertexData = new float[_curveVertexData.Length + _edgeVertexData.Length];
-                    _indices = new uint[_curveIndices.Length + _edgeIndices.Length];
+                    _vertexData = new float[_curveVertexData.Length + _edgeVertexData.Length + _virtualEdgeVertexData.Length];
+                    _indices = new uint[_curveIndices.Length + _edgeIndices.Length + _virtualEdgeIndices.Length];
                 }
                 Array.Copy(_curveVertexData, 0, _vertexData, 0, _curveVertexData.Length);
                 Array.Copy(_edgeVertexData, 0, _vertexData, _curveVertexData.Length, _edgeVertexData.Length);
+                Array.Copy(_virtualEdgeVertexData, 0, _vertexData, _curveVertexData.Length + _edgeVertexData.Length, _virtualEdgeVertexData.Length);
                 Array.Copy(_curveIndices, 0, _indices, 0, _curveIndices.Length);
                 Array.Copy(_edgeIndices, 0, _indices, _curveIndices.Length, _edgeIndices.Length);
+                Array.Copy(_virtualEdgeIndices, 0, _indices, _curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length);
             }
             else
             {
@@ -195,18 +222,11 @@ namespace avoCADo
             }
         }
 
-        private void SetVertex(Vector3 vect, int vertexIndex)
+        private void SetVertex(float[] vertexArray, Vector3 vect, int vertexIndex)
         {
-            _curveVertexData[3 * vertexIndex + 0] = vect.X;
-            _curveVertexData[3 * vertexIndex + 1] = vect.Y;
-            _curveVertexData[3 * vertexIndex + 2] = vect.Z;
-        }
-
-        private void SetEdgeVertex(Vector3 vect, int vertexIndex)
-        {
-            _edgeVertexData[3 * vertexIndex + 0] = vect.X;
-            _edgeVertexData[3 * vertexIndex + 1] = vect.Y;
-            _edgeVertexData[3 * vertexIndex + 2] = vect.Z;
+            vertexArray[3 * vertexIndex + 0] = vect.X;
+            vertexArray[3 * vertexIndex + 1] = vect.Y;
+            vertexArray[3 * vertexIndex + 2] = vect.Z;
         }
         #endregion
     }
