@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Architecture;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -30,6 +31,7 @@ namespace avoCADo
         private TransformationModeHandler _transformationModeHandler;
         private ScreenSelectionHandler _screenSelectionManager;
         private RenderLoop _renderLoop;
+        private VirtualNodeFactory _virtualNodeFactory;
 
         public CompositionRoot(GLControl control, MainWindow window)
         {
@@ -55,6 +57,8 @@ namespace avoCADo
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
             NodeFactory = new NodeFactory(_scene, _cursor, _defaultShader);
+            _virtualNodeFactory = new VirtualNodeFactory(_defaultShader, _scene);
+            Registry.VirtualNodeFactory = _virtualNodeFactory;
 
             _window.hierarchy.treeView.Items.Add(_scene);
             TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader);

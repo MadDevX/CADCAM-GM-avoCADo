@@ -34,6 +34,7 @@ namespace avoCADo
 
         protected override void Draw()
         {
+            GL.DrawElements(PrimitiveType.LinesAdjacency, _indexCount, DrawElementsType.UnsignedInt, 0);
         }
     }
 }

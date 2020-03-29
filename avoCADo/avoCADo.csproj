@@ -83,11 +83,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
+    <Compile Include="Architecture\Registry.cs" />
+    <Compile Include="Architecture\VirtualNodeFactory.cs" />
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
+    <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependent.cs" />

@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,11 @@ namespace avoCADo
 {
     public class PointRenderer : Renderer
     {
-        public PointRenderer(Shader shader) : base(shader)
+        private Color4 _color;
+
+        public PointRenderer(Shader shader, Color4 color) : base(shader)
         {
+            _color = color;
             SetBufferData();
         }
 
@@ -19,9 +23,9 @@ namespace avoCADo
         protected override void Draw()
         {
             GL.PointSize(4.0f);
-            GL.Uniform4(_shaderColorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+            GL.Uniform4(_shaderColorLocation, _color);
             GL.DrawArrays(PrimitiveType.Points, 0, 1);
-            GL.Uniform4(_shaderColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+            GL.Uniform4(_shaderColorLocation, Color4.White);
             GL.PointSize(1.0f);
         }
 

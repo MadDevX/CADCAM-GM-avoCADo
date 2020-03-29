@@ -30,6 +30,8 @@ namespace avoCADo
         /// </summary>
         public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
 
+        public List<INode> VirtualChildren { get; } = new List<INode>();
+
         public Matrix4 GlobalModelMatrix
         {
             get
@@ -54,6 +56,11 @@ namespace avoCADo
                 Children[i].Dispose();
             }
             Children.Clear();
+            for (int i = VirtualChildren.Count - 1; i >= 0; i--)
+            {
+                VirtualChildren[i].Dispose();
+            }
+            VirtualChildren.Clear();
             OnDisposed?.Invoke(this);
         }
 
@@ -63,26 +70,46 @@ namespace avoCADo
             {
                 Children[i].Render(camera, Matrix4.Identity);
             }
+            for(int i = 0; i < VirtualChildren.Count; i++)
+            {
+                VirtualChildren[i].Render(camera, Matrix4.Identity);
+            }
         }
 
         public void AttachChild(INode child)
         {
             if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
+            var childList = GetChildList(child);
+
             child.Transform.Parent = this;
-            Children.Add(child);
+            childList.Add(child);
             child.OnDisposed += HandleChildDisposed;
         }
 
         public bool DetachChild(INode child)
         {
-            var val = Children.Remove(child);
+            var childList = GetChildList(child);
+
+            var val = childList.Remove(child);
             if (val)
             {
                 child.Transform.Parent = null;
                 child.OnDisposed -= HandleChildDisposed;
             }
             return val;
+        }
+
+        private IList<INode> GetChildList(INode child)
+        {
+            if (child is VirtualNode)
+            {
+                return VirtualChildren;
+            }
+            else
+            {
+                return Children;
+            }
         }
 
         private void HandleChildDisposed(INode node)

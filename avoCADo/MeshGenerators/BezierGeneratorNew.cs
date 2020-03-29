@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Architecture;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +15,7 @@ namespace avoCADo
         public event Action OnParametersChanged;
 
         private bool _showEdges = false;
+        private bool _showVirtualControlPoints = false;
         public bool ShowEdges
         {
             get => _showEdges;
@@ -27,8 +29,21 @@ namespace avoCADo
             }
         }
 
+        public bool ShowVirtualControlPoints
+        {
+            get => _showVirtualControlPoints;
+            set
+            {
+                if(value != _showVirtualControlPoints)
+                {
+                    _showVirtualControlPoints = value;
+                    DataChangedWrapper();
+                }
+            }
+        }
+
         private INode _parentNode;
-        private ICurve Curve { get; }
+        public ICurve Curve { get; }
 
         private uint[] _curveIndices = new uint[0];
         private float[] _curveVertexData = new float[0];
@@ -92,6 +107,7 @@ namespace avoCADo
             SourceDataChangedEdges();
             SourceDataChangedVirtualEdges();
             CheckCombineArrays();
+            UpdateVirtualPoints();
             OnParametersChanged?.Invoke();
         }
 
@@ -185,6 +201,65 @@ namespace avoCADo
             {
                 _vertexData = _curveVertexData;
                 _indices = _curveIndices;
+            }
+        }
+
+
+
+
+        private List<INode> _virtualNodes = new List<INode>();
+
+        private void UpdateVirtualPoints()
+        {
+            if(ShowVirtualControlPoints)
+            {
+                UpdateVirtualPointsCount();
+                for(int i = 0; i < _virtualNodes.Count; i++)
+                {
+                    _virtualNodes[i].Transform.Position = Curve.VirtualControlPoints[i + 1];
+                }
+                AttachVirtualPoints();
+            }
+            else
+            {
+                DetachVirtualPoints();
+            }
+        }
+
+        private void DetachVirtualPoints()
+        {
+            foreach(var node in _virtualNodes)
+            {
+                if(node.Transform.Parent != null)
+                {
+                    node.Transform.Parent.DetachChild(node);
+                }
+            }
+        }
+
+        private void AttachVirtualPoints()
+        {
+            foreach(var node in _virtualNodes)
+            {
+                if(node.Transform.Parent == null)
+                {
+                    Registry.VirtualNodeFactory.DefaultParent.AttachChild(node);
+                }
+            }
+        }
+
+        private void UpdateVirtualPointsCount()
+        {
+            while (_virtualNodes.Count < Curve.VirtualControlPoints.Count - 2)
+            {
+                _virtualNodes.Add(Registry.VirtualNodeFactory.CreateVirtualPoint(Vector3.Zero));
+            }
+            while (_virtualNodes.Count > Curve.VirtualControlPoints.Count - 2)
+            {
+                if (_virtualNodes.Count == 0) break;
+                var node = _virtualNodes[_virtualNodes.Count - 1];
+                _virtualNodes.RemoveAt(_virtualNodes.Count - 1);
+                node.Dispose();
             }
         }
         #endregion

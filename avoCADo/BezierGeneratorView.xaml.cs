@@ -35,7 +35,16 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            DataContext = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorNew;
+            var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorNew;
+            if(gen != null && gen.Curve.HasVirtualControlPoints)
+            {
+                cbBernstein.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                cbBernstein.Visibility = Visibility.Collapsed;
+            }
+            DataContext = gen;
             if (DataContext == null)
             {
                 Visibility = Visibility.Collapsed;

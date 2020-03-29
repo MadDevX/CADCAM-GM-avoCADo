@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,17 +44,19 @@ namespace avoCADo
         public INode CreatePoint(INode parent)
         {
             if (parent == null) parent = _scene;
-            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shader), NameGenerator.GenerateName(parent, "Point"));
+            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shader, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
             parent.AttachChild(pointNode);
             return pointNode;
         }
 
-        //TODO : implement
-        public INode CreateBezierGroup()
+        public INode CreateBezierGroup(bool c2 = false)
         {
             var parent = _scene;
             var source = new ObservableCollection<INode>();
-            var curve = new BezierC0Curve(source);
+            ICurve curve;
+            if (c2) curve = new BezierC2Curve(source);
+            else curve = new BezierC0Curve(source);
+
             var generator = new BezierGeneratorNew(curve);
             var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
             var selected = NodeSelection.Manager.SelectedNodes;
@@ -67,6 +70,5 @@ namespace avoCADo
             parent.AttachChild(bezierGroup);
             return bezierGroup;
         }
-
     }
 }

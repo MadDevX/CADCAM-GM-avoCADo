@@ -77,7 +77,15 @@ namespace avoCADo
             float curDist = float.MaxValue;
             INode curSelect = null;
             var mousePos = PixelToNDC(location, _control);
-            foreach (var node in _scene.Children)
+
+            TraverseCollection(_scene.Children, mousePos, ref curDist, ref curSelect);
+            TraverseCollection(_scene.VirtualChildren, mousePos, ref curDist, ref curSelect);
+            return curSelect;
+        }
+
+        private void TraverseCollection(IList<INode> list, Vector3 mousePos, ref float curDist, ref INode curSelect)
+        {
+            foreach (var node in list)
             {
                 CheckSelection(node, mousePos, ref curDist, ref curSelect);
                 foreach (var child in node.Children)
@@ -85,7 +93,6 @@ namespace avoCADo
                     CheckSelection(child, mousePos, ref curDist, ref curSelect);
                 }
             }
-            return curSelect;
         }
 
         private void CheckSelection(INode node, Vector3 mousePosition, ref float curDist, ref INode curSelect)

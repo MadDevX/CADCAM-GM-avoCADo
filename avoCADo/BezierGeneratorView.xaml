@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <GroupBox Header="Bezier Curve Generator">
-        <CheckBox IsChecked="{Binding ShowEdges}" Content="Show Edges"/>
+        <StackPanel>
+            <CheckBox IsChecked="{Binding ShowEdges}" Content="Show Edges"/>
+            <CheckBox x:Name="cbBernstein" IsChecked="{Binding ShowVirtualControlPoints}" Content="Show Bernstein" Visibility="Collapsed"/>
+        </StackPanel>
     </GroupBox>
 </UserControl>
