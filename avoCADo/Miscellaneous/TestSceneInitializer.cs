@@ -31,7 +31,7 @@ namespace avoCADo
 
             var bSplineSource = new ObservableCollection<INode>();
             var generator = new BSplineGenerator();
-            var bSpline = new BSplineGroupNode(bSplineSource, new LineStripRenderer(shader, generator), generator, "bspline");
+            var bSpline = new BSplineGroupNode(bSplineSource, new LineRenderer(shader, generator), generator, "bspline");
             bSpline.AttachChild(point);
             bSpline.AttachChild(point2);
             bSpline.AttachChild(point3);
@@ -41,7 +41,7 @@ namespace avoCADo
             var bezierSource = new ObservableCollection<INode>();
             var curve = new BezierC0Curve(bezierSource);
             var bezGen = new BezierGeneratorNew(curve);
-            var bezier = new BezierGroupNode(bezierSource, new LineStripRenderer(shader, bezGen), bezGen, "bezier");
+            var bezier = new BezierGroupNode(bezierSource, new LineRenderer(shader, bezGen), bezGen, "bezier");
             bezier.AttachChild(point);
             bezier.AttachChild(point2);
             bezier.AttachChild(point3);

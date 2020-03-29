@@ -124,14 +124,13 @@ namespace avoCADo
             var fn = nodes.Count < 2 ? 0 : ((nodes.Count + 1) / 3);
             if (fn * subdivisions != _curveIndices.Length)
             {
-                _curveIndices = new uint[fn * subdivisions];
+                _curveIndices = new uint[fn * subdivisions * 2 - 2];
                 _curveVertexData = new float[3 * fn * subdivisions];
             }
 
-            Parallel.For(0, _curveIndices.Length, (i) => _curveIndices[i] = (uint)i);
-            //for (uint i = 0; i < _curveIndices.Length; i++) _curveIndices[i] = i;
+            Parallel.For(0, _curveIndices.Length, (i) => _curveIndices[i] = (uint)((i+1)/2));
 
-            Parallel.For(0, nodes.Count / 3 + 1, (i3) => //for(int i3 = 0; i3 < nodes.Count/3; i3++)
+            Parallel.For(0, nodes.Count / 3 + 1, (i3) =>
             {
                 int i = i3 * 3;
                 if (i + 1 == nodes.Count) return;

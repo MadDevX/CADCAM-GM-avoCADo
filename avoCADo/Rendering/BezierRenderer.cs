@@ -9,8 +9,8 @@ namespace avoCADo
 {
     public class BezierRenderer : IRenderer
     {
-        private LineStripRenderer _edgeRenderer;
-        private LineStripRenderer _curveRenderer;
+        private LineRenderer _edgeRenderer;
+        private LineRenderer _curveRenderer;
 
         public void Dispose()
         {

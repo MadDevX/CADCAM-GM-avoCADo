@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class LineStripRenderer : MeshRenderer
+    public class LineRenderer : MeshRenderer
     {
-        public LineStripRenderer(Shader shader, IMeshGenerator meshGenerator) : base(shader, meshGenerator)
+        public LineRenderer(Shader shader, IMeshGenerator meshGenerator) : base(shader, meshGenerator)
         {
         }
 
         protected override void Draw()
         {
-            GL.DrawElements(PrimitiveType.LineStrip, _indexCount, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace avoCADo
 
         private bool _isInitialized = false;
 
-        private int _subdivisions = 200;
+        private int _subdivisions = 250;
 
         private float _maxDistanceSum;
         private int AdjustedSubdivisions => ((int)(_maxDistanceSum / 25.0f) + 1) * _subdivisions;
@@ -99,11 +99,14 @@ namespace avoCADo
             var fullDivisions = fn * subdivisions;
             if (fullDivisions != _curveIndices.Length)
             {
-                _curveIndices = new uint[fullDivisions];
+                _curveIndices = new uint[fullDivisions * 2 - 2];
                 _curveVertexData = new float[3 * fullDivisions];
             }
 
-            Parallel.For(0, _curveIndices.Length, (i) => _curveIndices[i] = (uint)i);
+            Parallel.For(0, _curveIndices.Length, (i) =>
+            {
+                _curveIndices[i] = (uint)((i+1)/2);
+            });
 
             var paramRange = Curve.ParameterRange;
             var diff = paramRange.Y - paramRange.X;

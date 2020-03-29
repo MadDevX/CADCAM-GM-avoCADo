@@ -116,7 +116,7 @@
     </Compile>
     <Compile Include="Rendering\GizmoRenderer.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
-    <Compile Include="Rendering\LineStripRenderer.cs" />
+    <Compile Include="Rendering\LineRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
