@@ -30,7 +30,7 @@ namespace avoCADo
                         SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
                         currentShader = _shaderWrapper;
                     }
-                    GL.DrawElements(PrimitiveType.LinesAdjacency, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex);
+                    GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 }
                 else if (calls[i].shaderType == DrawCallShaderType.Curve)
                 {
@@ -39,9 +39,10 @@ namespace avoCADo
                         SetShader(_curveShaderWrapper, camera, localMatrix, parentMatrix);
                         currentShader = _curveShaderWrapper;
                     }
-                    GL.DrawElements(PrimitiveType.LinesAdjacency, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex);
+                    GL.DrawElements(PrimitiveType.LinesAdjacency, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 }
             }
+            SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
         }
     }
 }

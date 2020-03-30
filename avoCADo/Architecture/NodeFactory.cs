@@ -14,12 +14,14 @@ namespace avoCADo
         private Scene _scene;
         private Cursor3D _cursor;
         private ShaderWrapper _shaderWrapper;
+        private ShaderWrapper _geomShaderWrapper;
 
-        public NodeFactory(Scene scene, Cursor3D cursor, ShaderWrapper shaderWrapper)
+        public NodeFactory(Scene scene, Cursor3D cursor, ShaderWrapper shaderWrapper, ShaderWrapper geomShaderWrapper)
         {
             _scene = scene;
             _cursor = cursor;
             _shaderWrapper = shaderWrapper;
+            _geomShaderWrapper = geomShaderWrapper;
         }
 
         public INode CreateTorus()
@@ -49,13 +51,11 @@ namespace avoCADo
             return pointNode;
         }
 
-        public INode CreateBezierGroup(bool c2 = false)
+        public INode CreateBezierGroup()
         {
             var parent = _scene;
             var source = new ObservableCollection<INode>();
-            ICurve curve;
-            if (c2) curve = new BezierC2Curve(source);
-            else curve = new BezierC0Curve(source);
+            ICurve curve = new BezierC0Curve(source);
 
             var generator = new BezierGeneratorNew(curve);
             var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
@@ -63,6 +63,26 @@ namespace avoCADo
             foreach(var node in selected)
             {
                 if(node.Renderer is PointRenderer)
+                {
+                    bezierGroup.AttachChild(node);
+                }
+            }
+            parent.AttachChild(bezierGroup);
+            return bezierGroup;
+        }
+
+        public INode CreateBSplineGroup()
+        {
+            var parent = _scene;
+            var source = new ObservableCollection<INode>();
+            ICurve curve = new BezierC2Curve(source);
+
+            var generator = new BezierGeneratorGeometry(curve);
+            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_geomShaderWrapper, _shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BSplineCurve"));
+            var selected = NodeSelection.Manager.SelectedNodes;
+            foreach (var node in selected)
+            {
+                if (node.Renderer is PointRenderer)
                 {
                     bezierGroup.AttachChild(node);
                 }

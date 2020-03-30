@@ -19,7 +19,7 @@ namespace avoCADo
             var calls = _meshGenerator.DrawCalls;
             for (int i = 0; i < calls.Count; i++)
             {
-                GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex);
+                GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
             }
         }
     }

@@ -51,9 +51,27 @@ namespace avoCADo
             e.CanExecute = true;
         }
 
+        private void CreateBSplineCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            foreach (var node in NodeSelection.Manager.SelectedNodes)
+            {
+                if (node.Renderer is PointRenderer == false)
+                {
+                    e.CanExecute = false;
+                    return;
+                }
+            }
+            e.CanExecute = true;
+        }
+
         private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _compositionRoot.NodeFactory.CreateBezierGroup();
+        }
+
+        private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _compositionRoot.NodeFactory.CreateBSplineGroup();
         }
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)

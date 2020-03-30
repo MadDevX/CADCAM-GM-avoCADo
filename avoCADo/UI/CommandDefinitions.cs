@@ -42,6 +42,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand BSpline = new RoutedUICommand
+            (
+                "New BSpline Curve",
+                "BSpline",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                            new KeyGesture(Key.S, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

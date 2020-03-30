@@ -36,22 +36,49 @@ namespace avoCADo
         private void OnSelectionChanged()
         {
             var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorNew;
-            if(gen != null && gen.Curve.HasVirtualControlPoints)
+            if (gen != null)
             {
-                cbBernstein.Visibility = Visibility.Visible;
+                if (gen.Curve.HasVirtualControlPoints)
+                {
+                    cbBernstein.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    cbBernstein.Visibility = Visibility.Collapsed;
+                }
+                DataContext = gen;
+                if (DataContext == null)
+                {
+                    Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Visibility = Visibility.Visible;
+                }
             }
             else
             {
-                cbBernstein.Visibility = Visibility.Collapsed;
-            }
-            DataContext = gen;
-            if (DataContext == null)
-            {
-                Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                Visibility = Visibility.Visible;
+                var gen2 = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                if (gen2 != null)
+                {
+                    if (gen2.Curve.HasVirtualControlPoints)
+                    {
+                        cbBernstein.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        cbBernstein.Visibility = Visibility.Collapsed;
+                    }
+                    DataContext = gen2;
+                    if (DataContext == null)
+                    {
+                        Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        Visibility = Visibility.Visible;
+                    }
+                }
             }
         }
     }

@@ -1,55 +1,60 @@
 ﻿#version 330 core
 layout(lines_adjacency) in;
-layout(line_strip, max_vertices = 512) out;
+layout(line_strip, max_vertices = 256) out;
 
 
-vec4 toBezier3(float delta, int i, vec4 P0, vec4 P1, vec4 P2, vec4 P3)
+vec4 bezier2(vec4 a, vec4 b, float t)
 {
-    float t = delta * float(i);
-    float t2 = t * t;
-    float one_minus_t = 1.0 - t;
-    float one_minus_t2 = one_minus_t * one_minus_t;
-    return (P0 * one_minus_t2 * one_minus_t + P1 * 3.0 * t * one_minus_t2 + P2 * 3.0 * t2 * one_minus_t + P3 * t2 * t);
+    return mix(a, b, t);
 }
-vec4 toBezier2(float delta, int i, vec4 P0, vec4 P1, vec4 P2)
+vec4 bezier3(vec4 a, vec4 b, vec4 c, float t)
 {
-    float t = delta * float(i);
-    float t2 = t * t;
-    float one_minus_t = 1.0 - t;
-    float one_minus_t2 = one_minus_t * one_minus_t;
-    return (P0 * one_minus_t2  + P1 * 2.0 * t * one_minus_t + P2 * t2 );
+    return mix(bezier2(a,b,t), bezier2(b,c,t), t);
+}
+vec4 bezier4(vec4 a, vec4 b, vec4 c, vec4 d, float t)
+{
+    return mix(bezier3(a, b, c, t), bezier3(b, c, d, t), t);
 }
 
 void main(void)
 {
 
-    vec4 B[4];
-    B[0] = gl_in[0].gl_Position;
-    B[1] = gl_in[1].gl_Position;
-    B[2] = gl_in[2].gl_Position;
-    B[3] = gl_in[3].gl_Position;
+    vec4 knots[4];
+    knots[0] = gl_in[0].gl_Position;
+    knots[1] = gl_in[1].gl_Position;
+    knots[2] = gl_in[2].gl_Position;
+    knots[3] = gl_in[3].gl_Position;
 
-    if(B[1] == B[2]) {
-     gl_Position = B[0];
+    if(knots[1] == knots[2]) 
+    {
+     gl_Position = knots[0];
      EmitVertex();
-     gl_Position = B[1];
+     gl_Position = knots[1];
      EmitVertex();
-    } else if(B[2] == B[3]) {
-        float dist = distance(B[0].xy, B[1].xy) + distance(B[1].xy, B[2].xy);
-        int steps = min(int(dist * 10), 512);
-        float delta = 1.0 / float(steps);
-        for (int i=0; i<=steps; ++i){
-            gl_Position = toBezier2(delta, i, B[0], B[1], B[2]);
+    } 
+    else if(knots[2] == knots[3]) 
+    {
+        float mag = distance(knots[0].xy, knots[1].xy) + 
+                    distance(knots[1].xy, knots[2].xy);
+        int divisions = min(int(mag * 25), 256);
+        float delta = 1.0f / float(divisions);
+        for (int i = 0; i <= divisions; i++){
+            gl_Position = bezier3(knots[0], knots[1], knots[2], float(i) * delta);
             EmitVertex();
          }
-    } else {
-        float dist = distance(B[0].xy, B[1].xy) + distance(B[1].xy, B[2].xy + distance(B[2].xy, B[3].xy));
-        int steps = min(int(dist * 10), 511);
-        float delta = 1.0 / float(steps);
-        for (int i=0; i<=steps; ++i){
-            gl_Position = toBezier3(delta, i, B[0], B[1], B[2], B[3]);
+    } 
+    else 
+    {
+        float mag = distance(knots[0].xy, knots[1].xy) + 
+                    distance(knots[1].xy, knots[2].xy) + 
+                    distance(knots[2].xy, knots[3].xy);
+        int divisions = min(int(mag * 25), 256);
+        float delta = 1.0f / float(divisions);
+        for (int i = 0; i <= divisions; i++)
+        {
+            gl_Position = bezier4(knots[0], knots[1], knots[2], knots[3], float(i) * delta);
             EmitVertex();
-            }
+        }
     }  
     EndPrimitive();
 }

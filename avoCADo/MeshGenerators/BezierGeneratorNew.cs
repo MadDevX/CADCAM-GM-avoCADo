@@ -108,7 +108,7 @@ namespace avoCADo
             SourceDataChangedEdges();
             SourceDataChangedVirtualEdges();
             CheckCombineArrays();
-            UpdateVirtualPoints();
+            //UpdateVirtualPoints();
             OnParametersChanged?.Invoke();
         }
 
@@ -202,65 +202,6 @@ namespace avoCADo
             {
                 _vertexData = _curveVertexData;
                 _indices = _curveIndices;
-            }
-        }
-
-
-
-
-        private List<INode> _virtualNodes = new List<INode>();
-
-        private void UpdateVirtualPoints()
-        {
-            if(ShowVirtualControlPoints)
-            {
-                UpdateVirtualPointsCount();
-                for(int i = 0; i < _virtualNodes.Count; i++)
-                {
-                    _virtualNodes[i].Transform.Position = Curve.VirtualControlPoints[i + 1];
-                }
-                AttachVirtualPoints();
-            }
-            else
-            {
-                DetachVirtualPoints();
-            }
-        }
-
-        private void DetachVirtualPoints()
-        {
-            foreach(var node in _virtualNodes)
-            {
-                if(node.Transform.Parent != null)
-                {
-                    node.Transform.Parent.DetachChild(node);
-                }
-            }
-        }
-
-        private void AttachVirtualPoints()
-        {
-            foreach(var node in _virtualNodes)
-            {
-                if(node.Transform.Parent == null)
-                {
-                    Registry.VirtualNodeFactory.DefaultParent.AttachChild(node);
-                }
-            }
-        }
-
-        private void UpdateVirtualPointsCount()
-        {
-            while (_virtualNodes.Count < Curve.VirtualControlPoints.Count - 2)
-            {
-                _virtualNodes.Add(Registry.VirtualNodeFactory.CreateVirtualPoint(Vector3.Zero));
-            }
-            while (_virtualNodes.Count > Curve.VirtualControlPoints.Count - 2)
-            {
-                if (_virtualNodes.Count == 0) break;
-                var node = _virtualNodes[_virtualNodes.Count - 1];
-                _virtualNodes.RemoveAt(_virtualNodes.Count - 1);
-                node.Dispose();
             }
         }
         #endregion

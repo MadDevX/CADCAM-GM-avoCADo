@@ -56,12 +56,12 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
-            NodeFactory = new NodeFactory(_scene, _cursor, _defaultShader);
+            NodeFactory = new NodeFactory(_scene, _cursor, _defaultShader, _curveShader);
             _virtualNodeFactory = new VirtualNodeFactory(_defaultShader, _scene);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
 
             _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader);
+            TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader, _curveShader);
         }
 
         public void Dispose()
