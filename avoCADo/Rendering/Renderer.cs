@@ -13,18 +13,14 @@ namespace avoCADo
         protected int VAO = 0;
         protected int VBO = 0;
         protected int EBO = 0;
-        protected Shader _shader;
+        protected ShaderWrapper _shaderWrapper;
 
         protected bool _shouldDispose = false;
         protected int _indexCount;
-        protected int _shaderModelMatrixLocation = -1;
-        protected int _shaderColorLocation = -1;
 
-        public Renderer(Shader shader)
+        public Renderer(ShaderWrapper shader)
         {
-            _shader = shader;
-            _shaderModelMatrixLocation = GL.GetUniformLocation(_shader.Handle, "model");
-            _shaderColorLocation = GL.GetUniformLocation(_shader.Handle, "color");
+            _shaderWrapper = shader;
             InitializeGLObjects();
         }
 
@@ -37,21 +33,28 @@ namespace avoCADo
 
         public void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            _shader.Use();
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            SetModelMatrix(localMatrix, parentMatrix);
-            camera.SetCameraMatrices(_shader.Handle);
-            Draw();
+
+            SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
+            
+            Draw(camera, localMatrix, parentMatrix);
         }
 
-        protected abstract void Draw();
+        protected void SetShader(ShaderWrapper shaderWrapper, Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        {
+            shaderWrapper.Shader.Use();
+            SetModelMatrix(shaderWrapper, localMatrix, parentMatrix);
+            camera.SetCameraMatrices(shaderWrapper);
+        }
 
-        private void SetModelMatrix(Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected abstract void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix);
+
+        private void SetModelMatrix(ShaderWrapper shader, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             var model = localMatrix * parentMatrix;
-            GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
+            shader.SetModelMatrix(model);
         }
 
         private void InitializeGLObjects()

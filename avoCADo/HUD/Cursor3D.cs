@@ -47,7 +47,7 @@ namespace avoCADo
         private float _translateSensitivity = 5.0f;
         private float _scaleSensitivity = 5.0f;
 
-        public Cursor3D(GLControl control, TextBlock label, Shader shader, IRenderLoop renderLoop, IUpdateLoop updateLoop, Camera camera)
+        public Cursor3D(GLControl control, TextBlock label, ShaderWrapper shader, IRenderLoop renderLoop, IUpdateLoop updateLoop, Camera camera)
         {
             _control = control;
             _label = label;

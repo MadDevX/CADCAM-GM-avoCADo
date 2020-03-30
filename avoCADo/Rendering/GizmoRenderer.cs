@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
 {
     public class GizmoRenderer : Renderer
     {
-        public GizmoRenderer(Shader shader) : base(shader)
+        public GizmoRenderer(ShaderWrapper shaderWrapper) : base(shaderWrapper)
         {
             SetBufferData();
         }
@@ -19,20 +21,20 @@ namespace avoCADo
             return null;
         }
 
-        protected override void Draw()
+        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             GL.LineWidth(2.0f);
 
-            GL.Uniform4(_shaderColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+            _shaderWrapper.SetColor(Color4.Red);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 0);
 
-            GL.Uniform4(_shaderColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+            _shaderWrapper.SetColor(Color4.Green);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 2 * sizeof(uint));
 
-            GL.Uniform4(_shaderColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+            _shaderWrapper.SetColor(Color4.Blue);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 4 * sizeof(uint));
 
-            GL.Uniform4(_shaderColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+            _shaderWrapper.SetColor(Color4.White);
             GL.LineWidth(1.0f);
         }
 

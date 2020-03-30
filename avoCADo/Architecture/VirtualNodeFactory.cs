@@ -10,12 +10,12 @@ namespace avoCADo
 {
     public class VirtualNodeFactory
     {
-        private Shader _shader;
+        private ShaderWrapper _shader;
         private Scene _scene;
 
         public INode DefaultParent => _scene;
 
-        public VirtualNodeFactory(Shader shader, Scene scene)
+        public VirtualNodeFactory(ShaderWrapper shader, Scene scene)
         {
             _shader = shader;
             _scene = scene;

@@ -104,6 +104,7 @@
     <Compile Include="ParametricObjects\Curves\BezierHelper.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\BezierRenderer.cs" />
+    <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
     <Compile Include="Interfaces\ILoops.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
+    <Compile Include="Rendering\ShaderWrapper.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>

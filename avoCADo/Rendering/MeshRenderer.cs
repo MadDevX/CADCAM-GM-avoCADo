@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace avoCADo
 {
     public class MeshRenderer : Renderer
     {
-        private IMeshGenerator _meshGenerator;
+        protected IMeshGenerator _meshGenerator;
 
-        public MeshRenderer(Shader shader, IMeshGenerator meshGenerator) : base(shader)
+        public MeshRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper)
         {
             _meshGenerator = meshGenerator;
             _meshGenerator.OnParametersChanged += SetBufferData;
@@ -30,7 +31,7 @@ namespace avoCADo
             return _meshGenerator;
         }
 
-        protected override void Draw()
+        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
         }

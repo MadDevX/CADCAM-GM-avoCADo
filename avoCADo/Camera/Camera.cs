@@ -45,10 +45,10 @@ namespace avoCADo
             _viewportManager.OnViewportChanged -= OnViewportChanged;
         }
 
-        public void SetCameraMatrices(int shaderHandle)
+        public void SetCameraMatrices(ShaderWrapper shaderWrapper)
         {
-            SetViewMatrix(shaderHandle);
-            SetProjectionMatrix(shaderHandle);
+            SetViewMatrix(shaderWrapper);
+            SetProjectionMatrix(shaderWrapper);
         }
 
         #region Camera operations
@@ -124,16 +124,14 @@ namespace avoCADo
 
         #endregion
 
-        private void SetViewMatrix(int shaderHandle)
+        private void SetViewMatrix(ShaderWrapper shaderWrapper)
         {
-            var location = GL.GetUniformLocation(shaderHandle, "view");
-            GL.UniformMatrix4(location, false, ref _viewMatrix);
+            shaderWrapper.SetViewMatrix(_viewMatrix);
         }
 
-        private void SetProjectionMatrix(int shaderHandle)
+        private void SetProjectionMatrix(ShaderWrapper shaderWrapper)
         {
-            var location = GL.GetUniformLocation(shaderHandle, "projection");
-            GL.UniformMatrix4(location, false, ref _projectionMatrix);
+            shaderWrapper.SetProjectionMatrix(_projectionMatrix);
         }
 
         private void OnViewportChanged(System.Drawing.Size obj)

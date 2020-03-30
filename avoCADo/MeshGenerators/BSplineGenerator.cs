@@ -30,6 +30,7 @@ namespace avoCADo
                 }
             }
         }
+        public IList<DrawCall> DrawCalls => new List<DrawCall> { new DrawCall(0, _indices.Length, DrawCallShaderType.Default) };
 
         private INode _parentNode;
         private List<Vector3> _bernsteinPoints = new List<Vector3>();

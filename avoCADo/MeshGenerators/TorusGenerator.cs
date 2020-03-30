@@ -11,6 +11,9 @@ namespace avoCADo
     {
         public ISurface Surface { get; }
         public event Action OnParametersChanged;
+
+        public IList<DrawCall> DrawCalls => new List<DrawCall>{new DrawCall(0, _indices.Length, DrawCallShaderType.Default)};
+
         public int XDivisions
         { 
             get => _xDivisions;

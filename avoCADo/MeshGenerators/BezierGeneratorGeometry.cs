@@ -25,6 +25,7 @@ namespace avoCADo.MeshGenerators
                 }
             }
         }
+        public IList<DrawCall> DrawCalls => new List<DrawCall> { new DrawCall(0, _indices.Length, DrawCallShaderType.Default) };
 
         private INode _parentNode;
         private ICurve Curve { get; }

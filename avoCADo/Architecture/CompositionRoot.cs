@@ -19,8 +19,8 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
 
-        private Shader _defaultShader;
-        private Shader _curveShader;
+        private ShaderWrapper _defaultShader;
+        private ShaderWrapper _curveShader;
         private Scene _scene;
         private Camera _camera;
         private CameraMovement _camMovement;
@@ -44,8 +44,8 @@ namespace avoCADo
         {
             _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.FromArgb(40, 40, 40)));
             _viewportManager = new ViewportManager(_control);
-            _defaultShader = new Shader("vs.vert", "fs.frag");
-            _curveShader = new Shader("vs.vert", "gsBezierC0.geom", "fs.frag");
+            _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));
+            _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
             _scene = new Scene("Main");
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
@@ -75,6 +75,7 @@ namespace avoCADo
             _camMovement.Dispose();
             _camera.Dispose();
             _scene.Dispose();
+            _curveShader.Dispose();
             _defaultShader.Dispose();
             _viewportManager.Dispose();
         }

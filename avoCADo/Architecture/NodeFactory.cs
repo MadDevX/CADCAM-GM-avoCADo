@@ -13,13 +13,13 @@ namespace avoCADo
     {
         private Scene _scene;
         private Cursor3D _cursor;
-        private Shader _shader;
+        private ShaderWrapper _shaderWrapper;
 
-        public NodeFactory(Scene scene, Cursor3D cursor, Shader shader)
+        public NodeFactory(Scene scene, Cursor3D cursor, ShaderWrapper shaderWrapper)
         {
             _scene = scene;
             _cursor = cursor;
-            _shader = shader;
+            _shaderWrapper = shaderWrapper;
         }
 
         public INode CreateTorus()
@@ -36,7 +36,7 @@ namespace avoCADo
         {
             if (parent == null) parent = _scene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shader, generator), NameGenerator.GenerateName(parent, "Torus"));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shaderWrapper, generator), NameGenerator.GenerateName(parent, "Torus"));
             parent.AttachChild(torusNode);
             return torusNode;
         }
@@ -44,7 +44,7 @@ namespace avoCADo
         public INode CreatePoint(INode parent)
         {
             if (parent == null) parent = _scene;
-            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shader, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
+            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderWrapper, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
             parent.AttachChild(pointNode);
             return pointNode;
         }
@@ -58,7 +58,7 @@ namespace avoCADo
             else curve = new BezierC0Curve(source);
 
             var generator = new BezierGeneratorNew(curve);
-            var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
+            var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach(var node in selected)
             {

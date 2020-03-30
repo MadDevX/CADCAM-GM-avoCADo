@@ -11,7 +11,7 @@ namespace avoCADo
 {
     public static class TestSceneInitializer
     {
-        public static void SpawnTestObjects(Scene scene, Shader shader)
+        public static void SpawnTestObjects(Scene scene, ShaderWrapper shader)
         {
             var parent = new Node(new Transform(new Vector3(1.0f, 0.0f, -1.0f), new Vector3(0.0f, MathHelper.DegreesToRadians(90.0f), 0.0f), Vector3.One), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "parent torus");
             var child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "child torus");

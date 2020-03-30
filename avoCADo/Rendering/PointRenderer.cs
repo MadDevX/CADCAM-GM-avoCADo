@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics;
+﻿using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace avoCADo
     {
         private Color4 _color;
 
-        public PointRenderer(Shader shader, Color4 color) : base(shader)
+        public PointRenderer(ShaderWrapper shaderWrapper, Color4 color) : base(shaderWrapper)
         {
             _color = color;
             SetBufferData();
@@ -20,12 +21,12 @@ namespace avoCADo
 
         public override IMeshGenerator GetGenerator() => null;
 
-        protected override void Draw()
+        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             GL.PointSize(4.0f);
-            GL.Uniform4(_shaderColorLocation, _color);
+            _shaderWrapper.SetColor(_color);
             GL.DrawArrays(PrimitiveType.Points, 0, 1);
-            GL.Uniform4(_shaderColorLocation, Color4.White);
+            _shaderWrapper.SetColor(Color4.White);
             GL.PointSize(1.0f);
         }
 

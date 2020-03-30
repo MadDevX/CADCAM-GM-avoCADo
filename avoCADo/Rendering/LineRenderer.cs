@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,32 +10,17 @@ namespace avoCADo
 {
     public class LineRenderer : MeshRenderer
     {
-        public LineRenderer(Shader shader, IMeshGenerator meshGenerator) : base(shader, meshGenerator)
+        public LineRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {
         }
 
-        protected override void Draw()
+        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
-        }
-    }
-
-    public class CurveRenderer : MeshRenderer
-    {
-        private Shader _curveShader;
-        private int _curveShaderModelMatrixLocation;
-        private int _curveShaderColorLocation;
-
-        public CurveRenderer(Shader curveShader, Shader shader, IMeshGenerator meshGenerator) : base(shader, meshGenerator)
-        {
-            _curveShader = curveShader;
-            _curveShaderModelMatrixLocation = GL.GetUniformLocation(_curveShader.Handle, "model");
-            _curveShaderColorLocation = GL.GetUniformLocation(_curveShader.Handle, "color");
-        }
-
-        protected override void Draw()
-        {
-            GL.DrawElements(PrimitiveType.LinesAdjacency, _indexCount, DrawElementsType.UnsignedInt, 0);
+            var calls = _meshGenerator.DrawCalls;
+            for (int i = 0; i < calls.Count; i++)
+            {
+                GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex);
+            }
         }
     }
 }
