@@ -79,6 +79,10 @@ namespace avoCADo
                         Visibility = Visibility.Visible;
                     }
                 }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
+                }
             }
         }
     }

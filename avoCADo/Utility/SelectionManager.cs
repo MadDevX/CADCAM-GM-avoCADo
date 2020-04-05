@@ -11,6 +11,7 @@ namespace avoCADo
         public event Action OnSelectionChanged;
 
         public IReadOnlyCollection<INode> SelectedNodes { get; }
+
         public INode MainSelection { get; private set; } = null;
 
         private List<INode> _selectedNodes;
@@ -23,7 +24,7 @@ namespace avoCADo
 
         public void ResetSelection()
         {
-            _selectedNodes.Clear();
+            ClearList();
             MainSelection = null;
             OnSelectionChanged?.Invoke();
         }
@@ -49,8 +50,8 @@ namespace avoCADo
 
         private void SelectInternal(INode node)
         {
-            _selectedNodes.Clear();
-            _selectedNodes.Add(node);
+            ClearList();
+            AddToList(node);
             MainSelection = node;
         }
 
@@ -58,7 +59,7 @@ namespace avoCADo
         {
             if (_selectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
             {
-                _selectedNodes.Add(node);
+                AddToList(node);
                 MainSelection = node;
             }
             else
@@ -69,11 +70,45 @@ namespace avoCADo
 
         private void RemoveFromSelected(INode node)
         {
-            _selectedNodes.Remove(node);
-            if (node == MainSelection && _selectedNodes.Count > 0)
+            RemoveFromList(node);
+            if (node == MainSelection)
             {
-                MainSelection = _selectedNodes[_selectedNodes.Count - 1];
+                if (_selectedNodes.Count > 0)
+                {
+                    MainSelection = _selectedNodes[_selectedNodes.Count - 1];
+                }
+                else
+                {
+                    MainSelection = null;
+                }
             }
+        }
+
+        private void TrackDispose(INode obj)
+        {
+            RemoveFromSelected(obj);
+            OnSelectionChanged?.Invoke();
+        }
+
+        private void AddToList(INode obj)
+        {
+            _selectedNodes.Add(obj);
+            obj.OnDisposed += TrackDispose;
+        }
+
+        private void RemoveFromList(INode obj)
+        {
+            _selectedNodes.Remove(obj);
+            obj.OnDisposed -= TrackDispose;
+        }
+
+        private void ClearList()
+        {
+            foreach(var node in _selectedNodes)
+            {
+                node.OnDisposed -= TrackDispose;
+            }
+            _selectedNodes.Clear();
         }
     }
 }
