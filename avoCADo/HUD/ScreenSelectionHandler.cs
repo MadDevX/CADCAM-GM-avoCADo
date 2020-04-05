@@ -55,7 +55,14 @@ namespace avoCADo
                 {
                     if (node != null)
                     {
-                        _selectionManager.ToggleSelection(node);
+                        if (node is VirtualNode || _selectionManager.MainSelection is VirtualNode)
+                        {
+                            _selectionManager.Select(node);
+                        }
+                        else
+                        {
+                            _selectionManager.ToggleSelection(node);
+                        }
                     }
                 }
                 else

@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Architecture;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,12 +15,13 @@ namespace avoCADo
         public event Action OnParametersChanged;
 
         private bool _showEdges = false;
+        private bool _showVirtualControlPoints = false;
         public bool ShowEdges
         {
             get => _showEdges;
             set
             {
-                if(value != _showEdges)
+                if (value != _showEdges)
                 {
                     _showEdges = value;
                     DataChangedWrapper();
@@ -28,7 +30,21 @@ namespace avoCADo
         }
         public IList<DrawCall> DrawCalls => new List<DrawCall> { new DrawCall(0, _indices.Length, DrawCallShaderType.Default) };
 
+        public bool ShowVirtualControlPoints
+        {
+            get => _showVirtualControlPoints;
+            set
+            {
+                if(value != _showVirtualControlPoints)
+                {
+                    _showVirtualControlPoints = value;
+                    DataChangedWrapper();
+                }
+            }
+        }
+
         private INode _parentNode;
+        public ICurve Curve { get; }
 
         private uint[] _curveIndices = new uint[0];
         private float[] _curveVertexData = new float[0];
@@ -36,15 +52,23 @@ namespace avoCADo
         private uint[] _edgeIndices = new uint[0];
         private float[] _edgeVertexData = new float[0];
 
+        private uint[] _virtualEdgeIndices = new uint[0];
+        private float[] _virtualEdgeVertexData = new float[0];
+
         private uint[] _indices = new uint[0];
         private float[] _vertexData = new float[0];
 
         private bool _isInitialized = false;
 
-        private int _subdivisions = 200;
+        private int _subdivisions = 250;
 
         private float _maxDistanceSum;
         private int AdjustedSubdivisions => ((int)(_maxDistanceSum / 25.0f) + 1) * _subdivisions;
+
+        public BezierGenerator(ICurve curve)
+        {
+            Curve = curve;
+        }
 
         public void Initialize(INode node)
         {
@@ -78,76 +102,101 @@ namespace avoCADo
 
         private void DataChangedWrapper()
         {
+            Curve.Refresh();
+            UpdateDistanceSum(_parentNode.Children);
             SourceDataChanged();
             SourceDataChangedEdges();
+            SourceDataChangedVirtualEdges();
             CheckCombineArrays();
+            //UpdateVirtualPoints();
             OnParametersChanged?.Invoke();
         }
 
         private void SourceDataChanged()
         {
             var nodes = _parentNode.Children;
-            UpdateDistanceSum(nodes);
 
             var subdivisions = AdjustedSubdivisions;
-            var fn = nodes.Count < 2? 0 : ((nodes.Count + 1) / 3);
-            if (fn * subdivisions != _curveIndices.Length)
+            var segments = Curve.Segments;
+            var fullDivisions = segments * subdivisions;
+            if (fullDivisions * 3 != _curveVertexData.Length)
             {
-                _curveIndices = new uint[fn * subdivisions];
-                _curveVertexData = new float[3 * fn * subdivisions];
+                _curveIndices = new uint[Math.Max(0, fullDivisions * 2 - 2)];
+                _curveVertexData = new float[3 * fullDivisions];
             }
 
-            Parallel.For(0, _curveIndices.Length, (i) => _curveIndices[i] = (uint)i);
-            //for (uint i = 0; i < _curveIndices.Length; i++) _curveIndices[i] = i;
-
-            Parallel.For(0, nodes.Count / 3 + 1, (i3) => //for(int i3 = 0; i3 < nodes.Count/3; i3++)
+            Parallel.For(0, _curveIndices.Length, (i) =>
             {
-                int i = i3 * 3;
-                if (i + 1 == nodes.Count) return;
-                else if (i + 2 == nodes.Count) CalcBezier1(i);
-                else if (i + 3 == nodes.Count) CalcBezier2(i);
-                else if (i + 4 <= nodes.Count) CalcBezier3(i);
+                _curveIndices[i] = (uint)((i+1)/2);
+            });
+
+            var paramRange = Curve.ParameterRange;
+            var diff = paramRange.Y - paramRange.X;
+            if (diff == 0.0f) return;
+            Parallel.For(0, fullDivisions, (i) =>
+            {
+                var t = ((float)i / (float)(fullDivisions - 1) * diff) + paramRange.X;
+                SetVertex(_curveVertexData, Curve.GetVertex(t), i);
             });
 
         }
 
         private void SourceDataChangedEdges()
         {
-            var nodes = _parentNode.Children;
-
-            if (nodes.Count != _edgeIndices.Length)
+            var nodes = Curve.ControlPoints;
+            if (nodes.Count * 3 != _edgeVertexData.Length)
             {
-                _edgeIndices = new uint[nodes.Count];
+                _edgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
                 _edgeVertexData = new float[3 * nodes.Count];
             }
 
 
-            for (uint i = 0; i < nodes.Count; i++) _edgeIndices[i] = (uint)_curveIndices.Length + i;
+            for (uint i = 0; i < _edgeIndices.Length; i++) _edgeIndices[i] = (uint)(_curveIndices.Length/2+1 + ((i+1)/2));
 
-            for (int i = nodes.Count - 1; i >= 0; i--)
+            for (int i = 0; i < nodes.Count; i++)
             {
-                var invI = nodes.Count - 1 - i;
-                var worldPos = nodes[i].Transform.WorldPosition;
-                _edgeVertexData[3 * invI + 0] = worldPos.X;
-                _edgeVertexData[3 * invI + 1] = worldPos.Y;
-                _edgeVertexData[3 * invI + 2] = worldPos.Z;
+                SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
             }
 
         }
 
+        private void SourceDataChangedVirtualEdges()
+        {
+            if (Curve.HasVirtualControlPoints)
+            {
+                var nodes = Curve.VirtualControlPoints;
+                if (nodes.Count * 3 != _virtualEdgeVertexData.Length)
+                {
+                    _virtualEdgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
+                    _virtualEdgeVertexData = new float[3 * nodes.Count];
+                }
+
+
+                var offset = (_curveIndices.Length / 2 + 1) + (_edgeIndices.Length / 2 + 1);
+                for (uint i = 0; i < _virtualEdgeIndices.Length; i++) _virtualEdgeIndices[i] = (uint)(offset + ((i + 1) / 2));
+
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    SetVertex(_virtualEdgeVertexData, nodes[i], i);
+                }
+            }
+        }
+
         private void CheckCombineArrays()
         {
-            if(ShowEdges)
+            if (ShowEdges)
             {
-                if (_vertexData.Length != _curveVertexData.Length + _edgeVertexData.Length)
+                if (_vertexData.Length != _curveVertexData.Length + _edgeVertexData.Length + _virtualEdgeVertexData.Length)
                 {
-                    _vertexData = new float[_curveVertexData.Length + _edgeVertexData.Length];
-                    _indices = new uint[_curveIndices.Length + _edgeIndices.Length];
+                    _vertexData = new float[_curveVertexData.Length + _edgeVertexData.Length + _virtualEdgeVertexData.Length];
+                    _indices = new uint[_curveIndices.Length + _edgeIndices.Length + _virtualEdgeIndices.Length];
                 }
                 Array.Copy(_curveVertexData, 0, _vertexData, 0, _curveVertexData.Length);
                 Array.Copy(_edgeVertexData, 0, _vertexData, _curveVertexData.Length, _edgeVertexData.Length);
+                Array.Copy(_virtualEdgeVertexData, 0, _vertexData, _curveVertexData.Length + _edgeVertexData.Length, _virtualEdgeVertexData.Length);
                 Array.Copy(_curveIndices, 0, _indices, 0, _curveIndices.Length);
                 Array.Copy(_edgeIndices, 0, _indices, _curveIndices.Length, _edgeIndices.Length);
+                Array.Copy(_virtualEdgeIndices, 0, _indices, _curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length);
             }
             else
             {
@@ -155,67 +204,6 @@ namespace avoCADo
                 _indices = _curveIndices;
             }
         }
-        #endregion
-
-
-        #region Bezier Calculations
-
-        private void CalcBezier1(int i)
-        {
-            var subdivisions = AdjustedSubdivisions;
-            var nodes = _parentNode.Children;
-            Vector3 a = nodes[i].Transform.WorldPosition;
-            Vector3 b = nodes[i + 1].Transform.WorldPosition;
-            for (int j = 0; j < subdivisions; j++)
-            {
-                var vect = Bezier1(a, b, j / (float)(subdivisions - 1));
-                SetVertex(vect, i / 3 * subdivisions + j);
-            }
-        }
-        private void CalcBezier2(int i)
-        {
-            var subdivisions = AdjustedSubdivisions;
-            var nodes = _parentNode.Children;
-            Vector3 a = nodes[i].Transform.WorldPosition;
-            Vector3 b = nodes[i + 1].Transform.WorldPosition;
-            Vector3 c = nodes[i + 2].Transform.WorldPosition;
-            for (int j = 0; j < subdivisions; j++)
-            {
-                var vect = Bezier2(a, b, c, j / (float)(subdivisions - 1));
-                SetVertex(vect, i / 3 * subdivisions + j);
-            }
-        }
-
-        private void CalcBezier3(int i)
-        {
-            var subdivisions = AdjustedSubdivisions;
-            var nodes = _parentNode.Children;
-            Vector3 a = nodes[i].Transform.WorldPosition;
-            Vector3 b = nodes[i + 1].Transform.WorldPosition;
-            Vector3 c = nodes[i + 2].Transform.WorldPosition;
-            Vector3 d = nodes[i + 3].Transform.WorldPosition;
-            for (int j = 0; j < subdivisions; j++)
-            {
-                var vect = Bezier3(a, b, c, d, j / (float)(subdivisions - 1));
-                SetVertex(vect, i / 3 * subdivisions + j);
-            }
-        }
-
-        private Vector3 Bezier1(Vector3 a, Vector3 b, float t)
-        {
-            return Vector3.Lerp(a, b, t);
-        }
-
-        private Vector3 Bezier2(Vector3 a, Vector3 b, Vector3 c, float t)
-        {
-            return Vector3.Lerp(Bezier1(a, b, t), Bezier1(b, c, t), t);
-        }
-
-        private Vector3 Bezier3(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
-        {
-            return Vector3.Lerp(Bezier2(a, b, c, t), Bezier2(b, c, d, t), t);
-        }
-
         #endregion
 
         #region Getters
@@ -237,25 +225,25 @@ namespace avoCADo
         private void UpdateDistanceSum(ObservableCollection<INode> nodes)
         {
             _maxDistanceSum = 0.0f;
-            for (int i = 0; i < nodes.Count - 1; i+=3)
+            for (int i = 0; i < nodes.Count - 1; i += 3)
             {
                 var curDist = 0.0f;
-                if (i+1<nodes.Count) curDist += (nodes[i].Transform.WorldPosition - nodes[i + 1].Transform.WorldPosition).Length;
-                if(i+2<nodes.Count) curDist += (nodes[i+1].Transform.WorldPosition - nodes[i + 2].Transform.WorldPosition).Length;
-                if(i+3<nodes.Count) curDist += (nodes[i+2].Transform.WorldPosition - nodes[i + 3].Transform.WorldPosition).Length;
+                if (i + 1 < nodes.Count) curDist += (nodes[i].Transform.WorldPosition - nodes[i + 1].Transform.WorldPosition).Length;
+                if (i + 2 < nodes.Count) curDist += (nodes[i + 1].Transform.WorldPosition - nodes[i + 2].Transform.WorldPosition).Length;
+                if (i + 3 < nodes.Count) curDist += (nodes[i + 2].Transform.WorldPosition - nodes[i + 3].Transform.WorldPosition).Length;
 
-                if(curDist > _maxDistanceSum)
+                if (curDist > _maxDistanceSum)
                 {
                     _maxDistanceSum = curDist;
                 }
             }
         }
 
-        private void SetVertex(Vector3 vect, int vertexIndex)
+        private void SetVertex(float[] vertexArray, Vector3 vect, int vertexIndex)
         {
-            _curveVertexData[3 * vertexIndex + 0] = vect.X;
-            _curveVertexData[3 * vertexIndex + 1] = vect.Y;
-            _curveVertexData[3 * vertexIndex + 2] = vect.Z;
+            vertexArray[3 * vertexIndex + 0] = vect.X;
+            vertexArray[3 * vertexIndex + 1] = vect.Y;
+            vertexArray[3 * vertexIndex + 2] = vect.Z;
         }
         #endregion
     }

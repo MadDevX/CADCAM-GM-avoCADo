@@ -57,7 +57,7 @@ namespace avoCADo
             var source = new ObservableCollection<INode>();
             ICurve curve = new BezierC0Curve(source);
 
-            var generator = new BezierGeneratorNew(curve);
+            var generator = new BezierGenerator(curve);
             var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach(var node in selected)

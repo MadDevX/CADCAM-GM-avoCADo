@@ -35,7 +35,7 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorNew;
+            var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
             if (gen != null)
             {
                 if (gen.Curve.HasVirtualControlPoints)

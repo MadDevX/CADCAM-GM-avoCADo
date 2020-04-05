@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class BezierGroupNode : GroupNode<BezierGeneratorNew>
+    public class BezierGroupNode : GroupNode<BezierGenerator>
     {
-        public BezierGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorNew dependent, string name) : base(childrenSource, renderer, dependent, name)
+        public BezierGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BezierGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)
         {
         }
     }
