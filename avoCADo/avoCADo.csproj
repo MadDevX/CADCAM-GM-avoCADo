@@ -103,7 +103,6 @@
     <Compile Include="ParametricObjects\Curves\BezierC2Curve.cs" />
     <Compile Include="ParametricObjects\Curves\BezierHelper.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
-    <Compile Include="Rendering\BezierRenderer.cs" />
     <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
