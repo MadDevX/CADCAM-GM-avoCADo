@@ -18,7 +18,7 @@ namespace avoCADo
         INode Parent { get; set; }
 
         Matrix4 LocalModelMatrix { get; }
-        Vector3 WorldPosition { get; }
+        Vector3 WorldPosition { get; set; }
         Vector2 ScreenCoords(Camera camera);
 
         void RotateAround(Vector3 pivot, Vector3 eulerAngles);

@@ -82,9 +82,13 @@ namespace avoCADo
 
         private bool _isInitialized = false;
 
+        private SelectionManager _selectionManager;
+
         public BezierGeneratorGeometry(ICurve curve)
         {
             Curve = curve;
+            _selectionManager = NodeSelection.Manager;
+            _selectionManager.OnSelectionChanged += HandleSelectionChanged;
         }
 
         public void Initialize(INode node)
@@ -103,6 +107,7 @@ namespace avoCADo
         {
             _parentNode.PropertyChanged -= SourceDataChanged;
             _parentNode.Children.CollectionChanged -= SourceDataChanged;
+            DisposeVirtualNodes();
         }
 
         private void SourceDataChanged(object sender, PropertyChangedEventArgs e)
@@ -119,6 +124,7 @@ namespace avoCADo
 
         private void DataChangedWrapper()
         {
+            
             Curve.Refresh();
             SourceDataChanged();
             SourceDataChangedEdges();
@@ -224,16 +230,15 @@ namespace avoCADo
             Array.Copy(_edgeIndices, 0, _indices, _curveIndices.Length, _edgeIndices.Length);
             Array.Copy(_virtualEdgeIndices, 0, _indices, _curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length);
         }
+        #endregion
 
-
-
-
-
+        #region VirtualNodes
 
         private List<INode> _virtualNodes = new List<INode>();
 
         private void UpdateVirtualPoints()
         {
+            PauseTransformHandling();
             if (ShowVirtualControlPoints)
             {
                 UpdateVirtualPointsCount();
@@ -247,6 +252,7 @@ namespace avoCADo
             {
                 DetachVirtualPoints();
             }
+            ResumeTransformHandling();
         }
 
         private void DetachVirtualPoints()
@@ -284,6 +290,83 @@ namespace avoCADo
                 _virtualNodes.RemoveAt(_virtualNodes.Count - 1);
                 node.Dispose();
             }
+        }
+
+        private INode _currentVirtualNode;
+        private void HandleSelectionChanged()
+        {
+            if (_currentVirtualNode != null)
+            {
+                _currentVirtualNode.PropertyChanged -= HandleVirtualTranslation;
+            }
+            if (_selectionManager.MainSelection is VirtualNode && _virtualNodes.Contains(_selectionManager.MainSelection))
+            {
+                _currentVirtualNode = _selectionManager.MainSelection;
+                _currentVirtualNode.PropertyChanged += HandleVirtualTranslation;
+            }
+            else
+            {
+                _currentVirtualNode = null;
+            }
+        }
+
+        private void HandleVirtualTranslation(object sender, PropertyChangedEventArgs e)
+        {
+            var nodes = Curve.ControlPoints;
+            var idx = _virtualNodes.IndexOf(_currentVirtualNode);
+            int toMoveIdx, refIdx;
+            Vector3 pos;
+            if(idx%3==0) // Connecting Bernstein Node
+            {
+                toMoveIdx = (idx / 3) + 1;
+                refIdx =    (idx / 3) + 2;
+                var ref2Idx = (idx / 3);
+
+                var offset = (nodes[refIdx].Transform.WorldPosition - nodes[ref2Idx].Transform.WorldPosition)/6.0f;
+                pos = _currentVirtualNode.Transform.WorldPosition + offset;
+            }
+            else if ((idx-1)%3==0) // Bernstein on spline polyline edge
+            {
+                toMoveIdx = ((idx - 1) / 3) + 1;
+                refIdx =    ((idx - 1) / 3) + 2;
+                pos = _currentVirtualNode.Transform.WorldPosition;
+            }
+            else //if ((idx+1)%3==0) // Bernstein on spline polyline edge
+            {
+                toMoveIdx = ((idx + 1) / 3) + 1;
+                refIdx = ((idx + 1) / 3);
+                pos = _currentVirtualNode.Transform.WorldPosition;
+            }
+
+            var refPos = nodes[refIdx].Transform.WorldPosition;
+            var twoThirds = pos - refPos;
+            var finalPos = refPos + 1.5f * twoThirds;
+            nodes[toMoveIdx].Transform.WorldPosition = finalPos;
+            DataChangedWrapper();
+        }
+
+        private void PauseTransformHandling()
+        {
+            if (_currentVirtualNode != null) _currentVirtualNode.PropertyChanged -= HandleVirtualTranslation;
+        }
+
+        private void ResumeTransformHandling()
+        {
+            if (_currentVirtualNode != null) _currentVirtualNode.PropertyChanged += HandleVirtualTranslation;
+        }
+
+        private void DisposeVirtualNodes()
+        {
+            if (_currentVirtualNode != null)
+            {
+                _currentVirtualNode.PropertyChanged -= HandleVirtualTranslation;
+                _currentVirtualNode = null;
+            }
+            for(int i = _virtualNodes.Count - 1; i >= 0; i--)
+            {
+                _virtualNodes[i].Dispose();
+            }
+            _virtualNodes.Clear();
         }
 
         #endregion

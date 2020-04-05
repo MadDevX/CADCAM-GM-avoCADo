@@ -19,7 +19,7 @@ namespace avoCADo
 
         public Matrix4 LocalModelMatrix => Matrix4.Identity;
 
-        public Vector3 WorldPosition => Vector3.Zero;
+        public Vector3 WorldPosition { get => Vector3.Zero; set { } }
 
         public void RotateAround(Vector3 pivot, Vector3 eulerAngles) { }
 

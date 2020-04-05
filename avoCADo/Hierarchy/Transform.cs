@@ -97,7 +97,7 @@ namespace avoCADo
             set
             {
                 var vec = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-                if (Parent != null) vec = vec * Parent.GlobalModelMatrix;
+                if (Parent != null) vec = vec * Parent.GlobalModelMatrix; //TODO: rotate offset
                 Position = value - new Vector3(vec.X, vec.Y, vec.Z);
             }
         }
