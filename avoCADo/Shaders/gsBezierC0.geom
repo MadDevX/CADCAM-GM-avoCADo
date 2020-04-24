@@ -25,14 +25,14 @@ void main(void)
     knots[2] = gl_in[2].gl_Position;
     knots[3] = gl_in[3].gl_Position;
 
-    if(knots[1] == knots[2]) 
+    if(isnan(knots[2].x)) 
     {
      gl_Position = knots[0];
      EmitVertex();
      gl_Position = knots[1];
      EmitVertex();
     } 
-    else if(knots[2] == knots[3]) 
+    else if(isnan(knots[3].x)) //TODO: check if it works in vertex shader (nan coords should be mapped to nan coords in screenspace)
     {
         float mag = distance(knots[0].xy, knots[1].xy) + 
                     distance(knots[1].xy, knots[2].xy);
