@@ -99,9 +99,11 @@
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
     <Compile Include="MeshGenerators\BSplineGenerator.cs" />
+    <Compile Include="Miscellaneous\TridiagonalSolver.cs" />
     <Compile Include="ParametricObjects\Curves\BezierC0Curve.cs" />
     <Compile Include="ParametricObjects\Curves\BezierC2Curve.cs" />
     <Compile Include="ParametricObjects\Curves\BezierHelper.cs" />
+    <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />

@@ -16,10 +16,13 @@ namespace avoCADo
 
         IList<INode> ControlPoints { get; }
 
-        bool HasVirtualControlPoints { get; }
-        IList<Vector3> VirtualControlPoints { get; }
-
+        IList<Vector3> BernsteinControlPoints { get; }
         void Refresh();
         //GetTangent
+    }
+
+    public interface IVirtualControlPoints
+    {
+        IList<Vector3> VirtualControlPoints { get; }
     }
 }

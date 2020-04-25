@@ -8,7 +8,7 @@ using avoCADo.ParametricObjects.Curves;
 
 namespace avoCADo
 {
-    class BezierC2Curve : ICurve
+    class BezierC2Curve : ICurve, IVirtualControlPoints
     {
         public Vector2 ParameterRange => new Vector2(0.0f, Segments);
 
@@ -23,11 +23,9 @@ namespace avoCADo
 
         public IList<INode> ControlPoints { get; }
 
+        public IList<Vector3> BernsteinControlPoints { get; } = new List<Vector3>();
+
         public IList<Vector3> VirtualControlPoints { get; } = new List<Vector3>();
-
-        public bool HasVirtualControlPoints => true;
-
-        private IList<Vector3> _bernsteinPoints = new List<Vector3>();
 
         public BezierC2Curve(IList<INode> controlPointsSource)
         {
@@ -49,13 +47,13 @@ namespace avoCADo
                 startIdx = (segment - 1) * 3;
                 segmentT = 1.0f;
             }
-            if (_bernsteinPoints.Count >= startIdx + 4)
+            if (BernsteinControlPoints.Count >= startIdx + 4)
             {
                 return BezierHelper.Bezier3(
-                               _bernsteinPoints[startIdx],
-                               _bernsteinPoints[startIdx + 1],
-                               _bernsteinPoints[startIdx + 2],
-                               _bernsteinPoints[startIdx + 3],
+                               BernsteinControlPoints[startIdx],
+                               BernsteinControlPoints[startIdx + 1],
+                               BernsteinControlPoints[startIdx + 2],
+                               BernsteinControlPoints[startIdx + 3],
                                segmentT
                                );
             }
@@ -65,7 +63,7 @@ namespace avoCADo
         private void CalculateBernsteinControlPoints()
         {
             VirtualControlPoints.Clear();
-            _bernsteinPoints.Clear();
+            BernsteinControlPoints.Clear();
             var deBoorPoints = ControlPoints;
             if(deBoorPoints.Count > 3)
             {
@@ -73,7 +71,7 @@ namespace avoCADo
             }
             for (int i = 0; i < deBoorPoints.Count - 3; i++)
             {
-                AddBernstein(_bernsteinPoints, deBoorPoints[i + 0].Transform.WorldPosition,
+                AddBernstein(BernsteinControlPoints, deBoorPoints[i + 0].Transform.WorldPosition,
                                               deBoorPoints[i + 1].Transform.WorldPosition,
                                               deBoorPoints[i + 2].Transform.WorldPosition,
                                               deBoorPoints[i + 3].Transform.WorldPosition,
@@ -82,9 +80,9 @@ namespace avoCADo
             }
             if(deBoorPoints.Count > 3)
             {
-                for(int i = 0; i < _bernsteinPoints.Count; i++)
+                for(int i = 0; i < BernsteinControlPoints.Count; i++)
                 {
-                    VirtualControlPoints.Add(_bernsteinPoints[i]);
+                    VirtualControlPoints.Add(BernsteinControlPoints[i]);
                 }
                 VirtualControlPoints.Add(Vector3.Lerp(deBoorPoints[deBoorPoints.Count - 2].Transform.WorldPosition,
                                                       deBoorPoints[deBoorPoints.Count - 1].Transform.WorldPosition,

@@ -162,9 +162,10 @@ namespace avoCADo
 
         private void SourceDataChangedVirtualEdges()
         {
-            if (Curve.HasVirtualControlPoints)
+            var vCtrlPoints = Curve as IVirtualControlPoints;
+            if (vCtrlPoints != null)
             {
-                var nodes = Curve.VirtualControlPoints;
+                var nodes = vCtrlPoints.VirtualControlPoints;
                 if (nodes.Count * 3 != _virtualEdgeVertexData.Length)
                 {
                     _virtualEdgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];

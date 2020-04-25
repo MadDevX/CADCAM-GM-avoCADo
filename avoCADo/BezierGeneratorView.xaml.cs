@@ -38,7 +38,7 @@ namespace avoCADo
             var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
             if (gen != null)
             {
-                if (gen.Curve.HasVirtualControlPoints)
+                if (gen.Curve is IVirtualControlPoints)
                 {
                     cbBernstein.Visibility = Visibility.Visible;
                 }
@@ -61,7 +61,7 @@ namespace avoCADo
                 var gen2 = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorGeometry;
                 if (gen2 != null)
                 {
-                    if (gen2.Curve.HasVirtualControlPoints)
+                    if (gen2.Curve is IVirtualControlPoints)
                     {
                         cbBernstein.Visibility = Visibility.Visible;
                     }

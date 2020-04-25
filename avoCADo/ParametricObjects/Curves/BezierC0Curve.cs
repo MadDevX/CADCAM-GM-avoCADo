@@ -16,9 +16,8 @@ namespace avoCADo
 
         public IList<INode> ControlPoints { get; }
 
-        public IList<Vector3> VirtualControlPoints => ControlPoints.Select((x) => x.Transform.WorldPosition).ToList(); //wrong at so many levels
-
-        public bool HasVirtualControlPoints => false;
+        //TODO: keep separate list and update it accordingly. 
+        public IList<Vector3> BernsteinControlPoints => ControlPoints.Select((x) => x.Transform.WorldPosition).ToList(); //wrong at so many levels
 
         public BezierC0Curve(IList<INode> controlPointsSource)
         {

@@ -9,6 +9,11 @@ namespace avoCADo
 {
     public static class MathExtensions
     {
+        private static Matrix4 _powerToBernsteinMtx = new Matrix4(1.0f,    0.0f,        0.0f,     0.0f,
+                                                                  1.0f, 1.0f / 3.0f,    0.0f,     0.0f,
+                                                                  1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 0.0f,
+                                                                  1.0f,    1.0f,        1.0f,     1.0f);
+
         public static Vector3 EulerAngles(this Quaternion q)
         {
             var w2 = q.W * q.W;
@@ -21,5 +26,10 @@ namespace avoCADo
             return new Vector3(eX, eY, eZ);
         }
 
+
+        public static Vector4 PowerToBernstein(Vector4 powerBasisCoefficients)
+        {
+            return _powerToBernsteinMtx * powerBasisCoefficients;
+        }
     }
 }

@@ -153,14 +153,14 @@ namespace avoCADo
 
         private void SourceDataChanged()
         {
-            var nodes = Curve.VirtualControlPoints;
+            var nodes = Curve.BernsteinControlPoints;
 
-            var nodeCount = Math.Max(0, nodes.Count - 2); //ignore first and last knot (which do not modify correct bernstein polygon)
-
-            if (nodeCount * 3 != _curveVertexData.Length)
+            var nodeCount = Math.Max(0, nodes.Count);
+            var correctedNodeCount = FixNodeCount(nodeCount); //we correct node count to always send four bernstein knots to geometry shader
+            if (correctedNodeCount * 3 != _curveVertexData.Length)
             {
-                _curveIndices = new uint[Math.Max(0, (4 * nodeCount - 4) / 3)];
-                _curveVertexData = new float[3 * nodeCount];
+                _curveIndices = new uint[Math.Max(0, (4 * correctedNodeCount - 4) / 3)];
+                _curveVertexData = new float[3 * correctedNodeCount];
             }
 
             for(int i = 0; i < _curveIndices.Length; i++)
@@ -168,15 +168,40 @@ namespace avoCADo
                 _curveIndices[i] = (uint)(i - (i / 4));
             }
 
-            for(int i = 0; i < nodeCount; i++)
+            for(int i = 0; i < nodeCount; i++) // fill data only from existing knots
             {
-                SetVertex(_curveVertexData, nodes[i+1], i);
+                SetVertex(_curveVertexData, nodes[i], i);
+            }
+
+            for(int i = nodeCount; i < correctedNodeCount; i++) //fill the rest with nan values
+            {
+                SetVertex(_curveVertexData, new Vector3(float.NaN, float.NaN, float.NaN), i);
+            }
+        }
+
+        /// <summary>
+        /// Modifies node count to always have full bernstein polygons (for geometry shader)
+        /// </summary>
+        /// <param name="nodeCount"></param>
+        /// <returns></returns>
+        private int FixNodeCount(int nodeCount)
+        {
+            if (nodeCount == 0) return nodeCount;
+            if(nodeCount < 4 && nodeCount > 0)
+            {
+                return 4;
+            }
+            else
+            {
+                var ret = (nodeCount - 4) % 3;
+                if (ret == 0) return nodeCount;
+                else return nodeCount + 3 - ret;
             }
         }
 
         private void SourceDataChangedEdges()
         {
-            var nodes = Curve.ControlPoints;
+            var nodes = Curve.BernsteinControlPoints;
             if (nodes.Count * 3 != _edgeVertexData.Length)
             {
                 _edgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
@@ -189,16 +214,17 @@ namespace avoCADo
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
+                SetVertex(_edgeVertexData, nodes[i]/*.Transform.WorldPosition*/, i);
             }
 
         }
 
         private void SourceDataChangedVirtualEdges()
         {
-            if (Curve.HasVirtualControlPoints)
+            if (Curve is IVirtualControlPoints)
             {
-                var nodes = Curve.VirtualControlPoints;
+                var vCtrlPoints = Curve as IVirtualControlPoints;
+                var nodes = vCtrlPoints.VirtualControlPoints;
                 if (nodes.Count * 3 != _virtualEdgeVertexData.Length)
                 {
                     _virtualEdgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
@@ -238,21 +264,25 @@ namespace avoCADo
 
         private void UpdateVirtualPoints()
         {
-            PauseTransformHandling();
-            if (ShowVirtualControlPoints)
+            var vCtrlPoints = Curve as IVirtualControlPoints;
+            if (vCtrlPoints != null)
             {
-                UpdateVirtualPointsCount();
-                for (int i = 0; i < _virtualNodes.Count; i++)
+                PauseTransformHandling();
+                if (ShowVirtualControlPoints)
                 {
-                    _virtualNodes[i].Transform.Position = Curve.VirtualControlPoints[i + 1];
+                    UpdateVirtualPointsCount();
+                    for (int i = 0; i < _virtualNodes.Count; i++)
+                    {
+                        _virtualNodes[i].Transform.Position = vCtrlPoints.VirtualControlPoints[i + 1];
+                    }
+                    AttachVirtualPoints();
                 }
-                AttachVirtualPoints();
+                else
+                {
+                    DetachVirtualPoints();
+                }
+                ResumeTransformHandling();
             }
-            else
-            {
-                DetachVirtualPoints();
-            }
-            ResumeTransformHandling();
         }
 
         private void DetachVirtualPoints()
@@ -279,16 +309,20 @@ namespace avoCADo
 
         private void UpdateVirtualPointsCount()
         {
-            while (_virtualNodes.Count < Curve.VirtualControlPoints.Count - 2)
+            var vCtrlPoints = Curve as IVirtualControlPoints;
+            if (vCtrlPoints != null)
             {
-                _virtualNodes.Add(Registry.VirtualNodeFactory.CreateVirtualPoint(Vector3.Zero));
-            }
-            while (_virtualNodes.Count > Curve.VirtualControlPoints.Count - 2)
-            {
-                if (_virtualNodes.Count == 0) break;
-                var node = _virtualNodes[_virtualNodes.Count - 1];
-                _virtualNodes.RemoveAt(_virtualNodes.Count - 1);
-                node.Dispose();
+                while (_virtualNodes.Count < vCtrlPoints.VirtualControlPoints.Count - 2)
+                {
+                    _virtualNodes.Add(Registry.VirtualNodeFactory.CreateVirtualPoint(Vector3.Zero));
+                }
+                while (_virtualNodes.Count > vCtrlPoints.VirtualControlPoints.Count - 2)
+                {
+                    if (_virtualNodes.Count == 0) break;
+                    var node = _virtualNodes[_virtualNodes.Count - 1];
+                    _virtualNodes.RemoveAt(_virtualNodes.Count - 1);
+                    node.Dispose();
+                }
             }
         }
 

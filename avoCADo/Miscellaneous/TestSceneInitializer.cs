@@ -30,7 +30,7 @@ namespace avoCADo
             scene.AttachChild(point4);
 
             var bezierSource = new ObservableCollection<INode>();
-            var curve =  new BezierC2Curve(bezierSource);
+            var curve =  new InterpolatingC2Curve(bezierSource);
             var bezGen = new BezierGeneratorGeometry(curve);
             var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(geomShader, shader, bezGen), bezGen, "bspline");
             //var bezGen = new BezierGeneratorNew(curve); //new BezierGeneratorNew(curve);
