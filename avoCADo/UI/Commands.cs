@@ -51,27 +51,29 @@ namespace avoCADo
             e.CanExecute = true;
         }
 
+        private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = PointsOnlySelected();
+        }
+
         private void CreateBSplineCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            foreach (var node in NodeSelection.Manager.SelectedNodes)
-            {
-                if (node.Renderer is PointRenderer == false)
-                {
-                    e.CanExecute = false;
-                    return;
-                }
-            }
-            e.CanExecute = true;
+            e.CanExecute = PointsOnlySelected();
         }
 
         private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _compositionRoot.NodeFactory.CreateBezierGroup();
+            _compositionRoot.NodeFactory.CreateBezierGroupCPURenderer();
         }
 
         private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _compositionRoot.NodeFactory.CreateBSplineGroup();
+        }
+
+        private void CreateInterpolatingC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _compositionRoot.NodeFactory.CreateInterpolatingC2Group();
         }
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -93,6 +95,18 @@ namespace avoCADo
             {
                 MessageBox.Show("null param");
             }
+        }
+
+        private bool PointsOnlySelected()
+        {
+            foreach (var node in NodeSelection.Manager.SelectedNodes)
+            {
+                if (node.Renderer is PointRenderer == false)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

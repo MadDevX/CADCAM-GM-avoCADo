@@ -13,65 +13,134 @@ namespace avoCADo
         private Vector3[] _center = new Vector3[0];
         private Vector3[] _upper = new Vector3[0];
         private Vector3[] _result = new Vector3[0];
+        private float[] _segments = new float[0];
+        private float[] _alfas = new float[0];
+        private float[] _betas = new float[0];
 
-        public Vector3[] Solve(Vector3[] data)
+        private Vector3[] _bernsteinBuffer = new Vector3[4];
+
+        public void Solve(Vector3[] data, IList<Vector3> bernsteins)
         {
+            bernsteins.Clear();
             if (data.Length < 2) throw new ArgumentException("problem too small wtf");
-            var n = data.Length;
+            var n = data.Length - 1; //points indexed 0...n (n+1 points)
             //Resize arrays if necessary
-            if (_center.Length != n)
+            if (_segments.Length != n)
             {
-                Array.Resize(ref _result, n);
-                Array.Resize(ref _center, n);
-                Array.Resize(ref _lower, n - 1);
-                Array.Resize(ref _upper, n);
+                var n1 = Math.Max(n - 1, 0);
+                var n2 = Math.Max(n - 2, 0);
+                Array.Resize(ref _result, n1);
+                Array.Resize(ref _center, n1);
+                Array.Resize(ref _lower, n2);
+                Array.Resize(ref _upper, n1);
+                Array.Resize(ref _segments, n);
+                Array.Resize(ref _alfas, n2);
+                Array.Resize(ref _betas, n2);
             }
-            //Init tridiagonal matrix
+
+            //Calculate segment lengths
+            var L = 0.0f;
+            for (int i = 0; i < n; i++)
+            {
+                _segments[i] = Math.Max((data[i + 1] - data[i]).Length, 0.000001f); //just so it draws when control points overlap
+                L += _segments[i];
+            }
+
+            //Calculate alfa and beta arrays (and lower and upper diagonals)
+            for(int i = 0; i < n - 2; i++)
+            {
+                _alfas[i] = _segments[i + 1] / (_segments[i + 1] + _segments[i + 2]); //alfa is one index "later" (we start from alfa2 and beta1)
+                _betas[i] = _segments[i + 1] / (_segments[i] + _segments[i + 1]);
+                _lower[i] = new Vector3(_alfas[i], _alfas[i], _alfas[i]);
+                _upper[i] = new Vector3(_betas[i], _betas[i], _betas[i]);
+            }
+
+            //Init main diagonal
             for (int i = 0; i < n - 1; i++)
             {
-                _lower[i] = _upper[i] = new Vector3(1.0f, 1.0f, 1.0f);
-                _center[i + 1] = new Vector3(4.0f, 4.0f, 4.0f);
-            }
-            _center[0] = _center[n - 1] = new Vector3(2.0f, 2.0f, 2.0f);
-
-            var L = 0.0f;
-            for (int i = 0; i < n-1; i++)
-            {
-                L += (data[i + 1] - data[i]).Length;
+                _center[i] = new Vector3(2.0f, 2.0f, 2.0f);
             }
 
             //Init constant term vector
-            _result[0] = 3.0f * (data[1] - data[0]);
-            for(int i = 1; i < n - 1; i++)
+            for(int i = 1; i < n; i++)
             {
-                _result[i] = 3.0f * (data[i + 1] - data[i - 1]);
+                var first = (data[i + 1] - data[i])/_segments[i];
+                var second = (data[i] - data[i - 1])/_segments[i-1];
+                _result[i-1] = 3.0f * (first - second)/(_segments[i-1] + _segments[i]);
             }
-            _result[n - 1] = 3.0f * (data[n - 1] - data[n - 2]);
 
             Solve(_lower, _center, _upper, _result);
-            return _result;
+
+            CalculateCoefficients(data, _result, _segments, bernsteins);
         }
 
-        private static void Solve(Vector3[] a, Vector3[] b, Vector3[] c, Vector3[] x)
+        private void CalculateCoefficients(Vector3[] a, Vector3[] result, float[] seg, IList<Vector3> bernsteins)
         {
-            uint X = (uint)x.Length;
-            c[0] = Vector3.Divide(c[0], b[0]);
-            x[0] = Vector3.Divide(x[0], b[0]);
+            var N = a.Length - 1; //TODO: check
+            var c = new Vector3[a.Length];
+            var b = new Vector3[N];
+            var d = new Vector3[N];
+
+            c[0] = c[c.Length - 1] = Vector3.Zero; //N+1 of c
+            for(int i = 0; i < result.Length; i++) //TODO: array.copy
+            {
+                c[i + 1] = result[i];
+            }
+
+            for(int i = 1; i < N + 1; i++) //N of d
+            {
+                d[i - 1] = (c[i] - c[i - 1]) / (3.0f * seg[i - 1]);
+            }
+
+            for(int i = 1; i < N + 1; i++) //N of b
+            {
+                b[i - 1] = (a[i] - a[i - 1] - c[i - 1] * seg[i - 1] * seg[i - 1] - d[i - 1] * seg[i - 1] * seg[i - 1] * seg[i - 1]) / seg[i - 1];
+            }
+
+            for(int i = 0; i < N; i++)
+            {
+                var s1 = seg[i];
+                var s2 = s1 * seg[i];
+                var s3 = s2 * seg[i];
+                MathExtensions.PowerToBernstein(a[i], b[i] * s1, c[i] * s2, d[i] * s3, ref _bernsteinBuffer);
+                for(int j = 0; j < 4; j++)
+                {
+                    if (j != 3 || i == N - 1)
+                    {
+                        bernsteins.Add(_bernsteinBuffer[j]);
+                    }
+                }
+            }
+        }
+
+        private static void Solve(Vector3[] l, Vector3[] d, Vector3[] u, Vector3[] b)
+        {
+            int X = b.Length;
+
+            if (X == 0) return;
+            if (X == 1)
+            {
+                b[0] = Vector3.Divide(b[0], d[0]);
+                return;
+            }
+
+            u[0] = Vector3.Divide(u[0], d[0]);
+            b[0] = Vector3.Divide(b[0], d[0]);
 
             /* loop from 1 to X - 1 inclusive, performing the forward sweep */
-            for (uint ix = 1; ix < X; ix++)
+            for (int ix = 1; ix < X; ix++)
             {
-                var m = Vector3.Divide(new Vector3(1.0f,1.0f,1.0f), (b[ix] - a[ix - 1] * c[ix - 1]));
-                c[ix] = c[ix] * m;
-                x[ix] = (x[ix] - a[ix - 1] * x[ix - 1]) * m;
+                var m = Vector3.Divide(new Vector3(1.0f, 1.0f, 1.0f), (d[ix] - l[ix - 1] * u[ix - 1]));
+                u[ix] = u[ix] * m;
+                b[ix] = (b[ix] - l[ix - 1] * b[ix - 1]) * m;
             }
 
             /* loop from X - 2 to 0 inclusive (safely testing loop condition for an unsigned integer), to perform the back substitution */
-            for (uint ix = X - 2; ix > 0; ix--)
+            for (int ix = X - 2; ix > 0; ix--)
             {
-                x[ix] -= c[ix] * x[ix + 1];
+                b[ix] -= u[ix] * b[ix + 1];
             }
-            x[0] -= c[0] * x[1];
+            b[0] -= u[0] * b[1];
         }
     }
 }

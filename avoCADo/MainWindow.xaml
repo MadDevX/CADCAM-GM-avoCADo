@@ -14,6 +14,7 @@
         <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Bezier" CanExecute="CreateBezierCmd_CanExecute" Executed="CreateBezierCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.BSpline" CanExecute="CreateBSplineCmd_CanExecute" Executed="CreateBSplineCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.InterpolatingC2" CanExecute="CreateInterpolatingC2Cmd_CanExecute" Executed="CreateInterpolatingC2Cmd_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -26,6 +27,7 @@
                 <MenuItem Command="local:CommandDefinitions.Point"/>
                 <MenuItem Command="local:CommandDefinitions.Bezier"/>
                 <MenuItem Command="local:CommandDefinitions.BSpline"/>
+                <MenuItem Command="local:CommandDefinitions.InterpolatingC2"/>
             </MenuItem>
         </Menu>
         <Grid Name="GridMain">

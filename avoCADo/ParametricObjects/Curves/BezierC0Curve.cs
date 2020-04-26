@@ -19,6 +19,8 @@ namespace avoCADo
         //TODO: keep separate list and update it accordingly. 
         public IList<Vector3> BernsteinControlPoints => ControlPoints.Select((x) => x.Transform.WorldPosition).ToList(); //wrong at so many levels
 
+        public IList<Vector3> PolygonPoints => BernsteinControlPoints;
+
         public BezierC0Curve(IList<INode> controlPointsSource)
         {
             ControlPoints = controlPointsSource;

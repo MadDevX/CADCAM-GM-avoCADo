@@ -51,7 +51,7 @@ namespace avoCADo
             return pointNode;
         }
 
-        public INode CreateBezierGroup()
+        public INode CreateBezierGroupCPURenderer() //OLD RENDERER
         {
             var parent = _scene;
             var source = new ObservableCollection<INode>();
@@ -71,14 +71,29 @@ namespace avoCADo
             return bezierGroup;
         }
 
+        public INode CreateBezierGroup() 
+        { 
+            return CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve"); 
+        }
+
         public INode CreateBSplineGroup()
+        {
+            return CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve");
+        }
+
+        public INode CreateInterpolatingC2Group()
+        {
+            return CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve");
+        }
+
+        private INode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
         {
             var parent = _scene;
             var source = new ObservableCollection<INode>();
-            ICurve curve = new BezierC2Curve(source);
+            ICurve curve = CreateCurve<T>(source);
 
             var generator = new BezierGeneratorGeometry(curve);
-            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_geomShaderWrapper, _shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BSplineCurve"));
+            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_geomShaderWrapper, _shaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {
@@ -89,6 +104,15 @@ namespace avoCADo
             }
             parent.AttachChild(bezierGroup);
             return bezierGroup;
+        }
+
+        private ICurve CreateCurve<T>(IList<INode> source) where T : ICurve
+        {
+            if (typeof(T) == typeof(BezierC0Curve)) return new BezierC0Curve(source);
+            if (typeof(T) == typeof(BezierC2Curve)) return new BezierC2Curve(source);
+            if (typeof(T) == typeof(InterpolatingC2Curve)) return new InterpolatingC2Curve(source);
+
+            else return null;
         }
     }
 }

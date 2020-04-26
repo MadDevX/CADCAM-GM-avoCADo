@@ -27,6 +27,8 @@ namespace avoCADo
 
         public IList<Vector3> VirtualControlPoints { get; } = new List<Vector3>();
 
+        public IList<Vector3> PolygonPoints => ControlPoints.Select((x)=> x.Transform.WorldPosition).ToList();
+
         public BezierC2Curve(IList<INode> controlPointsSource)
         {
             ControlPoints = controlPointsSource;

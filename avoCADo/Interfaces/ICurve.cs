@@ -17,6 +17,8 @@ namespace avoCADo
         IList<INode> ControlPoints { get; }
 
         IList<Vector3> BernsteinControlPoints { get; }
+
+        IList<Vector3> PolygonPoints { get; }
         void Refresh();
         //GetTangent
     }

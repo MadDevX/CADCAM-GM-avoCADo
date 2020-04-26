@@ -53,6 +53,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand InterpolatingC2 = new RoutedUICommand
+            (
+                "New Interpolating C2 Curve",
+                "InterpolatingC2",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                                    new KeyGesture(Key.I, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

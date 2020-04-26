@@ -201,7 +201,7 @@ namespace avoCADo
 
         private void SourceDataChangedEdges()
         {
-            var nodes = Curve.BernsteinControlPoints;
+            var nodes = Curve.PolygonPoints;
             if (nodes.Count * 3 != _edgeVertexData.Length)
             {
                 _edgeIndices = new uint[Math.Max(0, nodes.Count * 2 - 2)];
@@ -214,7 +214,7 @@ namespace avoCADo
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                SetVertex(_edgeVertexData, nodes[i]/*.Transform.WorldPosition*/, i);
+                SetVertex(_edgeVertexData, nodes[i], i);
             }
 
         }

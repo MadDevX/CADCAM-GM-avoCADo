@@ -36,7 +36,7 @@ void main(void)
     {
         float mag = distance(knots[0].xy, knots[1].xy) + 
                     distance(knots[1].xy, knots[2].xy);
-        int divisions = min(int(mag * 25), 256);
+        int divisions = min(int((mag+1) * 50), 256);
         float delta = 1.0f / float(divisions);
         for (int i = 0; i <= divisions; i++){
             gl_Position = bezier3(knots[0], knots[1], knots[2], float(i) * delta);
@@ -48,7 +48,7 @@ void main(void)
         float mag = distance(knots[0].xy, knots[1].xy) + 
                     distance(knots[1].xy, knots[2].xy) + 
                     distance(knots[2].xy, knots[3].xy);
-        int divisions = min(int(mag * 25), 256);
+        int divisions = min(int((mag+1) * 50), 255);
         float delta = 1.0f / float(divisions);
         for (int i = 0; i <= divisions; i++)
         {
