@@ -23,7 +23,7 @@ namespace avoCADo
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            GL.PointSize(4.0f);
+            GL.PointSize(RenderConstants.POINT_SIZE);
             _shaderWrapper.SetColor(_color);
             GL.DrawArrays(PrimitiveType.Points, 0, 1);
             _shaderWrapper.SetColor(Color4.White);

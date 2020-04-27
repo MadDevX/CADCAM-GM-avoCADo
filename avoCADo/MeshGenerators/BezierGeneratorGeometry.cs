@@ -50,16 +50,16 @@ namespace avoCADo
                 {
                     return new List<DrawCall>
                     {
-                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve),
-                        new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default),
-                        new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default)
+                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE),
+                        new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE),
+                        new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE)
                     };
                 }
                 else
                 {
                     return new List<DrawCall>
                     {
-                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve)
+                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE)
                     };
                 }
             }
@@ -140,14 +140,14 @@ namespace avoCADo
             if(ShowEdges && DrawCalls.Count != 3)
             {
                 DrawCalls.Clear();
-                DrawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve));
-                DrawCalls.Add(new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default));
-                DrawCalls.Add(new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default));
+                DrawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE));
+                DrawCalls.Add(new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE));
+                DrawCalls.Add(new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE));
             }
             else if(DrawCalls.Count != 1)
             {
                 DrawCalls.Clear();
-                DrawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve));
+                DrawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE));
             }
         }
 

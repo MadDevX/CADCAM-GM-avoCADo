@@ -28,7 +28,7 @@ namespace avoCADo
                 }
             }
         }
-        public IList<DrawCall> DrawCalls => new List<DrawCall> { new DrawCall(0, _indices.Length, DrawCallShaderType.Default) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall> { new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.CURVE_SIZE) };
 
         public bool ShowVirtualControlPoints
         {

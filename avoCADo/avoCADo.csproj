@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
+    <Compile Include="Architecture\RenderConstants.cs" />
     <Compile Include="Architecture\Registry.cs" />
     <Compile Include="Architecture\VirtualNodeFactory.cs" />
     <Compile Include="BezierGeneratorView.xaml.cs">
@@ -93,12 +94,14 @@
     <Compile Include="Hierarchy\GroupNode.cs" />
     <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
+    <Compile Include="HUD\Grid.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
     <Compile Include="MeshGenerators\BSplineGenerator.cs" />
+    <Compile Include="MeshGenerators\GridGenerator.cs" />
     <Compile Include="Miscellaneous\TridiagonalSolver.cs" />
     <Compile Include="ParametricObjects\Curves\BezierC0Curve.cs" />
     <Compile Include="ParametricObjects\Curves\BezierC2Curve.cs" />

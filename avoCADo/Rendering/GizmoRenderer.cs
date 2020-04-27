@@ -23,7 +23,7 @@ namespace avoCADo
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            GL.LineWidth(2.0f);
+            GL.LineWidth(RenderConstants.GIZMO_SIZE);
 
             _shaderWrapper.SetColor(Color4.Red);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 0);
@@ -35,6 +35,7 @@ namespace avoCADo
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 4 * sizeof(uint));
 
             _shaderWrapper.SetColor(Color4.White);
+
             GL.LineWidth(1.0f);
         }
 

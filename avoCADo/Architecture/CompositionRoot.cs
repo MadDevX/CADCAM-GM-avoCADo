@@ -24,6 +24,7 @@ namespace avoCADo
         private Scene _scene;
         private Camera _camera;
         private CameraMovement _camMovement;
+        private Grid _grid;
         private Cursor3D _cursor;
 
         private TransformHandler _transformHandler;
@@ -52,6 +53,8 @@ namespace avoCADo
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
+
+            _grid = new Grid(_camera, _renderLoop, new LineRenderer(_defaultShader, new GridGenerator(200, 1)));
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _defaultShader, _renderLoop, _window, _camera);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
@@ -70,6 +73,7 @@ namespace avoCADo
             _torusHandler.Dispose();
             _transformHandler.Dispose();
             _cursor.Dispose();
+            _grid.Dispose();
             _screenSelectionManager.Dispose();
             _renderLoop.Dispose();
             _camMovement.Dispose();
