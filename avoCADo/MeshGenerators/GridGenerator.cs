@@ -105,11 +105,9 @@ namespace avoCADo
         {
             var minVal = 0.01f;
             var heightScale = 1.0f;
-            //var target = _camera.Target.Y;
-            var mult = Math.Min(1.0f, Math.Abs(_camera.Pitch / ((float)Math.PI * 0.5f)) + 0.2f);
+            var pitch = _camera.Pitch * _camera.Position.Y < 0.0f ? _camera.Pitch : 0.0f;
+            var mult = Math.Min(1.0f, Math.Abs(pitch / ((float)Math.PI * 0.5f)) + 0.1f);
             mult *= Math.Min(1.0f, Math.Abs(_camera.Position.Y * heightScale));
-            //var mult = Math.Min(1.0f, Math.Abs(_camera.Position.Y));
-            //mult = mult * (pitchInfluence + Math.Abs(_camera.Pitch / ((float)Math.PI * 0.5f)));
             var corrected = Math.Max(mult - minVal, 0.0f) / (1.0f - minVal);
             return corrected;
         }
