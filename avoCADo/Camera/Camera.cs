@@ -55,20 +55,14 @@ namespace avoCADo
 
         public void Rotate(float horizontal, float vertical)
         {
-            var mag = (_position - _target).Length;
             var xAngleDiff = (float)Math.PI * horizontal;
             var yAngleDiff = -(float)Math.PI * vertical;
             if (Math.Abs(_pitch + yAngleDiff) >= Math.PI * 0.499f) yAngleDiff = 0.0f; //limit camera movement
             _yaw = (_yaw + xAngleDiff) % (2.0f * (float)Math.PI);
             _pitch += yAngleDiff;
-            Vector3 direction =
-                new Vector3
-                (
-                    (float)Math.Cos(_yaw) * (float)Math.Cos(_pitch),
-                    (float)Math.Sin(_pitch),
-                    (float)Math.Sin(_yaw) * (float)Math.Cos(_pitch)
-                );
-            _position = -direction*mag + _target;
+
+            RecalculatePosition((_position - _target).Length);
+
             UpdateViewMatrix();
         }
 
@@ -108,8 +102,8 @@ namespace avoCADo
             _position = Vector3.UnitZ;
             _target = Vector3.Zero;
             _yaw = (float)Math.PI*1.5f;
-            _pitch = 0.0f;
-
+            _pitch = (float)-Math.PI * 0.25f;
+            RecalculatePosition(2.0f); //default distance from target
             UpdateViewMatrix();
             UpdateProjectionMatrix();
         }
@@ -123,6 +117,18 @@ namespace avoCADo
         }
 
         #endregion
+
+        private void RecalculatePosition(float distanceFromTarget)
+        {
+            Vector3 direction =
+                new Vector3
+                (
+                    (float)Math.Cos(_yaw) * (float)Math.Cos(_pitch),
+                    (float)Math.Sin(_pitch),
+                    (float)Math.Sin(_yaw) * (float)Math.Cos(_pitch)
+                );
+            _position = -direction * distanceFromTarget + _target;
+        }
 
         private void SetViewMatrix(ShaderWrapper shaderWrapper)
         {

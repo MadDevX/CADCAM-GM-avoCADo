@@ -16,7 +16,23 @@ namespace avoCADo
     {
         private void CreateTorusCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var arg = e.Parameter as INode;
+            if (arg != null)
+            {
+                e.CanExecute = !arg.IsGroupNode;
+            }
+            else
+            {
+                var selection = NodeSelection.Manager.MainSelection;
+                if (selection != null)
+                {
+                    e.CanExecute = !selection.IsGroupNode;
+                }
+                else
+                {
+                    e.CanExecute = true;
+                }
+            }
         }
 
         private void CreateTorusCmd_Executed(object sender, ExecutedRoutedEventArgs e)
