@@ -1,5 +1,6 @@
 ﻿using avoCADo.Architecture;
 using OpenTK;
+using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -43,10 +44,13 @@ namespace avoCADo
 
         private void Initialize()
         {
-            _screenBufferManager = new ScreenBufferManager(Color.FromArgb(255, Color.FromArgb(40, 40, 40)));
+            var backgroundColor = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
+            _screenBufferManager = new ScreenBufferManager(backgroundColor);
             _viewportManager = new ViewportManager(_control);
             _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));
+            _defaultShader.SetBackgroundColor(backgroundColor);
             _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
+            _curveShader.SetBackgroundColor(backgroundColor);
             _scene = new Scene("Main");
             _camera = new Camera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
@@ -54,7 +58,7 @@ namespace avoCADo
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
 
-            _grid = new Grid(_camera, _renderLoop, new LineRenderer(_defaultShader, new GridGenerator(200, 1)));
+            _grid = new Grid(_camera, _renderLoop, new LineRenderer(_defaultShader, new GridGenerator(200, 1, _camera)));
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _defaultShader, _renderLoop, _window, _camera);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);

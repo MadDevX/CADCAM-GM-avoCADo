@@ -39,7 +39,8 @@ namespace avoCADo
         {
             if (Enabled)
             {
-                _gridRenderer.Render(_camera, Matrix4.Identity, Matrix4.Identity); //TODO : modulo translate along xz plane
+                var pos = _camera.Position;
+                _gridRenderer.Render(_camera, Matrix4.CreateTranslation(new Vector3((int)pos.X, 0.0f, (int)pos.Z)), Matrix4.Identity); //TODO : modulo translate along xz plane
             }
         }
     }

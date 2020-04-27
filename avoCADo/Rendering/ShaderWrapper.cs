@@ -16,6 +16,7 @@ namespace avoCADo
         private int _shaderColorLocation;
         private int _shaderViewLocation;
         private int _shaderProjectionLocation;
+        private int _shaderBgColorLocation;
 
         public ShaderWrapper(Shader shader)
         {
@@ -24,31 +25,48 @@ namespace avoCADo
             _shaderColorLocation = GL.GetUniformLocation(Shader.Handle, "color");
             _shaderViewLocation = GL.GetUniformLocation(Shader.Handle, "view");
             _shaderProjectionLocation = GL.GetUniformLocation(Shader.Handle, "projection");
+            _shaderBgColorLocation = GL.GetUniformLocation(Shader.Handle, "bgColor");
         }
 
         public void SetModelMatrix(Matrix4 model)
         {
+            CheckShaderBinding();
             GL.UniformMatrix4(_shaderModelMatrixLocation, false, ref model);
         }
 
         public void SetViewMatrix(Matrix4 view)
         {
+            CheckShaderBinding();
             GL.UniformMatrix4(_shaderViewLocation, false, ref view);
         }
 
         public void SetProjectionMatrix(Matrix4 projection)
         {
+            CheckShaderBinding();
             GL.UniformMatrix4(_shaderProjectionLocation, false, ref projection);
         }
 
         public void SetColor(Color4 color)
         {
+            CheckShaderBinding();
             GL.Uniform4(_shaderColorLocation, color);
+        }
+
+        public void SetBackgroundColor(Color4 color)
+        {
+            CheckShaderBinding();
+            GL.Uniform4(_shaderBgColorLocation, color);
         }
 
         public void Dispose()
         {
             Shader.Dispose();
+        }
+
+        private void CheckShaderBinding()
+        {
+            //TODO: check if it's possible to check currently bound shader program
+            Shader.Use();
         }
     }
 }

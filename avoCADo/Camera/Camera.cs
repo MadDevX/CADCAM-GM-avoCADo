@@ -11,6 +11,10 @@ namespace avoCADo
     public class Camera : IDisposable
     {
         public Vector3 Target => _target;
+        public Vector3 Position => _position;
+
+        public float Pitch => _pitch;
+
         public Matrix4 ProjectionMatrix => _projectionMatrix;
         public Matrix4 ViewMatrix => _viewMatrix;
 

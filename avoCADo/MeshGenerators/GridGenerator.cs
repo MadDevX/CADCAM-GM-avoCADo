@@ -10,7 +10,7 @@ namespace avoCADo
 {
     public class GridGenerator : IMeshGenerator
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>(){new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.GRID_SIZE, new Color4(1.0f, 1.0f, 1.0f, 0.1f)) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall>(){new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.GRID_SIZE, new Color4(0.5f, 0.5f, 0.5f, 0.5f * GetPitchMultiplier())) };
 
         public event Action OnParametersChanged;
 
@@ -35,19 +35,22 @@ namespace avoCADo
         }
 
         private int _size;
-        private int _maxSize = 100;
+        private int _maxSize = 1000;
 
         //how many lines per unit?
         private int _density;
         private int _maxDensity = 100;
 
+        private Camera _camera;
+
         private float[] _vertices = new float[0];
         private uint[] _indices = new uint[0];
 
-        public GridGenerator(int size, int density)
+        public GridGenerator(int size, int density, Camera camera)
         {
             Size = size;
             Density = density;
+            _camera = camera;
         }
 
 
@@ -96,6 +99,19 @@ namespace avoCADo
             _vertices[3 * index] = vertex.X;
             _vertices[3 * index + 1] = vertex.Y;
             _vertices[3 * index + 2] = vertex.Z;
+        }
+
+        private float GetPitchMultiplier()
+        {
+            var minVal = 0.01f;
+            var heightScale = 1.0f;
+            //var target = _camera.Target.Y;
+            var mult = Math.Min(1.0f, Math.Abs(_camera.Pitch / ((float)Math.PI * 0.5f)) + 0.2f);
+            mult *= Math.Min(1.0f, Math.Abs(_camera.Position.Y * heightScale));
+            //var mult = Math.Min(1.0f, Math.Abs(_camera.Position.Y));
+            //mult = mult * (pitchInfluence + Math.Abs(_camera.Pitch / ((float)Math.PI * 0.5f)));
+            var corrected = Math.Max(mult - minVal, 0.0f) / (1.0f - minVal);
+            return corrected;
         }
     }
 }

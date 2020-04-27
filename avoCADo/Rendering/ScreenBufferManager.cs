@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 public class ScreenBufferManager
 {
-    private Color _bgColor;
+    private Color4 _bgColor;
 
-    public ScreenBufferManager(Color backgroundColor)
+    public ScreenBufferManager(Color4 backgroundColor)
     {
         _bgColor = backgroundColor;
         GL.Enable(EnableCap.Lighting);
