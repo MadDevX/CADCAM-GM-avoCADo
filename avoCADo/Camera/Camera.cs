@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
@@ -18,24 +19,25 @@ namespace avoCADo
         public Matrix4 ProjectionMatrix => _projectionMatrix;
         public Matrix4 ViewMatrix => _viewMatrix;
 
+        public virtual Color4 FilterColor => Color4.White;
 
         private ViewportManager _viewportManager;
 
-        private Vector3 _position = Vector3.UnitZ;
-        private Vector3 _target = Vector3.Zero;
+        protected Vector3 _position = Vector3.UnitZ;
+        protected Vector3 _target = Vector3.Zero;
 
-        private float _yaw;
-        private float _pitch;
+        protected float _yaw;
+        protected float _pitch;
 
-        private float _nearPlane = 0.01f;
-        private float _farPlane = 100.0f;
-        private float _fov = MathHelper.DegreesToRadians(90.0f);
-        private float _aspectRatio = 1.0f;
+        protected float _nearPlane = 0.01f;
+        protected float _farPlane = 100.0f;
+        protected float _fov = MathHelper.DegreesToRadians(90.0f);
+        protected float _aspectRatio = 1.0f;
 
-        private Matrix4 _projectionMatrix;
-        private Matrix4 _viewMatrix;
+        protected Matrix4 _projectionMatrix;
+        protected Matrix4 _viewMatrix;
 
-        private float _sensitivity = 1.5f;
+        protected float _sensitivity = 1.5f;
 
         public Camera(ViewportManager viewportManager)
         {
@@ -44,15 +46,30 @@ namespace avoCADo
             Reset();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _viewportManager.OnViewportChanged -= OnViewportChanged;
         }
 
-        public void SetCameraMatrices(ShaderWrapper shaderWrapper)
+        /// <summary>
+        /// Also sets filterColor
+        /// </summary>
+        /// <param name="shaderWrapper"></param>
+        public virtual void SetCameraMatrices(ShaderWrapper shaderWrapper)
         {
             SetViewMatrix(shaderWrapper);
             SetProjectionMatrix(shaderWrapper);
+            shaderWrapper.SetFilterColor(FilterColor);
+        }
+
+        public virtual int Cycles => 1;
+
+        protected int _currentCycle;
+
+        public virtual void SetCycle(int cycle)
+        {
+            if (cycle < 0 || cycle >= Cycles) throw new ArgumentException("Requested cycle index does not exist");
+            _currentCycle = cycle;
         }
 
         #region Camera operations
@@ -93,12 +110,17 @@ namespace avoCADo
         {
             var magnitude = (_target - _position).Length;
             var planeTr = new Vector4(-horizontal, vertical, 0.0f, 1.0f);
-            var rot = Quaternion.FromMatrix(new Matrix3(Matrix4.LookAt(Vector3.Zero, _target - _position, Vector3.UnitY)));
+            var rot = CalculateCameraRotation();
             var trVec = Vector4.Transform(planeTr, rot);
             var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z) * magnitude * _sensitivity;
             _target += toAdd;
             _position += toAdd;
             UpdateViewMatrix();
+        }
+
+        protected Quaternion CalculateCameraRotation()
+        {
+            return Quaternion.FromMatrix(new Matrix3(Matrix4.LookAt(Vector3.Zero, _target - _position, Vector3.UnitY)));
         }
 
         public void Reset()
@@ -150,12 +172,12 @@ namespace avoCADo
             UpdateProjectionMatrix();
         }
 
-        private void UpdateViewMatrix()
+        protected virtual void UpdateViewMatrix()
         {
             _viewMatrix = Matrix4.LookAt(_position, _target, Vector3.UnitY);
         }
 
-        private void UpdateProjectionMatrix()
+        protected virtual void UpdateProjectionMatrix()
         {
             _projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane);
         }

@@ -89,6 +89,7 @@
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />

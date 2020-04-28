@@ -45,8 +45,12 @@ namespace avoCADo
             _glControl.MakeCurrent();
             _screenBufferManager.ResetScreenBuffer();
 
-            OnRenderLoop?.Invoke();
-            _scene.Render(_camera);
+            for (int i = 0; i < _camera.Cycles; i++)
+            {
+                _camera.SetCycle(i);
+                OnRenderLoop?.Invoke();
+                _scene.Render(_camera);
+            }
             //GL.Finish();
 
             _glControl.SwapBuffers();

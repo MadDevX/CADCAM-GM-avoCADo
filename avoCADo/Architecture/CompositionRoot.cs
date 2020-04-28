@@ -52,7 +52,7 @@ namespace avoCADo
             _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
             _curveShader.SetBackgroundColor(backgroundColor);
             _scene = new Scene("Main");
-            _camera = new Camera(_viewportManager);
+            _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
 

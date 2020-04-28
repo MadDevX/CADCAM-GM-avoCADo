@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 uniform vec4 color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 uniform vec4 bgColor = vec4(0.157f, 0.157f, 0.157f, 1.0f);
+uniform vec4 filterColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 float near = 0.01f; //if changed, also change in Camera.cs
 float far = 100.0f; //if changed, also change in Camera.cs
@@ -12,7 +13,7 @@ float LinearizeDepth(float depth);
 void main()
 {
     float depth = min(LinearizeDepth(gl_FragCoord.z)/fogDistance, 1.0f);
-	FragColor = vec4(mix(color.rgb, bgColor.rgb, depth), color.a);
+	FragColor = vec4(mix(color.rgb * filterColor.rgb, bgColor.rgb, depth), color.a);
 }
 
 

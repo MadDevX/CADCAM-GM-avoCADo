@@ -17,6 +17,7 @@ namespace avoCADo
         private int _shaderViewLocation;
         private int _shaderProjectionLocation;
         private int _shaderBgColorLocation;
+        private int _shaderFilterColorLocation;
 
         public ShaderWrapper(Shader shader)
         {
@@ -26,6 +27,7 @@ namespace avoCADo
             _shaderViewLocation = GL.GetUniformLocation(Shader.Handle, "view");
             _shaderProjectionLocation = GL.GetUniformLocation(Shader.Handle, "projection");
             _shaderBgColorLocation = GL.GetUniformLocation(Shader.Handle, "bgColor");
+            _shaderFilterColorLocation = GL.GetUniformLocation(Shader.Handle, "filterColor");
         }
 
         public void SetModelMatrix(Matrix4 model)
@@ -56,6 +58,12 @@ namespace avoCADo
         {
             CheckShaderBinding();
             GL.Uniform4(_shaderBgColorLocation, color);
+        }
+
+        public void SetFilterColor(Color4 color)
+        {
+            CheckShaderBinding();
+            GL.Uniform4(_shaderFilterColorLocation, color);
         }
 
         public void Dispose()
