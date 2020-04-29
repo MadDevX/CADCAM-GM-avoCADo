@@ -16,6 +16,8 @@ namespace avoCADo
         private GLControl _control;
 
         public float AspectRatio => (float)_control.Width / _control.Height;
+        public int Width => _control.Width;
+        public int Height => _control.Height;
 
         public ViewportManager(GLControl control)
         {

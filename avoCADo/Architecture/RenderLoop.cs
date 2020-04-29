@@ -16,13 +16,19 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private Scene _scene;
         private Camera _camera;
+        private QuadOverlayRenderer _quadRenderer;
+        private FramebufferManager _framebufferManager;
 
-        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, Scene scene, Camera camera)
+
+        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, Scene scene, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer)
         {
             _glControl = glControl;
             _screenBufferManager = screenBufferManager;
             _scene = scene;
             _camera = camera;
+            _quadRenderer = quadRenderer;
+            _framebufferManager = framebufferManager;
+
             Initialize();
         }
 
@@ -44,14 +50,19 @@ namespace avoCADo
 
             _glControl.MakeCurrent();
             _screenBufferManager.ResetScreenBuffer();
+            //_framebufferManager.ClearFrameBuffers();
 
             for (int i = 0; i < _camera.Cycles; i++)
             {
+                GL.Clear(ClearBufferMask.DepthBufferBit);
                 _camera.SetCycle(i);
+                //_framebufferManager.SetFramebuffer(i);
+
                 OnRenderLoop?.Invoke();
                 _scene.Render(_camera);
             }
-            //GL.Finish();
+
+            //_quadRenderer.Render();
 
             _glControl.SwapBuffers();
 

@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -89,6 +90,7 @@
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Camera\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
@@ -109,6 +111,8 @@
     <Compile Include="ParametricObjects\Curves\BezierHelper.cs" />
     <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
+    <Compile Include="Rendering\AbstractShaderWrapper.cs" />
+    <Compile Include="Rendering\BufferShaderWrapper.cs" />
     <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
@@ -131,6 +135,7 @@
     <Compile Include="Rendering\MeshRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
+    <Compile Include="Rendering\QuadOverlayRenderer.cs" />
     <Compile Include="Rendering\ShaderWrapper.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
@@ -216,8 +221,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Shaders\fsQuad.frag" />
     <None Include="Shaders\gsBezierC0.geom" />
     <None Include="Shaders\vs.vert" />
+    <None Include="Shaders\vsQuad.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

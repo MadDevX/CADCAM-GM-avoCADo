@@ -21,7 +21,7 @@ namespace avoCADo
 
         public virtual Color4 FilterColor => Color4.White;
 
-        private ViewportManager _viewportManager;
+        protected ViewportManager _viewportManager;
 
         protected Vector3 _position = Vector3.UnitZ;
         protected Vector3 _target = Vector3.Zero;

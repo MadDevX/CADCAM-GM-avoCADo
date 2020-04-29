@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class ShaderWrapper : IDisposable
+    public class ShaderWrapper : AbstractShaderWrapper
     {
-        public Shader Shader { get; }
         private int _shaderModelMatrixLocation;
         private int _shaderColorLocation;
         private int _shaderViewLocation;
@@ -19,9 +18,12 @@ namespace avoCADo
         private int _shaderBgColorLocation;
         private int _shaderFilterColorLocation;
 
-        public ShaderWrapper(Shader shader)
+        public ShaderWrapper(Shader shader) : base(shader)
         {
-            Shader = shader;
+        }
+
+        protected override void SetUniformLocations()
+        {
             _shaderModelMatrixLocation = GL.GetUniformLocation(Shader.Handle, "model");
             _shaderColorLocation = GL.GetUniformLocation(Shader.Handle, "color");
             _shaderViewLocation = GL.GetUniformLocation(Shader.Handle, "view");
@@ -29,6 +31,7 @@ namespace avoCADo
             _shaderBgColorLocation = GL.GetUniformLocation(Shader.Handle, "bgColor");
             _shaderFilterColorLocation = GL.GetUniformLocation(Shader.Handle, "filterColor");
         }
+
 
         public void SetModelMatrix(Matrix4 model)
         {
@@ -64,17 +67,6 @@ namespace avoCADo
         {
             CheckShaderBinding();
             GL.Uniform4(_shaderFilterColorLocation, color);
-        }
-
-        public void Dispose()
-        {
-            Shader.Dispose();
-        }
-
-        private void CheckShaderBinding()
-        {
-            //TODO: check if it's possible to check currently bound shader program
-            Shader.Use();
         }
     }
 }

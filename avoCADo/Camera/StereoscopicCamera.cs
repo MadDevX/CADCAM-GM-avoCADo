@@ -24,7 +24,7 @@ namespace avoCADo
             RightEye = 1
         }
 
-        public float FocusPlaneDistance { get; set; } = 1.0f;
+        public float FocusPlaneDistance { get; set; } = 2.0f;
         public float EyeDistance { get; set; } = 0.05f;
 
         public RenderMode Mode { get; set; } = RenderMode.Stereoscopic;
@@ -44,23 +44,8 @@ namespace avoCADo
             }
         }
 
-
-
         public StereoscopicCamera(ViewportManager viewportManager) : base(viewportManager)
         {
-            CreateFramebuffers();
-        }
-
-        public override void SetCycle(int cycle)
-        {
-            base.SetCycle(cycle);
-            SetFramebuffer(Mode, GetCycle());
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            DisposeFramebuffers();
         }
 
         public override void SetCameraMatrices(ShaderWrapper shaderWrapper)
@@ -152,27 +137,6 @@ namespace avoCADo
         private RenderCycle GetCycle()
         {
             return (RenderCycle)_currentCycle;
-        }
-
-
-        private int[] FBOs;
-
-        private void CreateFramebuffers()
-        {
-            GL.CreateFramebuffers(2, FBOs);
-
-            throw new NotImplementedException();
-        }
-
-
-        private void DisposeFramebuffers()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SetFramebuffer(RenderMode mode, RenderCycle cycle)
-        {
-            throw new NotImplementedException();
         }
 
         //private Matrix4 GetStereoscopicProjectionMatrix(float n, float f, float l, float r, float t, float b)

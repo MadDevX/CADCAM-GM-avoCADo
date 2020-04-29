@@ -19,9 +19,13 @@ namespace avoCADo
 
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
+        private FramebufferManager _framebufferManager;
 
+        private BufferShaderWrapper _bufferShader;
         private ShaderWrapper _defaultShader;
         private ShaderWrapper _curveShader;
+        private QuadOverlayRenderer _quadRenderer;
+
         private Scene _scene;
         private Camera _camera;
         private CameraMovement _camMovement;
@@ -47,14 +51,19 @@ namespace avoCADo
             var backgroundColor = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
             _screenBufferManager = new ScreenBufferManager(backgroundColor);
             _viewportManager = new ViewportManager(_control);
+            _framebufferManager = new FramebufferManager(2, _viewportManager);
+
+            _bufferShader = new BufferShaderWrapper(new Shader("vsQuad.vert", "fsQuad.frag"));
             _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));
             _defaultShader.SetBackgroundColor(backgroundColor);
             _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
             _curveShader.SetBackgroundColor(backgroundColor);
+            _quadRenderer = new QuadOverlayRenderer(_bufferShader);
+
             _scene = new Scene("Main");
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
-            _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera);
+            _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera, _framebufferManager, _quadRenderer);
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
 
@@ -83,8 +92,11 @@ namespace avoCADo
             _camMovement.Dispose();
             _camera.Dispose();
             _scene.Dispose();
+            _quadRenderer.Dispose();
+            _bufferShader.Dispose();
             _curveShader.Dispose();
             _defaultShader.Dispose();
+            _framebufferManager.Dispose();
             _viewportManager.Dispose();
         }
     }
