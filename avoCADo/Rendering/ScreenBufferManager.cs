@@ -17,9 +17,7 @@ namespace avoCADo
             GL.Enable(EnableCap.Light0);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            //GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.DstAlpha);// - nope, render to texture, then merge and fill screen
             GL.Enable(EnableCap.DepthTest);
-            //GL.Disable(EnableCap.DepthTest);
         }
 
         public void ResetScreenBuffer()
