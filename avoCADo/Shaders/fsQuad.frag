@@ -10,5 +10,6 @@ void main()
 {
     vec4 colorA = texture(bufferTexture1, TexCoords);
 	vec4 colorB = texture(bufferTexture2, TexCoords);
-	FragColor = vec4(TexCoords.x, TexCoords.y, 0.0f, 1.0f); //colorA + colorB;
+
+	FragColor = colorA + colorB;//vec4(TexCoords.x, TexCoords.y, 0.0f, 1.0f); 
 }

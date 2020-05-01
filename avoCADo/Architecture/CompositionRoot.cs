@@ -51,7 +51,7 @@ namespace avoCADo
             var backgroundColor = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
             _screenBufferManager = new ScreenBufferManager(backgroundColor);
             _viewportManager = new ViewportManager(_control);
-            _framebufferManager = new FramebufferManager(2, _viewportManager);
+            _framebufferManager = new FramebufferManager(2, _viewportManager, backgroundColor);
 
             _bufferShader = new BufferShaderWrapper(new Shader("vsQuad.vert", "fsQuad.frag"));
             _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));

@@ -50,19 +50,20 @@ namespace avoCADo
 
             _glControl.MakeCurrent();
             _screenBufferManager.ResetScreenBuffer();
-            //_framebufferManager.ClearFrameBuffers();
+            _framebufferManager.ClearFrameBuffers();
+            _framebufferManager.SetTextureUnits();
 
             for (int i = 0; i < _camera.Cycles; i++)
             {
-                GL.Clear(ClearBufferMask.DepthBufferBit);
+                //GL.Clear(ClearBufferMask.DepthBufferBit);
                 _camera.SetCycle(i);
-                //_framebufferManager.SetFramebuffer(i);
+                _framebufferManager.SetFramebuffer(i);
 
                 OnRenderLoop?.Invoke();
                 _scene.Render(_camera);
             }
 
-            //_quadRenderer.Render();
+            _quadRenderer.Render();
 
             _glControl.SwapBuffers();
 
