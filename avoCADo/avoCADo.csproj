@@ -90,6 +90,7 @@
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Camera\StereoscopicCameraModeManager.cs" />
     <Compile Include="Camera\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\AbstractShaderWrapper.cs" />
+    <Compile Include="Rendering\BackgroundManager.cs" />
     <Compile Include="Rendering\BufferShaderWrapper.cs" />
     <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
     <Compile Include="Rendering\QuadOverlayRenderer.cs" />
+    <Compile Include="Rendering\ShaderBackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrapper.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>

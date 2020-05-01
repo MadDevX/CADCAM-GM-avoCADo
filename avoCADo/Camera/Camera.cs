@@ -14,6 +14,8 @@ namespace avoCADo
         public Vector3 Target => _target;
         public Vector3 Position => _position;
 
+        public float DistanceToTarget => (_target - _position).Length;
+
         public float Pitch => _pitch;
 
         public Matrix4 ProjectionMatrix => _projectionMatrix;
@@ -108,11 +110,10 @@ namespace avoCADo
 
         public void Translate(float horizontal, float vertical)
         {
-            var magnitude = (_target - _position).Length;
             var planeTr = new Vector4(-horizontal, vertical, 0.0f, 1.0f);
             var rot = CalculateCameraRotation();
             var trVec = Vector4.Transform(planeTr, rot);
-            var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z) * magnitude * _sensitivity;
+            var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z) * DistanceToTarget * _sensitivity;
             _target += toAdd;
             _position += toAdd;
             UpdateViewMatrix();

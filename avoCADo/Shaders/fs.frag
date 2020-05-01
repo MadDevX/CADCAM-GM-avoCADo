@@ -13,7 +13,7 @@ float LinearizeDepth(float depth);
 void main()
 {
     float depth = min(LinearizeDepth(gl_FragCoord.z)/fogDistance, 1.0f);
-	FragColor = vec4(mix(color.rgb * filterColor.rgb, bgColor.rgb, depth), color.a);
+	FragColor = vec4(mix(color.rgb * filterColor.rgb, bgColor.rgb * filterColor.rgb, depth), color.a);
 }
 
 

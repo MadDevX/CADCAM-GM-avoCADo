@@ -27,7 +27,7 @@ namespace avoCADo
         public float FocusPlaneDistance { get; set; } = 2.0f;
         public float EyeDistance { get; set; } = 0.05f;
 
-        public RenderMode Mode { get; set; } = RenderMode.Stereoscopic;
+        public RenderMode Mode { get; set; } = RenderMode.Standard;
 
         public override int Cycles => Mode == RenderMode.Stereoscopic ? 2 : 1;
 
@@ -38,8 +38,8 @@ namespace avoCADo
                 if (Mode == RenderMode.Standard) return Color4.White;
                 else//if (Mode == RenderMode.Stereoscopic)
                 {
-                    if (GetCycle() == RenderCycle.LeftEye) return Color4.Cyan;
-                    else /*if (GetCycle() == RenderCycle.RightEye)*/ return Color4.Red;
+                    if (GetCycle() == RenderCycle.RightEye) return Color4.Cyan;
+                    else /*if (GetCycle() == RenderCycle.LeftEye)*/ return Color4.Red;
                 }
             }
         }

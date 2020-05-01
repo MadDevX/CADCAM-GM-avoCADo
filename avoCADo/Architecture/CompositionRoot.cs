@@ -17,6 +17,7 @@ namespace avoCADo
         private MainWindow _window;
         private GLControl _control;
 
+        private BackgroundManager _backgroundManager;
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
         private FramebufferManager _framebufferManager;
@@ -24,6 +25,8 @@ namespace avoCADo
         private BufferShaderWrapper _bufferShader;
         private ShaderWrapper _defaultShader;
         private ShaderWrapper _curveShader;
+
+        private ShaderBackgroundManager _shaderBackgroundManager;
         private QuadOverlayRenderer _quadRenderer;
 
         private Scene _scene;
@@ -32,6 +35,7 @@ namespace avoCADo
         private Grid _grid;
         private Cursor3D _cursor;
 
+        private StereoscopicCameraModeManager _cameraModeManager;
         private TransformHandler _transformHandler;
         private TorusGeneratorHandler _torusHandler;
         private TransformationModeHandler _transformationModeHandler;
@@ -48,16 +52,19 @@ namespace avoCADo
 
         private void Initialize()
         {
-            var backgroundColor = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
-            _screenBufferManager = new ScreenBufferManager(backgroundColor);
+            var backgroundColorStereoscopic = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
+            var backgroundColorStandard = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
+
+            _backgroundManager = new BackgroundManager(backgroundColorStandard);
+            _screenBufferManager = new ScreenBufferManager(_backgroundManager);
             _viewportManager = new ViewportManager(_control);
-            _framebufferManager = new FramebufferManager(2, _viewportManager, backgroundColor);
+            _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager);
 
             _bufferShader = new BufferShaderWrapper(new Shader("vsQuad.vert", "fsQuad.frag"));
             _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));
-            _defaultShader.SetBackgroundColor(backgroundColor);
             _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
-            _curveShader.SetBackgroundColor(backgroundColor);
+
+            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _defaultShader, _curveShader);
             _quadRenderer = new QuadOverlayRenderer(_bufferShader);
 
             _scene = new Scene("Main");
@@ -69,6 +76,8 @@ namespace avoCADo
 
             _grid = new Grid(_camera, _renderLoop, new LineRenderer(_defaultShader, new GridGenerator(200, 1, _camera)));
             _cursor = new Cursor3D(_control, _window.transformationsLabel, _defaultShader, _renderLoop, _window, _camera);
+
+            _cameraModeManager = new StereoscopicCameraModeManager((StereoscopicCamera)_camera, _backgroundManager, backgroundColorStandard, backgroundColorStereoscopic);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
@@ -78,6 +87,7 @@ namespace avoCADo
 
             _window.hierarchy.treeView.Items.Add(_scene);
             TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader, _curveShader);
+            _cameraModeManager.SetStereoscopic(true);
         }
 
         public void Dispose()
@@ -93,6 +103,7 @@ namespace avoCADo
             _camera.Dispose();
             _scene.Dispose();
             _quadRenderer.Dispose();
+            _shaderBackgroundManager.Dispose();
             _bufferShader.Dispose();
             _curveShader.Dispose();
             _defaultShader.Dispose();

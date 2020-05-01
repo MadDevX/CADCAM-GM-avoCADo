@@ -16,7 +16,7 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private Scene _scene;
         private Camera _camera;
-        private QuadOverlayRenderer _quadRenderer;
+        private QuadOverlayRenderer _quadOverlayRenderer;
         private FramebufferManager _framebufferManager;
 
 
@@ -26,7 +26,7 @@ namespace avoCADo
             _screenBufferManager = screenBufferManager;
             _scene = scene;
             _camera = camera;
-            _quadRenderer = quadRenderer;
+            _quadOverlayRenderer = quadRenderer;
             _framebufferManager = framebufferManager;
 
             Initialize();
@@ -50,12 +50,12 @@ namespace avoCADo
 
             _glControl.MakeCurrent();
             _screenBufferManager.ResetScreenBuffer();
-            _framebufferManager.ClearFrameBuffers();
+            _framebufferManager.ClearFrameBuffers(_camera.Cycles);
             _framebufferManager.SetTextureUnits();
 
             for (int i = 0; i < _camera.Cycles; i++)
             {
-                //GL.Clear(ClearBufferMask.DepthBufferBit);
+                //GL.Clear(ClearBufferMask.DepthBufferBit); //-- used for multirendering straight to screen (causes depth buffer issues)
                 _camera.SetCycle(i);
                 _framebufferManager.SetFramebuffer(i);
 
@@ -63,7 +63,7 @@ namespace avoCADo
                 _scene.Render(_camera);
             }
 
-            _quadRenderer.Render();
+            _quadOverlayRenderer.Render();
 
             _glControl.SwapBuffers();
 

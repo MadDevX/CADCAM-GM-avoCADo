@@ -47,7 +47,9 @@ namespace avoCADo
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             _shaderWrapper.Shader.Use();
 
+            GL.DepthFunc(DepthFunction.Always);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+            GL.DepthFunc(DepthFunction.Less);
         }
 
         private void InitializeGLObjects()

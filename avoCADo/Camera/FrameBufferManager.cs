@@ -18,15 +18,15 @@ namespace avoCADo
         private int[] _RBOs;
         private int _bufferCount;
 
-        private Color4 _backgroundColor;
+        private BackgroundManager _backgroundManager;
 
-        private int _sizeMult = 4;
+        private int _samples = 8;
 
-        public FramebufferManager(int bufferCount, ViewportManager viewportManager, Color4 backgroundColor)
+        public FramebufferManager(int bufferCount, ViewportManager viewportManager, BackgroundManager backgroundManager)
         {
             _viewportManager = viewportManager;
-            _backgroundColor = backgroundColor;
-            _backgroundColor.A = 0.0f;
+            _backgroundManager = backgroundManager;
+
             _bufferCount = bufferCount;
             _FBOs = new int[_bufferCount];
             _textures = new int[_bufferCount];
@@ -39,10 +39,10 @@ namespace avoCADo
 
         private void InitializeFramebuffers()
         {
+            GL.Enable(EnableCap.Multisample);
             GL.CreateFramebuffers(_bufferCount, _FBOs);
-            GL.CreateTextures(TextureTarget.Texture2D, _bufferCount, _textures);
+            GL.CreateTextures(TextureTarget.Texture2DMultisample, _bufferCount, _textures);
             GL.CreateRenderbuffers(_bufferCount, _RBOs);
-
             InitializeTextures();
 
             CheckFramebuffers();
@@ -65,7 +65,7 @@ namespace avoCADo
             for (int i = 0; i < _bufferCount; i++)
             {
                 GL.ActiveTexture(TextureUnit.Texture0 + i);
-                GL.BindTexture(TextureTarget.Texture2D, _textures[i]);
+                GL.BindTexture(TextureTarget.Texture2DMultisample, _textures[i]);
                 GL.Enable(EnableCap.Texture2D);
             }
         }
@@ -78,18 +78,18 @@ namespace avoCADo
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, _FBOs[i]);
                 
                 //initialize texture
-                GL.BindTexture(TextureTarget.Texture2D, _textures[i]);
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, _viewportManager.Width, _viewportManager.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+                GL.BindTexture(TextureTarget.Texture2DMultisample, _textures[i]);
+                GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, _samples, PixelInternalFormat.Rgba, _viewportManager.Width, _viewportManager.Height, true);
+                //GL.TexParameter(TextureTarget.Texture2DMultisample, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                //GL.TexParameter(TextureTarget.Texture2DMultisample, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+                
+                GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
                 //bind texture
-                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, _textures[i], 0);
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, _textures[i], 0);
                 
                 //initialize renderbuffer
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _RBOs[i]);
-                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, _viewportManager.Width, _viewportManager.Height);
+                GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, _samples, RenderbufferStorage.Depth24Stencil8, _viewportManager.Width, _viewportManager.Height);
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
                 //bind renderbuffer
                 GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, _RBOs[i]);
@@ -103,12 +103,12 @@ namespace avoCADo
         {
             for(int i = 0; i < _bufferCount; i++)
             {
-                GL.BindTexture(TextureTarget.Texture2D, _textures[i]);
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, size.Width, size.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+                GL.BindTexture(TextureTarget.Texture2DMultisample, _textures[i]);
+                GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, _samples, PixelInternalFormat.Rgba, size.Width, size.Height, true);
+                GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
 
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _RBOs[i]);
-                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, _viewportManager.Width, _viewportManager.Height);
+                GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, _samples, RenderbufferStorage.Depth24Stencil8, size.Width, size.Height);
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             }
         }
@@ -130,16 +130,29 @@ namespace avoCADo
             //GL.NamedFramebufferDrawBuffer(0, DrawBufferMode.Back);
         }
 
-        public void ClearFrameBuffers()
+        public void ClearFrameBuffers(int cycles)
         {
+            if (cycles > _FBOs.Length) throw new ArgumentException("more cycles than allocated FBOs");
             for(int i = 0; i < _FBOs.Length; i++)
             {
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, _FBOs[i]);
-                GL.ClearColor(_backgroundColor);
+                if (i >= cycles) GL.ClearColor(new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+                else GL.ClearColor(CorrectedBackgroundColor(cycles));
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                 //GL.ClearNamedFramebuffer(_FBOs[i], ClearBufferCombined.DepthStencil, )
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             }
+        }
+
+        private Color4 CorrectedBackgroundColor(int cycles)
+        {
+            var frac = 1.0f / (float)cycles;
+            var color = _backgroundManager.BackgroundColor;
+            color.R *= frac;
+            color.G *= frac;
+            color.B *= frac;
+            color.A = 1.0f;
+            return color;
         }
     }
 }
