@@ -8,13 +8,25 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <GroupBox Header="Torus Generator">
         <StackPanel>
-            <TextBlock Text="X Subdivisions" Margin="5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="X Subdivisions" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=xDivisions, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
+            </StackPanel>
             <Slider x:Name="xDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="true"/>
-            <TextBlock Text="Y Subdivisions" Margin="5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Y Subdivisions" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=yDivisions, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
+            </StackPanel>
             <Slider x:Name="yDivisions" Minimum="3" Maximum="30" IsSnapToTickEnabled="True"/>
-            <TextBlock Text="Main Radius" Margin="5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Main Radius" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=mainRadius, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+            </StackPanel>
             <Slider x:Name="mainRadius" Minimum="0" Maximum="2"/>
-            <TextBlock Text="Tube Radius" Margin="5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Tube Radius" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=tubeRadius, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+            </StackPanel>
             <Slider x:Name="tubeRadius" Minimum="0" Maximum="2"/>
         </StackPanel>
     </GroupBox>

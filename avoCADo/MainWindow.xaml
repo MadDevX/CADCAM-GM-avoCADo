@@ -35,22 +35,24 @@
                 <ColumnDefinition Width="6*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
             <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
-            <StackPanel Grid.Column="2" Name="StackPanelInspector" HorizontalAlignment="Stretch">
-                <GroupBox Header="Transformation" FontWeight="SemiBold">
-                    <StackPanel>
-                        <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
-                        <RadioButton x:Name="radioBtnLocalMode" Content="Local Mode" IsChecked="True"/>
-                        <RadioButton x:Name="radioBtnCursorMode" Content="Cursor Mode"/>
-                    </StackPanel>
-                </GroupBox> 
-                <local:Hierarchy x:Name="hierarchy" Height="200"/>
-                <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
-                <local:TorusGeneratorView x:Name="torusGeneratorView" Visibility="Collapsed"/>
-                <local:BezierGeneratorView x:Name="bezierGeneratorView" Visibility="Collapsed"/>
-            </StackPanel>
+            <ScrollViewer Grid.Column="2">
+                <StackPanel Name="StackPanelInspector" HorizontalAlignment="Stretch">
+                    <GroupBox Header="Transformation" FontWeight="SemiBold">
+                        <StackPanel>
+                            <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
+                            <RadioButton x:Name="radioBtnLocalMode" Content="Local Mode" IsChecked="True"/>
+                            <RadioButton x:Name="radioBtnCursorMode" Content="Cursor Mode"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <local:CameraSettings x:Name="cameraSettings"/>
+                    <local:Hierarchy x:Name="hierarchy" Height="200"/>
+                    <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
+                    <local:TorusGeneratorView x:Name="torusGeneratorView" Visibility="Collapsed"/>
+                    <local:BezierGeneratorView x:Name="bezierGeneratorView" Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>

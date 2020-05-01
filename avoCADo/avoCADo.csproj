@@ -90,6 +90,9 @@
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CameraSettings.xaml.cs">
+      <DependentUpon>CameraSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Camera\StereoscopicCameraModeManager.cs" />
     <Compile Include="Camera\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
@@ -167,6 +170,10 @@
     <Compile Include="Utility\SelectionManager.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
     <Page Include="BezierGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CameraSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

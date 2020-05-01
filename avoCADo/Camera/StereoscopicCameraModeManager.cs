@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics;
+﻿using OpenTK;
+using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,30 @@ namespace avoCADo
             {
                 _camera.Mode = StereoscopicCamera.RenderMode.Standard;
                 _backgroundManager.BackgroundColor = _standardBackgroundColor;
+            }
+        }
+
+        public float FocusPlaneDistance
+        {
+            get
+            {
+                return _camera.FocusPlaneDistance;
+            }
+            set
+            {
+                _camera.FocusPlaneDistance = MathHelper.Clamp(value, _camera.NearPlane, float.MaxValue);
+            }
+        }
+
+        public float EyeDistance
+        {
+            get
+            {
+                return _camera.EyeDistance;
+            }
+            set
+            {
+                _camera.EyeDistance = MathHelper.Clamp(value, 0.0f, float.MaxValue);
             }
         }
     }

@@ -52,6 +52,7 @@ namespace avoCADo
 
         private void Initialize()
         {
+            //var backgroundColorStereoscopic = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
             var backgroundColorStereoscopic = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
             var backgroundColorStandard = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
 
@@ -85,9 +86,10 @@ namespace avoCADo
             _virtualNodeFactory = new VirtualNodeFactory(_defaultShader, _scene);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
 
+            _window.cameraSettings.DataContext = _cameraModeManager;
             _window.hierarchy.treeView.Items.Add(_scene);
             TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader, _curveShader);
-            _cameraModeManager.SetStereoscopic(true);
+            //_cameraModeManager.SetStereoscopic(true);
         }
 
         public void Dispose()

@@ -13,10 +13,10 @@ namespace avoCADo
     {
         public Vector3 Target => _target;
         public Vector3 Position => _position;
-
         public float DistanceToTarget => (_target - _position).Length;
-
         public float Pitch => _pitch;
+        public float NearPlane => _nearPlane;
+
 
         public Matrix4 ProjectionMatrix => _projectionMatrix;
         public Matrix4 ViewMatrix => _viewMatrix;
