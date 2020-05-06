@@ -102,6 +102,8 @@ namespace avoCADo
         {
             var top = CalculateViewFrustrumTop(_fov, _nearPlane);
 
+            //Projection planes are offset in the opposite direction to the eye position -
+            //eye directions are slightly crossed, not parallel to each other
             var offset = -CalculateEyeOffset(GetCycle());
 
             offset *= _nearPlane / FocusPlaneDistance;
@@ -118,7 +120,7 @@ namespace avoCADo
         /// <returns></returns>
         private float CalculateViewFrustrumTop(float fieldOfView, float nearPlane)
         {
-            return (float)(1.0 / Math.Tan(fieldOfView / 2.0f)) * nearPlane;
+            return (float)Math.Tan(fieldOfView / 2.0f) * nearPlane;
         }
 
         /// <summary>
