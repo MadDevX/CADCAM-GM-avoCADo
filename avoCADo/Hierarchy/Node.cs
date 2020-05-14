@@ -10,7 +10,7 @@ using OpenTK;
 
 namespace avoCADo
 {
-    public class Node : INode, INotifyPropertyChanged
+    public class Node : INode, INotifyPropertyChanged, IDependencyCollector
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
@@ -37,6 +37,8 @@ namespace avoCADo
         /// </summary>
         public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
 
+        private Dictionary<DependencyType, List<object>> _dependencies;
+
         public Matrix4 GlobalModelMatrix
         {
             get
@@ -47,6 +49,7 @@ namespace avoCADo
 
         public Node(Transform transform, IRenderer renderer, string name)
         {
+            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<object>>();
             Transform = transform;
             Renderer = renderer;
             Name = name;
@@ -114,6 +117,42 @@ namespace avoCADo
         private void HandleChildDisposed(INode node)
         {
             DetachChild(node);
+        }
+
+        public void AddDependency(DependencyType type, object dependant)
+        {
+            if(_dependencies.TryGetValue(type, out var dependencyList))
+            {
+                dependencyList.Add(dependant);
+            }
+            else
+            {
+                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
+            }
+        }
+
+        public void RemoveDependency(DependencyType type, object dependant)
+        {
+            if (_dependencies.TryGetValue(type, out var dependencyList))
+            {
+                dependencyList.Remove(dependant);
+            }
+            else
+            {
+                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
+            }
+        }
+
+        public bool HasDependency(DependencyType type)
+        {
+            if(_dependencies.TryGetValue(type, out var dependencyList))
+            {
+                return dependencyList.Count > 0;
+            }
+            else
+            {
+                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
+            }
         }
     }
 }

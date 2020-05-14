@@ -103,6 +103,7 @@
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
+    <Compile Include="Interfaces\IDependencyCollector.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Hierarchy\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
+    <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
