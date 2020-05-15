@@ -23,5 +23,7 @@ namespace avoCADo
         void AddDependency(DependencyType type, object dependant);
         void RemoveDependency(DependencyType type, object dependant);
         bool HasDependency(DependencyType type);
+
+        bool HasDependency();
     }
 }

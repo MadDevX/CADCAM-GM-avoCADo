@@ -11,7 +11,7 @@ namespace avoCADo
 {
     public static class TestSceneInitializer
     {
-        public static void SpawnTestObjects(Scene scene, ShaderWrapper shader, ShaderWrapper geomShader)
+        public static void SpawnTestObjects(Scene scene, NodeFactory nodeFactory, ShaderWrapper shader, ShaderWrapper geomShader)
         {
             //var parent = new Node(new Transform(new Vector3(1.0f, 0.0f, -1.0f), new Vector3(0.0f, MathHelper.DegreesToRadians(90.0f), 0.0f), Vector3.One), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "parent torus");
             //var child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "child torus");
@@ -40,6 +40,17 @@ namespace avoCADo
             bezier.AttachChild(point3);
             bezier.AttachChild(point4);
             scene.AttachChild(bezier);
+
+            var bezierSurfCollection = new ObservableCollection<INode>();
+            var surface = new BezierC0Patch();
+            var surfGen = new BezierPatchGenerator(surface, nodeFactory);
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new MeshRenderer(shader, surfGen), surfGen, "BezierPatch");
+            scene.AttachChild(surfNode);
+            surfGen.SurfaceWidth = 2;
+            surfGen.SurfaceHeight = 2;
+            surfGen.HorizontalPatches = 2;
+            surfGen.VerticalPatches = 2;
+            surfGen.HorizontalPatches = 1;// nie dziala
         }
 
     }

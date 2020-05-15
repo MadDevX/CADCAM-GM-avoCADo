@@ -88,7 +88,7 @@ namespace avoCADo
 
             _window.cameraSettings.DataContext = _cameraModeManager;
             _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _defaultShader, _curveShader);
+            TestSceneInitializer.SpawnTestObjects(_scene, NodeFactory, _defaultShader, _curveShader);
             //_cameraModeManager.SetStereoscopic(true);
         }
 

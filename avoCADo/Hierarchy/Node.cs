@@ -154,5 +154,10 @@ namespace avoCADo
                 throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
             }
         }
+
+        public bool HasDependency()
+        {
+            return HasDependency(DependencyType.Strong) || HasDependency(DependencyType.Weak);
+        }
     }
 }

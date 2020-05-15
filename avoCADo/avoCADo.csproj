@@ -98,16 +98,19 @@
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
+    <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
     <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
+    <Compile Include="Interfaces\IBezierSurface.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
+    <Compile Include="MeshGenerators\BezierPatchGenerator.cs" />
     <Compile Include="MeshGenerators\BSplineGenerator.cs" />
     <Compile Include="MeshGenerators\GridGenerator.cs" />
     <Compile Include="Miscellaneous\TridiagonalSolver.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="ParametricObjects\Curves\BezierC2Curve.cs" />
     <Compile Include="ParametricObjects\Curves\BezierHelper.cs" />
     <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
+    <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BackgroundManager.cs" />
@@ -166,6 +170,7 @@
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Hierarchy\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
+    <Compile Include="Utility\CoordList.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\NameGenerator.cs" />

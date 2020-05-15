@@ -94,7 +94,15 @@ namespace avoCADo
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var depColl = e.Parameter as IDependencyCollector;
+            if (depColl != null)
+            {
+                e.CanExecute = depColl.HasDependency(DependencyType.Strong);
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
         }
 
         private void DeleteNodeCmd_Executed(object sender, ExecutedRoutedEventArgs e)

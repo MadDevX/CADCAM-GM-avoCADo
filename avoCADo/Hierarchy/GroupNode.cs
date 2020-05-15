@@ -20,6 +20,12 @@ namespace avoCADo
 
         public bool IsGroupNode => true;
 
+        /// <summary>
+        /// Determines type of dependency added to nodes associated with this GroupNode
+        /// </summary>
+        protected virtual DependencyType ChildrenDependencyType => DependencyType.Weak;
+
+
         private string _name;
         public string Name
         {
@@ -59,6 +65,7 @@ namespace avoCADo
                 {
                     Transform.Parent.AttachChild(node);
                 }
+                AddDependencyToChild(node);
             }
         }
 
@@ -69,8 +76,27 @@ namespace avoCADo
             {
                 node.Transform.PropertyChanged -= ChildNodeModified;
                 node.OnDisposed -= HandleChildDisposed;
+                RemoveDependencyFromChild(node);
             }
             return res;
+        }
+
+        private void AddDependencyToChild(INode node)
+        {
+            var depCol = node as IDependencyCollector;
+            if (depCol != null)
+            {
+                depCol.AddDependency(ChildrenDependencyType, this);
+            }
+        }
+
+        private void RemoveDependencyFromChild(INode node)
+        {
+            var depCol = node as IDependencyCollector;
+            if (depCol != null)
+            {
+                depCol.RemoveDependency(ChildrenDependencyType, this);
+            }
         }
 
         private void HandleChildDisposed(INode node)
