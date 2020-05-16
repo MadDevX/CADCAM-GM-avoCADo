@@ -41,14 +41,23 @@ namespace avoCADo
         public float SurfaceHeight { get; set; } = 1.0f;
 
         public IBezierSurface Surface { get; }
-
+        private INode _parentNode;
         private NodeFactory _nodeFactory;
+
+        private int _defaultHorizontalPatches, _defaultVerticalPatches;
 
         public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, int horizontalPatches = 1, int verticalPatches = 1)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
-            Initialize(horizontalPatches, verticalPatches);
+            _defaultHorizontalPatches = horizontalPatches;
+            _defaultVerticalPatches = verticalPatches;
+        }
+
+        public void Initialize(INode node)
+        {
+            _parentNode = node;
+            Initialize(_defaultHorizontalPatches, _defaultVerticalPatches);
         }
 
         private void Initialize(int horizontalPatches, int verticalPatches)
@@ -56,10 +65,6 @@ namespace avoCADo
             UpdateControlPoints(horizontalPatches, verticalPatches);
         }
 
-        public void Initialize(INode node)
-        {
-            //add parent node (if points should be visible in hierarchy)
-        }
 
         public void Dispose()
         {
@@ -239,12 +244,14 @@ namespace avoCADo
 
         private void TrackControlPoint(INode node)
         {
+            _parentNode.AttachChild(node);
             _controlPointNodes.Add(node);
             node.PropertyChanged += HandleCPTransformChanged;
         }
 
         private void UntrackControlPoint(INode node)
         {
+            _parentNode.DetachChild(node);
             _controlPointNodes.Remove(node);
             node.PropertyChanged -= HandleCPTransformChanged;
         }

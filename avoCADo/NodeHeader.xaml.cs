@@ -173,6 +173,7 @@ namespace avoCADo
         {
             if(parentNode.IsGroupNode)
             {
+                UpdateRemoveAvailability(parentNode);
                 menuItemDelete.Visibility = Visibility.Collapsed;
                 menuItemRemove.Visibility = Visibility.Visible;
             }
@@ -180,6 +181,15 @@ namespace avoCADo
             {
                 menuItemDelete.Visibility = Visibility.Visible;
                 menuItemRemove.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void UpdateRemoveAvailability(INode node)
+        {
+            var depAdder = node as IDependencyAdder;
+            if(depAdder != null)
+            {
+                menuItemRemove.IsEnabled = depAdder.ChildrenDependencyType != DependencyType.Strong;
             }
         }
 

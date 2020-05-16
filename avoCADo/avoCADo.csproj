@@ -109,6 +109,7 @@
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
+    <Compile Include="Interfaces\IDependencyAdder.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />

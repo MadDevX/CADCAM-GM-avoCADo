@@ -97,7 +97,7 @@ namespace avoCADo
             var depColl = e.Parameter as IDependencyCollector;
             if (depColl != null)
             {
-                e.CanExecute = depColl.HasDependency(DependencyType.Strong);
+                e.CanExecute = depColl.HasDependency(DependencyType.Strong) == false;
             }
             else
             {
