@@ -110,13 +110,24 @@ namespace avoCADo
 
         public void Translate(float horizontal, float vertical)
         {
-            var planeTr = new Vector4(-horizontal, vertical, 0.0f, 1.0f);
-            var rot = CalculateCameraRotation();
-            var trVec = Vector4.Transform(planeTr, rot);
-            var toAdd = new Vector3(trVec.X, trVec.Y, trVec.Z) * DistanceToTarget * _sensitivity;
+            var trVec = ViewPlaneVectorToWorldSpace(-horizontal, vertical);
+            var toAdd = trVec * DistanceToTarget * _sensitivity;
             _target += toAdd;
             _position += toAdd;
             UpdateViewMatrix();
+        }
+
+        public Vector3 ViewPlaneVectorToWorldSpace(Vector2 vect) 
+        {
+            return ViewPlaneVectorToWorldSpace(vect.X, vect.Y);
+        }
+
+        public Vector3 ViewPlaneVectorToWorldSpace(float x, float y)
+        {
+            var planeTr = new Vector4(x, y, 0.0f, 1.0f);
+            var rot = CalculateCameraRotation();
+            var trVec = Vector4.Transform(planeTr, rot);
+            return new Vector3(trVec.X, trVec.Y, trVec.Z);
         }
 
         protected Quaternion CalculateCameraRotation()

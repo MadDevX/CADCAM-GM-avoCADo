@@ -187,7 +187,14 @@ namespace avoCADo
                 case TransformationType.Translation:
                     foreach (var obj in _selectionManager.SelectedNodes)
                     {
-                        obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width));
+                        if (_mults.Length > 0.0f)
+                        {
+                            obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width));
+                        }
+                        else
+                        {
+                            obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * (_translateSensitivity / _control.Width));
+                        }
                     }
                     break;
                 case TransformationType.Rotation:
