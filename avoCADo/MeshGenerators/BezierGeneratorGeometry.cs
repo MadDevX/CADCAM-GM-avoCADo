@@ -170,12 +170,12 @@ namespace avoCADo
 
             for(int i = 0; i < nodeCount; i++) // fill data only from existing knots
             {
-                SetVertex(_curveVertexData, nodes[i], i);
+                VBOUtility.SetVertex(_curveVertexData, nodes[i], i);
             }
 
             for(int i = nodeCount; i < correctedNodeCount; i++) //fill the rest with nan values
             {
-                SetVertex(_curveVertexData, new Vector3(float.NaN, float.NaN, float.NaN), i);
+                VBOUtility.SetVertex(_curveVertexData, new Vector3(float.NaN, float.NaN, float.NaN), i);
             }
         }
 
@@ -214,7 +214,7 @@ namespace avoCADo
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                SetVertex(_edgeVertexData, nodes[i], i);
+                VBOUtility.SetVertex(_edgeVertexData, nodes[i], i);
             }
 
         }
@@ -237,7 +237,7 @@ namespace avoCADo
 
                 for (int i = 0; i < nodes.Count; i++)
                 {
-                    SetVertex(_virtualEdgeVertexData, nodes[i], i);
+                    VBOUtility.SetVertex(_virtualEdgeVertexData, nodes[i], i);
                 }
             }
         }
@@ -417,16 +417,6 @@ namespace avoCADo
             return _vertexData;
         }
 
-        #endregion
-
-        #region Utility
-
-        private void SetVertex(float[] vertexArray, Vector3 vect, int vertexIndex)
-        {
-            vertexArray[3 * vertexIndex + 0] = vect.X;
-            vertexArray[3 * vertexIndex + 1] = vect.Y;
-            vertexArray[3 * vertexIndex + 2] = vect.Z;
-        }
         #endregion
     }
 }

@@ -85,20 +85,13 @@ namespace avoCADo
 
             for (int i = 0; i < sideCount; i++)
             {
-                SetVertex(new Vector3(-Size + i, 0.0f, -Size), 4 * i); //bottom side
-                SetVertex(new Vector3(-Size + i, 0.0f, Size), 4 * i + 1); //top side
-                SetVertex(new Vector3(Size, 0.0f, -Size + i), 4 * i + 2); //right side
-                SetVertex(new Vector3(-Size, 0.0f, -Size + i), 4 * i + 3); //left side
+                VBOUtility.SetVertex(_vertices, new Vector3(-Size + i, 0.0f, -Size), 4 * i); //bottom side
+                VBOUtility.SetVertex(_vertices, new Vector3(-Size + i, 0.0f, Size), 4 * i + 1); //top side
+                VBOUtility.SetVertex(_vertices, new Vector3(Size, 0.0f, -Size + i), 4 * i + 2); //right side
+                VBOUtility.SetVertex(_vertices, new Vector3(-Size, 0.0f, -Size + i), 4 * i + 3); //left side
             }
 
             for (uint i = 0; i < _indices.Length; i++) _indices[i] = i;
-        }
-
-        private void SetVertex(Vector3 vertex, int index)
-        {
-            _vertices[3 * index] = vertex.X;
-            _vertices[3 * index + 1] = vertex.Y;
-            _vertices[3 * index + 2] = vertex.Z;
         }
 
         private float GetPitchMultiplier()

@@ -9,11 +9,11 @@ namespace avoCADo
 {
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Curve, 2.0f) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, 1.0f) };
 
         public event Action OnParametersChanged;
 
-        public int HorizontalPatches 
+        public int HorizontalPatches
         { 
             get
             {
@@ -70,29 +70,106 @@ namespace avoCADo
         }
 
 
-        private uint[] placeholderIndices = new uint[0];
-        private float[] placeholderVertices = new float[0];
+        private uint[] _indices = new uint[0];
+        private float[] _vertices = new float[0];
+
         public uint[] GetIndices()
         {
-            return placeholderIndices;
+            return _indices;
         }
 
         public float[] GetVertices()
         {
-            return placeholderVertices;
+            return _vertices;
+        }
+
+        private void UpdateBufferDataWrapper()
+        {
+            UpdateBufferData();
+            OnParametersChanged?.Invoke();
+        }
+
+        private void UpdateBufferData()
+        {
+            var cps = Surface.ControlPoints;
+            if(_vertices.Length != cps.Count * 3)
+            {
+                Array.Resize(ref _vertices, cps.Count * 3);
+                Array.Resize(ref _indices, Surface.USegments * Surface.VSegments * 16 * 2); //isolines in two directions, thus *2
+            }
+
+            for(int i = 0; i < cps.Width; i++)
+            {
+                for(int j = 0; j < cps.Height; j++)
+                {
+                    VBOUtility.SetVertex(_vertices, cps[i, j].Transform.WorldPosition, i + j * cps.Width);
+                }
+            }
+
+            int indicesIdx = 0; //should be dependent on currently processed patch
+            for(int vPatch = 0; vPatch < Surface.VSegments; vPatch++)
+            {
+                for(int uPatch = 0; uPatch < Surface.USegments; uPatch++)
+                {
+                    var uIdx = uPatch * 3;
+                    var vIdx = vPatch * 3;
+                    for(int j = vIdx; j < vIdx + 4; j++)
+                    {
+                        for(int i = uIdx; i < uIdx + 4; i++)
+                        {
+                            _indices[indicesIdx] = (uint)(i + j * cps.Width);
+                            indicesIdx++;
+                        }
+                    }
+
+                }
+            }
+            for (int vPatch = 0; vPatch < Surface.VSegments; vPatch++)
+            {
+                for (int uPatch = 0; uPatch < Surface.USegments; uPatch++)
+                {
+                    var uIdx = uPatch * 3;
+                    var vIdx = vPatch * 3;
+                    for (int i = uIdx; i < uIdx + 4; i++)
+                    {
+                        for (int j = vIdx; j < vIdx + 4; j++)
+                        {
+                            _indices[indicesIdx] = (uint)(i + j * cps.Width);
+                            indicesIdx++;
+                        }
+                    }
+
+                }
+            }
         }
 
 
+        #region Control Points
+
         private IList<INode> _controlPointNodes = new List<INode>();
-        
+        private bool _handleTransformChanges = true;
+
         private void UpdateControlPoints(int horizontalPatches, int verticalPatches)
         {
             var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
             if (newPointsAdded)
             {
+                PauseTransformHandling();
                 SetControlPointPoisitions();
+                ResumeTransformHandling();
             }
+            UpdateBufferDataWrapper();
+        }
+
+        private void ResumeTransformHandling()
+        {
+            _handleTransformChanges = true;
+        }
+
+        private void PauseTransformHandling()
+        {
+            _handleTransformChanges = false;
         }
 
         private void SetNewSurfaceData(int horizontalPatches, int verticalPatches)
@@ -119,7 +196,7 @@ namespace avoCADo
             {
                 while (_controlPointNodes.Count < count)
                 {
-                    _controlPointNodes.Add(_nodeFactory.CreatePoint());
+                    TrackControlPoint(_nodeFactory.CreatePoint());
                 }
             }
             else
@@ -146,13 +223,37 @@ namespace avoCADo
             {
                 if (depColl.HasDependency(DependencyType.Weak))
                 {
-                    _controlPointNodes.Remove(node);
+                    UntrackControlPoint(node);
                 }
                 else
                 {
-                    _controlPointNodes.Remove(node);
+                    UntrackControlPoint(node);
                     node.Dispose();
                 }
+            }
+            else
+            {
+                throw new InvalidOperationException("Object tracked by surface was not a node!");
+            }
+        }
+
+        private void TrackControlPoint(INode node)
+        {
+            _controlPointNodes.Add(node);
+            node.PropertyChanged += HandleCPTransformChanged;
+        }
+
+        private void UntrackControlPoint(INode node)
+        {
+            _controlPointNodes.Remove(node);
+            node.PropertyChanged -= HandleCPTransformChanged;
+        }
+
+        private void HandleCPTransformChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (_handleTransformChanges)
+            {
+                UpdateBufferDataWrapper();
             }
         }
 
@@ -168,5 +269,7 @@ namespace avoCADo
                 }
             }
         }
+
+        #endregion
     }
 }

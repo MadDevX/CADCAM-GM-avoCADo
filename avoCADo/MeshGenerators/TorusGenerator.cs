@@ -95,16 +95,9 @@ namespace avoCADo
                 {
                     var alpha = (((float)x / _xDivisions) * (uParamRange.Y - uParamRange.X)) + uParamRange.X;
                     var vertex = Surface.GetVertex(alpha, beta);
-                    SetVertex(vertex, (x + y * _xDivisions));
+                    VBOUtility.SetVertex(_vertices, vertex, (x + y * _xDivisions));
                 }
             }
-        }
-
-        private void SetVertex(Vector3 vertex, int index)
-        {
-            _vertices[3 * index]     = vertex.X;
-            _vertices[3 * index + 1] = vertex.Y;
-            _vertices[3 * index + 2] = vertex.Z;
         }
 
         private void GenerateIndices()

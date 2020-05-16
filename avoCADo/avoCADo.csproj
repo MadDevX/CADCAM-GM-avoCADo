@@ -143,11 +143,14 @@
     <Compile Include="Interfaces\IRenderer.cs" />
     <Compile Include="Rendering\LineRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
+    <Compile Include="Rendering\PatchRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
     <Compile Include="Rendering\QuadOverlayRenderer.cs" />
     <Compile Include="Rendering\ShaderBackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrapper.cs" />
+    <Compile Include="Rendering\TesselationShaderWrapper.cs" />
+    <Compile Include="Rendering\TessellationManager.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>
@@ -175,7 +178,9 @@
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
+    <Compile Include="Utility\ShaderPaths.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
+    <Compile Include="Utility\VBOUtility.cs" />
     <Page Include="BezierGeneratorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -240,6 +245,9 @@
     </None>
     <None Include="Shaders\fsQuad.frag" />
     <None Include="Shaders\gsBezierC0.geom" />
+    <None Include="Shaders\tc.tesc" />
+    <None Include="Shaders\te.tese" />
+    <None Include="Shaders\vsForTess.vert" />
     <None Include="Shaders\vs.vert" />
     <None Include="Shaders\vsQuad.vert" />
   </ItemGroup>
@@ -269,6 +277,8 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(ProjectDir)Shaders\*.frag" "$(ProjectDir)$(OutDir)"
 copy "$(ProjectDir)Shaders\*.vert" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)Shaders\*.geom" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+copy "$(ProjectDir)Shaders\*.geom" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\*.tesc" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\*.tese" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

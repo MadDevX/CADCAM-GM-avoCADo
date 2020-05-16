@@ -203,7 +203,7 @@ namespace avoCADo
             for (int j = 0; j < subdivisions; j++)
             {
                 var vect = Bezier3(a, b, c, d, j / (float)(subdivisions - 1));
-                SetVertex(vect, i / 3 * subdivisions + j);
+                VBOUtility.SetVertex(_curveVertexData, vect, i / 3 * subdivisions + j);
             }
         }
 
@@ -253,13 +253,6 @@ namespace avoCADo
                     _maxDistanceSum = curDist;
                 }
             }
-        }
-
-        private void SetVertex(Vector3 vect, int vertexIndex)
-        {
-            _curveVertexData[3 * vertexIndex + 0] = vect.X;
-            _curveVertexData[3 * vertexIndex + 1] = vect.Y;
-            _curveVertexData[3 * vertexIndex + 2] = vect.Z;
         }
         #endregion
     }

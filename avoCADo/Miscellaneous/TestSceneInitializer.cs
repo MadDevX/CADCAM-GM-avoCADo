@@ -11,14 +11,14 @@ namespace avoCADo
 {
     public static class TestSceneInitializer
     {
-        public static void SpawnTestObjects(Scene scene, NodeFactory nodeFactory, ShaderWrapper shader, ShaderWrapper geomShader)
+        public static void SpawnTestObjects(Scene scene, NodeFactory nodeFactory, ShaderWrapper defaultShader, ShaderWrapper geomShader, TesselationShaderWrapper tesShader)
         {
             //var parent = new Node(new Transform(new Vector3(1.0f, 0.0f, -1.0f), new Vector3(0.0f, MathHelper.DegreesToRadians(90.0f), 0.0f), Vector3.One), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "parent torus");
             //var child = new Node(new Transform(Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "child torus");
-            var point = new Node(new Transform(Vector3.UnitX, Vector3.Zero, Vector3.One),         new PointRenderer(shader, Color4.Yellow), "point");
-            var point2 = new Node(new Transform(Vector3.UnitX * 2.0f, Vector3.Zero, Vector3.One), new PointRenderer(shader, Color4.Yellow), "point2");
-            var point3 = new Node(new Transform(Vector3.UnitY * 2.0f, Vector3.Zero, Vector3.One), new PointRenderer(shader, Color4.Yellow), "point3");
-            var point4 = new Node(new Transform(Vector3.UnitY * 3.0f, Vector3.Zero, Vector3.One), new PointRenderer(shader, Color4.Yellow), "point4");
+            var point = new Node(new Transform(Vector3.UnitX, Vector3.Zero, Vector3.One),         new PointRenderer(defaultShader, Color4.Yellow), "point");
+            var point2 = new Node(new Transform(Vector3.UnitX * 2.0f, Vector3.Zero, Vector3.One), new PointRenderer(defaultShader, Color4.Yellow), "point2");
+            var point3 = new Node(new Transform(Vector3.UnitY * 2.0f, Vector3.Zero, Vector3.One), new PointRenderer(defaultShader, Color4.Yellow), "point3");
+            var point4 = new Node(new Transform(Vector3.UnitY * 3.0f, Vector3.Zero, Vector3.One), new PointRenderer(defaultShader, Color4.Yellow), "point4");
             //parent.AttachChild(child);
             //scene.AttachChild(parent);
             //scene.AttachChild(new Node(new Transform(-Vector3.UnitX, new Vector3(0.0f, 0.0f, MathHelper.DegreesToRadians(45.0f)), Vector3.One * 0.5f), new MeshRenderer(shader, new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f))), "child torus"));
@@ -32,7 +32,7 @@ namespace avoCADo
             var bezierSource = new ObservableCollection<INode>();
             var curve =  new InterpolatingC2Curve(bezierSource);
             var bezGen = new BezierGeneratorGeometry(curve);
-            var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(geomShader, shader, bezGen), bezGen, "interpolatingCurve");
+            var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(geomShader, defaultShader, bezGen), bezGen, "interpolatingCurve");
             //var bezGen = new BezierGeneratorNew(curve); //new BezierGeneratorNew(curve);
             //var bezier = new BezierGroupNode(bezierSource, new LineRenderer(shader, bezGen), bezGen, "bezier");
             bezier.AttachChild(point);
@@ -44,7 +44,7 @@ namespace avoCADo
             var bezierSurfCollection = new ObservableCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, nodeFactory);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new MeshRenderer(shader, surfGen), surfGen, "BezierPatch");
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new PatchRenderer(tesShader, surfGen), surfGen, "BezierPatch");
             scene.AttachChild(surfNode);
             surfGen.SurfaceWidth = 2;
             surfGen.SurfaceHeight = 2;

@@ -136,7 +136,7 @@ namespace avoCADo
             Parallel.For(0, fullDivisions, (i) =>
             {
                 var t = ((float)i / (float)(fullDivisions - 1) * diff) + paramRange.X;
-                SetVertex(_curveVertexData, Curve.GetVertex(t), i);
+                VBOUtility.SetVertex(_curveVertexData, Curve.GetVertex(t), i);
             });
 
         }
@@ -155,7 +155,7 @@ namespace avoCADo
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
+                VBOUtility.SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
             }
 
         }
@@ -178,7 +178,7 @@ namespace avoCADo
 
                 for (int i = 0; i < nodes.Count; i++)
                 {
-                    SetVertex(_virtualEdgeVertexData, nodes[i], i);
+                    VBOUtility.SetVertex(_virtualEdgeVertexData, nodes[i], i);
                 }
             }
         }
@@ -238,13 +238,6 @@ namespace avoCADo
                     _maxDistanceSum = curDist;
                 }
             }
-        }
-
-        private void SetVertex(float[] vertexArray, Vector3 vect, int vertexIndex)
-        {
-            vertexArray[3 * vertexIndex + 0] = vect.X;
-            vertexArray[3 * vertexIndex + 1] = vect.Y;
-            vertexArray[3 * vertexIndex + 2] = vect.Z;
         }
         #endregion
     }

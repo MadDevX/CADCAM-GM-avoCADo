@@ -18,71 +18,42 @@ namespace avoCADo
         public Shader(string vertexPath, string fragmentPath)
         {
             int vertexShader, fragmentShader;
-
-            string vertexShaderSource = ReadSourceCode(vertexPath);
-            string fragmentShaderSource = ReadSourceCode(fragmentPath);
-
-            vertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertexShader, vertexShaderSource);
-
-            fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, fragmentShaderSource);
-
-
-            CompileShader(vertexShader);
-            CompileShader(fragmentShader);
-
             _handle = GL.CreateProgram();
-
-            GL.AttachShader(_handle, vertexShader);
-            GL.AttachShader(_handle, fragmentShader);
-
+            vertexShader = AttachShaderFromSource(_handle, vertexPath, ShaderType.VertexShader);
+            fragmentShader = AttachShaderFromSource(_handle, fragmentPath, ShaderType.FragmentShader);
             GL.LinkProgram(_handle);
-
-
-            GL.DetachShader(_handle, vertexShader);
-            GL.DetachShader(_handle, fragmentShader);
-
-            GL.DeleteShader(vertexShader);
-            GL.DeleteShader(fragmentShader);
+            DisposeShader(_handle, vertexShader);
+            DisposeShader(_handle, fragmentShader);
         }
 
         public Shader(string vertexPath, string geometryPath, string fragmentPath)
         {
             int vertexShader, fragmentShader, geometryShader;
 
-            string vertexShaderSource = ReadSourceCode(vertexPath);
-            string fragmentShaderSource = ReadSourceCode(fragmentPath);
-            string geometryShaderSource = ReadSourceCode(geometryPath);
+            _handle = GL.CreateProgram();
+            vertexShader = AttachShaderFromSource(_handle, vertexPath, ShaderType.VertexShader);
+            geometryShader = AttachShaderFromSource(_handle, geometryPath, ShaderType.GeometryShader);
+            fragmentShader = AttachShaderFromSource(_handle, fragmentPath, ShaderType.FragmentShader);
+            GL.LinkProgram(_handle);
+            DisposeShader(_handle, vertexShader);
+            DisposeShader(_handle, geometryShader);
+            DisposeShader(_handle, fragmentShader);
+        }
 
-            vertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertexShader, vertexShaderSource);
-
-            geometryShader = GL.CreateShader(ShaderType.GeometryShader);
-            GL.ShaderSource(geometryShader, geometryShaderSource);
-
-            fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, fragmentShaderSource);
-
-            CompileShader(vertexShader);
-            CompileShader(geometryShader);
-            CompileShader(fragmentShader);
+        public Shader(string vertexPath, string tessellationControlPath, string tessellationEvaluationPath, string fragmentPath)
+        {
+            int vertexShader, fragmentShader, tessCtrlShader, tessEvShader;
 
             _handle = GL.CreateProgram();
-
-            GL.AttachShader(_handle, vertexShader);
-            GL.AttachShader(_handle, geometryShader);
-            GL.AttachShader(_handle, fragmentShader);
-
+            vertexShader = AttachShaderFromSource(_handle, vertexPath, ShaderType.VertexShader);
+            tessCtrlShader = AttachShaderFromSource(_handle, tessellationControlPath, ShaderType.TessControlShader);
+            tessEvShader = AttachShaderFromSource(_handle, tessellationEvaluationPath, ShaderType.TessEvaluationShader);
+            fragmentShader = AttachShaderFromSource(_handle, fragmentPath, ShaderType.FragmentShader);
             GL.LinkProgram(_handle);
-
-            GL.DetachShader(_handle, vertexShader);
-            GL.DetachShader(_handle, geometryShader);
-            GL.DetachShader(_handle, fragmentShader);
-
-            GL.DeleteShader(vertexShader);
-            GL.DeleteShader(geometryShader);
-            GL.DeleteShader(fragmentShader);
+            DisposeShader(_handle, vertexShader);
+            DisposeShader(_handle, tessCtrlShader);
+            DisposeShader(_handle, tessEvShader);
+            DisposeShader(_handle, fragmentShader);
         }
 
         public void Use()
@@ -97,6 +68,23 @@ namespace avoCADo
                 GL.DeleteProgram(_handle);
                 _disposedValue = true;
             }
+        }
+
+
+        private int AttachShaderFromSource(int programHandle, string shaderPath, ShaderType type)
+        {
+            string shaderSource = ReadSourceCode(shaderPath);
+            int shader = GL.CreateShader(type);
+            GL.ShaderSource(shader, shaderSource);
+            CompileShader(shader);
+            GL.AttachShader(programHandle, shader);
+            return shader;
+        }
+
+        private void DisposeShader(int programHandle, int shaderHandle)
+        {
+            GL.DetachShader(programHandle, shaderHandle);
+            GL.DeleteShader(shaderHandle);
         }
 
         private string ReadSourceCode(string path)

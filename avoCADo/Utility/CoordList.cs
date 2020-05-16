@@ -10,7 +10,7 @@ namespace avoCADo
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
-
+        public int Count => Width * Height;
         private List<T> _list;
 
         public CoordList()

@@ -51,9 +51,9 @@ namespace avoCADo
 
         public void Dispose()
         {
-            for (int i = Children.Count - 1; i >= 0; i--)
+            while(Children.Count > 0)
             {
-                Children[i].Dispose();
+                Children[Children.Count - 1].Dispose();
             }
             Children.Clear();
             for (int i = VirtualChildren.Count - 1; i >= 0; i--)

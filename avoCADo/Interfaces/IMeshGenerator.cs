@@ -45,6 +45,7 @@ namespace avoCADo
     public enum DrawCallShaderType
     {
         Default,
-        Curve
+        Curve,
+        Surface
     }
 }

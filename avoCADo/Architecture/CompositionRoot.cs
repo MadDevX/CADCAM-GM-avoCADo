@@ -21,10 +21,12 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
         private FramebufferManager _framebufferManager;
+        private TessellationManager _tesselationManager;
 
         private BufferShaderWrapper _bufferShader;
         private ShaderWrapper _defaultShader;
         private ShaderWrapper _curveShader;
+        private TesselationShaderWrapper _surfaceShader;
 
         private ShaderBackgroundManager _shaderBackgroundManager;
         private QuadOverlayRenderer _quadRenderer;
@@ -60,10 +62,12 @@ namespace avoCADo
             _screenBufferManager = new ScreenBufferManager(_backgroundManager);
             _viewportManager = new ViewportManager(_control);
             _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager);
+            _tesselationManager = new TessellationManager();
 
-            _bufferShader = new BufferShaderWrapper(new Shader("vsQuad.vert", "fsQuad.frag"));
-            _defaultShader = new ShaderWrapper(new Shader("vs.vert", "fs.frag"));
-            _curveShader = new ShaderWrapper(new Shader("vs.vert", "gsBezierC0.geom", "fs.frag"));
+            _bufferShader = new BufferShaderWrapper(new Shader(ShaderPaths.VSQuadPath, ShaderPaths.FSQuadPath));
+            _defaultShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.FSPath));
+            _curveShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.GSPath, ShaderPaths.FSPath));
+            _surfaceShader = new TesselationShaderWrapper(new Shader(ShaderPaths.VSForTessPath, ShaderPaths.TESCPath, ShaderPaths.TESEPath, ShaderPaths.FSPath));
 
             _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _defaultShader, _curveShader);
             _quadRenderer = new QuadOverlayRenderer(_bufferShader);
@@ -88,8 +92,7 @@ namespace avoCADo
 
             _window.cameraSettings.DataContext = _cameraModeManager;
             _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, NodeFactory, _defaultShader, _curveShader);
-            //_cameraModeManager.SetStereoscopic(true);
+            TestSceneInitializer.SpawnTestObjects(_scene, NodeFactory, _defaultShader, _curveShader, _surfaceShader);
         }
 
         public void Dispose()
@@ -106,9 +109,10 @@ namespace avoCADo
             _scene.Dispose();
             _quadRenderer.Dispose();
             _shaderBackgroundManager.Dispose();
-            _bufferShader.Dispose();
+            _surfaceShader.Dispose();
             _curveShader.Dispose();
             _defaultShader.Dispose();
+            _bufferShader.Dispose();
             _framebufferManager.Dispose();
             _viewportManager.Dispose();
         }
