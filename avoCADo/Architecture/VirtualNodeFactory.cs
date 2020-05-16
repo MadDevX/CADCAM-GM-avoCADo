@@ -23,7 +23,7 @@ namespace avoCADo
 
         public INode CreateVirtualPoint(Vector3 position)
         {
-            var pointNode = new VirtualNode(new Transform(position, Quaternion.Identity, Vector3.One), new PointRenderer(_shader, Color4.Aqua));
+            var pointNode = new VirtualNode(new Transform(position, Quaternion.Identity, Vector3.One), new PointRenderer(_shader, Color4.Aqua, Color4.Aquamarine));
             _scene.AttachChild(pointNode);
             return pointNode;
         }

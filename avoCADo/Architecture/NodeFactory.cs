@@ -46,7 +46,7 @@ namespace avoCADo
         public INode CreatePoint(INode parent)
         {
             if (parent == null) parent = _scene;
-            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderWrapper, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
+            var pointNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderWrapper, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
             parent.AttachChild(pointNode);
             return pointNode;
         }

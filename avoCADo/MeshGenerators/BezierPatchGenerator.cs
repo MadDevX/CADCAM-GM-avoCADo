@@ -9,7 +9,7 @@ namespace avoCADo
 {
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, 1.0f) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE) };
 
         public event Action OnParametersChanged;
 

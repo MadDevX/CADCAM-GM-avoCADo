@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class ShaderWrapper : AbstractShaderWrapper
+    public class ShaderWrapper : SimpleShaderWrapper
     {
         private int _shaderModelMatrixLocation;
-        private int _shaderColorLocation;
         private int _shaderViewLocation;
         private int _shaderProjectionLocation;
         private int _shaderBgColorLocation;
@@ -24,8 +23,8 @@ namespace avoCADo
 
         protected override void SetUniformLocations()
         {
+            base.SetUniformLocations();
             _shaderModelMatrixLocation = GL.GetUniformLocation(Shader.Handle, "model");
-            _shaderColorLocation = GL.GetUniformLocation(Shader.Handle, "color");
             _shaderViewLocation = GL.GetUniformLocation(Shader.Handle, "view");
             _shaderProjectionLocation = GL.GetUniformLocation(Shader.Handle, "projection");
             _shaderBgColorLocation = GL.GetUniformLocation(Shader.Handle, "bgColor");
@@ -49,12 +48,6 @@ namespace avoCADo
         {
             CheckShaderBinding();
             GL.UniformMatrix4(_shaderProjectionLocation, false, ref projection);
-        }
-
-        public void SetColor(Color4 color)
-        {
-            CheckShaderBinding();
-            GL.Uniform4(_shaderColorLocation, color);
         }
 
         public void SetBackgroundColor(Color4 color)

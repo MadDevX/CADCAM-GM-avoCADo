@@ -86,6 +86,7 @@
     <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\RenderConstants.cs" />
     <Compile Include="Architecture\Registry.cs" />
+    <Compile Include="Architecture\ShaderProvider.cs" />
     <Compile Include="Architecture\VirtualNodeFactory.cs" />
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
@@ -103,6 +104,7 @@
     <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
+    <Compile Include="HUD\RectangularSelectionDrawer.cs" />
     <Compile Include="Interfaces\IBezierSurface.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />
@@ -120,9 +122,9 @@
     <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
-    <Compile Include="Rendering\AbstractShaderWrapper.cs" />
+    <Compile Include="Rendering\ShaderWrappers\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BackgroundManager.cs" />
-    <Compile Include="Rendering\BufferShaderWrapper.cs" />
+    <Compile Include="Rendering\ShaderWrappers\BufferShaderWrapper.cs" />
     <Compile Include="Rendering\CurveRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
@@ -147,8 +149,11 @@
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
     <Compile Include="Rendering\QuadOverlayRenderer.cs" />
+    <Compile Include="Rendering\RectangleSelectionRenderer.cs" />
     <Compile Include="Rendering\ShaderBackgroundManager.cs" />
-    <Compile Include="Rendering\ShaderWrapper.cs" />
+    <Compile Include="Rendering\ShaderWrappers\ShaderWrapper.cs" />
+    <Compile Include="Rendering\SimpleRenderer.cs" />
+    <Compile Include="Rendering\ShaderWrappers\SimpleShaderWrapper.cs" />
     <Compile Include="Rendering\TesselationShaderWrapper.cs" />
     <Compile Include="Rendering\TessellationManager.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
@@ -245,9 +250,10 @@
     </None>
     <None Include="Shaders\fsQuad.frag" />
     <None Include="Shaders\gsBezierC0.geom" />
+    <None Include="Shaders\simpleFs.frag" />
     <None Include="Shaders\tc.tesc" />
     <None Include="Shaders\te.tese" />
-    <None Include="Shaders\vsForTess.vert" />
+    <None Include="Shaders\simpleVs.vert" />
     <None Include="Shaders\vs.vert" />
     <None Include="Shaders\vsQuad.vert" />
   </ItemGroup>
