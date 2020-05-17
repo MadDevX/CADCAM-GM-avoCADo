@@ -13,6 +13,7 @@
                 <TextBlock Text="{Binding ElementName=isolineDivisions, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
             </StackPanel>
             <Slider x:Name="isolineDivisions" Minimum="2" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisions}"/>
+            <CheckBox x:Name="showEdges" Content="Show Edges" IsChecked="{Binding ShowEdges}" Margin="5"/>
         </StackPanel>
     </GroupBox>
 </UserControl>

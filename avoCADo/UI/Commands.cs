@@ -74,7 +74,8 @@ namespace avoCADo
 
         private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _compositionRoot.NodeFactory.CreateBezierGroupCPURenderer();
+            //_compositionRoot.NodeFactory.CreateBezierGroupCPURenderer();
+            _compositionRoot.NodeFactory.CreateBezierGroup();
         }
 
         private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)

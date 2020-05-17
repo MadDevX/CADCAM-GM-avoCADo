@@ -15,11 +15,28 @@ namespace avoCADo
 
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64) };
-
+        public IList<DrawCall> DrawCalls
+        {
+            get
+            {
+                if(ShowEdges)
+                {
+                    return new List<DrawCall>()
+                    {
+                        new DrawCall(0, _surfaceIndices.Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64),
+                        new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_COLOR)
+                    };
+                }
+                else
+                {
+                    return new List<DrawCall>() { new DrawCall(0, _surfaceIndices.Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64) };
+                }
+            }
+        }
         public event Action OnParametersChanged;
 
         public int IsolineDivisions { get; set; } = 4;
+        public bool ShowEdges { get; set; } = false;
 
         public int HorizontalPatches
         { 
@@ -99,9 +116,10 @@ namespace avoCADo
         }
 
 
-        private uint[] _indices = new uint[0];
+        private uint[] _surfaceIndices = new uint[0];
         private float[] _vertices = new float[0];
-
+        private uint[] _edgeIndices = new uint[0];
+        private uint[] _indices = new uint[0];
         public uint[] GetIndices()
         {
             return _indices;
@@ -115,7 +133,41 @@ namespace avoCADo
         private void UpdateBufferDataWrapper()
         {
             UpdateBufferData();
+            UpdateEdgesBuffer();
+            CheckCombineArrays();
             OnParametersChanged?.Invoke();
+        }
+
+        private void UpdateEdgesBuffer()
+        {
+            var cps = Surface.ControlPoints;
+            var edgeIndexCount = 2 * (2 * (cps.Width - 1) * (cps.Height - 1) + (cps.Width - 1) + (cps.Height - 1)); //two edges per vertex, except last ones - last vertices have 1 outcoming edge
+            if (_edgeIndices.Length != edgeIndexCount)
+            {
+                Array.Resize(ref _edgeIndices, edgeIndexCount);
+            }
+            var _indicesIdx = 0;
+            for(int u = 0; u < cps.Width; u++)
+            {
+                for(int v = 0; v < cps.Height; v++)
+                {
+                    if (u < cps.Width - 1)
+                    {
+                        _edgeIndices[_indicesIdx] = (uint)(u + v * cps.Width);
+                        _indicesIdx++;
+                        _edgeIndices[_indicesIdx] = (uint)((u + 1) + v * cps.Width);
+                        _indicesIdx++;
+                    }
+
+                    if (v < cps.Height - 1)
+                    {
+                        _edgeIndices[_indicesIdx] = (uint)(u + v * cps.Width);
+                        _indicesIdx++;
+                        _edgeIndices[_indicesIdx] = (uint)(u + (v + 1) * cps.Width);
+                        _indicesIdx++;
+                    }
+                }
+            }
         }
 
         private void UpdateBufferData()
@@ -124,7 +176,7 @@ namespace avoCADo
             if(_vertices.Length != cps.Count * 3)
             {
                 Array.Resize(ref _vertices, cps.Count * 3);
-                Array.Resize(ref _indices, Surface.USegments * Surface.VSegments * 16 * 2); //isolines in two directions, thus *2
+                Array.Resize(ref _surfaceIndices, Surface.USegments * Surface.VSegments * 16 * 2); //isolines in two directions, thus *2
             }
 
             for(int i = 0; i < cps.Width; i++)
@@ -146,7 +198,7 @@ namespace avoCADo
                     {
                         for(int i = uIdx; i < uIdx + 4; i++)
                         {
-                            _indices[indicesIdx] = (uint)(i + j * cps.Width);
+                            _surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
                             indicesIdx++;
                         }
                     }
@@ -163,13 +215,23 @@ namespace avoCADo
                     {
                         for (int j = vIdx; j < vIdx + 4; j++)
                         {
-                            _indices[indicesIdx] = (uint)(i + j * cps.Width);
+                            _surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
                             indicesIdx++;
                         }
                     }
 
                 }
             }
+        }
+
+        private void CheckCombineArrays()
+        {
+            if (_indices.Length != _surfaceIndices.Length + _edgeIndices.Length)
+            {
+                _indices = new uint[_surfaceIndices.Length + _edgeIndices.Length];
+            }
+            Array.Copy(_surfaceIndices, 0, _indices, 0, _surfaceIndices.Length);
+            Array.Copy(_edgeIndices, 0, _indices, _surfaceIndices.Length, _edgeIndices.Length);
         }
 
         public void RefreshDataPreRender()

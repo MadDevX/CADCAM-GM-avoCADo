@@ -8,9 +8,10 @@
              d:DesignHeight="200" d:DesignWidth="300">
     <GroupBox Header="Camera Settings">
         <StackPanel>
-            <TextBlock Text="Render Mode" Margin="5"/>
-            <RadioButton x:Name="radioBtnStandard" Content="Standard" IsChecked="True" Checked="radioBtnStandard_Checked"/>
-            <RadioButton x:Name="radioBtnStereoscopic" Content="Stereoscopic" Checked="radioBtnStereoscopic_Checked"/>
+            <StackPanel Orientation="Horizontal">
+                <RadioButton x:Name="radioBtnStandard" Content="Standard" IsChecked="True" Checked="radioBtnStandard_Checked" Margin="5"/>
+                <RadioButton x:Name="radioBtnStereoscopic" Content="Stereoscopic" Checked="radioBtnStereoscopic_Checked" Margin="5"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Eye Distance" Margin="5"/>
                 <TextBlock Text="{Binding ElementName=eyeDistance, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
