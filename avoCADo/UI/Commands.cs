@@ -111,15 +111,7 @@ namespace avoCADo
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            var depColl = e.Parameter as IDependencyCollector;
-            if (depColl != null)
-            {
-                e.CanExecute = depColl.HasDependency(DependencyType.Strong) == false;
-            }
-            else
-            {
-                e.CanExecute = true;
-            }
+            e.CanExecute = CanDelete(e.Parameter);
         }
 
         private void DeleteNodeCmd_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -135,6 +127,39 @@ namespace avoCADo
             else
             {
                 MessageBox.Show("null param");
+            }
+        }
+
+        private void TryDeleteSelectedCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void TryDeleteSelectedCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes.ToList();
+            while (selected.Count > 0)
+            {
+                var node = selected[selected.Count - 1];
+                selected.RemoveAt(selected.Count - 1);
+                if (CanDelete(node))
+                {
+                    node.Dispose();
+                }
+            }
+            
+        }
+
+        private bool CanDelete(object parameter)
+        {
+            var depColl = parameter as IDependencyCollector;
+            if (depColl != null)
+            {
+                return depColl.HasDependency(DependencyType.Strong) == false;
+            }
+            else
+            {
+                return true;
             }
         }
 

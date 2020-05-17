@@ -81,5 +81,16 @@ namespace avoCADo
                 "Delete",
                 typeof(CommandDefinitions)
             );
+
+        public static readonly RoutedUICommand TryDeleteSelected = new RoutedUICommand
+            (
+                "Delete Selected",
+                "TryDeleteSelected",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.Delete)
+                }
+            );
     }
 }
