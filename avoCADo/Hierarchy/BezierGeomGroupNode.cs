@@ -9,6 +9,7 @@ namespace avoCADo
 {
     public class BezierGeomGroupNode : GroupNode<BezierGeneratorGeometry>
     {
+        public override GroupNodeType GroupNodeType => GroupNodeType.Attachable;
         public override NodeType NodeType => NodeType.Curve;
         public BezierGeomGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(childrenSource, renderer, dependent, name)
         {

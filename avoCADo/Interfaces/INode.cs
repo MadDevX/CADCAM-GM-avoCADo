@@ -16,9 +16,17 @@ namespace avoCADo
         Surface,
         Scene
     }
+
+    public enum GroupNodeType
+    {
+        None,
+        Attachable,
+        Fixed
+    }
+
     public interface INode : IDisposable, INotifyPropertyChanged
     {
-        bool IsGroupNode { get; }
+        GroupNodeType GroupNodeType { get; }
         NodeType NodeType { get; }
         event Action<INode> OnDisposed;
         string Name { get; set; }

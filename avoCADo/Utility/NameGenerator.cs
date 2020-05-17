@@ -11,7 +11,7 @@ namespace avoCADo
         public static string GenerateName(INode root, string genericName)
         {
             bool found = false;
-            if (root.IsGroupNode) root = root.Transform.Parent;
+            if (root.GroupNodeType != GroupNodeType.None) root = root.Transform.Parent;
             foreach(var node in root.Children)
             {
                 if(node.Name.Equals(genericName))

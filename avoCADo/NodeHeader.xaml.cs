@@ -156,7 +156,7 @@ namespace avoCADo
         private void UpdateContextMenuOptions()
         {
             var sel = _selectionManager.MainSelection;
-            if (sel != null && sel.IsGroupNode && Node.Renderer is PointRenderer)
+            if (sel != null && sel.GroupNodeType == GroupNodeType.Attachable && Node.Renderer is PointRenderer)
             {
                 if( sel.Children.Contains(Node))
                 {
@@ -193,7 +193,7 @@ namespace avoCADo
 
         private void SetContextMenu(INode parentNode)
         {
-            if(parentNode.IsGroupNode)
+            if(parentNode.GroupNodeType != GroupNodeType.None)
             {
                 UpdateRemoveAvailability(parentNode);
                 menuItemDelete.Visibility = Visibility.Collapsed;

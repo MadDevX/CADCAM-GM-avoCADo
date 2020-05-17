@@ -188,7 +188,7 @@ namespace avoCADo
                 {
                     selectionList.Add(node);
                 }
-                if (node.IsGroupNode == false)
+                if (node.GroupNodeType == GroupNodeType.None)
                 {
                     TraverseCollection(node.Children, rect, selectionList);
                 }
@@ -211,7 +211,7 @@ namespace avoCADo
             foreach (var node in list)
             {
                 CheckSelection(node, mousePos, ref curDist, ref curSelect);
-                if (node.IsGroupNode == false)
+                if (node.GroupNodeType == GroupNodeType.None)
                 {
                     TraverseCollection(node.Children, mousePos, ref curDist, ref curSelect);
                 }

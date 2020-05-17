@@ -39,7 +39,7 @@ namespace avoCADo
 
         public INode CreateTorus(INode parent)
         {
-            if (parent == null) parent = _scene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_defaultShaderWrapper, generator), NameGenerator.GenerateName(parent, "Torus"));
             parent.AttachChild(torusNode);
@@ -61,7 +61,7 @@ namespace avoCADo
 
         public INode CreatePoint(INode parent)
         {
-            if (parent == null) parent = _scene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
             PoolableNode pointNode;
 
             if(_pointPool.Count == 0)

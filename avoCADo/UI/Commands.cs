@@ -19,14 +19,14 @@ namespace avoCADo
             var arg = e.Parameter as INode;
             if (arg != null)
             {
-                e.CanExecute = !arg.IsGroupNode;
+                e.CanExecute = arg.GroupNodeType == GroupNodeType.None;
             }
             else
             {
                 var selection = NodeSelection.Manager.MainSelection;
                 if (selection != null)
                 {
-                    e.CanExecute = !selection.IsGroupNode;
+                    e.CanExecute = selection.GroupNodeType == GroupNodeType.None;
                 }
                 else
                 {
@@ -44,7 +44,23 @@ namespace avoCADo
 
         private void CreatePointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var arg = e.Parameter as INode;
+            if (arg != null)
+            {
+                e.CanExecute = arg.GroupNodeType != GroupNodeType.Fixed;
+            }
+            else
+            {
+                var selection = NodeSelection.Manager.MainSelection;
+                if (selection != null)
+                {
+                    e.CanExecute = selection.GroupNodeType != GroupNodeType.Fixed;
+                }
+                else
+                {
+                    e.CanExecute = true;
+                }
+            }
         }
 
         private void CreatePointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -95,7 +111,7 @@ namespace avoCADo
 
         private void CreateBezierPatchC0Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = NodeSelection.Manager.MainSelection == null;
         }
 
         private void CreatBezierPatchC0Cmd_Executed(object sender, ExecutedRoutedEventArgs e)

@@ -15,7 +15,7 @@ namespace avoCADo
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
 
-        public bool IsGroupNode => false;
+        public GroupNodeType GroupNodeType => GroupNodeType.None;
         public NodeType NodeType => NodeType.Point;
 
         public ITransform Transform { get; private set; }

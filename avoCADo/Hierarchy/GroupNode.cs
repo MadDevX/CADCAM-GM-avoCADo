@@ -19,7 +19,7 @@ namespace avoCADo
         public event Action<INode> OnDisposed;
         
         public abstract NodeType NodeType { get; }
-        public bool IsGroupNode => true;
+        public abstract GroupNodeType GroupNodeType { get; }
 
         /// <summary>
         /// Determines type of dependency added to nodes associated with this GroupNode
