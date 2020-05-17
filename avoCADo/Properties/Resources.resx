@@ -124,4 +124,28 @@
   <data name="avoCADo_image" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\avoCADo_image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_curve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_curve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_curve16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_curve16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_point" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_point.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_point16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_point16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_scene" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_scene.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_scene16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_scene16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_surface" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_surface.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_surface16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_surface16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

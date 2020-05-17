@@ -16,6 +16,7 @@ namespace avoCADo
         public event Action<INode> OnDisposed;
 
         public bool IsGroupNode => false;
+        public NodeType NodeType => NodeType.Point;
 
         public ITransform Transform { get; private set; }
         public IRenderer Renderer { get; private set; }

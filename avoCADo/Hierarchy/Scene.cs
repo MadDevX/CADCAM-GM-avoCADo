@@ -14,6 +14,7 @@ namespace avoCADo
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
         public bool IsGroupNode => false;
+        public NodeType NodeType => NodeType.Scene;
 
         private string _name;
         public string Name

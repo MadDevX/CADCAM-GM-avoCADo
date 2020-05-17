@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,15 @@ namespace avoCADo
     /// </summary>
     public partial class NodeHeader : UserControl
     {
-        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(INode), typeof(NodeHeader), new PropertyMetadata(null));
+        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register("Node", typeof(INode), typeof(NodeHeader), new PropertyMetadata(new PropertyChangedCallback(OnPropertyChanged)));
+        private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is NodeHeader header)
+            {
+                header.PropertyChanged?.Invoke();
+            }
+        }
+
         public INode Node
         {
             get { return (INode)this.GetValue(NodeProperty); }
@@ -28,6 +37,7 @@ namespace avoCADo
             {
                 this.SetValue(NodeProperty, value);
                 DataContext = value;
+                nodeIcon.Source = IconProvider.GetIcon(value.NodeType);
             }
         }
 
@@ -36,8 +46,11 @@ namespace avoCADo
         private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
         private SelectionManager _selectionManager;
 
+        public event Action PropertyChanged;
+
         public NodeHeader()
         {
+            PropertyChanged += SetIcon;
             InitializeComponent();
             _selectionManager = NodeSelection.Manager;
             _selectionManager.OnSelectionChanged += OnSelectionChanged;
@@ -46,8 +59,17 @@ namespace avoCADo
 
         private void Dispose(object sender, RoutedEventArgs e)
         {
+            PropertyChanged -= SetIcon;
             _selectionManager.OnSelectionChanged -= OnSelectionChanged;
             Unloaded -= Dispose;
+        }
+
+        private void SetIcon()
+        {
+            if (Node != null)
+            {
+                nodeIcon.Source = IconProvider.GetIcon(Node.NodeType);
+            }
         }
 
         private void OnSelectionChanged()

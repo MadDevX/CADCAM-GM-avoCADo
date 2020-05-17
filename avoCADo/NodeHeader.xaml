@@ -8,10 +8,14 @@
              Focusable="True"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBox x:Name="textBox" Text="{Binding Name}" AcceptsReturn="False" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown" Visibility="Hidden">
-        </TextBox>
-        <TextBlock x:Name="label" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
-            <TextBlock.ContextMenu>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="24"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="nodeIcon" Width="16" Height="16"/>
+        <TextBox x:Name="textBox" Grid.Column="1" Text="{Binding Name}" AcceptsReturn="False" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown" Visibility="Hidden"/>
+        <TextBlock x:Name="label" Grid.Column="1" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
+                <TextBlock.ContextMenu>
                 <ContextMenu IsVisibleChanged="ContextMenu_IsVisibleChanged">
                     <MenuItem x:Name="menuItemAttachToCurve" Header="Attach to curve" Click="MenuItemAttachToCurve_Click" Visibility="Collapsed"/>
                     <MenuItem x:Name="menuItemDetachFromCurve" Header="Detach from curve" Click="MenuItemDetachFromCurve_Click" Visibility="Collapsed"/>

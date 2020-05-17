@@ -9,6 +9,7 @@ namespace avoCADo
 {
     class BezierPatchGroupNode : GroupNode<BezierPatchGenerator>
     {
+        public override NodeType NodeType => NodeType.Surface;
         public override DependencyType ChildrenDependencyType => DependencyType.Strong;
 
         public BezierPatchGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BezierPatchGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)

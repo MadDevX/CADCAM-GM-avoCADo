@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:avoCADo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <BitmapImage x:Key="iconPoint" UriSource="/Resources/icon_point16.png"/>
+        <BitmapImage x:Key="iconCurve" UriSource="/Resources/icon_curve16.png"/>
+        <BitmapImage x:Key="iconSurface" UriSource="/Resources/icon_surface16.png"/>
+        <BitmapImage x:Key="iconScene" UriSource="/Resources/icon_scene16.png"/>
     </Application.Resources>
 </Application>

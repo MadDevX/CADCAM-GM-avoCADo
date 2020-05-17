@@ -17,7 +17,8 @@ namespace avoCADo
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
-
+        
+        public abstract NodeType NodeType { get; }
         public bool IsGroupNode => true;
 
         /// <summary>

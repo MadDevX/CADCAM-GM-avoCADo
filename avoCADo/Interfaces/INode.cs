@@ -9,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
+    public enum NodeType
+    {
+        Point,
+        Curve,
+        Surface,
+        Scene
+    }
     public interface INode : IDisposable, INotifyPropertyChanged
     {
         bool IsGroupNode { get; }
-
+        NodeType NodeType { get; }
         event Action<INode> OnDisposed;
         string Name { get; set; }
         ITransform Transform { get; }

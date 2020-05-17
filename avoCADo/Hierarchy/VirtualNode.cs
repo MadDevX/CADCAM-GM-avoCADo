@@ -15,6 +15,7 @@ namespace avoCADo
     public class VirtualNode : INode, INotifyPropertyChanged
     {
         public bool IsGroupNode => false;
+        public NodeType NodeType => NodeType.Point;
 
         public string Name { get; set; }
 
