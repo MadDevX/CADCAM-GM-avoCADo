@@ -1,4 +1,5 @@
 ﻿using avoCADo.Architecture;
+using avoCADo.Utility;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -52,6 +53,7 @@ namespace avoCADo
 
         private void Initialize()
         {
+            MeshUtility.Initialize();
             var backgroundColorStereoscopic = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
             var backgroundColorStandard = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
 
@@ -108,6 +110,7 @@ namespace avoCADo
             _shaderProvider.Dispose();
             _framebufferManager.Dispose();
             _viewportManager.Dispose();
+            MeshUtility.Dispose();
         }
     }
 }

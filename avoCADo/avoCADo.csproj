@@ -131,6 +131,7 @@
     <Compile Include="ParametricObjects\Curves\InterpolatingC2Curve.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
+    <Compile Include="Rendering\Mesh.cs" />
     <Compile Include="Rendering\ShaderWrappers\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrappers\BufferShaderWrapper.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Utility\CoordList.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
+    <Compile Include="Utility\MeshUtility.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
     <Compile Include="Utility\ShaderPaths.cs" />

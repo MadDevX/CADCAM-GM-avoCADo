@@ -41,7 +41,6 @@ namespace avoCADo
 
         protected override void SetBufferData()
         {
-            GL.BindVertexArray(VAO);
             float[] vertices = 
             {
                 0.0f, 0.0f, 0.0f,
@@ -50,11 +49,7 @@ namespace avoCADo
                 0.0f, 0.0f, 1.0f,
             };
             uint[] indices = { 0, 1, 0, 2, 0, 3 };
-            _indexCount = indices.Length;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+            _mesh.SetBufferData(vertices, indices, BufferUsageHint.StaticDraw);
         }
     }
 }

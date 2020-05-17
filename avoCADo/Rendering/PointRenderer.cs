@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Utility;
+using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -15,12 +16,11 @@ namespace avoCADo
         private Color4 _selectedColor;
         private SelectionManager _selectionManager;
 
-        public PointRenderer(ShaderWrapper shaderWrapper, Color4 color, Color4 selectedColor) : base(shaderWrapper)
+        public PointRenderer(ShaderWrapper shaderWrapper, Color4 color, Color4 selectedColor) : base(shaderWrapper, MeshUtility.PointMesh)
         {
             _color = color;
             _selectedColor = selectedColor;//new Color4(_color.R * 0.5f, _color.G * 0.5f, _color.B * 0.5f, _color.A);
             _selectionManager = NodeSelection.Manager;
-            SetBufferData();
         }
 
         public override IMeshGenerator GetGenerator() => null;
@@ -54,14 +54,6 @@ namespace avoCADo
 
         protected override void SetBufferData()
         {
-            GL.BindVertexArray(VAO);
-            float[] vertices = { 0.0f, 0.0f, 0.0f };
-            uint[] indices = { 0 };
-            _indexCount = indices.Length;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
         }
     }
 }

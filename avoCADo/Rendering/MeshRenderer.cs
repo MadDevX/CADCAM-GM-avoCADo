@@ -33,19 +33,14 @@ namespace avoCADo
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            GL.DrawElements(PrimitiveType.Lines, _indexCount, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Lines, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
         }
 
         protected override void SetBufferData()
         {
-            GL.BindVertexArray(VAO);
             float[] vertices = _meshGenerator.GetVertices();
             uint[] indices = _meshGenerator.GetIndices();
-            _indexCount = indices.Length;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.DynamicDraw);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.DynamicDraw);
+            _mesh.SetBufferData(vertices, indices, BufferUsageHint.DynamicDraw);
         }
     }
 }
