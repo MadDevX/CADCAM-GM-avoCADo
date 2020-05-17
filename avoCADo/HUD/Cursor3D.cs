@@ -44,7 +44,7 @@ namespace avoCADo
 
         private Point _prevPos;
         private float _rotateSensitivity = 5.0f;
-        private float _translateSensitivity = 5.0f;
+        private float _translateSensitivity = 2.5f;
         private float _scaleSensitivity = 5.0f;
 
         public Cursor3D(GLControl control, TextBlock label, ShaderWrapper shader, IRenderLoop renderLoop, IUpdateLoop updateLoop, Camera camera)
@@ -189,11 +189,11 @@ namespace avoCADo
                     {
                         if (_mults.Length > 0.0f)
                         {
-                            obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width));
+                            obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width) * _camera.DistanceToTarget);
                         }
                         else
                         {
-                            obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * (_translateSensitivity / _control.Width));
+                            obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * (_translateSensitivity / _control.Width) * _camera.DistanceToTarget);
                         }
                     }
                     break;
