@@ -38,10 +38,23 @@ namespace avoCADo
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
             PauseTransformHandling();
-            SetControlPointPoisitions();
+            SetControlPointPoisitionsWrapper();
             ResumeTransformHandling();
 
             ShouldUpdateData = true;
+        }
+
+        private void SetControlPointPoisitionsWrapper()
+        {
+            switch (_generator.PatchType)
+            {
+                case PatchType.Flat:
+                    SetControlPointPoisitionsFlat();
+                    break;
+                case PatchType.Cylinder:
+                    SetControlPointPoisitionsCylinder();
+                    break;
+            }
         }
 
         private void ResumeTransformHandling()
@@ -58,7 +71,9 @@ namespace avoCADo
         {
             var width = (3 * horizontalPatches) + 1;
             var height = (3 * verticalPatches) + 1;
-            _generator.Surface.ControlPoints.SetData(_controlPointNodes, width, height);
+            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType);
+            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.PatchType);
+            _generator.Surface.ControlPoints.SetData(_controlPointNodes, dataWidth, dataHeight, width, height);
         }
 
         /// <summary>
@@ -69,25 +84,25 @@ namespace avoCADo
         /// <returns></returns>
         private bool CorrectControlPointCount(int horizontalPatches, int verticalPatches)
         {
-            var width = (3 * horizontalPatches) + 1;
-            var height = (3 * verticalPatches) + 1;
-            var count = width * height;
-            var shouldAddPoints = count > _controlPointNodes.Count;
+            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType);
+            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.PatchType);
+            var dataCount = dataWidth * dataHeight;
+            var shouldAddPoints = dataCount > _controlPointNodes.Count;
 
             if (shouldAddPoints)
             {
-                while (_controlPointNodes.Count < count)
+                while (_controlPointNodes.Count < dataCount)
                 {
                     TrackControlPoint(_nodeFactory.CreatePoint());
                 }
             }
             else
             {
-                for (int j = 0; j < _generator.Surface.ControlPoints.Height; j++)
+                for (int j = 0; j < _generator.Surface.ControlPoints.DataHeight; j++)
                 {
-                    for (int i = 0; i < _generator.Surface.ControlPoints.Width; i++)
+                    for (int i = 0; i < _generator.Surface.ControlPoints.DataWidth; i++)
                     {
-                        if (i >= width || j >= height)
+                        if (i >= dataWidth || j >= dataHeight)
                         {
                             DisposeControlPoint(_generator.Surface.ControlPoints[i, j]);
                         }
@@ -98,18 +113,32 @@ namespace avoCADo
             return shouldAddPoints;
         }
 
+        private int GetHorizontalControlPointCount(int horizontalPatches, PatchType type)
+        {
+            switch(type)
+            {
+                case PatchType.Flat:
+                    return (3 * horizontalPatches) + 1;
+                case PatchType.Cylinder:
+                    return 3 * horizontalPatches;
+                default:
+                    return (3 * horizontalPatches) + 1;
+            }
+        }
+
+        private int GetVerticalControlPointCount(int verticalPatches, PatchType type)
+        {
+            return (3 * verticalPatches) + 1;
+        }
+
         private void DisposeControlPoint(INode node)
         {
             var depColl = node as IDependencyCollector;
             if (depColl != null)
             {
-                if (depColl.HasDependency(DependencyType.Weak))
+                UntrackControlPoint(node);
+                if (depColl.HasDependency(DependencyType.Weak) == false)
                 {
-                    UntrackControlPoint(node);
-                }
-                else
-                {
-                    UntrackControlPoint(node);
                     node.Dispose();
                 }
             }
@@ -141,7 +170,7 @@ namespace avoCADo
             }
         }
 
-        private void SetControlPointPoisitions()
+        private void SetControlPointPoisitionsFlat()
         {
             var width = _generator.Surface.ControlPoints.Width;
             var height = _generator.Surface.ControlPoints.Height;
@@ -150,6 +179,25 @@ namespace avoCADo
                 for (int i = 0; i < width; i++)
                 {
                     _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = new Vector3(((float)i / (width - 1)) * _generator.SurfaceWidthOrRadius, 0.0f, ((float)j / (height - 1)) * _generator.SurfaceHeight);
+                }
+            }
+        }
+
+        private void SetControlPointPoisitionsCylinder()
+        {
+            var width = _generator.Surface.ControlPoints.Width;
+            var height = _generator.Surface.ControlPoints.Height;
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = 
+                        new Vector3
+                        (
+                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width - 1)) * Math.PI * 2.0), 
+                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)i / (width - 1)) * Math.PI * 2.0),
+                            ((float)j / (height - 1)) * _generator.SurfaceHeight
+                        );
                 }
             }
         }

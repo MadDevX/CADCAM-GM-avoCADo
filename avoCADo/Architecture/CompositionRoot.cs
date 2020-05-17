@@ -94,6 +94,7 @@ namespace avoCADo
 
         public void Dispose()
         {
+            NodeFactory.Dispose();
             _transformationModeHandler.Dispose();
             _torusHandler.Dispose();
             _transformHandler.Dispose();

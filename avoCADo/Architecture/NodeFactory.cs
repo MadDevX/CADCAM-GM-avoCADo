@@ -52,7 +52,7 @@ namespace avoCADo
             var bezierSurfCollection = new ObservableCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, this, patchType, horizontalPatches, verticalPatches, width, height);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new PatchRenderer(_tesShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             parent.AttachChild(surfNode);
             return surfNode;
         }
@@ -131,7 +131,7 @@ namespace avoCADo
             ICurve curve = CreateCurve<T>(source);
 
             var generator = new BezierGeneratorGeometry(curve);
-            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_geomShaderWrapper, _defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
+            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {

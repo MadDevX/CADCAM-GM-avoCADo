@@ -10,13 +10,18 @@ namespace avoCADo
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
+
+        public int DataWidth { get; private set; }
+        public int DataHeight { get; private set; }
+
         public int Count => Width * Height;
+        public int DataCount => DataWidth * DataHeight;
         private List<T> _list;
 
         public CoordList()
         {
             _list = new List<T>();
-            Width = Height = 0;
+            Width = Height = DataWidth = DataHeight = 0;
         }
 
         public CoordList(IList<T> list, int width, int height)
@@ -25,28 +30,43 @@ namespace avoCADo
             SetData(list, width, height);
         }
 
-        public void SetData(IList<T> list, int width, int height)
+        public void SetData(IList<T> list, int dataWidth, int dataHeight, int width, int height)
         {
-            if (list.Count != width * height)
+            SetData(list, dataWidth, dataHeight);
+            Width = width;
+            Height = height;
+        }
+
+        public void SetData(IList<T> list, int dataWidth, int dataHeight)
+        {
+            if (list.Count != dataWidth * dataHeight)
             {
                 throw new InvalidOperationException("Provided list does not match provided dimensions");
             }
             _list.Clear();
             _list.AddRange(list);
-            Width = width;
-            Height = height;
+            Width = DataWidth = dataWidth;
+            Height = DataHeight = dataHeight;
         }
+
 
         public T this[int x, int y]
         {
             get
             {
-                return _list[x + Width * y];
+                return _list[GetCoord(x, y)];
             }
             set
             {
-                _list[x + Width * y] = value;
+                _list[GetCoord(x, y)] = value;
             }
+        }
+
+        private int GetCoord(int x, int y)
+        {
+            x %= DataWidth;
+            y %= DataHeight;
+            return x + DataWidth * y;
         }
     }
 }

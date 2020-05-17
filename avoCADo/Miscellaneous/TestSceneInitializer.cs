@@ -32,7 +32,7 @@ namespace avoCADo
             var bezierSource = new ObservableCollection<INode>();
             var curve =  new InterpolatingC2Curve(bezierSource);
             var bezGen = new BezierGeneratorGeometry(curve);
-            var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(geomShader, defaultShader, bezGen), bezGen, "interpolatingCurve");
+            var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(tesShader, geomShader, defaultShader, bezGen), bezGen, "interpolatingCurve");
             //var bezGen = new BezierGeneratorNew(curve); //new BezierGeneratorNew(curve);
             //var bezier = new BezierGroupNode(bezierSource, new LineRenderer(shader, bezGen), bezGen, "bezier");
             bezier.AttachChild(point);
@@ -43,14 +43,13 @@ namespace avoCADo
 
             var bezierSurfCollection = new ObservableCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, nodeFactory, PatchType.Flat);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new PatchRenderer(tesShader, surfGen), surfGen, "BezierPatch");
+            var surfGen = new BezierPatchGenerator(surface, nodeFactory, PatchType.Cylinder);
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(tesShader, geomShader, defaultShader, surfGen), surfGen, "BezierPatch");
             scene.AttachChild(surfNode);
             surfGen.SurfaceWidthOrRadius = 2;
             surfGen.SurfaceHeight = 2;
             surfGen.HorizontalPatches = 2;
             surfGen.VerticalPatches = 2;
-            surfGen.HorizontalPatches = 1;
         }
 
     }

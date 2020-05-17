@@ -24,23 +24,29 @@ namespace avoCADo
         public DrawCallShaderType shaderType;
         public float size;
         public Color4 color;
+        public int tessLevelOuter0;
+        public int tessLevelOuter1;
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 color)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 color, int outerTess0 = 0, int outerTess1 = 0)
         {
             this.startIndex = startIndex;
             this.elementCount = elementCount;
             this.shaderType = shaderType;
             this.size = size;
             this.color = color;
+            this.tessLevelOuter0 = outerTess0;
+            this.tessLevelOuter1 = outerTess1;
         }
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, int outerTess0 = 0, int outerTess1 = 0)
         {
             this.startIndex = startIndex;
             this.elementCount = elementCount;
             this.shaderType = shaderType;
             this.size = size;
             this.color = Color4.White;
+            this.tessLevelOuter0 = outerTess0;
+            this.tessLevelOuter1 = outerTess1;
         }
     }
 

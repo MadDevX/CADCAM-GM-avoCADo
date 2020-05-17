@@ -15,9 +15,11 @@ namespace avoCADo
 
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64) };
 
         public event Action OnParametersChanged;
+
+        public int IsolineDivisions { get; set; } = 4;
 
         public int HorizontalPatches
         { 
@@ -45,9 +47,22 @@ namespace avoCADo
 
         public float SurfaceWidthOrRadius { get; set; } = 1.0f;
         public float SurfaceHeight { get; set; } = 1.0f;
-        public PatchType PatchType { get; set; } = PatchType.Flat;
         public IBezierSurface Surface { get; }
 
+        public PatchType PatchType 
+        { 
+            get
+            {
+                return _patchType;
+            }
+            set
+            {
+                _patchType = value;
+                _ctrlPointManager.UpdateControlPoints(HorizontalPatches, VerticalPatches);
+            }
+        }
+
+        private PatchType _patchType = PatchType.Flat;
         private INode _parentNode;
         private NodeFactory _nodeFactory;
         private BezierC0PatchControlPointManager _ctrlPointManager;
@@ -58,6 +73,7 @@ namespace avoCADo
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
+            _patchType = patchType;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
             SurfaceWidthOrRadius = width;

@@ -19,8 +19,8 @@ namespace avoCADo
     /// </summary>
     public partial class BezierPatchCreation : Window
     {
-        public int HorizontalPatches { get; set; } = 1;
-        public int VerticalPatches { get; set; } = 1;
+        public int HorizontalPatches { get; set; } = 2;
+        public int VerticalPatches { get; set; } = 2;
 
         public float SurfaceHeight { get; set; } = 1.0f;
         public float SurfaceWidth { get; set; } = 1.0f;

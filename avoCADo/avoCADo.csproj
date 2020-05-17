@@ -155,7 +155,6 @@
     <Compile Include="Interfaces\IRenderer.cs" />
     <Compile Include="Rendering\LineRenderer.cs" />
     <Compile Include="Rendering\MeshRenderer.cs" />
-    <Compile Include="Rendering\PatchRenderer.cs" />
     <Compile Include="Rendering\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
     <Compile Include="Rendering\QuadOverlayRenderer.cs" />

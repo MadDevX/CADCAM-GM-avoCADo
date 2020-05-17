@@ -12,9 +12,11 @@ namespace avoCADo
     public class CurveRenderer : MeshRenderer
     {
         private ShaderWrapper _curveShaderWrapper;
+        private TesselationShaderWrapper _tessShaderWraper;
 
-        public CurveRenderer(ShaderWrapper curveShaderWrapper, ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
+        public CurveRenderer(TesselationShaderWrapper tessShaderWrapper, ShaderWrapper curveShaderWrapper, ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {
+            _tessShaderWraper = tessShaderWrapper;
             _curveShaderWrapper = curveShaderWrapper;
         }
 
@@ -44,6 +46,18 @@ namespace avoCADo
                     }
                     currentShader.SetColor(calls[i].color);
                     GL.DrawElements(PrimitiveType.LinesAdjacency, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
+                }
+                else if (calls[i].shaderType == DrawCallShaderType.Surface)
+                {
+                    if (currentShader != _tessShaderWraper)
+                    {
+                        SetShader(_tessShaderWraper, camera, localMatrix, parentMatrix);
+                        currentShader = _tessShaderWraper;
+                    }
+                    currentShader.SetColor(calls[i].color);
+                    _tessShaderWraper.SetTessLevelOuter0(calls[i].tessLevelOuter0);
+                    _tessShaderWraper.SetTessLevelOuter1(calls[i].tessLevelOuter1);
+                    GL.DrawElements(PrimitiveType.Patches, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 }
                 currentShader.SetColor(Color4.White);
                 GL.LineWidth(1.0f);

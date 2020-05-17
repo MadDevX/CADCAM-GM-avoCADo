@@ -9,15 +9,10 @@
     <GroupBox Header="Bezier Patch Generator">
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Horizontal Patches" Margin="5"/>
-                <TextBlock Text="{Binding ElementName=horizontalPatches, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
+                <TextBlock Text="Isoline Divisions" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=isolineDivisions, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
             </StackPanel>
-            <Slider x:Name="horizontalPatches" Minimum="1" Maximum="5" IsSnapToTickEnabled="true" Value="{Binding HorizontalPatches}"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Vertical Patches" Margin="5"/>
-                <TextBlock Text="{Binding ElementName=verticalPatches, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
-            </StackPanel>
-            <Slider x:Name="verticalPatches" Minimum="1" Maximum="5" IsSnapToTickEnabled="true" Value="{Binding VerticalPatches}"/>
+            <Slider x:Name="isolineDivisions" Minimum="2" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisions}"/>
         </StackPanel>
     </GroupBox>
 </UserControl>
