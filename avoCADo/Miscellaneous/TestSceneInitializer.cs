@@ -43,10 +43,10 @@ namespace avoCADo
 
             var bezierSurfCollection = new ObservableCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, nodeFactory);
+            var surfGen = new BezierPatchGenerator(surface, nodeFactory, PatchType.Flat);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new PatchRenderer(tesShader, surfGen), surfGen, "BezierPatch");
             scene.AttachChild(surfNode);
-            surfGen.SurfaceWidth = 2;
+            surfGen.SurfaceWidthOrRadius = 2;
             surfGen.SurfaceHeight = 2;
             surfGen.HorizontalPatches = 2;
             surfGen.VerticalPatches = 2;

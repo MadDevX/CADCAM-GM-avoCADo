@@ -91,16 +91,24 @@
     <Compile Include="BezierGeneratorView.xaml.cs">
       <DependentUpon>BezierGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BezierPatchCreation.xaml.cs">
+      <DependentUpon>BezierPatchCreation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BezierPatchGeneratorView.xaml.cs">
+      <DependentUpon>BezierPatchGeneratorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CameraSettings.xaml.cs">
       <DependentUpon>CameraSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Camera\StereoscopicCameraModeManager.cs" />
     <Compile Include="Camera\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
+    <Compile Include="ControlPointManagers\BezierC0PatchControlPointManager.cs" />
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
+    <Compile Include="Hierarchy\PoolableNode.cs" />
     <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
@@ -188,6 +196,14 @@
     <Compile Include="Utility\TreeViewExtension.cs" />
     <Compile Include="Utility\VBOUtility.cs" />
     <Page Include="BezierGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BezierPatchCreation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BezierPatchGeneratorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

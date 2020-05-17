@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="avoCADo"
         KeyDown="Window_KeyDown"
-        Height="768" Width="1280">
+        Height="768" Width="1280" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
@@ -15,6 +15,7 @@
         <CommandBinding Command="local:CommandDefinitions.Bezier" CanExecute="CreateBezierCmd_CanExecute" Executed="CreateBezierCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.BSpline" CanExecute="CreateBSplineCmd_CanExecute" Executed="CreateBSplineCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.InterpolatingC2" CanExecute="CreateInterpolatingC2Cmd_CanExecute" Executed="CreateInterpolatingC2Cmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.BezierPatchC0" CanExecute="CreateBezierPatchC0Cmd_CanExecute" Executed="CreatBezierPatchC0Cmd_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -28,6 +29,7 @@
                 <MenuItem Command="local:CommandDefinitions.Bezier"/>
                 <MenuItem Command="local:CommandDefinitions.BSpline"/>
                 <MenuItem Command="local:CommandDefinitions.InterpolatingC2"/>
+                <MenuItem Command="local:CommandDefinitions.BezierPatchC0"/>
             </MenuItem>
         </Menu>
         <Grid Name="GridMain">
@@ -51,6 +53,7 @@
                     <local:TransformView x:Name="transformView" Visibility="Collapsed"/>
                     <local:TorusGeneratorView x:Name="torusGeneratorView" Visibility="Collapsed"/>
                     <local:BezierGeneratorView x:Name="bezierGeneratorView" Visibility="Collapsed"/>
+                    <local:BezierPatchGeneratorView x:Name="bezierPatchGeneratorView" Visibility="Collapsed"/>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

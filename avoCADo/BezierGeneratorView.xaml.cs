@@ -20,22 +20,31 @@ namespace avoCADo
     /// </summary>
     public partial class BezierGeneratorView : UserControl
     {
+        private SelectionManager _selectionManager;
+
         public BezierGeneratorView()
         {
             InitializeComponent();
+            _selectionManager = NodeSelection.Manager;
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             Unloaded += OnUnload;
-            NodeSelection.Manager.OnSelectionChanged += OnSelectionChanged;
+            _selectionManager.OnSelectionChanged += OnSelectionChanged;
         }
 
         private void OnUnload(object sender, RoutedEventArgs e)
         {
-            NodeSelection.Manager.OnSelectionChanged -= OnSelectionChanged;
+            _selectionManager.OnSelectionChanged -= OnSelectionChanged;
             Unloaded -= OnUnload;
         }
 
         private void OnSelectionChanged()
         {
-            var gen = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
+            var gen =_selectionManager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
             if (gen != null)
             {
                 if (gen.Curve is IVirtualControlPoints)

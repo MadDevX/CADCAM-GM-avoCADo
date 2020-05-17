@@ -104,5 +104,9 @@ namespace avoCADo
             var corrected = Math.Max(mult - minVal, 0.0f) / (1.0f - minVal);
             return corrected;
         }
+
+        public void RefreshDataPreRender()
+        {
+        }
     }
 }

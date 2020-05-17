@@ -110,6 +110,10 @@ namespace avoCADo
             DisposeVirtualNodes();
         }
 
+        public void RefreshDataPreRender()
+        {
+        }
+
         private void SourceDataChanged(object sender, PropertyChangedEventArgs e)
         {
             DataChangedWrapper();

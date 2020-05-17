@@ -38,7 +38,7 @@ namespace avoCADo
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
 
             SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
-            
+            GetGenerator()?.RefreshDataPreRender();
             Draw(camera, localMatrix, parentMatrix);
         }
 

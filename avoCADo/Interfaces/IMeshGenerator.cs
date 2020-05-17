@@ -12,6 +12,8 @@ namespace avoCADo
         float[] GetVertices();
         uint[] GetIndices();
 
+        void RefreshDataPreRender();
+
         IList<DrawCall> DrawCalls { get; }
     }
 

@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
+    public enum PatchType
+    {
+        Flat,
+        Cylinder
+    }
+
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
         public IList<DrawCall> DrawCalls => new List<DrawCall>() { new DrawCall(0, GetIndices().Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE) };
@@ -21,7 +27,7 @@ namespace avoCADo
             }
             set
             {
-                UpdateControlPoints(value, VerticalPatches);
+                _ctrlPointManager.UpdateControlPoints(value, VerticalPatches);
             }
         }
 
@@ -33,45 +39,47 @@ namespace avoCADo
             }
             set
             {
-                UpdateControlPoints(HorizontalPatches, value);
+                _ctrlPointManager.UpdateControlPoints(HorizontalPatches, value);
             }
         }
 
-        public float SurfaceWidth { get; set; } = 1.0f;
+        public float SurfaceWidthOrRadius { get; set; } = 1.0f;
         public float SurfaceHeight { get; set; } = 1.0f;
-
+        public PatchType PatchType { get; set; } = PatchType.Flat;
         public IBezierSurface Surface { get; }
+
         private INode _parentNode;
         private NodeFactory _nodeFactory;
+        private BezierC0PatchControlPointManager _ctrlPointManager;
 
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
 
-        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, int horizontalPatches = 1, int verticalPatches = 1)
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
+            SurfaceWidthOrRadius = width;
+            SurfaceHeight = height;
         }
 
         public void Initialize(INode node)
         {
             _parentNode = node;
+            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _parentNode);
             Initialize(_defaultHorizontalPatches, _defaultVerticalPatches);
         }
 
         private void Initialize(int horizontalPatches, int verticalPatches)
         {
-            UpdateControlPoints(horizontalPatches, verticalPatches);
+            _ctrlPointManager.UpdateControlPoints(horizontalPatches, verticalPatches);
         }
 
 
         public void Dispose()
         {
-            for(int i = _controlPointNodes.Count - 1; i >= 0; i--)
-            {
-                DisposeControlPoint(_controlPointNodes[i]);
-            }
+            _ctrlPointManager.Dispose();
         }
 
 
@@ -148,135 +156,13 @@ namespace avoCADo
             }
         }
 
-
-        #region Control Points
-
-        private IList<INode> _controlPointNodes = new List<INode>();
-        private bool _handleTransformChanges = true;
-
-        private void UpdateControlPoints(int horizontalPatches, int verticalPatches)
+        public void RefreshDataPreRender()
         {
-            var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
-            SetNewSurfaceData(horizontalPatches, verticalPatches);
-            if (newPointsAdded)
-            {
-                PauseTransformHandling();
-                SetControlPointPoisitions();
-                ResumeTransformHandling();
-            }
-            UpdateBufferDataWrapper();
-        }
-
-        private void ResumeTransformHandling()
-        {
-            _handleTransformChanges = true;
-        }
-
-        private void PauseTransformHandling()
-        {
-            _handleTransformChanges = false;
-        }
-
-        private void SetNewSurfaceData(int horizontalPatches, int verticalPatches)
-        {
-            var width = (3 * horizontalPatches) + 1;
-            var height = (3 * verticalPatches) + 1;
-            Surface.ControlPoints.SetData(_controlPointNodes, width, height);
-        }
-
-        /// <summary>
-        /// Returns true if new, uninitialized points were added.
-        /// </summary>
-        /// <param name="horizontalPatches"></param>
-        /// <param name="verticalPatches"></param>
-        /// <returns></returns>
-        private bool CorrectControlPointCount(int horizontalPatches, int verticalPatches)
-        {
-            var width = (3 * horizontalPatches) + 1;
-            var height = (3 * verticalPatches) + 1;
-            var count = width * height;
-            var shouldAddPoints = count > _controlPointNodes.Count;
-
-            if (shouldAddPoints)
-            {
-                while (_controlPointNodes.Count < count)
-                {
-                    TrackControlPoint(_nodeFactory.CreatePoint());
-                }
-            }
-            else
-            {
-                for(int j = 0; j < Surface.ControlPoints.Height; j++)
-                {
-                    for(int i = 0; i < Surface.ControlPoints.Width; i++)
-                    {
-                        if(i >= width || j >= height)
-                        {
-                            DisposeControlPoint(Surface.ControlPoints[i, j]);
-                        }
-                    }
-                }
-            }
-
-            return shouldAddPoints;
-        }
-
-        private void DisposeControlPoint(INode node)
-        {
-            var depColl = node as IDependencyCollector;
-            if (depColl != null)
-            {
-                if (depColl.HasDependency(DependencyType.Weak))
-                {
-                    UntrackControlPoint(node);
-                }
-                else
-                {
-                    UntrackControlPoint(node);
-                    node.Dispose();
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException("Object tracked by surface was not a node!");
-            }
-        }
-
-        private void TrackControlPoint(INode node)
-        {
-            _parentNode.AttachChild(node);
-            _controlPointNodes.Add(node);
-            node.PropertyChanged += HandleCPTransformChanged;
-        }
-
-        private void UntrackControlPoint(INode node)
-        {
-            _parentNode.DetachChild(node);
-            _controlPointNodes.Remove(node);
-            node.PropertyChanged -= HandleCPTransformChanged;
-        }
-
-        private void HandleCPTransformChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (_handleTransformChanges)
+            if (_ctrlPointManager.ShouldUpdateData)
             {
                 UpdateBufferDataWrapper();
+                _ctrlPointManager.ShouldUpdateData = false;
             }
         }
-
-        private void SetControlPointPoisitions()
-        {
-            var width = Surface.ControlPoints.Width;
-            var height = Surface.ControlPoints.Height;
-            for (int j = 0; j < height; j++)
-            {
-                for(int i = 0; i < width; i++)
-                {
-                    Surface.ControlPoints[i, j].Transform.WorldPosition = new Vector3(((float)i / (width-1)) * SurfaceWidth, 0.0f, ((float)j / (height-1)) * SurfaceHeight);
-                }
-            }
-        }
-
-        #endregion
     }
 }

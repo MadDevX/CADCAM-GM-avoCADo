@@ -60,7 +60,18 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                                    new KeyGesture(Key.I, ModifierKeys.Control)
+                            new KeyGesture(Key.I, ModifierKeys.Control)
+                }
+            );
+
+        public static readonly RoutedUICommand BezierPatchC0 = new RoutedUICommand
+            (
+                "New Bezier C0 Patch",
+                "BezierPatchC0",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                            new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift)
                 }
             );
 

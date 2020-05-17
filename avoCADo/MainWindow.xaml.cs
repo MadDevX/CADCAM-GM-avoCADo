@@ -64,7 +64,7 @@ namespace avoCADo
             _deltaStopwatch = new Stopwatch();
 
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(8);
+            _timer.Interval = TimeSpan.FromMilliseconds(16);
             _timer.Tick += SetDirty;
             _timer.Start();
 

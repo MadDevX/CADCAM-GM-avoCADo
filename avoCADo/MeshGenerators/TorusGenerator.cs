@@ -149,5 +149,9 @@ namespace avoCADo
         {
             Surface.ParametersChanged -= UpdateData;
         }
+
+        public void RefreshDataPreRender()
+        {
+        }
     }
 }

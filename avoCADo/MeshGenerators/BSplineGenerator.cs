@@ -69,6 +69,10 @@ namespace avoCADo
             _parentNode.Children.CollectionChanged -= SourceDataChanged;
         }
 
+        public void RefreshDataPreRender()
+        {
+        }
+
         private void SourceDataChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             SourceDataChangedWrapper();

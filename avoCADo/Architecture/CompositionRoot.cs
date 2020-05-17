@@ -81,7 +81,7 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _transformationModeHandler = new TransformationModeHandler(_window, _cursor);
-            NodeFactory = new NodeFactory(_scene, _cursor, _shaderProvider.DefaultShader, _shaderProvider.CurveShader);
+            NodeFactory = new NodeFactory(_scene, _cursor, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _scene);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
 

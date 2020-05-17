@@ -59,7 +59,7 @@ namespace avoCADo
         /// <summary>
         /// Frees resources and detaches itself from parent node.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             Transform.PropertyChanged -= TransformModified;
             Renderer.Dispose();
@@ -158,6 +158,11 @@ namespace avoCADo
         public bool HasDependency()
         {
             return HasDependency(DependencyType.Strong) || HasDependency(DependencyType.Weak);
+        }
+
+        protected void InvokeOnDisposed()
+        {
+            OnDisposed?.Invoke(this);
         }
     }
 }

@@ -67,11 +67,6 @@ namespace avoCADo
             e.CanExecute = true;
         }
 
-        private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = PointsOnlySelected();
-        }
-
         private void CreateBSplineCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = PointsOnlySelected();
@@ -87,9 +82,30 @@ namespace avoCADo
             _compositionRoot.NodeFactory.CreateBSplineGroup();
         }
 
+        private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = PointsOnlySelected();
+        }
+
         private void CreateInterpolatingC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _compositionRoot.NodeFactory.CreateInterpolatingC2Group();
+        }
+
+        private void CreateBezierPatchC0Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CreatBezierPatchC0Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new BezierPatchCreation();
+            var result = dialog.ShowDialog();
+
+            if (result.HasValue && result.Value == true)
+            {
+                _compositionRoot.NodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+            }
         }
 
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
