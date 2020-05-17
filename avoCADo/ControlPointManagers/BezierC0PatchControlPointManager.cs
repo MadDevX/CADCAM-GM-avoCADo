@@ -32,27 +32,27 @@ namespace avoCADo
         }
 
 
-        public void UpdateControlPoints(int horizontalPatches, int verticalPatches)
+        public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
             var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
             PauseTransformHandling();
-            SetControlPointPoisitionsWrapper();
+            SetControlPointPoisitionsWrapper(position);
             ResumeTransformHandling();
 
             ShouldUpdateData = true;
         }
 
-        private void SetControlPointPoisitionsWrapper()
+        private void SetControlPointPoisitionsWrapper(Vector3 position)
         {
             switch (_generator.PatchType)
             {
                 case PatchType.Flat:
-                    SetControlPointPoisitionsFlat();
+                    SetControlPointPoisitionsFlat(position);
                     break;
                 case PatchType.Cylinder:
-                    SetControlPointPoisitionsCylinder();
+                    SetControlPointPoisitionsCylinder(position);
                     break;
             }
         }
@@ -170,7 +170,7 @@ namespace avoCADo
             }
         }
 
-        private void SetControlPointPoisitionsFlat()
+        private void SetControlPointPoisitionsFlat(Vector3 position)
         {
             var width = _generator.Surface.ControlPoints.Width;
             var height = _generator.Surface.ControlPoints.Height;
@@ -178,12 +178,12 @@ namespace avoCADo
             {
                 for (int i = 0; i < width; i++)
                 {
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = new Vector3(((float)i / (width - 1)) * _generator.SurfaceWidthOrRadius, 0.0f, ((float)j / (height - 1)) * _generator.SurfaceHeight);
+                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + new Vector3(((float)i / (width - 1)) * _generator.SurfaceWidthOrRadius, 0.0f, ((float)j / (height - 1)) * _generator.SurfaceHeight);
                 }
             }
         }
 
-        private void SetControlPointPoisitionsCylinder()
+        private void SetControlPointPoisitionsCylinder(Vector3 position)
         {
             var width = _generator.Surface.ControlPoints.Width;
             var height = _generator.Surface.ControlPoints.Height;
@@ -191,7 +191,7 @@ namespace avoCADo
             {
                 for (int i = 0; i < width; i++)
                 {
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = 
+                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + 
                         new Vector3
                         (
                             _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width - 1)) * Math.PI * 2.0), 

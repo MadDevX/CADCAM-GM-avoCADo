@@ -46,7 +46,7 @@ namespace avoCADo
             }
             set
             {
-                _ctrlPointManager.UpdateControlPoints(value, VerticalPatches);
+                _ctrlPointManager.UpdateControlPoints(_defaultPosition, value, VerticalPatches);
             }
         }
 
@@ -58,7 +58,7 @@ namespace avoCADo
             }
             set
             {
-                _ctrlPointManager.UpdateControlPoints(HorizontalPatches, value);
+                _ctrlPointManager.UpdateControlPoints(_defaultPosition, HorizontalPatches, value);
             }
         }
 
@@ -75,7 +75,7 @@ namespace avoCADo
             set
             {
                 _patchType = value;
-                _ctrlPointManager.UpdateControlPoints(HorizontalPatches, VerticalPatches);
+                _ctrlPointManager.UpdateControlPoints(_defaultPosition, HorizontalPatches, VerticalPatches);
             }
         }
 
@@ -85,14 +85,16 @@ namespace avoCADo
         private BezierC0PatchControlPointManager _ctrlPointManager;
 
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
+        private Vector3 _defaultPosition;
 
-        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
             _patchType = patchType;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
+            _defaultPosition = position;
             SurfaceWidthOrRadius = width;
             SurfaceHeight = height;
         }
@@ -101,12 +103,12 @@ namespace avoCADo
         {
             _parentNode = node;
             _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _parentNode);
-            Initialize(_defaultHorizontalPatches, _defaultVerticalPatches);
+            Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
         }
 
-        private void Initialize(int horizontalPatches, int verticalPatches)
+        private void Initialize(Vector3 position, int horizontalPatches, int verticalPatches)
         {
-            _ctrlPointManager.UpdateControlPoints(horizontalPatches, verticalPatches);
+            _ctrlPointManager.UpdateControlPoints(position, horizontalPatches, verticalPatches);
         }
 
 
