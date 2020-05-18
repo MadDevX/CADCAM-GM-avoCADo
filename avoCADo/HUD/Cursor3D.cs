@@ -213,6 +213,10 @@ namespace avoCADo
                 case TransformationType.Scale:
                     foreach(var obj in _selectionManager.SelectedNodes)
                     {
+                        if (_mults.Length == 0.0f)
+                        {
+                            diffVector = new Vector3(posDiff.X);
+                        }
                         if(CursorMode)
                         {
                             obj.Transform.ScaleAround(Position, diffVector * (_scaleSensitivity / _control.Width));
