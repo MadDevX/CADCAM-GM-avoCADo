@@ -12,6 +12,8 @@ namespace avoCADo
 {
     public class Node : INode, INotifyPropertyChanged, IDependencyCollector
     {
+        public bool IsSelected { get; set; } = false;
+
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
 
@@ -54,6 +56,7 @@ namespace avoCADo
             Transform = transform;
             Renderer = renderer;
             Name = name;
+            renderer.SetNode(this);
             Transform.PropertyChanged += TransformModified;
         }
 

@@ -6,11 +6,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace avoCADo
 {
     public class Scene : IDisposable, INode
     {
+        public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
@@ -29,7 +31,8 @@ namespace avoCADo
         /// <summary>
         /// Add and remove nodes by dedicated methods (AddNode and DeleteNode)
         /// </summary>
-        public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
+        public ObservableCollection<INode> Children => _children;
+        private WpfObservableRangeCollection<INode> _children = new WpfObservableRangeCollection<INode>();
 
         public List<INode> VirtualChildren { get; } = new List<INode>();
 
@@ -81,7 +84,7 @@ namespace avoCADo
         {
             if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
-            var childList = GetChildList(child);
+            var childList = GetChildListType(child);
 
             child.Transform.Parent = this;
             childList.Add(child);
@@ -90,7 +93,7 @@ namespace avoCADo
 
         public bool DetachChild(INode child)
         {
-            var childList = GetChildList(child);
+            var childList = GetChildListType(child);
 
             var val = childList.Remove(child);
             if (val)
@@ -101,7 +104,34 @@ namespace avoCADo
             return val;
         }
 
-        private IList<INode> GetChildList(INode child)
+        /// <summary>
+        /// Children must be all Nodes or all VirtualNodes, mixing them together will result in undefined behaviour.
+        /// </summary>
+        /// <param name="children"></param>
+        public void AttachChildRange(IList<INode> children)
+        {
+            for(int i = 0; i < children.Count; i++)
+            {
+                if (children[i].Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+                children[i].Transform.Parent = this;
+                children[i].OnDisposed += HandleChildDisposed;
+            }
+            if (children[0] is VirtualNode)
+            {
+                VirtualChildren.AddRange(children);
+            }
+            else
+            {
+                _children.AddRange(children);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether to use Children or VirtualChildren collection based on child's type.
+        /// </summary>
+        /// <param name="child"></param>
+        /// <returns></returns>
+        private IList<INode> GetChildListType(INode child)
         {
             if (child is VirtualNode)
             {

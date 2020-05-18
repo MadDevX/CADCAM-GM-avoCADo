@@ -78,7 +78,7 @@ namespace avoCADo
             {
                 this.Background = _highlight;
             }
-            else if(_selectionManager.SelectedNodes.Contains(Node))
+            else if(Node.IsSelected)
             {
                 this.Background = Brushes.DodgerBlue;
             }

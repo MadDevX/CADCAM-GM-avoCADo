@@ -14,6 +14,7 @@ namespace avoCADo
     /// </summary>
     public class VirtualNode : INode, INotifyPropertyChanged
     {
+        public bool IsSelected { get; set; } = false;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
         public NodeType NodeType => NodeType.Point;
 
@@ -41,6 +42,7 @@ namespace avoCADo
             Transform = transform;
             Renderer = renderer;
             Name = "";
+            renderer.SetNode(this);
             Transform.PropertyChanged += TransformModified;
         }
 

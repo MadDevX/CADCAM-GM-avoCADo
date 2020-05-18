@@ -46,10 +46,10 @@ namespace avoCADo
             var surfGen = new BezierPatchGenerator(surface, nodeFactory, PatchType.Cylinder, Vector3.Zero);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(tesShader, geomShader, defaultShader, surfGen), surfGen, "BezierPatch");
             scene.AttachChild(surfNode);
-            surfGen.SurfaceWidthOrRadius = 2;
-            surfGen.SurfaceHeight = 2;
-            surfGen.HorizontalPatches = 2;
-            surfGen.VerticalPatches = 2;
+            //surfGen.SurfaceWidthOrRadius = 2;
+            //surfGen.SurfaceHeight = 2;
+            //surfGen.HorizontalPatches = 2;
+            //surfGen.VerticalPatches = 2;
         }
 
     }

@@ -193,6 +193,7 @@
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\MeshUtility.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
+    <Compile Include="Utility\RangeObservableCollection.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
     <Compile Include="Utility\ShaderPaths.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />

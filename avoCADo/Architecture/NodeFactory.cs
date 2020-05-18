@@ -57,14 +57,31 @@ namespace avoCADo
             return surfNode;
         }
 
-        private List<PoolableNode> _pointPool = new List<PoolableNode>(1000);
+        private List<PoolableNode> _pointPool = new List<PoolableNode>(3000);
+
+        private IList<INode> _pointsBuffer = new List<INode>(3000);
+
+        public IList<INode> CreatePointsBatch(int count)
+        {
+            _pointsBuffer.Clear();
+            for (int i = 0; i < count; i++) _pointsBuffer.Add(CreatePointInstance(_scene));
+            _scene.AttachChildRange(_pointsBuffer);
+            return _pointsBuffer;
+        }
 
         public INode CreatePoint(INode parent)
         {
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
+            var pointNode = CreatePointInstance(parent);
+            parent.AttachChild(pointNode);
+            return pointNode;
+        }
+
+        private INode CreatePointInstance(INode parent)
+        {
             PoolableNode pointNode;
 
-            if(_pointPool.Count == 0)
+            if (_pointPool.Count == 0)
             {
                 pointNode = new PoolableNode(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_defaultShaderWrapper, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
@@ -79,8 +96,6 @@ namespace avoCADo
                 pointNode.Transform.Rotation = Quaternion.Identity;
                 pointNode.Transform.Scale = Vector3.One;
             }
-
-            parent.AttachChild(pointNode);
             return pointNode;
         }
 

@@ -15,6 +15,7 @@ namespace avoCADo
     /// </summary>
     public abstract class GroupNode<T> : INode, INotifyPropertyChanged, IDependencyAdder where T : IDependent<INode>
     {
+        public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
         
@@ -53,6 +54,7 @@ namespace avoCADo
             dependent.Initialize(this);
             Renderer = renderer;
             Name = name;
+            renderer.SetNode(this);
         }
 
         public void AttachChild(INode node)

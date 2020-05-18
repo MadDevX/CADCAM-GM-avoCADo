@@ -15,6 +15,15 @@ namespace avoCADo
 
         protected bool _shouldDispose = false;
 
+        protected INode _node = null;
+
+        public void SetNode(INode node)
+        {
+            if (_node != null) throw new InvalidOperationException("Tried to reassign renderer's parent node");
+            _node = node;
+        }
+
+
         public Renderer(ShaderWrapper shader)
         {
             _shaderWrapper = shader;
@@ -66,5 +75,6 @@ namespace avoCADo
         /// Use at the end of constructor
         /// </summary>
         protected abstract void SetBufferData();
+
     }
 }

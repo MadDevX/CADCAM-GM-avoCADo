@@ -9,7 +9,7 @@ namespace avoCADo
 {
     public class BezierC0PatchControlPointManager : IDisposable
     {
-        private IList<INode> _controlPointNodes = new List<INode>();
+        private IList<INode> _controlPointNodes;
         private bool _handleTransformChanges = true;
         public bool ShouldUpdateData { get; set; } = false;
         private readonly NodeFactory _nodeFactory;
@@ -34,6 +34,7 @@ namespace avoCADo
 
         public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
+            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType) * GetVerticalControlPointCount(verticalPatches, _generator.PatchType));
             var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
@@ -91,9 +92,11 @@ namespace avoCADo
 
             if (shouldAddPoints)
             {
-                while (_controlPointNodes.Count < dataCount)
+                int toCreate = dataCount - _controlPointNodes.Count;
+                var newPoints = _nodeFactory.CreatePointsBatch(toCreate);
+                foreach (var point in newPoints)
                 {
-                    TrackControlPoint(_nodeFactory.CreatePoint());
+                    TrackControlPoint(point);
                 }
             }
             else

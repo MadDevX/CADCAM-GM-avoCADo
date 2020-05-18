@@ -37,7 +37,7 @@ namespace avoCADo
 
         public void ToggleSelection(INode node)
         {
-            if(_selectedNodes.Contains(node))
+            if(node.IsSelected)
             {
                 RemoveFromSelected(node);
             }
@@ -90,23 +90,34 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
-        private void AddToList(INode obj)
+        private void AddToList(INode node)
         {
-            _selectedNodes.Add(obj);
-            obj.OnDisposed += TrackDispose;
+            _selectedNodes.Add(node);
+            TrackNode(node);
         }
 
-        private void RemoveFromList(INode obj)
+        private void RemoveFromList(INode node)
         {
-            _selectedNodes.Remove(obj);
-            obj.OnDisposed -= TrackDispose;
+            _selectedNodes.Remove(node);
+            UntrackNode(node);
+        }
+
+        private void TrackNode(INode node)
+        {
+            node.OnDisposed += TrackDispose;
+            node.IsSelected = true;
+        }
+        private void UntrackNode(INode node)
+        {
+            node.OnDisposed -= TrackDispose;
+            node.IsSelected = false;
         }
 
         private void ClearList()
         {
             foreach(var node in _selectedNodes)
             {
-                node.OnDisposed -= TrackDispose;
+                UntrackNode(node);
             }
             _selectedNodes.Clear();
         }
