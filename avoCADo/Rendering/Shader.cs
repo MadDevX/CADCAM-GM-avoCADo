@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using avoCADo.Miscellaneous;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,7 +59,7 @@ namespace avoCADo
 
         public void Use()
         {
-            GL.UseProgram(_handle);
+            ShaderUseTracker.BindShader(_handle);
         }
 
         public void Dispose()
