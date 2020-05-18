@@ -35,9 +35,24 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
+        public void ToggleSelection(IList<INode> nodes)
+        {
+            foreach(var node in nodes)
+            {
+                ToggleSelectionInternal(node);
+            }
+            OnSelectionChanged?.Invoke();
+        }
+
         public void ToggleSelection(INode node)
         {
-            if(node.IsSelected)
+            ToggleSelectionInternal(node);
+            OnSelectionChanged?.Invoke();
+        }
+
+        private void ToggleSelectionInternal(INode node)
+        {
+            if (node.IsSelected)
             {
                 RemoveFromSelected(node);
             }
@@ -45,7 +60,6 @@ namespace avoCADo
             {
                 AddToSelected(node);
             }
-            OnSelectionChanged?.Invoke();
         }
 
         private void SelectInternal(INode node)

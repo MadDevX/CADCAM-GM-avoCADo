@@ -17,13 +17,14 @@ namespace avoCADo
         private Vector3 _scale = Vector3.One;
         private Quaternion _rotation = Quaternion.Identity;
 
+        private PropertyChangedEventArgs _eventArgs = new PropertyChangedEventArgs(nameof(Position));
         public Vector3 Position
         {
             get => _position;
             set
             {
                 _position = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Position)));
+                PropertyChanged?.Invoke(this, _eventArgs);
             }
         }
         public Vector3 Scale

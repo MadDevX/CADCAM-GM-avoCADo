@@ -16,7 +16,7 @@ namespace avoCADo
     {
         public bool IsSelected { get; set; } = false;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
-        public NodeType NodeType => NodeType.Point;
+        public NodeType NodeType => NodeType.Virtual;
 
         public string Name { get; set; }
 

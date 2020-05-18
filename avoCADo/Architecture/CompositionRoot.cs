@@ -71,7 +71,7 @@ namespace avoCADo
             _scene = new Scene("Main");
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
-            _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera, _framebufferManager, _quadRenderer);
+            _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
             _rectangularSelectionDrawer = new RectangularSelectionDrawer(_renderLoop, _screenSelectionManager, _shaderProvider.OverlayShader, _control);

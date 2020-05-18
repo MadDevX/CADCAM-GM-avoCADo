@@ -18,9 +18,9 @@ namespace avoCADo
         private Camera _camera;
         private QuadOverlayRenderer _quadOverlayRenderer;
         private FramebufferManager _framebufferManager;
+        private ShaderProvider _shaderProvider;
 
-
-        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, Scene scene, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer)
+        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, Scene scene, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer, ShaderProvider shaderProvider)
         {
             _glControl = glControl;
             _screenBufferManager = screenBufferManager;
@@ -28,6 +28,7 @@ namespace avoCADo
             _camera = camera;
             _quadOverlayRenderer = quadRenderer;
             _framebufferManager = framebufferManager;
+            _shaderProvider = shaderProvider;
 
             Initialize();
         }
@@ -58,7 +59,7 @@ namespace avoCADo
                 //GL.Clear(ClearBufferMask.DepthBufferBit); //-- used for multirendering straight to screen (causes depth buffer issues)
                 _camera.SetCycle(i);
                 _framebufferManager.SetFramebuffer(i);
-
+                _shaderProvider.UpdateShadersCameraMatrices(_camera);
                 OnRenderLoop?.Invoke();
                 _scene.Render(_camera);
             }

@@ -23,6 +23,16 @@ namespace avoCADo
             OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath));
         }
 
+        public void UpdateShadersCameraMatrices(Camera camera)
+        {
+            DefaultShader.Shader.Use();
+            camera.SetCameraMatrices(DefaultShader);
+            CurveShader.Shader.Use();
+            camera.SetCameraMatrices(CurveShader);
+            SurfaceShader.Shader.Use();
+            camera.SetCameraMatrices(SurfaceShader);
+        }
+
         public void Dispose()
         {
             OverlayShader.Dispose();

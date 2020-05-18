@@ -60,7 +60,6 @@ namespace avoCADo
         {
             shaderWrapper.Shader.Use();
             SetModelMatrix(shaderWrapper, localMatrix, parentMatrix);
-            camera.SetCameraMatrices(shaderWrapper);
         }
 
         protected abstract void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix);

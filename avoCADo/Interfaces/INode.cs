@@ -14,7 +14,8 @@ namespace avoCADo
         Point,
         Curve,
         Surface,
-        Scene
+        Scene,
+        Virtual
     }
 
     public enum GroupNodeType

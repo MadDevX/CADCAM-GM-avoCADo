@@ -164,14 +164,15 @@ namespace avoCADo
 
         private void AddToSelection(IList<INode> nodesToSelect, INode parent)
         {
-            foreach (var node in nodesToSelect)
-            {
-                if (node is VirtualNode || node.Transform.Parent != parent) continue;
-                _selectionManager.ToggleSelection(node);
-            }
+            _selectionManager.ToggleSelection(nodesToSelect);
+            //foreach (var node in nodesToSelect)
+            //{
+            //    //if (node is VirtualNode || node.Transform.Parent != parent) continue;
+            //    _selectionManager.ToggleSelection(node);
+            //}
         }
 
-        private List<INode> _selectionBuffer = new List<INode>();
+        private List<INode> _selectionBuffer = new List<INode>(3000);
 
         private List<INode> Select(Rectangle rect)
         {
@@ -180,17 +181,19 @@ namespace avoCADo
             return _selectionBuffer;
         }
 
-        private void TraverseCollection(IList<INode> sourceList, Rectangle rect, IList<INode> selectionList)
+        private void TraverseCollection(IList<INode> sourceList, Rectangle rect, IList<INode> selectionList, bool ignoreVirtualNodes = true)
         {
             foreach (var node in sourceList)
             {
+                if (ignoreVirtualNodes && node.NodeType == NodeType.Virtual) continue;
+                if (selectionList.Count > 0 && node.Transform.Parent != selectionList[0].Transform.Parent) continue;
                 if (IsNodeInsideRect(node, rect))
                 {
                     selectionList.Add(node);
                 }
                 if (node.GroupNodeType == GroupNodeType.None)
                 {
-                    TraverseCollection(node.Children, rect, selectionList);
+                    TraverseCollection(node.Children, rect, selectionList, ignoreVirtualNodes);
                 }
             }
         }
