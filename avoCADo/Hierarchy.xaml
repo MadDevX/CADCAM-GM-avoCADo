@@ -29,7 +29,14 @@
                         <local:NodeHeader Node="{Binding}"/>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Children}">
-                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Width="16" Height="16" Source="{StaticResource iconScene}"/>
+                            <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="{Binding Name}"/>
+                        </Grid>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="Transparent" />
