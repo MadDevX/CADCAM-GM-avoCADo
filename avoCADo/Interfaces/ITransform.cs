@@ -23,6 +23,7 @@ namespace avoCADo
 
         void RotateAround(Vector3 pivot, Vector3 eulerAngles);
         void Translate(Vector3 translation);
+        void TranslateSnapped(Vector3 translation, float snapValue);
         void ScaleAround(Vector3 pivot, Vector3 scaling);
     }
 }

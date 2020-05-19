@@ -185,17 +185,7 @@ namespace avoCADo
             switch (_trType)
             {
                 case TransformationType.Translation:
-                    foreach (var obj in _selectionManager.SelectedNodes)
-                    {
-                        if (_mults.Length > 0.0f)
-                        {
-                            obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * (_translateSensitivity / _control.Width) * _camera.DistanceToTarget);
-                        }
-                        else
-                        {
-                            obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * (_translateSensitivity / _control.Width) * _camera.DistanceToTarget);
-                        }
-                    }
+                    HandleTranslation(posDiff);
                     break;
                 case TransformationType.Rotation:
                     foreach(var obj in _selectionManager.SelectedNodes)
@@ -231,6 +221,84 @@ namespace avoCADo
                     break;
             }
             _prevPos = e.Location;
+        }
+
+        private enum SnapMode
+        {
+            None,
+            Snap,
+            ForceSnap
+        }
+
+        private SnapMode _snapToGrid = SnapMode.None;
+        private SnapMode SnapToGrid
+        {
+            get => _snapToGrid;
+            set
+            {
+                _snapToGrid = value;
+                _currentInputBuffer = Point.Empty;
+            }
+        }
+        private float SnapValue { get; set; } = 0.1f;
+        private Point _currentInputBuffer = Point.Empty;
+
+        private Point BufferInput(Point posDiff)
+        {
+            if (SnapToGrid != SnapMode.None)
+            {
+                var snapDiv = (int)(SnapValue / TranslateMultiplier);
+                _currentInputBuffer.X += posDiff.X;
+                _currentInputBuffer.Y += posDiff.Y;
+                Point snappedPosDiff = Point.Empty;
+                if(Math.Abs(_currentInputBuffer.X) >= snapDiv)
+                {
+                    snappedPosDiff.X = snapDiv * Math.Sign(_currentInputBuffer.X);
+                    _currentInputBuffer.X = 0;
+                }
+                if(Math.Abs(_currentInputBuffer.Y) >= snapDiv)
+                {
+                    snappedPosDiff.Y = snapDiv * Math.Sign(_currentInputBuffer.Y);
+                    _currentInputBuffer.Y = 0;
+                }
+                return snappedPosDiff;
+            }
+            else return posDiff;
+        }
+
+        private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
+
+        private void HandleTranslation(Point posDiff)
+        {
+            posDiff = BufferInput(posDiff);
+            if (SnapToGrid == SnapMode.ForceSnap)
+            {
+                foreach (var obj in _selectionManager.SelectedNodes)
+                {
+                    if (_mults.Length > 0.0f)
+                    {
+                        obj.Transform.TranslateSnapped(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier, SnapValue);
+                    }
+                    else
+                    {
+                        obj.Transform.TranslateSnapped(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier, SnapValue);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var obj in _selectionManager.SelectedNodes)
+                {
+                    if (_mults.Length > 0.0f)
+                    {
+                        obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier);
+                    }
+                    else
+                    {
+                        obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier);
+                    }
+                }
+            }
         }
     }
 }

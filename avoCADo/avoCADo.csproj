@@ -108,11 +108,13 @@
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
+    <Compile Include="Hierarchy\PointTransform.cs" />
     <Compile Include="Hierarchy\PoolableNode.cs" />
     <Compile Include="Hierarchy\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
     <Compile Include="HUD\RectangularSelectionDrawer.cs" />
+    <Compile Include="HUD\TransformationsManager.cs" />
     <Compile Include="Interfaces\IBezierSurface.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />

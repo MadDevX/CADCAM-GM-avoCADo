@@ -27,7 +27,7 @@ namespace avoCADo
                 PropertyChanged?.Invoke(this, _eventArgs);
             }
         }
-        public Vector3 Scale
+        public virtual Vector3 Scale
         {
             get => _scale;
             set
@@ -36,7 +36,7 @@ namespace avoCADo
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Scale)));
             }
         }
-        public Quaternion Rotation
+        public virtual Quaternion Rotation
         {
             get => _rotation;
             set
@@ -130,6 +130,18 @@ namespace avoCADo
         public void Translate(Vector3 translation)
         {
             Position += translation;
+        }
+
+        public void TranslateSnapped(Vector3 translation, float snapValue)
+        {
+            var newPos = Position + translation;
+            var moduloX = (newPos.X % snapValue + snapValue) % snapValue;
+            moduloX = moduloX > 0.5f * snapValue ? moduloX - snapValue : moduloX;
+            var moduloY = (newPos.Y % snapValue + snapValue) % snapValue;
+            moduloY = moduloY > 0.5f * snapValue ? moduloY - snapValue : moduloY;
+            var moduloZ = (newPos.Z % snapValue + snapValue) % snapValue;
+            moduloZ = moduloZ > 0.5f * snapValue ? moduloZ - snapValue : moduloZ;
+            Position = newPos - new Vector3(moduloX, moduloY, moduloZ);
         }
 
         public void ScaleAround(Vector3 pivot, Vector3 scaling)

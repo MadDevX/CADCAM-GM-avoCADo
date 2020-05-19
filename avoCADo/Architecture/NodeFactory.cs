@@ -83,7 +83,7 @@ namespace avoCADo
 
             if (_pointPool.Count == 0)
             {
-                pointNode = new PoolableNode(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_defaultShaderWrapper, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
+                pointNode = new PoolableNode(new PointTransform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_defaultShaderWrapper, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
             }
             else
