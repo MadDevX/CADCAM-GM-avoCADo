@@ -47,5 +47,18 @@ namespace avoCADo
         {
             return _powerToBernsteinMtx * powerBasisCoefficients;
         }
+
+
+        public static Vector3 RoundToDivisionValue(this Vector3 v, float divisionValue)
+        {
+            var newPos = v;
+            var moduloX = (newPos.X % divisionValue + divisionValue) % divisionValue;
+            moduloX = moduloX > 0.5f * divisionValue ? moduloX - divisionValue : moduloX;
+            var moduloY = (newPos.Y % divisionValue + divisionValue) % divisionValue;
+            moduloY = moduloY > 0.5f * divisionValue ? moduloY - divisionValue : moduloY;
+            var moduloZ = (newPos.Z % divisionValue + divisionValue) % divisionValue;
+            moduloZ = moduloZ > 0.5f * divisionValue ? moduloZ - divisionValue : moduloZ;
+            return newPos - new Vector3(moduloX, moduloY, moduloZ);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad1)
+                            new KeyGesture(Key.NumPad1, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapValue = new RoutedUICommand
@@ -46,7 +46,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad2)
+                            new KeyGesture(Key.NumPad2, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapToGrid = new RoutedUICommand
@@ -56,7 +56,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad3)
+                            new KeyGesture(Key.NumPad3, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid01 = new RoutedUICommand
@@ -66,7 +66,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad7)
+                            new KeyGesture(Key.NumPad7, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid025 = new RoutedUICommand
@@ -76,7 +76,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad8)
+                            new KeyGesture(Key.NumPad8, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid05 = new RoutedUICommand
@@ -86,7 +86,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad9)
+                            new KeyGesture(Key.NumPad9, ModifierKeys.Control)
                 }
             );
     }

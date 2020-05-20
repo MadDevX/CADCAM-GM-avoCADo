@@ -134,14 +134,7 @@ namespace avoCADo
 
         public void TranslateSnapped(Vector3 translation, float snapValue)
         {
-            var newPos = Position + translation;
-            var moduloX = (newPos.X % snapValue + snapValue) % snapValue;
-            moduloX = moduloX > 0.5f * snapValue ? moduloX - snapValue : moduloX;
-            var moduloY = (newPos.Y % snapValue + snapValue) % snapValue;
-            moduloY = moduloY > 0.5f * snapValue ? moduloY - snapValue : moduloY;
-            var moduloZ = (newPos.Z % snapValue + snapValue) % snapValue;
-            moduloZ = moduloZ > 0.5f * snapValue ? moduloZ - snapValue : moduloZ;
-            Position = newPos - new Vector3(moduloX, moduloY, moduloZ);
+            Position = (Position + translation).RoundToDivisionValue(snapValue);
         }
 
         public void ScaleAround(Vector3 pivot, Vector3 scaling)

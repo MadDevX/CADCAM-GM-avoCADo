@@ -171,31 +171,38 @@ namespace avoCADo.HUD
         private void HandleTranslation(Point posDiff)
         {
             posDiff = BufferInput(posDiff);
+            var translationVectorAxis = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier;
+            var translationVectorCamera = _camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier;
             if (SnapMode == SnapMode.SnapToGrid)
             {
                 foreach (var obj in _selectionManager.SelectedNodes)
                 {
                     if (_mults.Length > 0.0f)
                     {
-                        obj.Transform.TranslateSnapped(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier, SnapValue);
+                        obj.Transform.TranslateSnapped(translationVectorAxis, SnapValue);
                     }
                     else
                     {
-                        obj.Transform.TranslateSnapped(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier, SnapValue);
+                        obj.Transform.TranslateSnapped(translationVectorCamera, SnapValue);
                     }
                 }
             }
             else
             {
+                if(SnapMode == SnapMode.SnapValue)
+                {
+                    translationVectorAxis = translationVectorAxis.RoundToDivisionValue(SnapValue);
+                    translationVectorCamera = translationVectorCamera.RoundToDivisionValue(SnapValue);
+                }
                 foreach (var obj in _selectionManager.SelectedNodes)
                 {
                     if (_mults.Length > 0.0f)
                     {
-                        obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier);
+                        obj.Transform.Translate(translationVectorAxis);
                     }
                     else
                     {
-                        obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier);
+                        obj.Transform.Translate(translationVectorCamera);
                     }
                 }
             }
