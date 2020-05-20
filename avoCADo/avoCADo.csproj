@@ -104,6 +104,9 @@
     <Compile Include="Camera\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="ControlPointManagers\BezierC0PatchControlPointManager.cs" />
+    <Compile Include="Cursor3DInfo.xaml.cs">
+      <DependentUpon>Cursor3DInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
@@ -116,6 +119,7 @@
     <Compile Include="HUD\RectangularSelectionDrawer.cs" />
     <Compile Include="HUD\TransformationsManager.cs" />
     <Compile Include="Interfaces\IBezierSurface.cs" />
+    <Compile Include="Interfaces\IBindingUpdatable.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />
     <Compile Include="Interfaces\IDependent.cs" />
@@ -171,6 +175,9 @@
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TransformationsInfo.xaml.cs">
+      <DependentUpon>TransformationsInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TransformView.xaml.cs">
       <DependentUpon>TransformView.xaml</DependentUpon>
     </Compile>
@@ -180,7 +187,7 @@
     <Compile Include="UI\IconProvider.cs" />
     <Compile Include="UI\TorusGeneratorHandler.cs" />
     <Compile Include="HUD\ScreenSelectionHandler.cs" />
-    <Compile Include="UI\TransformationModeHandler.cs" />
+    <Compile Include="UI\LabelBindingRefresher.cs" />
     <Compile Include="UI\TransformHandler.cs" />
     <Compile Include="Interfaces\IMeshGenerator.cs" />
     <Compile Include="Hierarchy\Node.cs" />
@@ -191,6 +198,8 @@
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Hierarchy\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
+    <Compile Include="UI\UtilityCommandDefinitions.cs" />
+    <Compile Include="UI\UtilityCommands.cs" />
     <Compile Include="Utility\CoordList.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
@@ -217,6 +226,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Cursor3DInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Hierarchy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -238,6 +251,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TorusGeneratorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TransformationsInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

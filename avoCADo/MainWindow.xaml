@@ -17,6 +17,15 @@
         <CommandBinding Command="local:CommandDefinitions.BSpline" CanExecute="CreateBSplineCmd_CanExecute" Executed="CreateBSplineCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.InterpolatingC2" CanExecute="CreateInterpolatingC2Cmd_CanExecute" Executed="CreateInterpolatingC2Cmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.BezierPatchC0" CanExecute="CreateBezierPatchC0Cmd_CanExecute" Executed="CreatBezierPatchC0Cmd_Executed"/>
+        
+        <CommandBinding Command="local:UtilityCommandDefinitions.LocalMode" CanExecute="LocalCursorMode_CanExecute" Executed="LocalMode_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.CursorMode" CanExecute="LocalCursorMode_CanExecute" Executed="CursorMode_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapNone" CanExecute="SnapMode_CanExecute" Executed="SnapNone_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapValue" CanExecute="SnapMode_CanExecute" Executed="SnapValue_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapToGrid" CanExecute="SnapMode_CanExecute" Executed="SnapToGrid_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid01" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid01_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid025" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid025_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid05" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid05_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -32,17 +41,31 @@
                 <MenuItem Command="local:CommandDefinitions.InterpolatingC2"/>
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC0"/>
             </MenuItem>
+            <MenuItem Header="Utility">
+                <MenuItem x:Name="menuItemLocalMode" Command="local:UtilityCommandDefinitions.LocalMode" IsChecked="True"/>
+                <MenuItem x:Name="menuItemCursorMode" Command="local:UtilityCommandDefinitions.CursorMode"/>
+                <Separator/>
+                <MenuItem x:Name="menuItemSnapNone" Command="local:UtilityCommandDefinitions.SnapNone" IsChecked="True"/>
+                <MenuItem x:Name="menuItemSnapValue" Command="local:UtilityCommandDefinitions.SnapValue"/>
+                <MenuItem x:Name="menuItemSnapToGrid" Command="local:UtilityCommandDefinitions.SnapToGrid"/>
+                <Separator/>
+                <MenuItem Header="Snap Grid Value">
+                    <MenuItem x:Name="menuItemSnapGrid01" Command="local:UtilityCommandDefinitions.SnapGrid01" IsChecked="True"/>
+                    <MenuItem x:Name="menuItemSnapGrid025" Command="local:UtilityCommandDefinitions.SnapGrid025"/>
+                    <MenuItem x:Name="menuItemSnapGrid05" Command="local:UtilityCommandDefinitions.SnapGrid05"/>
+                </MenuItem>
+            </MenuItem>
         </Menu>
         <Grid Name="GridMain">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="6*"/>
                 <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
             <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
             <ScrollViewer Grid.Column="2">
                 <StackPanel Name="StackPanelInspector" HorizontalAlignment="Stretch">
-                    <GroupBox Header="Transformation" FontWeight="SemiBold" HorizontalAlignment="Stretch">
+                    <!--<GroupBox Header="Transformation" FontWeight="SemiBold" HorizontalAlignment="Stretch">
                         <StackPanel>
                             <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
                             <StackPanel Orientation="Horizontal">
@@ -50,7 +73,9 @@
                                 <RadioButton x:Name="radioBtnCursorMode" Content="Cursor Mode" Margin="5"/>
                             </StackPanel>
                         </StackPanel>
-                    </GroupBox>
+                    </GroupBox>-->
+                    <local:Cursor3DInfo x:Name="cursor3dInfo"/>
+                    <local:TransformationsInfo x:Name="transformationsInfo"/>
                     <local:CameraSettings x:Name="cameraSettings"/>
                     <local:Hierarchy x:Name="hierarchy" Height="200"/>
                     <local:TransformView x:Name="transformView" Visibility="Collapsed"/>

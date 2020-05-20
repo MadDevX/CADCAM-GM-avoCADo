@@ -38,8 +38,8 @@ namespace avoCADo
         private void CreateTorusCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) _compositionRoot.NodeFactory.CreateTorus();
-            else _compositionRoot.NodeFactory.CreateTorus(parent);
+            if (parent == null) _nodeFactory.CreateTorus();
+            else _nodeFactory.CreateTorus(parent);
         }
 
         private void CreatePointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -66,8 +66,8 @@ namespace avoCADo
         private void CreatePointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) _compositionRoot.NodeFactory.CreatePoint();
-            else _compositionRoot.NodeFactory.CreatePoint(parent);
+            if (parent == null) _nodeFactory.CreatePoint();
+            else _nodeFactory.CreatePoint(parent);
         }
 
         private void CreateBezierCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -90,13 +90,13 @@ namespace avoCADo
 
         private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //_compositionRoot.NodeFactory.CreateBezierGroupCPURenderer();
-            _compositionRoot.NodeFactory.CreateBezierGroup();
+            //_nodeFactory.CreateBezierGroupCPURenderer();
+            _nodeFactory.CreateBezierGroup();
         }
 
         private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _compositionRoot.NodeFactory.CreateBSplineGroup();
+            _nodeFactory.CreateBSplineGroup();
         }
 
         private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -106,7 +106,7 @@ namespace avoCADo
 
         private void CreateInterpolatingC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _compositionRoot.NodeFactory.CreateInterpolatingC2Group();
+            _nodeFactory.CreateInterpolatingC2Group();
         }
 
         private void CreateBezierPatchC0Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -121,7 +121,7 @@ namespace avoCADo
 
             if (result.HasValue && result.Value == true)
             {
-                _compositionRoot.NodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+                _nodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
             }
         }
 

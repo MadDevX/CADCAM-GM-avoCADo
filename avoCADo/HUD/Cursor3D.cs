@@ -6,53 +6,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace avoCADo
 {
     public class Cursor3D : IDisposable
     {
-        enum TransformationType
-        {
-            None,
-            Translation,
-            Rotation,
-            Scale
-        };
-
         public Vector3 Position => _transform.Position;
 
-        public Vector2 ScreenPosition
+        public Vector2 ScreenPositionNDC
         {
             get
             {
                 return _transform.ScreenCoords(_camera);
             }
         }
-        public bool CursorMode { get; set; } = false;
+
+        public Point ScreenPositionPixels
+        {
+            get
+            {
+                var screenPos = ScreenPositionNDC;
+                screenPos.X += 1.0f;
+                screenPos.Y += 1.0f;
+                screenPos *= 0.5f;
+                return new Point((int)(_control.Width * screenPos.X), (int)(_control.Height * (1.0f - screenPos.Y)));
+            }
+        }
 
         private readonly GLControl _control;
-        private readonly TextBlock _label;
         private readonly IRenderer _gizmoRenderer;
         private readonly IRenderLoop _renderLoop;
-        private readonly IUpdateLoop _updateLoop;
         private readonly Camera _camera;
         private readonly SelectionManager _selectionManager;
         private readonly Transform _transform;
 
-        private Vector3 _mults = Vector3.Zero;
-        private TransformationType _trType = TransformationType.None;
-
-        private Point _prevPos;
-        private float _rotateSensitivity = 5.0f;
-        private float _translateSensitivity = 2.5f;
-        private float _scaleSensitivity = 5.0f;
-
-        public Cursor3D(GLControl control, TextBlock label, ShaderWrapper shader, IRenderLoop renderLoop, IUpdateLoop updateLoop, Camera camera)
+        public Cursor3D(GLControl control, ShaderWrapper shader, IRenderLoop renderLoop, Camera camera)
         {
             _control = control;
-            _label = label;
             _renderLoop = renderLoop;
-            _updateLoop = updateLoop;
             _camera = camera;
             _selectionManager = NodeSelection.Manager;
             _transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
@@ -63,60 +55,19 @@ namespace avoCADo
         private void Initialize()
         {
             _control.KeyDown += KeyDown;
-            _control.MouseMove += MouseMove;
             _renderLoop.OnRenderLoop += OnRender;
-            _updateLoop.OnUpdateLoop += OnUpdate;
-            UpdateLabel();
-        }
-
-        private void OnUpdate(float deltaTime)
-        {
-            UpdateLabel();
-        }
-
-        private void OnRender()
-        {
-            _gizmoRenderer.Render(_camera, _transform.LocalModelMatrix, Matrix4.Identity);
         }
 
         public void Dispose()
         {
             _control.KeyDown -= KeyDown;
-            _control.MouseMove -= MouseMove;
             _renderLoop.OnRenderLoop -= OnRender;
-            _updateLoop.OnUpdateLoop -= OnUpdate;
         }
 
-        private void UpdateLabel()
+        private void KeyDown(object sender, KeyEventArgs e)
         {
-            string axis;
-            if (_mults.X > 0.0f) axis = "X";
-            else if (_mults.Y > 0.0f) axis = "Y";
-            else if (_mults.Z > 0.0f) axis = "Z";
-            else axis = "None";
-            var screenPos = ScreenPosition;
-            screenPos.X += 1.0f;
-            screenPos.Y += 1.0f;
-            screenPos *= 0.5f;
-            var pixels = new Point((int)(_control.Width * screenPos.X), (int)(_control.Height * (1.0f - screenPos.Y)));
-            _label.Text = $"Cursor:\n" +
-                          $"World position: {Position}\n" +
-                          $"Screen position: {pixels}\n\n" +
-                          //$"Screen position (NDC) : ({ScreenPosition.X.ToString("0.#####")}; {ScreenPosition.Y.ToString("0.#####")})\n\n" +
-                          $"Transformation:\n" +
-                          $"Type: {_trType}\n" +
-                          $"Axis: {axis}";
-        }
-
-        private void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            if(_selectionManager.MainSelection != null)
+            if (_selectionManager.MainSelection != null)
             {
-                if (e.KeyCode == System.Windows.Forms.Keys.T) _trType = TransformationType.Translation;
-                else if (e.KeyCode == System.Windows.Forms.Keys.R) _trType = TransformationType.Rotation;
-                else if (e.KeyCode == System.Windows.Forms.Keys.S) _trType = TransformationType.Scale;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Escape) { _trType = TransformationType.None; _mults = Vector3.Zero; }
-
                 if (e.KeyCode == System.Windows.Forms.Keys.F)
                 {
                     if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
@@ -132,17 +83,13 @@ namespace avoCADo
             else
             {
                 if (e.KeyCode == System.Windows.Forms.Keys.F) { _transform.Position = _camera.Target; }
-                _trType = TransformationType.None;
-                _mults = Vector3.Zero;
-            }
-            if(_trType != TransformationType.None)
-            {
-                if (e.KeyCode == System.Windows.Forms.Keys.X) _mults = Vector3.UnitX;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
             }
             if (e.KeyCode == System.Windows.Forms.Keys.G) _camera.Move(Position);
-            UpdateLabel();
+        }
+
+        private void OnRender()
+        {
+            _gizmoRenderer.Render(_camera, _transform.LocalModelMatrix, Matrix4.Identity);
         }
 
         private Vector3 CalculateCenter()
@@ -161,143 +108,6 @@ namespace avoCADo
                 }
                 res /= selectedNodes.Count;
                 return res;
-            }
-        }
-
-        private void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            Point posDiff = new Point(0, 0);
-            if(_trType != TransformationType.None)
-            {
-                posDiff = new Point(e.Location.X - _prevPos.X, e.Location.Y - _prevPos.Y);
-                if(Math.Abs(posDiff.X) > 100 || Math.Abs(posDiff.Y) > 100)
-                {
-                    posDiff = Point.Empty;
-                }
-                if(_selectionManager.MainSelection == null)
-                {
-                    _trType = TransformationType.None;
-                    _mults = Vector3.Zero;
-                    UpdateLabel();
-                }
-            }
-            Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
-            switch (_trType)
-            {
-                case TransformationType.Translation:
-                    HandleTranslation(posDiff);
-                    break;
-                case TransformationType.Rotation:
-                    foreach(var obj in _selectionManager.SelectedNodes)
-                    {
-                        if (CursorMode)
-                        {
-                            obj.Transform.RotateAround(Position, diffVector * (_rotateSensitivity / _control.Width));
-                        }
-                        else
-                        {
-                            obj.Transform.RotateAround(obj.Transform.Position, diffVector * (_rotateSensitivity / _control.Width));
-                        }
-                    }
-                    break;
-                case TransformationType.Scale:
-                    foreach(var obj in _selectionManager.SelectedNodes)
-                    {
-                        if (_mults.Length == 0.0f)
-                        {
-                            diffVector = new Vector3(posDiff.X);
-                        }
-                        if(CursorMode)
-                        {
-                            obj.Transform.ScaleAround(Position, diffVector * (_scaleSensitivity / _control.Width));
-                        }
-                        else
-                        {
-                            obj.Transform.Scale += diffVector * (_scaleSensitivity / _control.Width);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-            _prevPos = e.Location;
-        }
-
-        private enum SnapMode
-        {
-            None,
-            Snap,
-            ForceSnap
-        }
-
-        private SnapMode _snapToGrid = SnapMode.None;
-        private SnapMode SnapToGrid
-        {
-            get => _snapToGrid;
-            set
-            {
-                _snapToGrid = value;
-                _currentInputBuffer = Point.Empty;
-            }
-        }
-        private float SnapValue { get; set; } = 0.1f;
-        private Point _currentInputBuffer = Point.Empty;
-
-        private Point BufferInput(Point posDiff)
-        {
-            if (SnapToGrid != SnapMode.None)
-            {
-                var snapDiv = (int)(SnapValue / TranslateMultiplier);
-                _currentInputBuffer.X += posDiff.X;
-                _currentInputBuffer.Y += posDiff.Y;
-                Point snappedPosDiff = Point.Empty;
-                if(Math.Abs(_currentInputBuffer.X) >= snapDiv)
-                {
-                    snappedPosDiff.X = snapDiv * Math.Sign(_currentInputBuffer.X);
-                    _currentInputBuffer.X = 0;
-                }
-                if(Math.Abs(_currentInputBuffer.Y) >= snapDiv)
-                {
-                    snappedPosDiff.Y = snapDiv * Math.Sign(_currentInputBuffer.Y);
-                    _currentInputBuffer.Y = 0;
-                }
-                return snappedPosDiff;
-            }
-            else return posDiff;
-        }
-
-        private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
-
-        private void HandleTranslation(Point posDiff)
-        {
-            posDiff = BufferInput(posDiff);
-            if (SnapToGrid == SnapMode.ForceSnap)
-            {
-                foreach (var obj in _selectionManager.SelectedNodes)
-                {
-                    if (_mults.Length > 0.0f)
-                    {
-                        obj.Transform.TranslateSnapped(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier, SnapValue);
-                    }
-                    else
-                    {
-                        obj.Transform.TranslateSnapped(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier, SnapValue);
-                    }
-                }
-            }
-            else
-            {
-                foreach (var obj in _selectionManager.SelectedNodes)
-                {
-                    if (_mults.Length > 0.0f)
-                    {
-                        obj.Transform.Translate(new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier);
-                    }
-                    else
-                    {
-                        obj.Transform.Translate(_camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier);
-                    }
-                }
             }
         }
     }
