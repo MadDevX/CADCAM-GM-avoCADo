@@ -17,14 +17,19 @@ namespace avoCADo
         private Vector3 _scale = Vector3.One;
         private Quaternion _rotation = Quaternion.Identity;
 
-        private PropertyChangedEventArgs _eventArgs = new PropertyChangedEventArgs(nameof(Position));
+        private static PropertyChangedEventArgs _positionChangedArgs = new PropertyChangedEventArgs(nameof(Position));
+        private static PropertyChangedEventArgs _rotationChangedArgs = new PropertyChangedEventArgs(nameof(Rotation));
+        private static PropertyChangedEventArgs _scaleChangedArgs = new PropertyChangedEventArgs(nameof(Scale));
         public Vector3 Position
         {
             get => _position;
             set
             {
                 _position = value;
-                PropertyChanged?.Invoke(this, _eventArgs);
+                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+                {
+                    PropertyChanged?.Invoke(this, _positionChangedArgs);
+                }
             }
         }
         public virtual Vector3 Scale
@@ -33,7 +38,10 @@ namespace avoCADo
             set
             {
                 _scale = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Scale)));
+                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+                {
+                    PropertyChanged?.Invoke(this, _scaleChangedArgs);
+                }
             }
         }
         public virtual Quaternion Rotation
@@ -42,7 +50,10 @@ namespace avoCADo
             set
             {
                 _rotation = value.Normalized();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rotation)));
+                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+                {
+                    PropertyChanged?.Invoke(this, _rotationChangedArgs);
+                }
             }
         }
         public Vector3 RotationEulerAngles
