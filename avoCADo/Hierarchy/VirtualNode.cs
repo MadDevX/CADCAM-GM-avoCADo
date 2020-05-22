@@ -37,6 +37,8 @@ namespace avoCADo
         public event Action<INode> OnDisposed;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private static PropertyChangedEventArgs _transformChangedArgs = new PropertyChangedEventArgs(nameof(Transform));
+
         public VirtualNode(Transform transform, IRenderer renderer)
         {
             Transform = transform;
@@ -64,7 +66,7 @@ namespace avoCADo
 
         private void TransformModified(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Transform)));
+            PropertyChanged?.Invoke(this, _transformChangedArgs);
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix)

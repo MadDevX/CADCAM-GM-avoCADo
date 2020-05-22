@@ -14,14 +14,16 @@ namespace avoCADo
     {
         private Scene _scene;
         private Cursor3D _cursor;
+        private IUpdateLoop _loop;
         private ShaderWrapper _defaultShaderWrapper;
         private ShaderWrapper _geomShaderWrapper;
         private TesselationShaderWrapper _tesShaderWrapper;
 
-        public NodeFactory(Scene scene, Cursor3D cursor, ShaderWrapper shaderWrapper, ShaderWrapper geomShaderWrapper, TesselationShaderWrapper tesShaderWrapper)
+        public NodeFactory(Scene scene, Cursor3D cursor, IUpdateLoop loop, ShaderWrapper shaderWrapper, ShaderWrapper geomShaderWrapper, TesselationShaderWrapper tesShaderWrapper)
         {
             _scene = scene;
             _cursor = cursor;
+            _loop = loop;
             _defaultShaderWrapper = shaderWrapper;
             _geomShaderWrapper = geomShaderWrapper;
             _tesShaderWrapper = tesShaderWrapper;
@@ -51,7 +53,7 @@ namespace avoCADo
             var parent = _scene;
             var bezierSurfCollection = new ObservableCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, this, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             parent.AttachChild(surfNode);
             return surfNode;

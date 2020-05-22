@@ -31,9 +31,12 @@ namespace avoCADo
             set
             {
                 _name = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                PropertyChanged?.Invoke(this, _nameChangedArgs);
             }
         }
+
+        private static PropertyChangedEventArgs _nameChangedArgs = new PropertyChangedEventArgs(nameof(Name));
+        private static PropertyChangedEventArgs _transformChangedArgs = new PropertyChangedEventArgs(nameof(Transform));
 
         /// <summary>
         /// Do not modify collection through this property - use dedicated methods (AttachChild, DetachChild)
@@ -77,7 +80,7 @@ namespace avoCADo
 
         private void TransformModified(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Transform)));
+            PropertyChanged?.Invoke(this, _transformChangedArgs);
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix)

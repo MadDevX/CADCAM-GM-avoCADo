@@ -13,5 +13,9 @@ namespace avoCADo
     public static class NodeSelection
     {
         public static SelectionManager Manager { get; } = new SelectionManager();
+        /// <summary>
+        /// Used to filter events invocation to reduce overhead
+        /// </summary>
+        public static readonly int SensibleSelectionLimit = 1000;
     }
 }

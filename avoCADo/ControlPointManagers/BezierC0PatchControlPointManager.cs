@@ -15,16 +15,25 @@ namespace avoCADo
         private readonly NodeFactory _nodeFactory;
         private readonly BezierPatchGenerator _generator;
         private readonly INode _parentNode;
+        private readonly IUpdateLoop _loop;
 
-        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode)
+        private float _timer = 0.0f;
+        private float _nextDelay = 0.0f;
+        private float _delayMin = 0.05f;
+        private float _delayMaxDiffMin = 0.05f;
+        private Random _rand = new Random();
+
+        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode, IUpdateLoop loop)
         {
             _nodeFactory = nodeFactory;
             _generator = generator;
             _parentNode = parentNode;
+            _loop = loop;
+            _loop.OnUpdateLoop += OnUpdate;
         }
-
         public void Dispose()
         {
+            _loop.OnUpdateLoop -= OnUpdate;
             for (int i = _controlPointNodes.Count - 1; i >= 0; i--)
             {
                 DisposeControlPoint(_controlPointNodes[i]);
@@ -204,5 +213,17 @@ namespace avoCADo
                 }
             }
         }
+
+        private void OnUpdate(float deltaTime)
+        {
+            _timer += deltaTime;
+            if (_timer >= _nextDelay)
+            {
+                _timer = 0.0f;
+                _nextDelay = (float)_rand.NextDouble() * _delayMaxDiffMin + _delayMin;
+                ShouldUpdateData = true;
+            }
+        }
+
     }
 }

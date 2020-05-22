@@ -21,11 +21,29 @@ namespace avoCADo
     public partial class Hierarchy : UserControl
     {
         private SelectionManager _selectionManager;
+        private Scene _scene;
+        private TreeViewItem _sceneItem;
 
         public Hierarchy()
         {
             InitializeComponent();
             _selectionManager = NodeSelection.Manager;
+        }
+
+        public void Initialize(Scene scene)
+        {
+            _scene = scene;
+            treeView.Items.Add(_scene);
+            _sceneItem = treeView.ItemContainerGenerator.ContainerFromItem(_scene) as TreeViewItem;
+        }
+
+        public void CollapseHierarchy()
+        {
+            if (_sceneItem == null)
+            {
+                _sceneItem = treeView.ItemContainerGenerator.ContainerFromItem(_scene) as TreeViewItem;
+            }
+            _sceneItem.IsExpanded = false;
         }
 
         private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)

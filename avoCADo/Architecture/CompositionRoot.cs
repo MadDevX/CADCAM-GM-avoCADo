@@ -86,7 +86,7 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);
-            _nodeFactory = new NodeFactory(_scene, _cursor, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
+            _nodeFactory = new NodeFactory(_scene, _cursor, _window, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _scene);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
 
@@ -95,8 +95,8 @@ namespace avoCADo
             _window.cursor3dInfo.DataContext = _cursor;
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
-            _window.hierarchy.treeView.Items.Add(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _nodeFactory, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
+            _window.hierarchy.Initialize(_scene);
+            TestSceneInitializer.SpawnTestObjects(_scene, _nodeFactory, _window, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
         }
 
         public void Dispose()

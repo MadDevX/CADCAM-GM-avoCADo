@@ -82,15 +82,17 @@ namespace avoCADo
         private PatchType _patchType = PatchType.Flat;
         private INode _parentNode;
         private NodeFactory _nodeFactory;
+        private readonly IUpdateLoop _loop;
         private BezierC0PatchControlPointManager _ctrlPointManager;
 
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
         private Vector3 _defaultPosition;
 
-        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, IUpdateLoop loop, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
+            _loop = loop;
             _patchType = patchType;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
@@ -102,7 +104,7 @@ namespace avoCADo
         public void Initialize(INode node)
         {
             _parentNode = node;
-            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _parentNode);
+            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _parentNode, _loop);
             Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
         }
 

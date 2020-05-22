@@ -121,6 +121,7 @@ namespace avoCADo
 
             if (result.HasValue && result.Value == true)
             {
+                hierarchy.CollapseHierarchy();
                 _nodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
             }
         }
