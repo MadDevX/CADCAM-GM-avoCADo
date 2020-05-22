@@ -21,12 +21,12 @@
                 <TextBlock Text="Horizontal Patches" Margin="5"/>
                 <TextBlock Text="{Binding ElementName=horizontalPatchesSlider, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
             </StackPanel>
-            <Slider x:Name="horizontalPatchesSlider" Minimum="1" Maximum="20" IsSnapToTickEnabled="true" Value="{Binding HorizontalPatches}"/>
+            <Slider x:Name="horizontalPatchesSlider" Minimum="1" Maximum="50" IsSnapToTickEnabled="true" Value="{Binding HorizontalPatches}"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Vertical Patches" Margin="5"/>
                 <TextBlock Text="{Binding ElementName=verticalPatchesSlider, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
             </StackPanel>
-            <Slider x:Name="verticalPatchesSlider" Minimum="1" Maximum="20" IsSnapToTickEnabled="true" Value="{Binding VerticalPatches}"/>
+            <Slider x:Name="verticalPatchesSlider" Minimum="1" Maximum="50" IsSnapToTickEnabled="true" Value="{Binding VerticalPatches}"/>
             <GroupBox x:Name="surfaceParams" Header="Flat Surface Params">
                 <Grid>
                     <Grid.ColumnDefinitions>
