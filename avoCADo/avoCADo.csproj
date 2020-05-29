@@ -107,14 +107,14 @@
     <Compile Include="Cursor3DInfo.xaml.cs">
       <DependentUpon>Cursor3DInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Hierarchy\BezierGeomGroupNode.cs" />
-    <Compile Include="Hierarchy\BezierGroupNode.cs" />
-    <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
-    <Compile Include="Hierarchy\GroupNode.cs" />
-    <Compile Include="Hierarchy\GroupTransform.cs" />
-    <Compile Include="Hierarchy\PointTransform.cs" />
-    <Compile Include="Hierarchy\PoolableNode.cs" />
-    <Compile Include="Hierarchy\VirtualNode.cs" />
+    <Compile Include="Hierarchy\Nodes\Overrides\BezierGeomGroupNode.cs" />
+    <Compile Include="Hierarchy\Nodes\Overrides\BezierGroupNode.cs" />
+    <Compile Include="Hierarchy\Nodes\Overrides\BezierPatchGroupNode.cs" />
+    <Compile Include="Hierarchy\Nodes\GroupNode.cs" />
+    <Compile Include="Hierarchy\Transforms\GroupTransform.cs" />
+    <Compile Include="Hierarchy\Transforms\PointTransform.cs" />
+    <Compile Include="Hierarchy\Nodes\Overrides\PoolableNode.cs" />
+    <Compile Include="Hierarchy\Nodes\VirtualNode.cs" />
     <Compile Include="HUD\Cursor3D.cs" />
     <Compile Include="HUD\Grid.cs" />
     <Compile Include="HUD\RectangularSelectionDrawer.cs" />
@@ -141,11 +141,11 @@
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\Mesh.cs" />
     <Compile Include="Rendering\ShaderWrappers\AbstractShaderWrapper.cs" />
-    <Compile Include="Rendering\BackgroundManager.cs" />
+    <Compile Include="Rendering\BufferManagers\BackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrappers\BufferShaderWrapper.cs" />
-    <Compile Include="Rendering\ParametricObjectRenderer.cs" />
-    <Compile Include="Rendering\DummyRenderer.cs" />
-    <Compile Include="Hierarchy\DummyTransform.cs" />
+    <Compile Include="Rendering\Renderers\ParametricObjectRenderer.cs" />
+    <Compile Include="Rendering\Renderers\DummyRenderer.cs" />
+    <Compile Include="Hierarchy\Transforms\DummyTransform.cs" />
     <Compile Include="Interfaces\ILoops.cs" />
     <Compile Include="Interfaces\INode.cs" />
     <Compile Include="Interfaces\ITransform.cs" />
@@ -159,14 +159,14 @@
     <Compile Include="NodeHeader.xaml.cs">
       <DependentUpon>NodeHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Rendering\GizmoRenderer.cs" />
+    <Compile Include="Rendering\Renderers\GizmoRenderer.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
-    <Compile Include="Rendering\LineRenderer.cs" />
-    <Compile Include="Rendering\MeshRenderer.cs" />
-    <Compile Include="Rendering\PointRenderer.cs" />
+    <Compile Include="Rendering\Renderers\LineRenderer.cs" />
+    <Compile Include="Rendering\Renderers\MeshRenderer.cs" />
+    <Compile Include="Rendering\Renderers\PointRenderer.cs" />
     <Compile Include="Architecture\RenderLoop.cs" />
-    <Compile Include="Rendering\QuadOverlayRenderer.cs" />
-    <Compile Include="Rendering\RectangleSelectionRenderer.cs" />
+    <Compile Include="Rendering\Renderers\QuadOverlayRenderer.cs" />
+    <Compile Include="Rendering\Renderers\RectangleSelectionRenderer.cs" />
     <Compile Include="Rendering\ShaderBackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrappers\ShaderWrapper.cs" />
     <Compile Include="Rendering\SimpleRenderer.cs" />
@@ -191,13 +191,13 @@
     <Compile Include="UI\LabelBindingRefresher.cs" />
     <Compile Include="UI\TransformHandler.cs" />
     <Compile Include="Interfaces\IMeshGenerator.cs" />
-    <Compile Include="Hierarchy\Node.cs" />
-    <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Hierarchy\Scene.cs" />
-    <Compile Include="Rendering\ScreenBufferManager.cs" />
+    <Compile Include="Hierarchy\Nodes\Node.cs" />
+    <Compile Include="Rendering\Renderers\Renderer.cs" />
+    <Compile Include="Hierarchy\Nodes\Scene.cs" />
+    <Compile Include="Rendering\BufferManagers\ScreenBufferManager.cs" />
     <Compile Include="Rendering\Shader.cs" />
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
-    <Compile Include="Hierarchy\Transform.cs" />
+    <Compile Include="Hierarchy\Transforms\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
     <Compile Include="UI\UtilityCommandDefinitions.cs" />
     <Compile Include="UI\UtilityCommands.cs" />

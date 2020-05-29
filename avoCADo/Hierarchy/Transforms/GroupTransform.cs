@@ -34,6 +34,9 @@ namespace avoCADo
             }
         }
 
+        public override Vector3 Position { get => _averageChildWorldPosition; set => base.Position = value; }
+        public override Vector3 WorldPosition { get => _averageChildWorldPosition; set => base.WorldPosition = value; }
+
         public override Vector2 ScreenCoords(Camera camera)
         {
             if(Node.GroupNodeType != GroupNodeType.None)

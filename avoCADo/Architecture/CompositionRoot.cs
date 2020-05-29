@@ -67,7 +67,7 @@ namespace avoCADo
 
             _shaderProvider = new ShaderProvider();
 
-            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader);
+            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
             _scene = new Scene("Main");

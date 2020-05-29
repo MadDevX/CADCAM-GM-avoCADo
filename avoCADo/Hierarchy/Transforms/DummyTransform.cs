@@ -11,7 +11,7 @@ namespace avoCADo
     public class DummyTransform : ITransform
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Vector3 Position { get => Vector3.Zero; set { } }
+        public virtual Vector3 Position { get => Vector3.Zero; set { } }
         public Quaternion Rotation { get => Quaternion.Identity; set { } }
         public Vector3 RotationEulerAngles { get => Vector3.Zero; set { } }
         public Vector3 Scale { get => Vector3.One; set { } }
@@ -33,7 +33,7 @@ namespace avoCADo
 
         public Matrix4 LocalModelMatrix => Matrix4.Identity;
 
-        public Vector3 WorldPosition { get => Vector3.Zero; set { } }
+        public virtual Vector3 WorldPosition { get => Vector3.Zero; set { } }
 
         public void RotateAround(Vector3 pivot, Vector3 eulerAngles) { }
 
