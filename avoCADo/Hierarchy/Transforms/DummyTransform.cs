@@ -35,15 +35,15 @@ namespace avoCADo
 
         public virtual Vector3 WorldPosition { get => Vector3.Zero; set { } }
 
-        public void RotateAround(Vector3 pivot, Vector3 eulerAngles) { }
+        public virtual void RotateAround(Vector3 pivot, Vector3 eulerAngles) { }
 
-        public void ScaleAround(Vector3 pivot, Vector3 scaling) { }
+        public virtual void ScaleAround(Vector3 pivot, Vector3 scaling) { }
 
         public virtual Vector2 ScreenCoords(Camera camera) { return _screenCoords; }
 
-        public void Translate(Vector3 translation) { }
+        public virtual void Translate(Vector3 translation) { }
 
-        public void TranslateSnapped(Vector3 translation, float snapValue) { }
+        public virtual void TranslateSnapped(Vector3 translation, float snapValue) { }
 
         private Vector2 _screenCoords = new Vector2(float.MinValue, float.MinValue); // to avoid selecting non-3d object by clicking in the middle of viewport
     }
