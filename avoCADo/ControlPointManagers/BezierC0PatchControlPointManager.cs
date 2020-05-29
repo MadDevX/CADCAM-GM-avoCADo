@@ -226,8 +226,9 @@ namespace avoCADo
 
         private void UntrackControlPoint(INode node)
         {
-            _controlPointNodes.Remove(node);
             node.PropertyChanged -= HandleCPTransformChanged;
+            _node.DetachChild(node);
+            _controlPointNodes.Remove(node);
         }
 
         private void HandleCPTransformChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
