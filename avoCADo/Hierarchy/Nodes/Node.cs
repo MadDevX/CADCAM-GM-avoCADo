@@ -59,10 +59,10 @@ namespace avoCADo
         {
             _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<object>>();
             Transform = transform;
+            Transform.Node = this;
             Renderer = renderer;
             Name = name;
             renderer.SetNode(this);
-            Transform.Node = this;
             Transform.PropertyChanged += TransformModified;
         }
 
@@ -94,6 +94,31 @@ namespace avoCADo
             {
                 Children[i].Render(camera, modelMat);
             }
+        }
+
+        public void AttachChildRange(IList<INode> nodes)
+        {
+            foreach (var child in nodes)
+            {
+                if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+
+                child.Transform.ParentNode = this;
+                child.OnDisposed += HandleChildDisposed;
+            }
+            _children.AddRange(nodes);
+        }
+
+        public void DetachChildRange(IList<INode> nodes)
+        {
+            foreach (var child in nodes)
+            {
+                if (child.Transform.ParentNode == this)
+                {
+                    child.Transform.ParentNode = null;
+                    child.OnDisposed -= HandleChildDisposed;
+                }
+            }
+            _children.RemoveRange(nodes);
         }
 
         /// <summary>

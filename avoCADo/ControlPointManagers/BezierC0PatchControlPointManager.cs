@@ -9,12 +9,12 @@ namespace avoCADo
 {
     public class BezierC0PatchControlPointManager : IDisposable
     {
-        private IList<INode> _controlPointNodes;
+        private List<INode> _controlPointNodes;
         private bool _handleTransformChanges = true;
         public bool ShouldUpdateData { get; set; } = false;
         private readonly NodeFactory _nodeFactory;
         private readonly BezierPatchGenerator _generator;
-        private readonly INode _parentNode;
+        private readonly INode _node;
         private readonly IUpdateLoop _loop;
 
         private float _timer = 0.0f;
@@ -27,17 +27,17 @@ namespace avoCADo
         {
             _nodeFactory = nodeFactory;
             _generator = generator;
-            _parentNode = parentNode;
+            _node = parentNode;
             _loop = loop;
             _loop.OnUpdateLoop += OnUpdate;
         }
+
         public void Dispose()
         {
             _loop.OnUpdateLoop -= OnUpdate;
-            for (int i = _controlPointNodes.Count - 1; i >= 0; i--)
-            {
-                DisposeControlPoint(_controlPointNodes[i]);
-            }
+            var allChildren = new List<INode>(_controlPointNodes);
+            DisposeControlPointsBatch(allChildren);
+            allChildren.Clear();
         }
 
 
@@ -87,6 +87,11 @@ namespace avoCADo
         }
 
         /// <summary>
+        /// Used by <see cref="CorrectControlPointCount(int, int)"/> while removing nodes.
+        /// </summary>
+        private IList<INode> _disposeCPsBuffer = new List<INode>();
+
+        /// <summary>
         /// Returns true if new, uninitialized points were added.
         /// </summary>
         /// <param name="horizontalPatches"></param>
@@ -103,23 +108,23 @@ namespace avoCADo
             {
                 int toCreate = dataCount - _controlPointNodes.Count;
                 var newPoints = _nodeFactory.CreatePointsBatch(toCreate);
-                foreach (var point in newPoints)
-                {
-                    TrackControlPoint(point);
-                }
+                TrackControlPointsBatch(newPoints);
             }
             else
             {
+                _disposeCPsBuffer.Clear();
                 for (int j = 0; j < _generator.Surface.ControlPoints.DataHeight; j++)
                 {
                     for (int i = 0; i < _generator.Surface.ControlPoints.DataWidth; i++)
                     {
                         if (i >= dataWidth || j >= dataHeight)
                         {
-                            DisposeControlPoint(_generator.Surface.ControlPoints[i, j]);
+                            _disposeCPsBuffer.Add(_generator.Surface.ControlPoints[i, j]);
                         }
                     }
                 }
+                DisposeControlPointsBatch(_disposeCPsBuffer);
+                _disposeCPsBuffer.Clear();
             }
 
             return shouldAddPoints;
@@ -160,16 +165,67 @@ namespace avoCADo
             }
         }
 
+        /// <summary>
+        /// Used by <see cref="DisposeControlPointsBatch(IList{INode})"/>
+        /// </summary>
+        private IList<INode> _disposeNodesBuffer = new List<INode>();
+
+        private void DisposeControlPointsBatch(IList<INode> nodes)
+        {
+            _disposeNodesBuffer.Clear();
+            foreach(var node in nodes)
+            {
+                var depColl = node as IDependencyCollector;
+                if (depColl != null)
+                {
+                    if (depColl.HasDependency(DependencyType.Weak) == false)
+                    {
+                        _disposeNodesBuffer.Add(node);
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Object tracked by surface was not a node!");
+                }
+            }
+            UntrackControlPointsBatch(nodes);
+            if (_disposeNodesBuffer.Count > 0)
+            {
+                _disposeNodesBuffer[0].Transform.ParentNode.DetachChildRange(_disposeNodesBuffer);
+            }
+            _disposeNodesBuffer.Clear();
+        }
+
+
+        private void TrackControlPointsBatch(IList<INode> nodes)
+        {
+            foreach(var node in nodes)
+            {
+                node.PropertyChanged += HandleCPTransformChanged;
+            }
+            _node.AttachChildRange(nodes);
+            _controlPointNodes.AddRange(nodes);
+        }
+
         private void TrackControlPoint(INode node)
         {
-            _parentNode.AttachChild(node);
-            _controlPointNodes.Add(node);
             node.PropertyChanged += HandleCPTransformChanged;
+            _node.AttachChild(node);
+            _controlPointNodes.Add(node);
+        }
+
+        private void UntrackControlPointsBatch(IList<INode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.PropertyChanged -= HandleCPTransformChanged;
+                _controlPointNodes.Remove(node);
+            }
+            _node.DetachChildRange(nodes);
         }
 
         private void UntrackControlPoint(INode node)
         {
-            _parentNode.DetachChild(node);
             _controlPointNodes.Remove(node);
             node.PropertyChanged -= HandleCPTransformChanged;
         }

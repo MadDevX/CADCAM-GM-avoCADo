@@ -80,7 +80,7 @@ namespace avoCADo
         }
 
         private PatchType _patchType = PatchType.Flat;
-        private INode _parentNode;
+        private INode _node;
         private NodeFactory _nodeFactory;
         private readonly IUpdateLoop _loop;
         private BezierC0PatchControlPointManager _ctrlPointManager;
@@ -103,8 +103,8 @@ namespace avoCADo
 
         public void Initialize(INode node)
         {
-            _parentNode = node;
-            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _parentNode, _loop);
+            _node = node;
+            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _node, _loop);
             Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
         }
 
@@ -243,6 +243,7 @@ namespace avoCADo
             if (_ctrlPointManager.ShouldUpdateData)
             {
                 UpdateBufferDataWrapper();
+                
                 _ctrlPointManager.ShouldUpdateData = false;
             }
         }

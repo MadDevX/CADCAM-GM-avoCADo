@@ -54,11 +54,36 @@ namespace avoCADo
         public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
         {
             _children = childrenSource;
+            Transform.Node = this;
             dependent.Initialize(this);
             Renderer = renderer;
             Name = name;
-            Transform.Node = this;
             renderer.SetNode(this);
+        }
+
+        IList<INode> _nodesToAttachToScene = new List<INode>();
+        public void AttachChildRange(IList<INode> nodes)
+        {
+            _nodesToAttachToScene.Clear();
+            foreach (var node in nodes)
+            {
+                if (Children.Contains(node) == false)
+                {
+                    node.PropertyChanged += ChildNodeModified;
+                    node.OnDisposed += HandleChildDisposed;
+                    if (node.Transform.ParentNode == null)
+                    {
+                        _nodesToAttachToScene.Add(node);
+                    }
+                    AddDependencyToChild(node);
+                }
+            }
+            _children.AddRange(nodes);
+            if (_nodesToAttachToScene.Count > 0)
+            {
+                Transform.ParentNode.AttachChildRange(_nodesToAttachToScene);
+            }
+            _nodesToAttachToScene.Clear();
         }
 
         public void AttachChild(INode node)
@@ -86,6 +111,20 @@ namespace avoCADo
                 RemoveDependencyFromChild(node);
             }
             return res;
+        }
+
+        public void DetachChildRange(IList<INode> nodes)
+        {
+            foreach (var child in nodes)
+            {
+                if (_children.Contains(child))
+                {
+                    child.PropertyChanged -= ChildNodeModified;
+                    child.OnDisposed -= HandleChildDisposed;
+                    RemoveDependencyFromChild(child);
+                }
+            }
+            _children.RemoveRange(nodes);
         }
 
         private void AddDependencyToChild(INode node)
@@ -120,9 +159,11 @@ namespace avoCADo
         {
             for (int i = Children.Count - 1; i >= 0; i--)
             {
-                DetachChild(Children[i]);
+                _children[i].PropertyChanged -= ChildNodeModified;
+                _children[i].OnDisposed -= HandleChildDisposed;
+                RemoveDependencyFromChild(_children[i]);
             }
-            Children.Clear();
+            _children.Clear();
             Renderer.Dispose();
             OnDisposed?.Invoke(this);
         }

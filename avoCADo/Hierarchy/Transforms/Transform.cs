@@ -20,13 +20,16 @@ namespace avoCADo
         private static PropertyChangedEventArgs _positionChangedArgs = new PropertyChangedEventArgs(nameof(Position));
         private static PropertyChangedEventArgs _rotationChangedArgs = new PropertyChangedEventArgs(nameof(Rotation));
         private static PropertyChangedEventArgs _scaleChangedArgs = new PropertyChangedEventArgs(nameof(Scale));
+
+        private SelectionManager _selectionManager;
         public Vector3 Position
         {
             get => _position;
             set
             {
                 _position = value;
-                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+                if ((_selectionManager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit && _selectionManager.SelectedNodes.Count > 0) || 
+                    (_selectionManager.MainSelection != null && _selectionManager.MainSelection.Transform == this))
                 {
                     PropertyChanged?.Invoke(this, _positionChangedArgs);
                 }
@@ -38,7 +41,9 @@ namespace avoCADo
             set
             {
                 _scale = value;
-                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+
+                if ((_selectionManager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit && _selectionManager.SelectedNodes.Count > 0) ||
+                    (_selectionManager.MainSelection != null && _selectionManager.MainSelection.Transform == this))
                 {
                     PropertyChanged?.Invoke(this, _scaleChangedArgs);
                 }
@@ -50,7 +55,8 @@ namespace avoCADo
             set
             {
                 _rotation = value.Normalized();
-                if (NodeSelection.Manager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit || NodeSelection.Manager.MainSelection?.Transform == this)
+                if ((_selectionManager.SelectedNodes.Count < NodeSelection.SensibleSelectionLimit && _selectionManager.SelectedNodes.Count > 0) ||
+                    (_selectionManager.MainSelection != null && _selectionManager.MainSelection.Transform == this))
                 {
                     PropertyChanged?.Invoke(this, _rotationChangedArgs);
                 }
@@ -85,6 +91,7 @@ namespace avoCADo
 
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
         {
+            _selectionManager = NodeSelection.Manager;
             Position = position;
             RotationEulerAngles = rotation;
             Scale = scale;

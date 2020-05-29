@@ -48,7 +48,15 @@ namespace avoCADo
             Transform.PropertyChanged += TransformModified;
         }
 
+        public void AttachChildRange(IList<INode> nodes)
+        {
+        }
+
         public void AttachChild(INode node)
+        {
+        }
+
+        public void DetachChildRange(IList<INode> nodes)
         {
         }
 
@@ -73,5 +81,6 @@ namespace avoCADo
         {
             Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
         }
+
     }
 }

@@ -40,5 +40,7 @@ namespace avoCADo
         void Render(Camera camera, Matrix4 parentMatrix);
         void AttachChild(INode node);
         bool DetachChild(INode node);
+        void AttachChildRange(IList<INode> nodes);
+        void DetachChildRange(IList<INode> nodes);
     }
 }

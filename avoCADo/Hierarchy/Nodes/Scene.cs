@@ -128,6 +128,33 @@ namespace avoCADo
         }
 
         /// <summary>
+        /// Children must be all Nodes or all VirtualNodes, mixing them together will result in undefined behaviour.
+        /// </summary>
+        /// <param name="children"></param>
+        public void DetachChildRange(IList<INode> children)
+        {
+            foreach(var child in children)
+            {
+                if (child.Transform.ParentNode == this)
+                {
+                    child.Transform.ParentNode = null;
+                    child.OnDisposed -= HandleChildDisposed;
+                }
+            }
+            if (children[0] is VirtualNode)
+            {
+                foreach(var child in children)
+                {
+                    VirtualChildren.Remove(child);
+                }
+            }
+            else
+            {
+                _children.RemoveRange(children);
+            }
+        }
+
+        /// <summary>
         /// Determines whether to use Children or VirtualChildren collection based on child's type.
         /// </summary>
         /// <param name="child"></param>
