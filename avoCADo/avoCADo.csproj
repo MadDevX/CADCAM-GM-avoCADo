@@ -101,7 +101,7 @@
       <DependentUpon>CameraSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Camera\StereoscopicCameraModeManager.cs" />
-    <Compile Include="Camera\FramebufferManager.cs" />
+    <Compile Include="Rendering\BufferManagers\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="ControlPointManagers\BezierC0PatchControlPointManager.cs" />
     <Compile Include="Cursor3DInfo.xaml.cs">
