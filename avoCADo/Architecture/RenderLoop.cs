@@ -65,7 +65,7 @@ namespace avoCADo
             }
 
             _quadOverlayRenderer.Render();
-
+            GL.Finish();
             _glControl.SwapBuffers();
 
             #region Timer
