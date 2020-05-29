@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace avoCADo
 {
@@ -11,7 +12,7 @@ namespace avoCADo
     {
         public override GroupNodeType GroupNodeType => GroupNodeType.Attachable;
         public override NodeType NodeType => NodeType.Curve;
-        public BezierGroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, BezierGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)
+        public BezierGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)
         {
         }
     }

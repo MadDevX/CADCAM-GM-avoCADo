@@ -21,7 +21,7 @@ namespace avoCADo
             for (int i = 0; i < calls.Count; i++)
             {
                 GL.LineWidth(calls[i].size);
-                _shaderWrapper.SetColor(calls[i].color);
+                _shaderWrapper.SetColor(calls[i].defaultColor);
                 GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 _shaderWrapper.SetColor(Color4.White);
                 GL.LineWidth(1.0f);

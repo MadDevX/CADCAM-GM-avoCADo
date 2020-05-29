@@ -146,18 +146,18 @@ namespace avoCADo
             {
                 if(_selectionManager.MainSelection != null)
                 {
-                    parent = _selectionManager.MainSelection.Transform.Parent;
+                    parent = _selectionManager.MainSelection.Transform.ParentNode;
                 }
                 else
                 {
-                    if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.Parent;
+                    if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
                 }
                 AddToSelection(nodesInsideRect, parent);
             }
             else
             {
                 _selectionManager.ResetSelection();
-                if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.Parent;
+                if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
                 AddToSelection(nodesInsideRect, parent);
             }
         }
@@ -186,7 +186,7 @@ namespace avoCADo
             foreach (var node in sourceList)
             {
                 if (ignoreVirtualNodes && node.NodeType == NodeType.Virtual) continue;
-                if (selectionList.Count > 0 && node.Transform.Parent != selectionList[0].Transform.Parent) continue;
+                if (selectionList.Count > 0 && node.Transform.ParentNode != selectionList[0].Transform.ParentNode) continue;
                 if (IsNodeInsideRect(node, rect))
                 {
                     selectionList.Add(node);

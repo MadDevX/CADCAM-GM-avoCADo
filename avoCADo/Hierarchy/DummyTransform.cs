@@ -15,7 +15,21 @@ namespace avoCADo
         public Quaternion Rotation { get => Quaternion.Identity; set { } }
         public Vector3 RotationEulerAngles { get => Vector3.Zero; set { } }
         public Vector3 Scale { get => Vector3.One; set { } }
-        public INode Parent { get; set; }
+        public INode ParentNode { get; set; }
+        
+        private INode _node = null;
+        public virtual INode Node
+        {
+            get => _node;
+            set
+            {
+                if (_node != null)
+                {
+                    throw new InvalidOperationException("Tried to reattach Transform to a different Node");
+                }
+                _node = value;
+            }
+        }
 
         public Matrix4 LocalModelMatrix => Matrix4.Identity;
 
@@ -25,7 +39,7 @@ namespace avoCADo
 
         public void ScaleAround(Vector3 pivot, Vector3 scaling) { }
 
-        public Vector2 ScreenCoords(Camera camera) { return _screenCoords; }
+        public virtual Vector2 ScreenCoords(Camera camera) { return _screenCoords; }
 
         public void Translate(Vector3 translation) { }
 

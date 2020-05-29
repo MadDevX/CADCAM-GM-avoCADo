@@ -16,7 +16,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                    new KeyGesture(Key.F1)
+                    new KeyGesture(Key.F1, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand CursorMode = new RoutedUICommand
@@ -26,7 +26,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.F2)
+                            new KeyGesture(Key.F2, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapNone = new RoutedUICommand

@@ -51,8 +51,8 @@ namespace avoCADo
                     return new List<DrawCall>
                     {
                         new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE),
-                        new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_COLOR),
-                        new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_COLOR)
+                        new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR),
+                        new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR)
                     };
                 }
                 else
@@ -293,9 +293,9 @@ namespace avoCADo
         {
             foreach (var node in _virtualNodes)
             {
-                if (node.Transform.Parent != null)
+                if (node.Transform.ParentNode != null)
                 {
-                    node.Transform.Parent.DetachChild(node);
+                    node.Transform.ParentNode.DetachChild(node);
                 }
             }
         }
@@ -304,7 +304,7 @@ namespace avoCADo
         {
             foreach (var node in _virtualNodes)
             {
-                if (node.Transform.Parent == null)
+                if (node.Transform.ParentNode == null)
                 {
                     Registry.VirtualNodeFactory.DefaultParent.AttachChild(node);
                 }

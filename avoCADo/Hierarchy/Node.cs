@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using OpenTK;
 
 namespace avoCADo
@@ -41,7 +42,8 @@ namespace avoCADo
         /// <summary>
         /// Do not modify collection through this property - use dedicated methods (AttachChild, DetachChild)
         /// </summary>
-        public ObservableCollection<INode> Children { get; private set; } = new ObservableCollection<INode>();
+        public ObservableCollection<INode> Children => _children;
+        private WpfObservableRangeCollection<INode> _children = new WpfObservableRangeCollection<INode>();
 
         private Dictionary<DependencyType, List<object>> _dependencies;
 
@@ -49,17 +51,18 @@ namespace avoCADo
         {
             get
             {
-                return Transform.LocalModelMatrix * Transform.Parent.GlobalModelMatrix;
+                return Transform.LocalModelMatrix * Transform.ParentNode.GlobalModelMatrix;
             }
         }
 
-        public Node(Transform transform, IRenderer renderer, string name)
+        public Node(ITransform transform, IRenderer renderer, string name)
         {
             _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<object>>();
             Transform = transform;
             Renderer = renderer;
             Name = name;
             renderer.SetNode(this);
+            Transform.Node = this;
             Transform.PropertyChanged += TransformModified;
         }
 
@@ -99,9 +102,9 @@ namespace avoCADo
         /// <param name="child"></param>
         public void AttachChild(INode child)
         {
-            if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+            if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
-            child.Transform.Parent = this;
+            child.Transform.ParentNode = this;
             Children.Add(child);
             child.OnDisposed += HandleChildDisposed;
         }
@@ -115,7 +118,7 @@ namespace avoCADo
             var val = Children.Remove(child);
             if (val)
             {
-                child.Transform.Parent = null;
+                child.Transform.ParentNode = null;
                 child.OnDisposed -= HandleChildDisposed;
             }
             return val;

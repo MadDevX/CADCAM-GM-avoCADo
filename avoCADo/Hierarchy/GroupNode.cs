@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using OpenTK;
 
 namespace avoCADo
@@ -27,6 +28,8 @@ namespace avoCADo
         /// </summary>
         public virtual DependencyType ChildrenDependencyType => DependencyType.Weak;
 
+        private static PropertyChangedEventArgs _nameChangedArgs = new PropertyChangedEventArgs(nameof(Name));
+        private static PropertyChangedEventArgs _childrenChangedArgs = new PropertyChangedEventArgs(nameof(Children));
 
         private string _name;
         public string Name
@@ -35,25 +38,26 @@ namespace avoCADo
             set
             {
                 _name = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                PropertyChanged?.Invoke(this, _nameChangedArgs);
             }
         }
 
-        public ITransform Transform { get; } = new DummyTransform();
+        public ITransform Transform { get; } = new GroupTransform();
 
         public IRenderer Renderer { get; }
 
         public Matrix4 GlobalModelMatrix { get; } = Matrix4.Identity;
 
-        public ObservableCollection<INode> Children { get; }
+        public ObservableCollection<INode> Children => _children;
+        private WpfObservableRangeCollection<INode> _children;
 
-
-        public GroupNode(ObservableCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
+        public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
         {
-            Children = childrenSource;
+            _children = childrenSource;
             dependent.Initialize(this);
             Renderer = renderer;
             Name = name;
+            Transform.Node = this;
             renderer.SetNode(this);
         }
 
@@ -64,9 +68,9 @@ namespace avoCADo
                 Children.Add(node);
                 node.PropertyChanged += ChildNodeModified;
                 node.OnDisposed += HandleChildDisposed;
-                if(node.Transform.Parent == null)
+                if(node.Transform.ParentNode == null)
                 {
-                    Transform.Parent.AttachChild(node);
+                    Transform.ParentNode.AttachChild(node);
                 }
                 AddDependencyToChild(node);
             }
@@ -77,7 +81,7 @@ namespace avoCADo
             var res = Children.Remove(node);
             if (res)
             {
-                node.Transform.PropertyChanged -= ChildNodeModified;
+                node.PropertyChanged -= ChildNodeModified;
                 node.OnDisposed -= HandleChildDisposed;
                 RemoveDependencyFromChild(node);
             }
@@ -109,7 +113,7 @@ namespace avoCADo
 
         private void ChildNodeModified(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Children)));
+            PropertyChanged?.Invoke(this, _childrenChangedArgs);
         }
 
         public void Dispose()

@@ -111,6 +111,7 @@
     <Compile Include="Hierarchy\BezierGroupNode.cs" />
     <Compile Include="Hierarchy\BezierPatchGroupNode.cs" />
     <Compile Include="Hierarchy\GroupNode.cs" />
+    <Compile Include="Hierarchy\GroupTransform.cs" />
     <Compile Include="Hierarchy\PointTransform.cs" />
     <Compile Include="Hierarchy\PoolableNode.cs" />
     <Compile Include="Hierarchy\VirtualNode.cs" />
@@ -142,7 +143,7 @@
     <Compile Include="Rendering\ShaderWrappers\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BackgroundManager.cs" />
     <Compile Include="Rendering\ShaderWrappers\BufferShaderWrapper.cs" />
-    <Compile Include="Rendering\CurveRenderer.cs" />
+    <Compile Include="Rendering\ParametricObjectRenderer.cs" />
     <Compile Include="Rendering\DummyRenderer.cs" />
     <Compile Include="Hierarchy\DummyTransform.cs" />
     <Compile Include="Interfaces\ILoops.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Rendering\ViewportManager.cs" />
     <Compile Include="UI\UtilityCommandDefinitions.cs" />
     <Compile Include="UI\UtilityCommands.cs" />
+    <Compile Include="Utility\Coordinates.cs" />
     <Compile Include="Utility\CoordList.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />

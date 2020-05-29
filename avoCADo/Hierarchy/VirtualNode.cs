@@ -28,7 +28,7 @@ namespace avoCADo
         {
             get
             {
-                return Transform.LocalModelMatrix * Transform.Parent.GlobalModelMatrix;
+                return Transform.LocalModelMatrix * Transform.ParentNode.GlobalModelMatrix;
             }
         }
 

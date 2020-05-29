@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace avoCADo
 {
@@ -51,10 +52,10 @@ namespace avoCADo
         public INode CreateBezierC0Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             var parent = _scene;
-            var bezierSurfCollection = new ObservableCollection<INode>();
+            var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             parent.AttachChild(surfNode);
             return surfNode;
         }
@@ -109,7 +110,7 @@ namespace avoCADo
         public INode CreateBezierGroupCPURenderer() //OLD RENDERER
         {
             var parent = _scene;
-            var source = new ObservableCollection<INode>();
+            var source = new WpfObservableRangeCollection<INode>();
             ICurve curve = new BezierC0Curve(source);
 
             var generator = new BezierGenerator(curve);
@@ -144,11 +145,11 @@ namespace avoCADo
         private INode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
         {
             var parent = _scene;
-            var source = new ObservableCollection<INode>();
+            var source = new WpfObservableRangeCollection<INode>();
             ICurve curve = CreateCurve<T>(source);
 
             var generator = new BezierGeneratorGeometry(curve);
-            var bezierGroup = new BezierGeomGroupNode(source, new CurveRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
+            var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {

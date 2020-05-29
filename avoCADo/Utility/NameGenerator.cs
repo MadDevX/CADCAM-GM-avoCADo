@@ -36,7 +36,7 @@ namespace avoCADo
         public static string GenerateNameSlow(INode root, string genericName)
         {
             bool found = false;
-            if (root.GroupNodeType != GroupNodeType.None) root = root.Transform.Parent;
+            if (root.GroupNodeType != GroupNodeType.None) root = root.Transform.ParentNode;
             foreach(var node in root.Children)
             {
                 if(node.Name.Equals(genericName))

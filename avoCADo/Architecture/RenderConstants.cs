@@ -18,6 +18,9 @@ namespace avoCADo
         public static float GIZMO_SIZE = 2.0f;
         public static float SURFACE_SIZE = 1.0f;
 
-        public static Color4 POLYGON_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+        public static Color4 PARAMETRIC_OBJECT_DEFAULT_COLOR = Color4.White;
+        public static Color4 PARAMETRIC_OBJECT_SELECTED_COLOR = Color4.Yellow;
+        public static Color4 POLYGON_DEFAULT_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+        public static Color4 POLYGON_SELECTED_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 }

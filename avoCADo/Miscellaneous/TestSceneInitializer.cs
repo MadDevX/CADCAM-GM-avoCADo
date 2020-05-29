@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace avoCADo
 {
@@ -29,10 +30,10 @@ namespace avoCADo
             scene.AttachChild(point3);
             scene.AttachChild(point4);
 
-            var bezierSource = new ObservableCollection<INode>();
+            var bezierSource = new WpfObservableRangeCollection<INode>();
             var curve =  new InterpolatingC2Curve(bezierSource);
             var bezGen = new BezierGeneratorGeometry(curve);
-            var bezier = new BezierGeomGroupNode(bezierSource, new CurveRenderer(tesShader, geomShader, defaultShader, bezGen), bezGen, "interpolatingCurve");
+            var bezier = new BezierGeomGroupNode(bezierSource, new ParametricObjectRenderer(tesShader, geomShader, defaultShader, bezGen), bezGen, "interpolatingCurve");
             //var bezGen = new BezierGeneratorNew(curve); //new BezierGeneratorNew(curve);
             //var bezier = new BezierGroupNode(bezierSource, new LineRenderer(shader, bezGen), bezGen, "bezier");
             bezier.AttachChild(point);
@@ -41,10 +42,10 @@ namespace avoCADo
             bezier.AttachChild(point4);
             scene.AttachChild(bezier);
 
-            var bezierSurfCollection = new ObservableCollection<INode>();
+            var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, nodeFactory, loop, PatchType.Cylinder, Vector3.Zero);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new CurveRenderer(tesShader, geomShader, defaultShader, surfGen), surfGen, "BezierPatch");
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(tesShader, geomShader, defaultShader, surfGen), surfGen, "BezierPatch");
             scene.AttachChild(surfNode);
             //surfGen.SurfaceWidthOrRadius = 2;
             //surfGen.SurfaceHeight = 2;

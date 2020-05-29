@@ -68,7 +68,20 @@ namespace avoCADo
             }
         }
 
-        public INode Parent { get; set; }
+        public INode ParentNode { get; set; }
+
+        private INode _node = null;
+        public INode Node { 
+            get => _node; 
+            set
+            {
+                if(_node != null)
+                {
+                    throw new InvalidOperationException("Tried to reattach Transform to a different Node");
+                }
+                _node = value;
+            }
+        }
 
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
         {
@@ -103,24 +116,20 @@ namespace avoCADo
             get
             {
                 var vec = new Vector4(Position, 1.0f);
-                if(Parent != null) vec = vec * Parent.GlobalModelMatrix;
+                if(ParentNode != null) vec = vec * ParentNode.GlobalModelMatrix;
                 return new Vector3(vec.X, vec.Y, vec.Z);
             }
             set
             {
                 var vec = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-                if (Parent != null) vec = vec * Parent.GlobalModelMatrix; //TODO: rotate offset
+                if (ParentNode != null) vec = vec * ParentNode.GlobalModelMatrix; //TODO: rotate offset
                 Position = value - new Vector3(vec.X, vec.Y, vec.Z);
             }
         }
 
         public Vector2 ScreenCoords(Camera camera)
         {
-            Vector4 uni = new Vector4(WorldPosition, 1.0f);
-            Vector4 view = uni * camera.ViewMatrix;
-            var screenSpace = view * camera.ProjectionMatrix;
-            screenSpace /= screenSpace.W;
-            return new Vector2(screenSpace.X, screenSpace.Y);
+            return Coordinates.ScreenCoords(camera, WorldPosition);
         }
 
         /// <summary>

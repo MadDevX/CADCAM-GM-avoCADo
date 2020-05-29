@@ -10,7 +10,7 @@ namespace avoCADo
 {
     public class GridGenerator : IMeshGenerator
     {
-        public IList<DrawCall> DrawCalls => new List<DrawCall>(){new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.GRID_SIZE, new Color4(0.5f, 0.5f, 0.5f, 0.5f * GetPitchMultiplier())) };
+        public IList<DrawCall> DrawCalls => new List<DrawCall>(){new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.GRID_SIZE, new Color4(0.5f, 0.5f, 0.5f, 0.5f * GetPitchMultiplier()), new Color4(0.5f, 0.5f, 0.5f, 0.5f * GetPitchMultiplier())) };
 
         public event Action OnParametersChanged;
 

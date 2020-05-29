@@ -51,6 +51,7 @@ namespace avoCADo
         public Scene(string name)
         {
             Name = name;
+            Transform.Node = this;
         }
 
         public void Dispose()
@@ -82,11 +83,11 @@ namespace avoCADo
 
         public void AttachChild(INode child)
         {
-            if (child.Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+            if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
 
             var childList = GetChildListType(child);
 
-            child.Transform.Parent = this;
+            child.Transform.ParentNode = this;
             childList.Add(child);
             child.OnDisposed += HandleChildDisposed;
         }
@@ -98,7 +99,7 @@ namespace avoCADo
             var val = childList.Remove(child);
             if (val)
             {
-                child.Transform.Parent = null;
+                child.Transform.ParentNode = null;
                 child.OnDisposed -= HandleChildDisposed;
             }
             return val;
@@ -112,8 +113,8 @@ namespace avoCADo
         {
             for(int i = 0; i < children.Count; i++)
             {
-                if (children[i].Transform.Parent != null) throw new InvalidOperationException("Tried to attach node that has another parent");
-                children[i].Transform.Parent = this;
+                if (children[i].Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+                children[i].Transform.ParentNode = this;
                 children[i].OnDisposed += HandleChildDisposed;
             }
             if (children[0] is VirtualNode)

@@ -24,7 +24,7 @@ namespace avoCADo
                     return new List<DrawCall>()
                     {
                         new DrawCall(0, _surfaceIndices.Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64),
-                        new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_COLOR)
+                        new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR)
                     };
                 }
                 else

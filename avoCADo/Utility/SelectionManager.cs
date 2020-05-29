@@ -71,7 +71,7 @@ namespace avoCADo
 
         private void AddToSelected(INode node)
         {
-            if (_selectedNodes.Count > 0 && node.Transform.Parent == MainSelection.Transform.Parent)
+            if (_selectedNodes.Count > 0 && node.Transform.ParentNode == MainSelection.Transform.ParentNode)
             {
                 AddToList(node);
                 MainSelection = node;

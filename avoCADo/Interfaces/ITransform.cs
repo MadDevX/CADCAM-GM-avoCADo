@@ -15,7 +15,16 @@ namespace avoCADo
         Vector3 RotationEulerAngles { get; set; }
         Vector3 Scale { get; set; }
 
-        INode Parent { get; set; }
+
+        /// <summary>
+        /// Represents parent of the Node that owns this Transform. Should be moved to INode.
+        /// </summary>
+        INode ParentNode { get; set; } //TODO: move this to INode interface
+
+        /// <summary>
+        /// Represents Node that owns this Transform. Reassigning Node to a different one is not allowed.
+        /// </summary>
+        INode Node { get; set; }
 
         Matrix4 LocalModelMatrix { get; }
         Vector3 WorldPosition { get; set; }
