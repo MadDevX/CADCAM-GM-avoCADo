@@ -14,10 +14,15 @@ namespace avoCADo
         private ShaderWrapper _curveShaderWrapper;
         private TesselationShaderWrapper _tessShaderWraper;
 
+        private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
+        private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;
+
         public ParametricObjectRenderer(TesselationShaderWrapper tessShaderWrapper, ShaderWrapper curveShaderWrapper, ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {
             _tessShaderWraper = tessShaderWrapper;
             _curveShaderWrapper = curveShaderWrapper;
+            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessShaderWraper);
+            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches);
         }
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
@@ -26,41 +31,21 @@ namespace avoCADo
             var calls = _meshGenerator.DrawCalls;
             for (int i = 0; i < calls.Count; i++)
             {
-                var color = _node.IsSelected ? calls[i].selectedColor : calls[i].defaultColor;
-                
                 GL.LineWidth(calls[i].size);
-                if (calls[i].shaderType == DrawCallShaderType.Default)
+                var color = _node.IsSelected ? calls[i].selectedColor : calls[i].defaultColor;
+                var shaderWrapper = _shadersDict[calls[i].shaderType];
+                if(currentShader != shaderWrapper)
                 {
-                    if (currentShader != _shaderWrapper)
-                    {
-                        SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
-                        currentShader = _shaderWrapper;
-                    }
-                    currentShader.SetColor(color);
-                    GL.DrawElements(PrimitiveType.Lines, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
+                    SetShader(shaderWrapper, camera, localMatrix, parentMatrix);
+                    currentShader = shaderWrapper;
                 }
-                else if (calls[i].shaderType == DrawCallShaderType.Curve)
+                currentShader.SetColor(color);
+                if (calls[i].shaderType == DrawCallShaderType.Surface)
                 {
-                    if (currentShader != _curveShaderWrapper)
-                    {
-                        SetShader(_curveShaderWrapper, camera, localMatrix, parentMatrix);
-                        currentShader = _curveShaderWrapper;
-                    }
-                    currentShader.SetColor(color);
-                    GL.DrawElements(PrimitiveType.LinesAdjacency, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
-                }
-                else if (calls[i].shaderType == DrawCallShaderType.Surface)
-                {
-                    if (currentShader != _tessShaderWraper)
-                    {
-                        SetShader(_tessShaderWraper, camera, localMatrix, parentMatrix);
-                        currentShader = _tessShaderWraper;
-                    }
-                    currentShader.SetColor(color);
                     _tessShaderWraper.SetTessLevelOuter0(calls[i].tessLevelOuter0);
                     _tessShaderWraper.SetTessLevelOuter1(calls[i].tessLevelOuter1);
-                    GL.DrawElements(PrimitiveType.Patches, calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 }
+                GL.DrawElements(_primitivesDict[calls[i].shaderType], calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 currentShader.SetColor(Color4.White);
                 GL.LineWidth(1.0f);
             }
