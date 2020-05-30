@@ -15,27 +15,26 @@ namespace avoCADo
 
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
+
+        private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         public IList<DrawCall> DrawCalls
         {
             get
             {
+                _drawCalls.Clear();
                 if(ShowEdges)
                 {
-                    return new List<DrawCall>()
-                    {
-                        new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64),
-                        new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64),
-                        new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR)
-                    };
+
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 }
                 else
                 {
-                    return new List<DrawCall>() 
-                    {
-                        new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64),
-                        new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64),
-                    };
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
                 }
+                return _drawCalls;
             }
         }
         public event Action OnParametersChanged;

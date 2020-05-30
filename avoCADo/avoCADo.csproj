@@ -129,7 +129,6 @@
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />
     <Compile Include="MeshGenerators\BezierGenerator.cs" />
     <Compile Include="MeshGenerators\BezierPatchGenerator.cs" />
-    <Compile Include="MeshGenerators\BSplineGenerator.cs" />
     <Compile Include="MeshGenerators\GridGenerator.cs" />
     <Compile Include="Miscellaneous\ShaderUseTracker.cs" />
     <Compile Include="Miscellaneous\TridiagonalSolver.cs" />

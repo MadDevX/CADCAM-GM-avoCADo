@@ -42,26 +42,24 @@ namespace avoCADo
             }
         }
 
+
+        private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         public IList<DrawCall> DrawCalls 
         { 
             get
             {
+                _drawCalls.Clear();
                 if (ShowEdges)
                 {
-                    return new List<DrawCall>
-                    {
-                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE),
-                        new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR),
-                        new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR)
-                    };
+                    _drawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE));
+                    _drawCalls.Add(new DrawCall(_curveIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
+                    _drawCalls.Add(new DrawCall(_curveIndices.Length + _edgeIndices.Length, _virtualEdgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 }
                 else
                 {
-                    return new List<DrawCall>
-                    {
-                        new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE)
-                    };
+                    _drawCalls.Add(new DrawCall(0, _curveIndices.Length, DrawCallShaderType.Curve, RenderConstants.CURVE_SIZE));
                 }
+                return _drawCalls;
             }
         }
 
