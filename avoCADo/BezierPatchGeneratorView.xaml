@@ -9,10 +9,15 @@
     <GroupBox Header="Bezier Patch Generator">
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Isoline Divisions" Margin="5"/>
-                <TextBlock Text="{Binding ElementName=isolineDivisions, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
+                <TextBlock Text="Isoline Divisions U" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=isolineDivisionsU, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
             </StackPanel>
-            <Slider x:Name="isolineDivisions" Minimum="1" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisions}"/>
+            <Slider x:Name="isolineDivisionsU" Minimum="1" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisionsU}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Isoline Divisions V" Margin="5"/>
+                <TextBlock Text="{Binding ElementName=isolineDivisionsV, Path=Value, StringFormat='{}{0:#,(#0)}'}" Margin="5"/>
+            </StackPanel>
+            <Slider x:Name="isolineDivisionsV" Minimum="1" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisionsV}"/>
             <CheckBox x:Name="showEdges" Content="Show Edges" IsChecked="{Binding ShowEdges}" Margin="5"/>
         </StackPanel>
     </GroupBox>

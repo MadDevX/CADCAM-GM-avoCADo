@@ -23,19 +23,25 @@ namespace avoCADo
                 {
                     return new List<DrawCall>()
                     {
-                        new DrawCall(0, _surfaceIndices.Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64),
+                        new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64),
+                        new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64),
                         new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR)
                     };
                 }
                 else
                 {
-                    return new List<DrawCall>() { new DrawCall(0, _surfaceIndices.Length, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisions, 64) };
+                    return new List<DrawCall>() 
+                    {
+                        new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64),
+                        new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64),
+                    };
                 }
             }
         }
         public event Action OnParametersChanged;
 
-        public int IsolineDivisions { get; set; } = 4;
+        public int IsolineDivisionsU { get; set; } = 4;
+        public int IsolineDivisionsV { get; set; } = 4;
         public bool ShowEdges { get; set; } = false;
 
         public int HorizontalPatches
