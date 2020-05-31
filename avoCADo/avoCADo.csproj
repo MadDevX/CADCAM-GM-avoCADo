@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="Camera\CameraModeManager.cs" />
     <Compile Include="ControlPointManagers\BezierC2PatchControlPointManager.cs" />
+    <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
     <Compile Include="Rendering\BufferManagers\FramebufferManager.cs" />

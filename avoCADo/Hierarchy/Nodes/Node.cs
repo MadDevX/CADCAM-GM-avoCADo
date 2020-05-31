@@ -11,13 +11,14 @@ using OpenTK;
 
 namespace avoCADo
 {
-    public class Node : INode, INotifyPropertyChanged, IDependencyCollector
+    public class Node : INode, IObject, INotifyPropertyChanged, IDependencyCollector
     {
         public bool IsSelected { get; set; } = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
 
+        public ObjectType ObjectType { get; set; }
         public GroupNodeType GroupNodeType => GroupNodeType.None;
         public NodeType NodeType => NodeType.Point;
 

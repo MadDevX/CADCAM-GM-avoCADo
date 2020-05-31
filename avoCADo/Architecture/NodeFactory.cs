@@ -41,6 +41,8 @@ namespace avoCADo
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
+            torusNode.ObjectType = ObjectType.Torus;
+
             parent.AttachChild(torusNode);
             return torusNode;
         }
@@ -52,6 +54,8 @@ namespace avoCADo
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
+            surfNode.ObjectType = ObjectType.BezierPatchC0;
+
             parent.AttachChild(surfNode);
             return surfNode;
         }
@@ -63,6 +67,8 @@ namespace avoCADo
             var surface = new BezierC2Patch();
             var surfGen = new BezierPatchC2Generator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BSplinePatch"));
+            surfNode.ObjectType = ObjectType.BezierPatchC2;
+            
             parent.AttachChild(surfNode);
             return surfNode;
         }
@@ -94,6 +100,7 @@ namespace avoCADo
             if (_pointPool.Count == 0)
             {
                 pointNode = new PoolableNode(new PointTransform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderProvider.DefaultShader, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
+                pointNode.ObjectType = ObjectType.Point;
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
             }
             else
@@ -122,6 +129,8 @@ namespace avoCADo
 
             var generator = new BezierGenerator(curve);
             var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
+            bezierGroup.ObjectType = ObjectType.BezierCurveC0;
+
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach(var node in selected)
             {
@@ -130,26 +139,33 @@ namespace avoCADo
                     bezierGroup.AttachChild(node);
                 }
             }
+
             parent.AttachChild(bezierGroup);
             return bezierGroup;
         }
 
         public INode CreateBezierGroup() 
         { 
-            return CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve"); 
+            var groupNode = CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve");
+            groupNode.ObjectType = ObjectType.BezierCurveC0;
+            return groupNode;
         }
 
         public INode CreateBSplineGroup()
         {
-            return CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve");
+            var groupNode = CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve");
+            groupNode.ObjectType = ObjectType.BezierCurveC2;
+            return groupNode;
         }
 
         public INode CreateInterpolatingC2Group()
         {
-            return CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve");
+            var groupNode = CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve");
+            groupNode.ObjectType = ObjectType.InterpolatingCurve;
+            return groupNode;
         }
 
-        private INode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
+        private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
         {
             var parent = _scene;
             var source = new WpfObservableRangeCollection<INode>();
