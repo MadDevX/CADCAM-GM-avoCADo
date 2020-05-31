@@ -16,6 +16,7 @@ namespace avoCADo
     public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
     {
 
+        protected virtual DrawCallShaderType SurfaceDrawType { get; } = DrawCallShaderType.SurfaceBezier;
         private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         public IList<DrawCall> DrawCalls
         {
@@ -25,14 +26,14 @@ namespace avoCADo
                 if(ShowEdges)
                 {
 
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
                     _drawCalls.Add(new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 }
                 else
                 {
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, DrawCallShaderType.Surface, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
                 }
                 return _drawCalls;
             }
@@ -109,8 +110,13 @@ namespace avoCADo
         public void Initialize(INode node)
         {
             _node = node;
-            _ctrlPointManager = new BezierC0PatchControlPointManager(_nodeFactory, this, _node, _loop);
+            _ctrlPointManager = CreateCPManager(_nodeFactory, this, _node, _loop);
             Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
+        }
+
+        protected virtual BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node, IUpdateLoop loop)
+        {
+            return new BezierC0PatchControlPointManager(nodeFactory, generator, node, loop);
         }
 
         private void Initialize(Vector3 position, int horizontalPatches, int verticalPatches)
@@ -196,41 +202,53 @@ namespace avoCADo
                 }
             }
 
-            int indicesIdx = 0; //should be dependent on currently processed patch
-            for(int vPatch = 0; vPatch < Surface.VSegments; vPatch++)
-            {
-                for(int uPatch = 0; uPatch < Surface.USegments; uPatch++)
-                {
-                    var uIdx = uPatch * 3;
-                    var vIdx = vPatch * 3;
-                    for(int j = vIdx; j < vIdx + 4; j++)
-                    {
-                        for(int i = uIdx; i < uIdx + 4; i++)
-                        {
-                            _surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
-                            indicesIdx++;
-                        }
-                    }
+            SetPatchIndices(_surfaceIndices);
+        }
 
-                }
-            }
+        private void SetPatchIndices(uint[] surfaceIndices)
+        {
+            var cps = Surface.ControlPoints;
+            int indicesIdx = 0; //should be dependent on currently processed patch
             for (int vPatch = 0; vPatch < Surface.VSegments; vPatch++)
             {
                 for (int uPatch = 0; uPatch < Surface.USegments; uPatch++)
                 {
-                    var uIdx = uPatch * 3;
-                    var vIdx = vPatch * 3;
-                    for (int i = uIdx; i < uIdx + 4; i++)
+                    var uIdx = GetPatchOffset(uPatch);
+                    var vIdx = GetPatchOffset(vPatch);
+                    for (int j = vIdx; j < vIdx + 4; j++)
                     {
-                        for (int j = vIdx; j < vIdx + 4; j++)
+                        for (int i = uIdx; i < uIdx + 4; i++)
                         {
-                            _surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
+                            surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
                             indicesIdx++;
                         }
                     }
 
                 }
             }
+
+            for (int vPatch = 0; vPatch < Surface.VSegments; vPatch++)
+            {
+                for (int uPatch = 0; uPatch < Surface.USegments; uPatch++)
+                {
+                    var uIdx = GetPatchOffset(uPatch);
+                    var vIdx = GetPatchOffset(vPatch);
+                    for (int i = uIdx; i < uIdx + 4; i++)
+                    {
+                        for (int j = vIdx; j < vIdx + 4; j++)
+                        {
+                            surfaceIndices[indicesIdx] = (uint)(i + j * cps.Width);
+                            indicesIdx++;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        protected virtual int GetPatchOffset(int patch)
+        {
+            return patch * 3;
         }
 
         private void CheckCombineArrays()

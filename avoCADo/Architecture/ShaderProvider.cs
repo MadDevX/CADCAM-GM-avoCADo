@@ -11,16 +11,18 @@ namespace avoCADo
         public readonly BufferShaderWrapper BufferShader;
         public readonly ShaderWrapper DefaultShader;
         public readonly ShaderWrapper CurveShader;
-        public readonly TesselationShaderWrapper SurfaceShader;
+        public readonly TesselationShaderWrapper SurfaceShaderBezier;
+        public readonly TesselationShaderWrapper SurfaceShaderDeBoor;
         public readonly SimpleShaderWrapper OverlayShader;
 
         public ShaderProvider()
         {
-            BufferShader = new BufferShaderWrapper(new Shader(ShaderPaths.VSQuadPath, ShaderPaths.FSQuadPath));
-            DefaultShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.FSPath));
-            CurveShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.GSPath, ShaderPaths.FSPath));
-            SurfaceShader = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEPath, ShaderPaths.FSPath));
-            OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath));
+            BufferShader = new BufferShaderWrapper(new Shader(ShaderPaths.VSQuadPath, ShaderPaths.FSQuadPath), nameof(BufferShader));
+            DefaultShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.FSPath), nameof(DefaultShader));
+            CurveShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.GSPath, ShaderPaths.FSPath), nameof(CurveShader));
+            SurfaceShaderBezier = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEBezierPath, ShaderPaths.FSPath), nameof(SurfaceShaderBezier));
+            SurfaceShaderDeBoor = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEDeBoorPath, ShaderPaths.FSPath), nameof(SurfaceShaderDeBoor));
+            OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath), nameof(OverlayShader));
         }
 
         public void UpdateShadersCameraMatrices(Camera camera)
@@ -29,14 +31,17 @@ namespace avoCADo
             camera.SetCameraMatrices(DefaultShader);
             CurveShader.Shader.Use();
             camera.SetCameraMatrices(CurveShader);
-            SurfaceShader.Shader.Use();
-            camera.SetCameraMatrices(SurfaceShader);
+            SurfaceShaderBezier.Shader.Use();
+            camera.SetCameraMatrices(SurfaceShaderBezier);
+            SurfaceShaderDeBoor.Shader.Use();
+            camera.SetCameraMatrices(SurfaceShaderDeBoor);
         }
 
         public void Dispose()
         {
             OverlayShader.Dispose();
-            SurfaceShader.Dispose();
+            SurfaceShaderDeBoor.Dispose();
+            SurfaceShaderBezier.Dispose();
             CurveShader.Dispose();
             DefaultShader.Dispose();
             BufferShader.Dispose();

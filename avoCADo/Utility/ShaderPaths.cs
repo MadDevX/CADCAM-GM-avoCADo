@@ -16,6 +16,7 @@ namespace avoCADo
         public static readonly string FSQuadPath = "fsQuad.frag";
         public static readonly string GSPath = "gsBezierC0.geom";
         public static readonly string TESCPath = "tc.tesc";
-        public static readonly string TESEPath = "te.tese";
+        public static readonly string TESEBezierPath = "teBezier.tese";
+        public static readonly string TESEDeBoorPath = "teDeBoor.tese";
     }
 }

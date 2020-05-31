@@ -12,7 +12,7 @@ namespace avoCADo
         private int _bufferTexture1Location;
         private int _bufferTexture2Location;
 
-        public BufferShaderWrapper(Shader shader) : base(shader)
+        public BufferShaderWrapper(Shader shader, string name) : base(shader, name)
         {
             SetTexture1(0);
             SetTexture2(1);

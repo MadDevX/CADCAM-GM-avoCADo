@@ -16,18 +16,14 @@ namespace avoCADo
         private Scene _scene;
         private Cursor3D _cursor;
         private IUpdateLoop _loop;
-        private ShaderWrapper _defaultShaderWrapper;
-        private ShaderWrapper _geomShaderWrapper;
-        private TesselationShaderWrapper _tesShaderWrapper;
+        private ShaderProvider _shaderProvider;
 
-        public NodeFactory(Scene scene, Cursor3D cursor, IUpdateLoop loop, ShaderWrapper shaderWrapper, ShaderWrapper geomShaderWrapper, TesselationShaderWrapper tesShaderWrapper)
+        public NodeFactory(Scene scene, Cursor3D cursor, IUpdateLoop loop, ShaderProvider shaderProvider)
         {
             _scene = scene;
             _cursor = cursor;
             _loop = loop;
-            _defaultShaderWrapper = shaderWrapper;
-            _geomShaderWrapper = geomShaderWrapper;
-            _tesShaderWrapper = tesShaderWrapper;
+            _shaderProvider = shaderProvider;
         }
 
         public INode CreateTorus()
@@ -44,7 +40,7 @@ namespace avoCADo
         {
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_defaultShaderWrapper, generator), NameGenerator.GenerateName(parent, "Torus"));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
             parent.AttachChild(torusNode);
             return torusNode;
         }
@@ -55,7 +51,18 @@ namespace avoCADo
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
+            parent.AttachChild(surfNode);
+            return surfNode;
+        }
+
+        public INode CreateBezierC2Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        {
+            var parent = _scene;
+            var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
+            var surface = new BezierC2Patch();
+            var surfGen = new BezierPatchC2Generator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BSplinePatch"));
             parent.AttachChild(surfNode);
             return surfNode;
         }
@@ -86,7 +93,7 @@ namespace avoCADo
 
             if (_pointPool.Count == 0)
             {
-                pointNode = new PoolableNode(new PointTransform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_defaultShaderWrapper, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
+                pointNode = new PoolableNode(new PointTransform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderProvider.DefaultShader, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
             }
             else
@@ -114,7 +121,7 @@ namespace avoCADo
             ICurve curve = new BezierC0Curve(source);
 
             var generator = new BezierGenerator(curve);
-            var bezierGroup = new BezierGroupNode(source, new LineRenderer(_defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
+            var bezierGroup = new BezierGroupNode(source, new LineRenderer(_shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, "BezierCurve"));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach(var node in selected)
             {
@@ -149,7 +156,7 @@ namespace avoCADo
             ICurve curve = CreateCurve<T>(source);
 
             var generator = new BezierGeneratorGeometry(curve);
-            var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_tesShaderWrapper, _geomShaderWrapper, _defaultShaderWrapper, generator), generator, NameGenerator.GenerateName(parent, defaultName));
+            var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, defaultName));
             var selected = NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {

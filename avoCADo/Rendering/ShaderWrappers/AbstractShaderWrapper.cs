@@ -5,11 +5,11 @@ namespace avoCADo
     public abstract class AbstractShaderWrapper : IDisposable
     {
         public Shader Shader { get; }
-
-        public AbstractShaderWrapper(Shader shader)
+        public string Name { get; }
+        public AbstractShaderWrapper(Shader shader, string name)
         {
             Shader = shader;
-
+            Name = name;
             SetUniformLocations();
         }
 

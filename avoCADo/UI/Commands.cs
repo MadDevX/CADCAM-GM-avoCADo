@@ -174,7 +174,7 @@ namespace avoCADo
             {
                 return depColl.HasDependency(DependencyType.Strong) == false;
             }
-            else if(parameter is INode node)
+            else if (parameter is INode node)
             {
                 return node.GroupNodeType == GroupNodeType.None || NodeSelection.Manager.SelectedNodes.Count == 1; // if is group node and other nodes selected
             }

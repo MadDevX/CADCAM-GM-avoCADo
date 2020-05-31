@@ -12,7 +12,7 @@ namespace avoCADo
     {
         private int _shaderColorLocation;
 
-        public SimpleShaderWrapper(Shader shader) : base(shader) { }
+        public SimpleShaderWrapper(Shader shader, string name) : base(shader, name) { }
 
         protected override void SetUniformLocations()
         {

@@ -12,7 +12,7 @@ namespace avoCADo
         private int _shaderTessLevelOuter0Location;
         private int _shaderTessLevelOuter1Location;
 
-        public TesselationShaderWrapper(Shader shader) : base(shader)
+        public TesselationShaderWrapper(Shader shader, string name) : base(shader, name)
         {
         }
 

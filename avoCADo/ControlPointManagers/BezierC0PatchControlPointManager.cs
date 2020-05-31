@@ -79,11 +79,20 @@ namespace avoCADo
 
         private void SetNewSurfaceData(int horizontalPatches, int verticalPatches)
         {
-            var width = (3 * horizontalPatches) + 1;
-            var height = (3 * verticalPatches) + 1;
+            var width = GetHorizontalAbstractCPCount(horizontalPatches);
+            var height = GetVerticalAbstractCPCount(verticalPatches);
             var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType);
             var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.PatchType);
             _generator.Surface.ControlPoints.SetData(_controlPointNodes, dataWidth, dataHeight, width, height);
+        }
+
+        protected virtual int GetHorizontalAbstractCPCount(int horizontalPatches)
+        {
+            return (3 * horizontalPatches) + 1;
+        }
+        protected virtual int GetVerticalAbstractCPCount(int verticalPatches)
+        {
+            return (3 * verticalPatches) + 1;
         }
 
         /// <summary>
@@ -130,7 +139,7 @@ namespace avoCADo
             return shouldAddPoints;
         }
 
-        private int GetHorizontalControlPointCount(int horizontalPatches, PatchType type)
+        protected virtual int GetHorizontalControlPointCount(int horizontalPatches, PatchType type)
         {
             switch(type)
             {
@@ -143,7 +152,7 @@ namespace avoCADo
             }
         }
 
-        private int GetVerticalControlPointCount(int verticalPatches, PatchType type)
+        protected virtual int GetVerticalControlPointCount(int verticalPatches, PatchType type)
         {
             return (3 * verticalPatches) + 1;
         }
@@ -254,8 +263,8 @@ namespace avoCADo
 
         private void SetControlPointPoisitionsCylinder(Vector3 position)
         {
-            var width = _generator.Surface.ControlPoints.Width;
-            var height = _generator.Surface.ControlPoints.Height;
+            var width = _generator.Surface.ControlPoints.DataWidth;
+            var height = _generator.Surface.ControlPoints.DataHeight;
             for (int j = 0; j < height; j++)
             {
                 for (int i = 0; i < width; i++)
@@ -263,8 +272,8 @@ namespace avoCADo
                     _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + 
                         new Vector3
                         (
-                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width - 1)) * Math.PI * 2.0), 
-                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)i / (width - 1)) * Math.PI * 2.0),
+                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width)) * Math.PI * 2.0), 
+                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)i / (width)) * Math.PI * 2.0),
                             ((float)j / (height - 1)) * _generator.SurfaceHeight
                         );
                 }

@@ -67,7 +67,7 @@ namespace avoCADo
 
             _shaderProvider = new ShaderProvider();
 
-            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
+            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
             _scene = new Scene("Main");
@@ -86,7 +86,7 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);
-            _nodeFactory = new NodeFactory(_scene, _cursor, _window, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
+            _nodeFactory = new NodeFactory(_scene, _cursor, _window, _shaderProvider);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _scene);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
 
@@ -96,7 +96,7 @@ namespace avoCADo
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
             _window.hierarchy.Initialize(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _nodeFactory, _window, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShader);
+            TestSceneInitializer.SpawnTestObjects(_scene, _nodeFactory, _window, _shaderProvider);
         }
 
         public void Dispose()

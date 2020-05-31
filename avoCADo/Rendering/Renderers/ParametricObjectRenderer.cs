@@ -12,17 +12,22 @@ namespace avoCADo
     public class ParametricObjectRenderer : MeshRenderer
     {
         private ShaderWrapper _curveShaderWrapper;
-        private TesselationShaderWrapper _tessShaderWraper;
+        private TesselationShaderWrapper _tessBezierShaderWraper;
+        private TesselationShaderWrapper _tessDeBoorShaderWraper;
 
         private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
         private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;
 
-        public ParametricObjectRenderer(TesselationShaderWrapper tessShaderWrapper, ShaderWrapper curveShaderWrapper, ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
+        public ParametricObjectRenderer(TesselationShaderWrapper tessBezierShaderWrapper, 
+                                        TesselationShaderWrapper tessDeBoorShaderWrapper, 
+                                        ShaderWrapper curveShaderWrapper, 
+                                        ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {
-            _tessShaderWraper = tessShaderWrapper;
+            _tessBezierShaderWraper = tessBezierShaderWrapper;
+            _tessDeBoorShaderWraper = tessDeBoorShaderWrapper;
             _curveShaderWrapper = curveShaderWrapper;
-            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessShaderWraper);
-            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches);
+            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessBezierShaderWraper, _tessDeBoorShaderWraper);
+            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches);
         }
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
@@ -40,10 +45,14 @@ namespace avoCADo
                     currentShader = shaderWrapper;
                 }
                 currentShader.SetColor(color);
-                if (calls[i].shaderType == DrawCallShaderType.Surface)
+                if (calls[i].shaderType == DrawCallShaderType.SurfaceBezier || calls[i].shaderType == DrawCallShaderType.SurfaceDeBoor)
                 {
-                    _tessShaderWraper.SetTessLevelOuter0(calls[i].tessLevelOuter0);
-                    _tessShaderWraper.SetTessLevelOuter1(calls[i].tessLevelOuter1);
+                    var tess = shaderWrapper as TesselationShaderWrapper;
+                    if (tess != null)
+                    {
+                        tess.SetTessLevelOuter0(calls[i].tessLevelOuter0);
+                        tess.SetTessLevelOuter1(calls[i].tessLevelOuter1);
+                    }
                 }
                 GL.DrawElements(_primitivesDict[calls[i].shaderType], calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 currentShader.SetColor(Color4.White);

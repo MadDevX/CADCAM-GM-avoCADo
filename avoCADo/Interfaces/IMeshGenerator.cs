@@ -57,6 +57,7 @@ namespace avoCADo
     {
         Default,
         Curve,
-        Surface
+        SurfaceBezier,
+        SurfaceDeBoor
     }
 }

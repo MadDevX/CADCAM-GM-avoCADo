@@ -99,6 +99,7 @@ namespace avoCADo
 
         public Transform(Vector3 position, Quaternion rotation, Vector3 scale)
         {
+            _selectionManager = NodeSelection.Manager;
             Position = position;
             Rotation = rotation;
             Scale = scale;

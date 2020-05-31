@@ -17,7 +17,7 @@ namespace avoCADo
         private int _shaderBgColorLocation;
         private int _shaderFilterColorLocation;
 
-        public ShaderWrapper(Shader shader) : base(shader)
+        public ShaderWrapper(Shader shader, string name) : base(shader, name)
         {
         }
 
