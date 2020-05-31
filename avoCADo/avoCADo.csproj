@@ -100,7 +100,7 @@
     <Compile Include="CameraSettings.xaml.cs">
       <DependentUpon>CameraSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Camera\StereoscopicCameraModeManager.cs" />
+    <Compile Include="Camera\CameraModeManager.cs" />
     <Compile Include="ControlPointManagers\BezierC2PatchControlPointManager.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />

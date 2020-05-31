@@ -9,15 +9,31 @@ using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
 {
+    public enum ProjectionMode
+    {
+        Perspective,
+        Orthographic
+    }
+
     public class Camera : IDisposable
     {
+
         public Vector3 Target => _target;
         public Vector3 Position => _position;
         public float DistanceToTarget => (_target - _position).Length;
         public float Pitch => _pitch;
         public float NearPlane => _nearPlane;
 
-
+        private ProjectionMode _projectionMode = ProjectionMode.Perspective;
+        public ProjectionMode ProjectionMode 
+        {
+            get => _projectionMode;
+            set
+            {
+                _projectionMode = value;
+                UpdateProjectionMatrix();
+            }
+        }
         public Matrix4 ProjectionMatrix => _projectionMatrix;
         public Matrix4 ViewMatrix => _viewMatrix;
 
@@ -45,7 +61,7 @@ namespace avoCADo
         {
             _viewportManager = viewportManager;
             _viewportManager.OnViewportChanged += OnViewportChanged;
-            Reset();
+            Reset(0.5f);
         }
 
         public virtual void Dispose()
@@ -106,6 +122,7 @@ namespace avoCADo
                 _position -= (_target - _position) * 0.1f;
             }
             UpdateViewMatrix();
+            if (ProjectionMode == ProjectionMode.Orthographic) UpdateProjectionMatrix();
         }
 
         public void Translate(float horizontal, float vertical)
@@ -135,12 +152,17 @@ namespace avoCADo
             return Quaternion.FromMatrix(new Matrix3(Matrix4.LookAt(Vector3.Zero, _target - _position, Vector3.UnitY)));
         }
 
-        public void Reset()
+        /// <summary>
+        /// Sets camera pitch, multiplying given parameter by PI.
+        /// </summary>
+        /// <param name="pitchMult">Value between -1 and 1</param>
+        public void Reset(float pitchMult = 0.0f)
         {
+            pitchMult = MathHelper.Clamp(pitchMult, 0.0f, 1.0f);
             _position = Vector3.UnitZ;
             _target = Vector3.Zero;
             _yaw = (float)Math.PI*1.5f;
-            _pitch = (float)-Math.PI * 0.25f;
+            _pitch = (float)-Math.PI * pitchMult * 0.5f;
             RecalculatePosition(2.0f); //default distance from target
             UpdateViewMatrix();
             UpdateProjectionMatrix();
@@ -191,7 +213,14 @@ namespace avoCADo
 
         protected virtual void UpdateProjectionMatrix()
         {
-            _projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane);
+            if (ProjectionMode == ProjectionMode.Perspective)
+            {
+                _projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(_fov, _aspectRatio, _nearPlane, _farPlane);
+            }
+            else
+            {
+                _projectionMatrix = Matrix4.CreateOrthographic(_aspectRatio * DistanceToTarget, DistanceToTarget, _nearPlane, _farPlane);
+            }
         }
     }
 }

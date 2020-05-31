@@ -37,7 +37,7 @@ namespace avoCADo
         private Cursor3D _cursor;
 
         private TransformationsManager _transformationsManager;
-        private StereoscopicCameraModeManager _cameraModeManager;
+        private CameraModeManager _cameraModeManager;
         private TransformHandler _transformHandler;
         private TorusGeneratorHandler _torusHandler;
         private LabelBindingRefresher _labelBindingRefresher;
@@ -82,7 +82,7 @@ namespace avoCADo
             _cursor = new Cursor3D(_control, _shaderProvider.DefaultShader, _renderLoop, _camera);
             _transformationsManager = new TransformationsManager(_cursor, _control, _camera);
 
-            _cameraModeManager = new StereoscopicCameraModeManager((StereoscopicCamera)_camera, _backgroundManager, backgroundColorStandard, backgroundColorStereoscopic);
+            _cameraModeManager = new CameraModeManager((StereoscopicCamera)_camera, _backgroundManager, backgroundColorStandard, backgroundColorStereoscopic);
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);

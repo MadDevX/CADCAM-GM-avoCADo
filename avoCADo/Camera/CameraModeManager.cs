@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class StereoscopicCameraModeManager
+    public class CameraModeManager
     {
         private StereoscopicCamera _camera;
         private BackgroundManager _backgroundManager;
         private Color4 _standardBackgroundColor;
         private Color4 _stereoscopicBackgroundColor;
 
-        public StereoscopicCameraModeManager(StereoscopicCamera camera, 
+        public CameraModeManager(StereoscopicCamera camera, 
                                  BackgroundManager manager, 
                                  Color4 standardBackgroundColor, 
                                  Color4 stereoscopicBackgroundColor)
@@ -38,6 +38,11 @@ namespace avoCADo
                 _camera.Mode = StereoscopicCamera.RenderMode.Standard;
                 _backgroundManager.BackgroundColor = _standardBackgroundColor;
             }
+        }
+
+        public void SetProjection(ProjectionMode mode)
+        {
+            _camera.ProjectionMode = mode;
         }
 
         public float FocusPlaneDistance

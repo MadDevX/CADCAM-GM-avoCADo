@@ -9,19 +9,25 @@
     <GroupBox Header="Camera Settings">
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <RadioButton x:Name="radioBtnStandard" Content="Standard" IsChecked="True" Checked="radioBtnStandard_Checked" Margin="5"/>
+                <RadioButton x:Name="radioBtnStandard" Content="Standard" Checked="radioBtnStandard_Checked" Margin="5"/>
                 <RadioButton x:Name="radioBtnStereoscopic" Content="Stereoscopic" Checked="radioBtnStereoscopic_Checked" Margin="5"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Eye Distance" Margin="5"/>
-                <TextBlock Text="{Binding ElementName=eyeDistance, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+            <StackPanel x:Name="stackPanelProjection" Orientation="Horizontal">
+                <RadioButton x:Name="radioBtnPerspective" Content="Perspective" Checked="radioBtnPerspective_Checked" Margin="5"/>
+                <RadioButton x:Name="radioBtnOrthographic" Content="Orthographic" Checked="radioBtnOrthographic_Checked" Margin="5"/>
             </StackPanel>
-            <Slider x:Name="eyeDistance" Minimum="0" Maximum="1" Value="{Binding EyeDistance}" IsSnapToTickEnabled="False"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Focus Plane Distance" Margin="5"/>
-                <TextBlock Text="{Binding ElementName=focusPlaneDistance, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+            <StackPanel x:Name="stackPanelStereo">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Eye Distance" Margin="5"/>
+                    <TextBlock Text="{Binding ElementName=eyeDistance, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+                </StackPanel>
+                <Slider x:Name="eyeDistance" Minimum="0" Maximum="1" Value="{Binding EyeDistance}" IsSnapToTickEnabled="False"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Focus Plane Distance" Margin="5"/>
+                    <TextBlock Text="{Binding ElementName=focusPlaneDistance, Path=Value, StringFormat='{}{0:#,(#0.00)}'}" Margin="5"/>
+                </StackPanel>
+                <Slider x:Name="focusPlaneDistance" Minimum="0" Maximum="50" Value="{Binding FocusPlaneDistance}" IsSnapToTickEnabled="False"/>
             </StackPanel>
-            <Slider x:Name="focusPlaneDistance" Minimum="0" Maximum="50" Value="{Binding FocusPlaneDistance}" IsSnapToTickEnabled="False"/>
         </StackPanel>
     </GroupBox>
 </UserControl>
