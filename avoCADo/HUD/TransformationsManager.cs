@@ -47,10 +47,12 @@ namespace avoCADo.HUD
         { 
             get
             {
-                if (_mults.X > 0.0f) return "X";
-                if (_mults.Y > 0.0f) return "Y";
-                if (_mults.Z > 0.0f) return "Z";
-                return "Any/None";
+                var s = "";
+                if (_mults.X > 0.0f) s += "X";
+                if (_mults.Y > 0.0f) s += "Y";
+                if (_mults.Z > 0.0f) s += "Z";
+                if (s == "") s = "Any/None";
+                return s;
             }
         }
 
@@ -97,7 +99,14 @@ namespace avoCADo.HUD
                 if (e.KeyCode == System.Windows.Forms.Keys.T) TransformationType = TransformationType.Translation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.R) TransformationType = TransformationType.Rotation;
                 else if (e.KeyCode == System.Windows.Forms.Keys.S) TransformationType = TransformationType.Scale;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Escape) { TransformationType = TransformationType.None; _mults = Vector3.Zero; }
+                else if (e.KeyCode == System.Windows.Forms.Keys.Escape) 
+                {
+                    if (_mults.LengthSquared == 0.0f)
+                    {
+                        TransformationType = TransformationType.None; 
+                    }
+                    _mults = Vector3.Zero;
+                }
             }
             else
             {
@@ -106,9 +115,18 @@ namespace avoCADo.HUD
             }
             if (TransformationType != TransformationType.None)
             {
-                if (e.KeyCode == System.Windows.Forms.Keys.X) _mults = Vector3.UnitX;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
-                else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
+                if (TransformationType == TransformationType.Scale)
+                {
+                    if      (e.KeyCode == System.Windows.Forms.Keys.X) _mults.X = 1.0f;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults.Y = 1.0f;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults.Z = 1.0f;
+                }
+                else
+                {
+                    if      (e.KeyCode == System.Windows.Forms.Keys.X) _mults = Vector3.UnitX;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
+                }
             }
         }
 
@@ -227,10 +245,6 @@ namespace avoCADo.HUD
         {
             foreach (var node in _selectionManager.SelectedNodes)
             {
-                if (_mults.LengthSquared == 0.0f)
-                {
-                    diffVector = new Vector3(posDiff.X);
-                }
                 if (Mode == TransformationMode.Cursor)
                 {
                     node.Transform.ScaleAround(_cursor3D.Position, diffVector * (_scaleSensitivity / _control.Width));
