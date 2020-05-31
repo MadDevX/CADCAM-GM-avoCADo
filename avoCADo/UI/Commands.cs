@@ -114,6 +114,11 @@ namespace avoCADo
             e.CanExecute = NodeSelection.Manager.MainSelection == null;
         }
 
+        private void CreateBezierPatchC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = NodeSelection.Manager.MainSelection == null;
+        }
+
         private void CreatBezierPatchC0Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var dialog = new BezierPatchCreation();
@@ -123,6 +128,21 @@ namespace avoCADo
             {
                 hierarchy.CollapseHierarchy();
                 _nodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+            }
+        }
+
+        private void CreatBezierPatchC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new BezierPatchCreation();
+            dialog.HorizontalPatches = 3;
+            dialog.VerticalPatches = 3;
+            dialog.DialogTitle = "Create Bezier Patch C2";
+            var result = dialog.ShowDialog();
+
+            if (result.HasValue && result.Value == true)
+            {
+                hierarchy.CollapseHierarchy();
+                _nodeFactory.CreateBezierC2Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
             }
         }
 

@@ -19,6 +19,7 @@ namespace avoCADo
     /// </summary>
     public partial class BezierPatchCreation : Window
     {
+        public string DialogTitle { get; set; } = "Create Bezier Patch C0";
         public int HorizontalPatches { get; set; } = 2;
         public int VerticalPatches { get; set; } = 2;
 
