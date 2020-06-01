@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Camera\CameraModeManager.cs" />
     <Compile Include="ControlPointManagers\BezierC2PatchControlPointManager.cs" />
+    <Compile Include="HUD\TransformPositionWrapper.cs" />
     <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
@@ -223,6 +224,9 @@
     <Compile Include="Shaders\ShaderPaths.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
     <Compile Include="Utility\VBOUtility.cs" />
+    <Compile Include="Vector3View.xaml.cs">
+      <DependentUpon>Vector3View.xaml</DependentUpon>
+    </Compile>
     <Page Include="BezierGeneratorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -272,6 +276,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TransformView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vector3View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

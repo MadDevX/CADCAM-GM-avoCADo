@@ -97,7 +97,7 @@ namespace avoCADo
             _nodeImporter = new NodeImporter(_nodeFactory);
 
 
-            _window.cursor3dInfo.DataContext = _cursor;
+            _window.cursor3dInfo.Initialize(_cursor);
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
 

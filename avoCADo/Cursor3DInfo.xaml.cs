@@ -1,4 +1,5 @@
-﻿using System;
+﻿using avoCADo.HUD;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace avoCADo
     /// </summary>
     public partial class Cursor3DInfo : UserControl, IBindingUpdatable
     {
+        private Cursor3D _cursor;
         public Cursor3DInfo()
         {
             InitializeComponent();
@@ -28,7 +30,14 @@ namespace avoCADo
         public void UpdateBindings()
         {
             tbScreenPos.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-            tbWorldPos.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+            vec3ViewWorldPos.UpdateBindings();
+        }
+
+        public void Initialize(Cursor3D cursor)
+        {
+            _cursor = cursor;
+            DataContext = cursor;
+            vec3ViewWorldPos.DataContext = new TransformPositionWrapper(cursor.Transform);
         }
     }
 }

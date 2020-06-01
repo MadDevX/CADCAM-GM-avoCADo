@@ -12,13 +12,13 @@ namespace avoCADo
 {
     public class Cursor3D : IDisposable
     {
-        public Vector3 Position => _transform.Position;
+        public Vector3 Position => Transform.Position;
 
         public Vector2 ScreenPositionNDC
         {
             get
             {
-                return _transform.ScreenCoords(_camera);
+                return Transform.ScreenCoords(_camera);
             }
         }
 
@@ -39,7 +39,7 @@ namespace avoCADo
         private readonly IRenderLoop _renderLoop;
         private readonly Camera _camera;
         private readonly SelectionManager _selectionManager;
-        private readonly Transform _transform;
+        public Transform Transform { get; }
 
         public Cursor3D(GLControl control, ShaderWrapper shader, IRenderLoop renderLoop, Camera camera)
         {
@@ -47,7 +47,7 @@ namespace avoCADo
             _renderLoop = renderLoop;
             _camera = camera;
             _selectionManager = NodeSelection.Manager;
-            _transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
+            Transform = new Transform(Vector3.Zero, Vector3.Zero, Vector3.One * 0.2f);
             _gizmoRenderer = new GizmoRenderer(shader);
             Initialize();
         }
@@ -72,24 +72,24 @@ namespace avoCADo
                 {
                     if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
                     {
-                        _transform.Position = _camera.Target;
+                        Transform.Position = _camera.Target;
                     }
                     else
                     {
-                        _transform.Position = CalculateCenter();
+                        Transform.Position = CalculateCenter();
                     }
                 }
             }
             else
             {
-                if (e.KeyCode == System.Windows.Forms.Keys.F) { _transform.Position = _camera.Target; }
+                if (e.KeyCode == System.Windows.Forms.Keys.F) { Transform.Position = _camera.Target; }
             }
             if (e.KeyCode == System.Windows.Forms.Keys.G) _camera.Move(Position);
         }
 
         private void OnRender()
         {
-            _gizmoRenderer.Render(_camera, _transform.LocalModelMatrix, Matrix4.Identity);
+            _gizmoRenderer.Render(_camera, Transform.LocalModelMatrix, Matrix4.Identity);
         }
 
         private Vector3 CalculateCenter()

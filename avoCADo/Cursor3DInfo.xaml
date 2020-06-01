@@ -8,8 +8,15 @@
              d:DesignHeight="100" d:DesignWidth="200">
     <GroupBox Header="Cursor Info">
         <StackPanel>
-            <TextBlock x:Name="tbWorldPos" Text="{Binding Position, StringFormat='World Position: {0}'}"/>
-            <TextBlock x:Name="tbScreenPos" Text="{Binding ScreenPositionPixels, StringFormat='Screen Position: {0}'}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="World Position:" Margin="5"/>
+                <local:Vector3View x:Name="vec3ViewWorldPos" Grid.Column="1"/>
+            </Grid>
+            <TextBlock x:Name="tbScreenPos" Text="{Binding ScreenPositionPixels, StringFormat='Screen Position: {0}'}" Margin="5"/>
         </StackPanel>
     </GroupBox>
 </UserControl>
