@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class BezierGenerator : IMeshGenerator, IDependent<INode>
+    public class BezierGenerator : IMeshGenerator, ICircularDependent<INode>
     {
         public event Action OnParametersChanged;
 

@@ -8,7 +8,7 @@ namespace avoCADo
 {
     public class BezierC2PatchControlPointManager : BezierC0PatchControlPointManager
     {
-        public BezierC2PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode, IUpdateLoop loop) : base(nodeFactory, generator, parentNode, loop)
+        public BezierC2PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode) : base(nodeFactory, generator, parentNode)
         {
         }
 

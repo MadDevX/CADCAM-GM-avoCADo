@@ -15,7 +15,6 @@ namespace avoCADo
         private readonly NodeFactory _nodeFactory;
         private readonly BezierPatchGenerator _generator;
         private readonly INode _node;
-        private readonly IUpdateLoop _loop;
 
         private float _timer = 0.0f;
         private float _nextDelay = 0.0f;
@@ -23,18 +22,22 @@ namespace avoCADo
         private float _delayMaxDiffMin = 0.05f;
         private Random _rand = new Random();
 
-        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode, IUpdateLoop loop)
+        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode)
         {
             _nodeFactory = nodeFactory;
             _generator = generator;
             _node = parentNode;
-            _loop = loop;
-            _loop.OnUpdateLoop += OnUpdate;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            _node.PropertyChanged += HandleCPTransformChanged;
         }
 
         public void Dispose()
         {
-            _loop.OnUpdateLoop -= OnUpdate;
+            _node.PropertyChanged -= HandleCPTransformChanged;
             var allChildren = new List<INode>(_controlPointNodes);
             DisposeControlPointsBatch(allChildren);
             allChildren.Clear();
@@ -208,17 +211,12 @@ namespace avoCADo
 
         private void TrackControlPointsBatch(IList<INode> nodes)
         {
-            foreach(var node in nodes)
-            {
-                node.PropertyChanged += HandleCPTransformChanged;
-            }
             _node.AttachChildRange(nodes);
             _controlPointNodes.AddRange(nodes);
         }
 
         private void TrackControlPoint(INode node)
         {
-            node.PropertyChanged += HandleCPTransformChanged;
             _node.AttachChild(node);
             _controlPointNodes.Add(node);
         }
@@ -227,7 +225,6 @@ namespace avoCADo
         {
             foreach (var node in nodes)
             {
-                node.PropertyChanged -= HandleCPTransformChanged;
                 _controlPointNodes.Remove(node);
             }
             _node.DetachChildRange(nodes);
@@ -235,7 +232,6 @@ namespace avoCADo
 
         private void UntrackControlPoint(INode node)
         {
-            node.PropertyChanged -= HandleCPTransformChanged;
             _node.DetachChild(node);
             _controlPointNodes.Remove(node);
         }
@@ -277,17 +273,6 @@ namespace avoCADo
                             ((float)j / (height - 1)) * _generator.SurfaceHeight
                         );
                 }
-            }
-        }
-
-        private void OnUpdate(float deltaTime)
-        {
-            _timer += deltaTime;
-            if (_timer >= _nextDelay)
-            {
-                _timer = 0.0f;
-                _nextDelay = (float)_rand.NextDouble() * _delayMaxDiffMin + _delayMin;
-                ShouldUpdateData = true;
             }
         }
 

@@ -52,7 +52,7 @@ namespace avoCADo
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfGen = new BezierPatchGenerator(surface, this, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC0;
 
@@ -65,7 +65,7 @@ namespace avoCADo
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC2Patch();
-            var surfGen = new BezierPatchC2Generator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfGen = new BezierPatchC2Generator(surface, this, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BSplinePatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC2;
             

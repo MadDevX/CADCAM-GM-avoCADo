@@ -46,7 +46,7 @@ namespace avoCADo
         public ObservableCollection<INode> Children => _children;
         private WpfObservableRangeCollection<INode> _children = new WpfObservableRangeCollection<INode>();
 
-        private Dictionary<DependencyType, List<object>> _dependencies;
+        private Dictionary<DependencyType, List<IDependencyAdder>> _dependencies;
 
         public Matrix4 GlobalModelMatrix
         {
@@ -58,7 +58,7 @@ namespace avoCADo
 
         public Node(ITransform transform, IRenderer renderer, string name)
         {
-            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<object>>();
+            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<IDependencyAdder>>();
             Transform = transform;
             Transform.Node = this;
             Renderer = renderer;
@@ -155,7 +155,7 @@ namespace avoCADo
             DetachChild(node);
         }
 
-        public void AddDependency(DependencyType type, object dependant)
+        public void AddDependency(DependencyType type, IDependencyAdder dependant)
         {
             if(_dependencies.TryGetValue(type, out var dependencyList))
             {
@@ -167,7 +167,7 @@ namespace avoCADo
             }
         }
 
-        public void RemoveDependency(DependencyType type, object dependant)
+        public void RemoveDependency(DependencyType type, IDependencyAdder dependant)
         {
             if (_dependencies.TryGetValue(type, out var dependencyList))
             {
@@ -199,6 +199,11 @@ namespace avoCADo
         protected void InvokeOnDisposed()
         {
             OnDisposed?.Invoke(this);
+        }
+
+        public IList<IDependencyAdder> GetDependencies(DependencyType type)
+        {
+            return _dependencies[type];
         }
     }
 }

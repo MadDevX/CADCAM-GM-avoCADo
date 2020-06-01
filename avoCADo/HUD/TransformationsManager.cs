@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Architecture;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -60,6 +61,7 @@ namespace avoCADo.HUD
         private readonly Cursor3D _cursor3D;
         private readonly GLControl _control;
         private readonly Camera _camera;
+        private readonly DependencyAddersManager _dependencyAddersManager;
 
         private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
 
@@ -70,13 +72,13 @@ namespace avoCADo.HUD
         private Vector3 _mults = Vector3.Zero;
         private Point _currentInputBuffer = Point.Empty;
 
-        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera)
+        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, DependencyAddersManager dependencyAddersManager)
         {
             _selectionManager = NodeSelection.Manager;
             _cursor3D = cursor3D;
             _control = control;
             _camera = camera;
-
+            _dependencyAddersManager = dependencyAddersManager;
             Initialize();
         }
 
@@ -101,10 +103,7 @@ namespace avoCADo.HUD
                 else if (e.KeyCode == System.Windows.Forms.Keys.S) TransformationType = TransformationType.Scale;
                 else if (e.KeyCode == System.Windows.Forms.Keys.Escape) 
                 {
-                    if (_mults.LengthSquared == 0.0f)
-                    {
-                        TransformationType = TransformationType.None; 
-                    }
+                    TransformationType = TransformationType.None; 
                     _mults = Vector3.Zero;
                 }
             }
@@ -133,6 +132,9 @@ namespace avoCADo.HUD
         private void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Point posDiff = new Point(0, 0);
+
+            var notifyDependencyAdders = false;
+
             if (TransformationType != TransformationType.None)
             {
                 posDiff = new Point(e.Location.X - _prevPos.X, e.Location.Y - _prevPos.Y);
@@ -145,6 +147,7 @@ namespace avoCADo.HUD
                     TransformationType = TransformationType.None;
                     _mults = Vector3.Zero;
                 }
+                notifyDependencyAdders = true;
             }
             Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
             switch (TransformationType)
@@ -159,7 +162,13 @@ namespace avoCADo.HUD
                     HandleScale(diffVector, posDiff);
                     break;
             }
+
             _prevPos = e.Location;
+
+            if(notifyDependencyAdders)
+            {
+                _dependencyAddersManager.NotifyDependencyAdders();
+            }
         }
 
         #region Transformations Processing

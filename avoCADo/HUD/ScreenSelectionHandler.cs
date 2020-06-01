@@ -152,19 +152,19 @@ namespace avoCADo
                 {
                     if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
                 }
-                AddToSelection(nodesInsideRect, parent);
+                AddToSelection(nodesInsideRect, parent, ignoreGroupNodes: true);
             }
             else
             {
                 _selectionManager.ResetSelection();
                 if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
-                AddToSelection(nodesInsideRect, parent);
+                AddToSelection(nodesInsideRect, parent, ignoreGroupNodes: true);
             }
         }
 
-        private void AddToSelection(IList<INode> nodesToSelect, INode parent)
+        private void AddToSelection(IList<INode> nodesToSelect, INode parent, bool ignoreGroupNodes)
         {
-            _selectionManager.ToggleSelection(nodesToSelect);
+            _selectionManager.ToggleSelection(nodesToSelect, ignoreGroupNodes);
             //foreach (var node in nodesToSelect)
             //{
             //    //if (node is VirtualNode || node.Transform.Parent != parent) continue;

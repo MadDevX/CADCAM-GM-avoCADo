@@ -13,7 +13,7 @@ namespace avoCADo
         Cylinder
     }
 
-    public class BezierPatchGenerator : IMeshGenerator, IDependent<INode>
+    public class BezierPatchGenerator : IMeshGenerator, ICircularDependent<INode>
     {
 
         protected virtual DrawCallShaderType SurfaceDrawType { get; } = DrawCallShaderType.SurfaceBezier;
@@ -88,17 +88,15 @@ namespace avoCADo
         private PatchType _patchType = PatchType.Flat;
         private INode _node;
         private NodeFactory _nodeFactory;
-        private readonly IUpdateLoop _loop;
         private BezierC0PatchControlPointManager _ctrlPointManager;
 
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
         private Vector3 _defaultPosition;
 
-        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, IUpdateLoop loop, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
-            _loop = loop;
             _patchType = patchType;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
@@ -110,13 +108,13 @@ namespace avoCADo
         public void Initialize(INode node)
         {
             _node = node;
-            _ctrlPointManager = CreateCPManager(_nodeFactory, this, _node, _loop);
+            _ctrlPointManager = CreateCPManager(_nodeFactory, this, _node);
             Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
         }
 
-        protected virtual BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node, IUpdateLoop loop)
+        protected virtual BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node)
         {
-            return new BezierC0PatchControlPointManager(nodeFactory, generator, node, loop);
+            return new BezierC0PatchControlPointManager(nodeFactory, generator, node);
         }
 
         private void Initialize(Vector3 position, int horizontalPatches, int verticalPatches)

@@ -11,13 +11,13 @@ namespace avoCADo
     {
         protected override DrawCallShaderType SurfaceDrawType => DrawCallShaderType.SurfaceDeBoor;
 
-        public BezierPatchC2Generator(IBezierSurface surface, NodeFactory nodeFactory, IUpdateLoop loop, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1, float height = 1) : base(surface, nodeFactory, loop, patchType, position, horizontalPatches, verticalPatches, width, height)
+        public BezierPatchC2Generator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1, float height = 1) : base(surface, nodeFactory, patchType, position, horizontalPatches, verticalPatches, width, height)
         {
         }
 
-        protected override BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node, IUpdateLoop loop)
+        protected override BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node)
         {
-            return new BezierC2PatchControlPointManager(nodeFactory, generator, node, loop);
+            return new BezierC2PatchControlPointManager(nodeFactory, generator, node);
         }
 
         protected override int GetPatchOffset(int patch)

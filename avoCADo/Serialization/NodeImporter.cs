@@ -24,10 +24,10 @@ namespace avoCADo
             {
                 case SceneTorus torus:
                     var t = _nodeFactory.CreateTorus();
-                    var gen = t.Renderer.GetGenerator() as TorusGenerator;
-                    gen.XDivisions = int.Parse(torus.HorizontalSlices);
-                    gen.YDivisions = int.Parse(torus.VerticalSlices);
-                    var surf = gen.Surface as TorusSurface;
+                    var genT = t.Renderer.GetGenerator() as TorusGenerator;
+                    genT.XDivisions = int.Parse(torus.HorizontalSlices);
+                    genT.YDivisions = int.Parse(torus.VerticalSlices);
+                    var surf = genT.Surface as TorusSurface;
                     surf.MainRadius = (float)(torus.MajorRadius);
                     surf.TubeRadius = (float)(torus.MinorRadius);
                     t.Name = torus.Name;
@@ -42,6 +42,31 @@ namespace avoCADo
                     p.Transform.WorldPosition = new OpenTK.Vector3((float)(point.Position.X), (float)(point.Position.Y), (float)(point.Position.Z));
                     return p;
 
+                case SceneBezierC0 bc0:
+                    var nodeCC0 = _nodeFactory.CreateBezierGroup();
+                    nodeCC0.Name = bc0.Name;
+                    var genCC0 = nodeCC0.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                    genCC0.ShowEdges = bc0.ShowControlPolygon;
+                    return nodeCC0;
+
+                case SceneBezierC2 bc2:
+                    var nodeCC2 = _nodeFactory.CreateBSplineGroup();
+                    nodeCC2.Name = bc2.Name;
+                    var genCC2 = nodeCC2.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                    genCC2.ShowEdges = bc2.ShowBernsteinPolygon || bc2.ShowDeBoorPolygon; //TODO: divide de boor polygon representation
+                    genCC2.ShowVirtualControlPoints = bc2.ShowBernsteinPoints;
+                    return nodeCC2;
+
+                case SceneBezierInter ic:
+                    var nodeIC = _nodeFactory.CreateInterpolatingC2Group();
+                    nodeIC.Name = ic.Name;
+                    var genIC = nodeIC.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                    genIC.ShowEdges = ic.ShowControlPolygon;
+                    return nodeIC;
+
+                //case ScenePatchC0 pc0:
+                //    var type = pc0.WrapDirection != WrapType.None ? PatchType.Cylinder : PatchType.Flat;
+                //    var nodePC0 = _nodeFactory.CreateBezierC0Patch(type, pc0.RowSlices/3???)
                 default:
                     return null;
             }

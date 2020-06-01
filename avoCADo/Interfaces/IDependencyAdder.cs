@@ -9,5 +9,6 @@ namespace avoCADo
     public interface IDependencyAdder
     {
         DependencyType ChildrenDependencyType { get; }
+        void Notify();
     }
 }

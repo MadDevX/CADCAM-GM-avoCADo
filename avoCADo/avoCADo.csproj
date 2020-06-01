@@ -84,6 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Architecture\CompositionRoot.cs" />
+    <Compile Include="Architecture\DependencyAddersManager.cs" />
     <Compile Include="Architecture\RenderConstants.cs" />
     <Compile Include="Architecture\Registry.cs" />
     <Compile Include="Architecture\SceneManager.cs" />
@@ -128,7 +129,7 @@
     <Compile Include="Interfaces\IBindingUpdatable.cs" />
     <Compile Include="Interfaces\ICurve.cs" />
     <Compile Include="Interfaces\IDependencyCollector.cs" />
-    <Compile Include="Interfaces\IDependent.cs" />
+    <Compile Include="Interfaces\ICircularDependent.cs" />
     <Compile Include="Interfaces\IDependencyAdder.cs" />
     <Compile Include="Interfaces\ISurface.cs" />
     <Compile Include="MeshGenerators\BezierGeneratorGeometry.cs" />

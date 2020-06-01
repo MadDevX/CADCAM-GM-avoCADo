@@ -20,10 +20,11 @@ namespace avoCADo
 
     interface IDependencyCollector
     {
-        void AddDependency(DependencyType type, object dependant);
-        void RemoveDependency(DependencyType type, object dependant);
+        void AddDependency(DependencyType type, IDependencyAdder dependant);
+        void RemoveDependency(DependencyType type, IDependencyAdder dependant);
         bool HasDependency(DependencyType type);
-
         bool HasDependency();
+
+        IList<IDependencyAdder> GetDependencies(DependencyType type);
     }
 }

@@ -35,11 +35,14 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
-        public void ToggleSelection(IList<INode> nodes)
+        public void ToggleSelection(IList<INode> nodes, bool ignoreGroupNodes = false)
         {
             foreach(var node in nodes)
             {
-                ToggleSelectionInternal(node);
+                if(node.GroupNodeType == GroupNodeType.None)
+                { 
+                    ToggleSelectionInternal(node);
+                }
             }
             OnSelectionChanged?.Invoke();
         }

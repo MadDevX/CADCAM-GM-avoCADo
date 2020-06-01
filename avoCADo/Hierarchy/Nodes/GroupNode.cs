@@ -14,7 +14,7 @@ namespace avoCADo
     /// This node type only groups independent nodes. It does not have scene properties of its own, its only defined by children nodes that are assigned to it.
     /// Moreover, assigning child to GroupNode, does not alter node hierarchy in usual sense - it does not affect Parent node of assigned children.
     /// </summary>
-    public abstract class GroupNode<T> : INode, IObject, INotifyPropertyChanged, IDependencyAdder where T : IDependent<INode>
+    public abstract class GroupNode<T> : INode, IObject, INotifyPropertyChanged, IDependencyAdder where T : ICircularDependent<INode>
     {
         public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -172,6 +172,11 @@ namespace avoCADo
         public void Render(Camera camera, Matrix4 parentMatrix)
         {
             Renderer.Render(camera, Matrix4.Identity, Matrix4.Identity);
+        }
+
+        public void Notify()
+        {
+            PropertyChanged?.Invoke(this, _childrenChangedArgs);
         }
     }
 }
