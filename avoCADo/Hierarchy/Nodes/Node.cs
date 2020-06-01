@@ -20,7 +20,6 @@ namespace avoCADo
 
         public ObjectType ObjectType { get; set; }
         public GroupNodeType GroupNodeType => GroupNodeType.None;
-        public NodeType NodeType => NodeType.Point;
 
         public ITransform Transform { get; private set; }
         public IRenderer Renderer { get; private set; }

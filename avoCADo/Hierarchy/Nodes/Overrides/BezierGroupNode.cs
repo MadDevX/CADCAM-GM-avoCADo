@@ -11,7 +11,6 @@ namespace avoCADo
     public class BezierGroupNode : GroupNode<BezierGenerator>
     {
         public override GroupNodeType GroupNodeType => GroupNodeType.Attachable;
-        public override NodeType NodeType => NodeType.Curve;
         public BezierGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)
         {
         }

@@ -8,5 +8,6 @@
         <BitmapImage x:Key="iconCurve" UriSource="/Resources/icon_curve16.png"/>
         <BitmapImage x:Key="iconSurface" UriSource="/Resources/icon_surface16.png"/>
         <BitmapImage x:Key="iconScene" UriSource="/Resources/icon_scene16.png"/>
+        <BitmapImage x:Key="iconTorus" UriSource="/Resources/icon_torus16.png"/>
     </Application.Resources>
 </Application>

@@ -9,15 +9,6 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public enum NodeType
-    {
-        Point,
-        Curve,
-        Surface,
-        Scene,
-        Virtual
-    }
-
     public enum GroupNodeType
     {
         None,
@@ -27,10 +18,10 @@ namespace avoCADo
 
     public interface INode : IDisposable, INotifyPropertyChanged
     {
-        bool IsSelected { get; set; }
-        GroupNodeType GroupNodeType { get; }
-        NodeType NodeType { get; }
         event Action<INode> OnDisposed;
+        bool IsSelected { get; set; }
+        ObjectType ObjectType { get; }
+        GroupNodeType GroupNodeType { get; }
         string Name { get; set; }
         ITransform Transform { get; }
         IRenderer Renderer { get; }

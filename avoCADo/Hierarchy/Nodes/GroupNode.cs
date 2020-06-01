@@ -21,7 +21,6 @@ namespace avoCADo
         public event Action<INode> OnDisposed;
 
         public ObjectType ObjectType { get; set; }
-        public abstract NodeType NodeType { get; }
         public abstract GroupNodeType GroupNodeType { get; }
 
         /// <summary>

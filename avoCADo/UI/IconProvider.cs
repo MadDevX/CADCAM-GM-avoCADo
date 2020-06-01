@@ -16,18 +16,24 @@ namespace avoCADo
         public static ImageSource iconCurve = (BitmapImage)Application.Current.Resources["iconCurve"];
         public static ImageSource iconSurface = (BitmapImage)Application.Current.Resources["iconSurface"];
         public static ImageSource iconScene = (BitmapImage)Application.Current.Resources["iconScene"];
+        public static ImageSource iconTorus = (BitmapImage)Application.Current.Resources["iconTorus"];
 
-        public static ImageSource GetIcon(NodeType type)
+        public static ImageSource GetIcon(ObjectType type)
         {
             switch(type)
             {
-                case NodeType.Point:
+                case ObjectType.Point:
                     return iconPoint;
-                case NodeType.Curve:
+                case ObjectType.Torus:
+                    return iconTorus;
+                case ObjectType.BezierCurveC0:
+                case ObjectType.BezierCurveC2:
+                case ObjectType.InterpolatingCurve:
                     return iconCurve;
-                case NodeType.Surface:
+                case ObjectType.BezierPatchC0:
+                case ObjectType.BezierPatchC2:
                     return iconSurface;
-                case NodeType.Scene:
+                case ObjectType.Scene:
                     return iconScene;
                 default:
                     return iconScene;

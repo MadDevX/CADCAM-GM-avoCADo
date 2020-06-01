@@ -37,7 +37,7 @@ namespace avoCADo
             {
                 this.SetValue(NodeProperty, value);
                 DataContext = value;
-                nodeIcon.Source = IconProvider.GetIcon(value.NodeType);
+                nodeIcon.Source = IconProvider.GetIcon(value.ObjectType);
             }
         }
 
@@ -68,7 +68,7 @@ namespace avoCADo
         {
             if (Node != null)
             {
-                nodeIcon.Source = IconProvider.GetIcon(Node.NodeType);
+                nodeIcon.Source = IconProvider.GetIcon(Node.ObjectType);
             }
         }
 

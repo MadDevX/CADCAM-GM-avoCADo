@@ -11,7 +11,6 @@ namespace avoCADo
     class BezierPatchGroupNode : GroupNode<BezierPatchGenerator>
     {
         public override GroupNodeType GroupNodeType => GroupNodeType.Fixed;
-        public override NodeType NodeType => NodeType.Surface;
         public override DependencyType ChildrenDependencyType => DependencyType.Strong;
 
         public BezierPatchGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierPatchGenerator dependent, string name) : base(childrenSource, renderer, dependent, name)

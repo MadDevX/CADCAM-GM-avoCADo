@@ -185,7 +185,7 @@ namespace avoCADo
         {
             foreach (var node in sourceList)
             {
-                if (ignoreVirtualNodes && node.NodeType == NodeType.Virtual) continue;
+                if (ignoreVirtualNodes && node.ObjectType == ObjectType.VirtualPoint) continue;
                 if (selectionList.Count > 0 && node.Transform.ParentNode != selectionList[0].Transform.ParentNode) continue;
                 if (IsNodeInsideRect(node, rect))
                 {

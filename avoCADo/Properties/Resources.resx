@@ -148,4 +148,10 @@
   <data name="icon_surface16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_surface16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_torus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_torus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_torus16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_torus16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

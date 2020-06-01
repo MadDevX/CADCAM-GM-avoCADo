@@ -16,12 +16,9 @@ namespace avoCADo
     {
         public bool IsSelected { get; set; } = false;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
-        public NodeType NodeType => NodeType.Virtual;
-
+        public ObjectType ObjectType => ObjectType.VirtualPoint;
         public string Name { get; set; }
-
         public ITransform Transform { get; }
-
         public IRenderer Renderer { get; }
 
         public Matrix4 GlobalModelMatrix

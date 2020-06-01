@@ -16,7 +16,7 @@ namespace avoCADo
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
-        public NodeType NodeType => NodeType.Scene;
+        public ObjectType ObjectType => ObjectType.Scene;
 
         private string _name;
         public string Name

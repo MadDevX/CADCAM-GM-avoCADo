@@ -358,6 +358,12 @@
   <ItemGroup>
     <Resource Include="Resources\icon_scene16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_torus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_torus16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(ProjectDir)Shaders\GLSL\*.frag" "$(ProjectDir)$(OutDir)"
