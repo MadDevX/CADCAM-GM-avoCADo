@@ -145,9 +145,9 @@
     <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\Mesh.cs" />
-    <Compile Include="Rendering\ShaderWrappers\AbstractShaderWrapper.cs" />
+    <Compile Include="Shaders\ShaderWrappers\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BufferManagers\BackgroundManager.cs" />
-    <Compile Include="Rendering\ShaderWrappers\BufferShaderWrapper.cs" />
+    <Compile Include="Shaders\ShaderWrappers\BufferShaderWrapper.cs" />
     <Compile Include="Rendering\Renderers\ParametricObjectRenderer.cs" />
     <Compile Include="Rendering\Renderers\DummyRenderer.cs" />
     <Compile Include="Hierarchy\Transforms\DummyTransform.cs" />
@@ -169,14 +169,14 @@
     <Compile Include="Rendering\Renderers\LineRenderer.cs" />
     <Compile Include="Rendering\Renderers\MeshRenderer.cs" />
     <Compile Include="Rendering\Renderers\PointRenderer.cs" />
-    <Compile Include="Architecture\RenderLoop.cs" />
+    <Compile Include="Rendering\RenderLoop.cs" />
     <Compile Include="Rendering\Renderers\QuadOverlayRenderer.cs" />
     <Compile Include="Rendering\Renderers\RectangleSelectionRenderer.cs" />
-    <Compile Include="Rendering\ShaderBackgroundManager.cs" />
-    <Compile Include="Rendering\ShaderWrappers\ShaderWrapper.cs" />
-    <Compile Include="Rendering\SimpleRenderer.cs" />
-    <Compile Include="Rendering\ShaderWrappers\SimpleShaderWrapper.cs" />
-    <Compile Include="Rendering\ShaderWrappers\TesselationShaderWrapper.cs" />
+    <Compile Include="Shaders\ShaderBackgroundManager.cs" />
+    <Compile Include="Shaders\ShaderWrappers\ShaderWrapper.cs" />
+    <Compile Include="Rendering\Renderers\SimpleRenderer.cs" />
+    <Compile Include="Shaders\ShaderWrappers\SimpleShaderWrapper.cs" />
+    <Compile Include="Shaders\ShaderWrappers\TesselationShaderWrapper.cs" />
     <Compile Include="Rendering\TessellationManager.cs" />
     <Compile Include="Serialization\format_draft3.cs">
       <DependentUpon>format_draft3.xsd</DependentUpon>
@@ -192,8 +192,8 @@
     <Compile Include="TransformView.xaml.cs">
       <DependentUpon>TransformView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CommandDefinitions.cs" />
-    <Compile Include="UI\Commands.cs" />
+    <Compile Include="Actions\CommandDefinitions.cs" />
+    <Compile Include="Actions\Commands.cs" />
     <Compile Include="Architecture\NodeSelection.cs" />
     <Compile Include="UI\IconProvider.cs" />
     <Compile Include="UI\TorusGeneratorHandler.cs" />
@@ -205,12 +205,12 @@
     <Compile Include="Rendering\Renderers\Renderer.cs" />
     <Compile Include="Hierarchy\Nodes\Scene.cs" />
     <Compile Include="Rendering\BufferManagers\ScreenBufferManager.cs" />
-    <Compile Include="Rendering\Shader.cs" />
+    <Compile Include="Shaders\Shader.cs" />
     <Compile Include="MeshGenerators\TorusGenerator.cs" />
     <Compile Include="Hierarchy\Transforms\Transform.cs" />
     <Compile Include="Rendering\ViewportManager.cs" />
-    <Compile Include="UI\UtilityCommandDefinitions.cs" />
-    <Compile Include="UI\UtilityCommands.cs" />
+    <Compile Include="Actions\UtilityCommandDefinitions.cs" />
+    <Compile Include="Actions\UtilityCommands.cs" />
     <Compile Include="Utility\Coordinates.cs" />
     <Compile Include="Utility\CoordList.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
@@ -219,7 +219,7 @@
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\RangeObservableCollection.cs" />
     <Compile Include="Utility\SelectionManager.cs" />
-    <Compile Include="Utility\ShaderPaths.cs" />
+    <Compile Include="Shaders\ShaderPaths.cs" />
     <Compile Include="Utility\TreeViewExtension.cs" />
     <Compile Include="Utility\VBOUtility.cs" />
     <Page Include="BezierGeneratorView.xaml">
@@ -296,22 +296,22 @@
     <None Include="Serialization\format_draft3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Shaders\fs.frag" />
+    <None Include="Shaders\GLSL\fs.frag" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Shaders\fsQuad.frag" />
-    <None Include="Shaders\gsBezierC0.geom" />
-    <None Include="Shaders\simpleFs.frag" />
-    <None Include="Shaders\tc.tesc" />
-    <None Include="Shaders\teDeBoor.tese" />
-    <None Include="Shaders\teBezier.tese" />
-    <None Include="Shaders\simpleVs.vert" />
-    <None Include="Shaders\vs.vert" />
-    <None Include="Shaders\vsQuad.vert" />
+    <None Include="Shaders\GLSL\fsQuad.frag" />
+    <None Include="Shaders\GLSL\gsBezierC0.geom" />
+    <None Include="Shaders\GLSL\simpleFs.frag" />
+    <None Include="Shaders\GLSL\tc.tesc" />
+    <None Include="Shaders\GLSL\teDeBoor.tese" />
+    <None Include="Shaders\GLSL\teBezier.tese" />
+    <None Include="Shaders\GLSL\simpleVs.vert" />
+    <None Include="Shaders\GLSL\vs.vert" />
+    <None Include="Shaders\GLSL\vsQuad.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -360,10 +360,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)Shaders\*.frag" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)Shaders\*.vert" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)Shaders\*.geom" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)Shaders\*.tesc" "$(ProjectDir)$(OutDir)"
-copy "$(ProjectDir)Shaders\*.tese" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)Shaders\GLSL\*.frag" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\GLSL\*.vert" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\GLSL\*.geom" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\GLSL\*.tesc" "$(ProjectDir)$(OutDir)"
+copy "$(ProjectDir)Shaders\GLSL\*.tese" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

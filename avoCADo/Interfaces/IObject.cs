@@ -15,6 +15,8 @@ namespace avoCADo
         BezierCurveC2,
         BezierPatchC0,
         BezierPatchC2,
+        VirtualPoint,
+        Scene
     }
 
     public interface IObject
