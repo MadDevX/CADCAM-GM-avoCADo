@@ -64,9 +64,11 @@ namespace avoCADo.HUD
         private readonly DependencyAddersManager _dependencyAddersManager;
 
         private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
+        private float RotateMultiplier => (_rotateSensitivity / _control.Width);
+        private float ScaleMultiplier => (_scaleSensitivity / _control.Width);
 
         private Point _prevPos;
-        private float _rotateSensitivity = 5.0f;
+        private float _rotateSensitivity = (float)Math.PI * 1.0f;//5.0f;
         private float _translateSensitivity = 2.5f;
         private float _scaleSensitivity = 5.0f;
         private Vector3 _mults = Vector3.Zero;
@@ -149,16 +151,23 @@ namespace avoCADo.HUD
                 }
                 notifyDependencyAdders = true;
             }
-            Vector3 diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
+
+            Vector3 diffVector;
             switch (TransformationType)
             {
                 case TransformationType.Translation:
-                    HandleTranslation(posDiff);
+                    posDiff = BufferInput(posDiff, TranslateMultiplier);
+                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
+                    HandleTranslation(diffVector, posDiff);
                     break;
                 case TransformationType.Rotation:
+                    posDiff = BufferInput(posDiff, RotateMultiplier);
+                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
                     HandleRotation(diffVector);
                     break;
                 case TransformationType.Scale:
+                    posDiff = BufferInput(posDiff, ScaleMultiplier);
+                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
                     HandleScale(diffVector, posDiff);
                     break;
             }
@@ -172,11 +181,11 @@ namespace avoCADo.HUD
         }
 
         #region Transformations Processing
-        private Point BufferInput(Point posDiff)
+        private Point BufferInput(Point posDiff, float TransformationMultiplier)
         {
             if (SnapMode != SnapMode.None)
             {
-                var snapDiv = (int)(SnapValue / TranslateMultiplier);
+                var snapDiv = (int)(SnapValue / TransformationMultiplier);
                 _currentInputBuffer.X += posDiff.X;
                 _currentInputBuffer.Y += posDiff.Y;
                 Point snappedPosDiff = Point.Empty;
@@ -195,10 +204,9 @@ namespace avoCADo.HUD
             else return posDiff;
         }
 
-        private void HandleTranslation(Point posDiff)
+        private void HandleTranslation(Vector3 diffVector, Point posDiff)
         {
-            posDiff = BufferInput(posDiff);
-            var translationVectorAxis = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X) * TranslateMultiplier;
+            diffVector *= TranslateMultiplier;
             var translationVectorCamera = _camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier;
             if (SnapMode == SnapMode.SnapToGrid)
             {
@@ -206,7 +214,7 @@ namespace avoCADo.HUD
                 {
                     if (_mults.Length > 0.0f)
                     {
-                        obj.Transform.TranslateSnapped(translationVectorAxis, SnapValue);
+                        obj.Transform.TranslateSnapped(diffVector, SnapValue);
                     }
                     else
                     {
@@ -218,14 +226,14 @@ namespace avoCADo.HUD
             {
                 if(SnapMode == SnapMode.SnapValue)
                 {
-                    translationVectorAxis = translationVectorAxis.RoundToDivisionValue(SnapValue);
+                    diffVector = diffVector.RoundToDivisionValue(SnapValue);
                     translationVectorCamera = translationVectorCamera.RoundToDivisionValue(SnapValue);
                 }
                 foreach (var obj in _selectionManager.SelectedNodes)
                 {
                     if (_mults.Length > 0.0f)
                     {
-                        obj.Transform.Translate(translationVectorAxis);
+                        obj.Transform.Translate(diffVector);
                     }
                     else
                     {
@@ -237,30 +245,40 @@ namespace avoCADo.HUD
 
         private void HandleRotation(Vector3 diffVector)
         {
+            diffVector *= RotateMultiplier;
+            if (SnapMode == SnapMode.SnapValue)
+            {
+                diffVector = diffVector.RoundToDivisionValue(SnapValue, (float)Math.PI*0.5f);
+            }
             foreach (var node in _selectionManager.SelectedNodes)
             {
                 if (Mode == TransformationMode.Cursor)
                 {
-                    node.Transform.RotateAround(_cursor3D.Position, diffVector * (_rotateSensitivity / _control.Width));
+                    node.Transform.RotateAround(_cursor3D.Position, diffVector);
                 }
                 else
                 {
-                    node.Transform.RotateAround(node.Transform.Position, diffVector * (_rotateSensitivity / _control.Width));
+                    node.Transform.RotateAround(node.Transform.Position, diffVector);
                 }
             }
         }
 
         private void HandleScale(Vector3 diffVector, Point posDiff)
         {
+            diffVector *= ScaleMultiplier;
+            if (SnapMode == SnapMode.SnapValue)
+            {
+                diffVector = diffVector.RoundToDivisionValue(SnapValue);
+            }
             foreach (var node in _selectionManager.SelectedNodes)
             {
                 if (Mode == TransformationMode.Cursor)
                 {
-                    node.Transform.ScaleAround(_cursor3D.Position, diffVector * (_scaleSensitivity / _control.Width));
+                    node.Transform.ScaleAround(_cursor3D.Position, diffVector);
                 }
                 else
                 {
-                    node.Transform.Scale += diffVector * (_scaleSensitivity / _control.Width);
+                    node.Transform.Scale += diffVector;
                 }
             }
         }

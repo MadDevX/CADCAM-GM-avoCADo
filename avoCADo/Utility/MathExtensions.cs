@@ -60,5 +60,18 @@ namespace avoCADo
             moduloZ = moduloZ > 0.5f * divisionValue ? moduloZ - divisionValue : moduloZ;
             return newPos - new Vector3(moduloX, moduloY, moduloZ);
         }
+
+        public static Vector3 RoundToDivisionValue(this Vector3 v, float divisionValueRaw, float baseUnit = 1.0f)
+        {
+            var divisionValue = divisionValueRaw * baseUnit;
+            var newPos = v;
+            var moduloX = (newPos.X % divisionValue + divisionValue) % divisionValue;
+            moduloX = moduloX > 0.5f * divisionValue ? moduloX - divisionValue : moduloX;
+            var moduloY = (newPos.Y % divisionValue + divisionValue) % divisionValue;
+            moduloY = moduloY > 0.5f * divisionValue ? moduloY - divisionValue : moduloY;
+            var moduloZ = (newPos.Z % divisionValue + divisionValue) % divisionValue;
+            moduloZ = moduloZ > 0.5f * divisionValue ? moduloZ - divisionValue : moduloZ;
+            return newPos - new Vector3(moduloX, moduloY, moduloZ);
+        }
     }
 }

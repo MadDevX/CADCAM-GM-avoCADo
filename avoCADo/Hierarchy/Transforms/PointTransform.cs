@@ -9,8 +9,10 @@ namespace avoCADo
 {
     class PointTransform : Transform
     {
-        public override Quaternion Rotation { get => Quaternion.Identity; set { } }
-        public override Vector3 Scale { get => Vector3.One; set { } }
+        //Overrides seem like a good idea for points, but on the other hand, it takes away some of the flexibility (snapped scaling/rotation, proper nesting of nodes (in the future))
+
+        //public override Quaternion Rotation { get => Quaternion.Identity; set { } }
+        //public override Vector3 Scale { get => Vector3.One; set { } }
 
         public PointTransform(Vector3 position, Vector3 rotation, Vector3 scale) : base(position, rotation, scale)
         {

@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actions\InstructionBuffer.cs" />
     <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\DependencyAddersManager.cs" />
     <Compile Include="Architecture\RenderConstants.cs" />
