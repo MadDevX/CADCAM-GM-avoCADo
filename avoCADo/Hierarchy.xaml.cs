@@ -32,6 +32,7 @@ namespace avoCADo
 
         public void Initialize(Scene scene)
         {
+            treeView.Items.Clear();
             _scene = scene;
             treeView.Items.Add(_scene);
             _sceneItem = treeView.ItemContainerGenerator.ContainerFromItem(_scene) as TreeViewItem;

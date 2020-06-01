@@ -15,6 +15,7 @@ namespace avoCADo
     public class CompositionRoot : IDisposable
     {
         private NodeFactory _nodeFactory;
+        private NodeImporter _nodeImporter;
 
         private MainWindow _window;
         private GLControl _control;
@@ -30,7 +31,8 @@ namespace avoCADo
         private ShaderBackgroundManager _shaderBackgroundManager;
         private QuadOverlayRenderer _quadRenderer;
 
-        private Scene _scene;
+        private SceneManager _sceneManager;
+
         private Camera _camera;
         private CameraMovement _camMovement;
         private Grid _grid;
@@ -70,12 +72,12 @@ namespace avoCADo
             _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
-            _scene = new Scene("Main");
+            _sceneManager = new SceneManager(_window.hierarchy, new Scene("Main"));
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
-            _renderLoop = new RenderLoop(_control, _screenBufferManager, _scene, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
+            _renderLoop = new RenderLoop(_control, _screenBufferManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
 
-            _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _scene);
+            _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _sceneManager);
             _rectangularSelectionDrawer = new RectangularSelectionDrawer(_renderLoop, _screenSelectionManager, _shaderProvider.OverlayShader, _control);
 
             _grid = new Grid(_camera, _renderLoop, new LineRenderer(_shaderProvider.DefaultShader, new GridGenerator(200, 1, _camera)));
@@ -86,17 +88,18 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);
-            _nodeFactory = new NodeFactory(_scene, _cursor, _window, _shaderProvider);
-            _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _scene);
+            _nodeFactory = new NodeFactory(_sceneManager, _cursor, _window, _shaderProvider);
+            _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _sceneManager);
             Registry.VirtualNodeFactory = _virtualNodeFactory;
+            _nodeImporter = new NodeImporter(_nodeFactory);
 
-            _window.Initialize(_nodeFactory, _transformationsManager);
 
             _window.cursor3dInfo.DataContext = _cursor;
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
-            _window.hierarchy.Initialize(_scene);
-            TestSceneInitializer.SpawnTestObjects(_scene, _nodeFactory, _window, _shaderProvider);
+
+            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _sceneManager);
+            TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider);
         }
 
         public void Dispose()
@@ -113,7 +116,7 @@ namespace avoCADo
             _renderLoop.Dispose();
             _camMovement.Dispose();
             _camera.Dispose();
-            _scene.Dispose();
+            _sceneManager.Dispose();
             _quadRenderer.Dispose();
             _shaderBackgroundManager.Dispose();
             _shaderProvider.Dispose();

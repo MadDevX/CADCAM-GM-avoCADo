@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using System.Diagnostics;
 using System.Windows.Media;
 using avoCADo.HUD;
+using avoCADo.Serialization;
 
 namespace avoCADo
 {
@@ -31,7 +32,9 @@ namespace avoCADo
     public partial class MainWindow : Window, IUpdateLoop
     {
         private NodeFactory _nodeFactory;
+        private NodeImporter _nodeImporter;
         private TransformationsManager _transformationsManager;
+        private SceneManager _sceneManager;
 
         private GLControl _glControl;
         private CompositionRoot _compositionRoot;
@@ -53,12 +56,15 @@ namespace avoCADo
             //var v2 = new Vector3(4.0f, 5.0f, 6.0f);
             //var res = Vector3.Divide(v1, v2);
             //System.Windows.Forms.MessageBox.Show(res.ToString(), "res", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
-        public void Initialize(NodeFactory nodeFactory, TransformationsManager transformationsManager)
+        public void Initialize(NodeFactory nodeFactory, TransformationsManager transformationsManager, NodeImporter nodeImporter, SceneManager sceneManager)
         {
             _nodeFactory = nodeFactory;
             _transformationsManager = transformationsManager;
+            _nodeImporter = nodeImporter;
+            _sceneManager = sceneManager;
         }
 
         private void CreateGLControl()

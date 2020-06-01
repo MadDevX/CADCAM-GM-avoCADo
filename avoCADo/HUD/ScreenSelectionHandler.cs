@@ -34,15 +34,15 @@ namespace avoCADo
 
         private readonly GLControl _control;
         private readonly Camera _camera;
-        private readonly Scene _scene;
+        private readonly SceneManager _sceneManager;
         private readonly SelectionManager _selectionManager;
         private readonly float _selectionThreshold;
 
-        public ScreenSelectionHandler(GLControl control, Camera camera, Scene scene, float selectionThreshold = 0.2f)
+        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, float selectionThreshold = 0.2f)
         {
             _control = control;
             _camera = camera;
-            _scene = scene;
+            _sceneManager = sceneManager;
             _selectionManager = NodeSelection.Manager;
             _selectionThreshold = selectionThreshold;
             Initialize();
@@ -141,7 +141,7 @@ namespace avoCADo
             var selectionRect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
             var nodesInsideRect = Select(selectionRect);
 
-            INode parent = _scene;
+            INode parent = _sceneManager.CurrentScene;
             if(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
                 if(_selectionManager.MainSelection != null)
@@ -177,7 +177,7 @@ namespace avoCADo
         private List<INode> Select(Rectangle rect)
         {
             _selectionBuffer.Clear();
-            TraverseCollection(_scene.Children, rect, _selectionBuffer);
+            TraverseCollection(_sceneManager.CurrentScene.Children, rect, _selectionBuffer);
             return _selectionBuffer;
         }
 
@@ -204,8 +204,8 @@ namespace avoCADo
             INode curSelect = null;
             var mousePos = PixelToNDC(location, _control);
 
-            TraverseCollection(_scene.Children, mousePos, ref curDist, ref curSelect);
-            TraverseCollection(_scene.VirtualChildren, mousePos, ref curDist, ref curSelect);
+            TraverseCollection(_sceneManager.CurrentScene.Children, mousePos, ref curDist, ref curSelect);
+            TraverseCollection(_sceneManager.CurrentScene.VirtualChildren, mousePos, ref curDist, ref curSelect);
             return curSelect;
         }
 

@@ -103,5 +103,27 @@ namespace avoCADo
                     new KeyGesture(Key.Delete)
                 }
             );
+
+        public static readonly RoutedUICommand LoadScene = new RoutedUICommand
+            (
+                "Load Scene",
+                "LoadScene",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.F9)
+                }
+            );
+
+        public static readonly RoutedUICommand SaveScene = new RoutedUICommand
+            (
+                "Save Scene",
+                "SaveScene",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.F5)
+                }
+            );
     }
 }

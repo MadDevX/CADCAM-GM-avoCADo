@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://mini.pw.edu.pl/mg1"
+	xmlns:mg="http://mini.pw.edu.pl/mg1"
+	attributeFormDefault="unqualified"
+	elementFormDefault="qualified"
+	>  
+  <xs:element name="Scene">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice maxOccurs="unbounded">
+          
+          <xs:element name="Torus">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:all>
+                    <xs:element name="Position">
+                      <xs:complexType>
+                        <xs:attribute name="X" type="xs:decimal" use="required" />
+                        <xs:attribute name="Y" type="xs:decimal" use="required" />
+                        <xs:attribute name="Z" type="xs:decimal" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Rotation">
+                      <xs:complexType>
+                        <xs:attribute name="X" type="xs:decimal" use="required" />
+                        <xs:attribute name="Y" type="xs:decimal" use="required" />
+                        <xs:attribute name="Z" type="xs:decimal" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Scale">
+                      <xs:complexType>
+                        <xs:attribute name="X" type="xs:decimal" use="required" />
+                        <xs:attribute name="Y" type="xs:decimal" use="required" />
+                        <xs:attribute name="Z" type="xs:decimal" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                  <xs:attribute name="MajorRadius" type="xs:decimal" use="required" />
+                  <xs:attribute name="MinorRadius" type="xs:decimal" use="required" />
+                  <xs:attribute name="VerticalSlices" type="xs:integer" use="required" />
+                  <xs:attribute name="HorizontalSlices" type="xs:integer" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="Point">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Position">
+                      <xs:complexType>
+                        <xs:attribute name="X" type="xs:decimal" use="required" />
+                        <xs:attribute name="Y" type="xs:decimal" use="required" />
+                        <xs:attribute name="Z" type="xs:decimal" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="BezierC0">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Points">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="PointRef">
+                            <xs:complexType>
+                              <xs:attribute name="Name" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="ShowControlPolygon" type="xs:boolean" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="BezierC2">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Points">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="PointRef">
+                            <xs:complexType>
+                              <xs:attribute name="Name" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="ShowBernsteinPoints" type="xs:boolean" use="required" />
+                  <xs:attribute name="ShowBernsteinPolygon" type="xs:boolean" use="required" />
+                  <xs:attribute name="ShowDeBoorPolygon" type="xs:boolean" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="BezierInter">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Points">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="PointRef">
+                            <xs:complexType>
+                              <xs:attribute name="Name" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="ShowControlPolygon" type="xs:boolean" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="PatchC0">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Points">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="PointRef">
+                            <xs:complexType>
+                              <xs:attribute name="Name" type="xs:string" use="required" />
+                              <xs:attribute name="Row" type="xs:integer" use="required" />
+                              <xs:attribute name="Column" type="xs:integer" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="ShowControlPolygon" type="xs:boolean" use="required" />
+                  <xs:attribute name="WrapDirection" type="mg:WrapType" use="required" />
+                  <xs:attribute name="RowSlices" type="xs:integer" use="required" />
+                  <xs:attribute name="ColumnSlices" type="xs:integer" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+
+          <xs:element name="PatchC2">
+            <xs:complexType>
+              <xs:complexContent>
+                <xs:extension base="mg:NamedType">
+                  <xs:sequence>
+                    <xs:element name="Points">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="PointRef">
+                            <xs:complexType>
+                              <xs:attribute name="Name" type="xs:string" use="required" />
+                              <xs:attribute name="Row" type="xs:integer" use="required" />
+                              <xs:attribute name="Column" type="xs:integer" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="ShowControlPolygon" type="xs:boolean" use="required" />
+                  <xs:attribute name="WrapDirection" type="mg:WrapType" use="required" />
+                  <xs:attribute name="RowSlices" type="xs:integer" use="required" />
+                  <xs:attribute name="ColumnSlices" type="xs:integer" use="required" />
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+          </xs:element>
+        
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+
+    <!--keys-->
+    <xs:key name="NameKey">
+      <xs:selector xpath="*"/>
+      <xs:field xpath="@Name"/>
+    </xs:key>
+
+    <xs:keyref name="NameRef" refer="mg:NameKey">
+      <xs:selector xpath="*/mg:Points/mg:PointRef"/>
+      <xs:field xpath="@Name"/>
+    </xs:keyref>
+  </xs:element>
+
+  <xs:complexType name="NamedType">
+    <xs:attribute name="Name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:simpleType name="WrapType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Row"/>
+      <xs:enumeration value="Column"/>
+      <xs:enumeration value="None"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

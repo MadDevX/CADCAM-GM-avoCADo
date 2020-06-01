@@ -13,14 +13,14 @@ namespace avoCADo
 {
     public class NodeFactory : IDisposable
     {
-        private Scene _scene;
+        private SceneManager _sceneManager;
         private Cursor3D _cursor;
         private IUpdateLoop _loop;
         private ShaderProvider _shaderProvider;
 
-        public NodeFactory(Scene scene, Cursor3D cursor, IUpdateLoop loop, ShaderProvider shaderProvider)
+        public NodeFactory(SceneManager sceneManager, Cursor3D cursor, IUpdateLoop loop, ShaderProvider shaderProvider)
         {
-            _scene = scene;
+            _sceneManager = sceneManager;
             _cursor = cursor;
             _loop = loop;
             _shaderProvider = shaderProvider;
@@ -38,7 +38,7 @@ namespace avoCADo
 
         public INode CreateTorus(INode parent)
         {
-            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _sceneManager.CurrentScene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
             torusNode.ObjectType = ObjectType.Torus;
@@ -49,7 +49,7 @@ namespace avoCADo
 
         public INode CreateBezierC0Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
-            var parent = _scene;
+            var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
             var surfGen = new BezierPatchGenerator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
@@ -62,7 +62,7 @@ namespace avoCADo
 
         public INode CreateBezierC2Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
-            var parent = _scene;
+            var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC2Patch();
             var surfGen = new BezierPatchC2Generator(surface, this, _loop, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
@@ -80,14 +80,14 @@ namespace avoCADo
         public IList<INode> CreatePointsBatch(int count)
         {
             _pointsBuffer.Clear();
-            for (int i = 0; i < count; i++) _pointsBuffer.Add(CreatePointInstance(_scene));
-            _scene.AttachChildRange(_pointsBuffer);
+            for (int i = 0; i < count; i++) _pointsBuffer.Add(CreatePointInstance(_sceneManager.CurrentScene));
+            _sceneManager.CurrentScene.AttachChildRange(_pointsBuffer);
             return _pointsBuffer;
         }
 
         public INode CreatePoint(INode parent)
         {
-            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _scene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _sceneManager.CurrentScene;
             var pointNode = CreatePointInstance(parent);
             parent.AttachChild(pointNode);
             return pointNode;
@@ -123,7 +123,7 @@ namespace avoCADo
 
         public INode CreateBezierGroupCPURenderer() //OLD RENDERER
         {
-            var parent = _scene;
+            var parent = _sceneManager.CurrentScene;
             var source = new WpfObservableRangeCollection<INode>();
             ICurve curve = new BezierC0Curve(source);
 
@@ -167,7 +167,7 @@ namespace avoCADo
 
         private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
         {
-            var parent = _scene;
+            var parent = _sceneManager.CurrentScene;
             var source = new WpfObservableRangeCollection<INode>();
             ICurve curve = CreateCurve<T>(source);
 

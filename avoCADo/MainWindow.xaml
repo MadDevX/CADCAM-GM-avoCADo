@@ -9,6 +9,9 @@
         KeyDown="Window_KeyDown"
         Height="768" Width="1280" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
+        <CommandBinding Command="local:CommandDefinitions.LoadScene" CanExecute="LoadSceneCmd_CanExecute" Executed="LoadSceneCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.SaveScene" CanExecute="SaveSceneCmd_CanExecute" Executed="SaveSceneCmd_Executed"/>
+
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
@@ -31,8 +34,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Height="23">
-                <MenuItem Header="Save scene"/>
-                <MenuItem Header="Load scene"/>
+                <MenuItem Command="local:CommandDefinitions.SaveScene"/>
+                <MenuItem Command="local:CommandDefinitions.LoadScene"/>
             </MenuItem>
             <MenuItem Header="Create">
                 <MenuItem Command="local:CommandDefinitions.Torus"/>

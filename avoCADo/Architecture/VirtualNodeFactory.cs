@@ -11,20 +11,20 @@ namespace avoCADo
     public class VirtualNodeFactory
     {
         private ShaderWrapper _shader;
-        private Scene _scene;
+        private SceneManager _sceneManager;
 
-        public INode DefaultParent => _scene;
+        public INode DefaultParent => _sceneManager.CurrentScene;
 
-        public VirtualNodeFactory(ShaderWrapper shader, Scene scene)
+        public VirtualNodeFactory(ShaderWrapper shader, SceneManager sceneManager)
         {
             _shader = shader;
-            _scene = scene;
+            _sceneManager = sceneManager;
         }
 
         public INode CreateVirtualPoint(Vector3 position)
         {
             var pointNode = new VirtualNode(new Transform(position, Quaternion.Identity, Vector3.One), new PointRenderer(_shader, Color4.Aqua, Color4.Aquamarine));
-            _scene.AttachChild(pointNode);
+            _sceneManager.CurrentScene.AttachChild(pointNode);
             return pointNode;
         }
 

@@ -86,6 +86,7 @@
     <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\RenderConstants.cs" />
     <Compile Include="Architecture\Registry.cs" />
+    <Compile Include="Architecture\SceneManager.cs" />
     <Compile Include="Architecture\ShaderProvider.cs" />
     <Compile Include="Architecture\VirtualNodeFactory.cs" />
     <Compile Include="BezierGeneratorView.xaml.cs">
@@ -176,6 +177,11 @@
     <Compile Include="Rendering\ShaderWrappers\SimpleShaderWrapper.cs" />
     <Compile Include="Rendering\ShaderWrappers\TesselationShaderWrapper.cs" />
     <Compile Include="Rendering\TessellationManager.cs" />
+    <Compile Include="Serialization\format_draft3.cs">
+      <DependentUpon>format_draft3.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Serialization\NodeImporter.cs" />
+    <Compile Include="Serialization\SceneDeserializer.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>
@@ -286,6 +292,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Serialization\format_draft3.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Shaders\fs.frag" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />

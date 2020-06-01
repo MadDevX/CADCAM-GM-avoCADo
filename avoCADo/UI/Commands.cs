@@ -1,10 +1,12 @@
-﻿using OpenTK;
+﻿using avoCADo.Serialization;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace avoCADo
@@ -163,7 +165,7 @@ namespace avoCADo
             }
             else
             {
-                MessageBox.Show("null param");
+                System.Windows.Forms.MessageBox.Show("null param");
             }
         }
 
@@ -185,6 +187,42 @@ namespace avoCADo
                 }
             }
             
+        }
+
+        private void LoadSceneCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void LoadSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
+            if (ofd.FileName != "")
+            {
+                var result = SceneDeserializer.Deserialize(ofd.FileName);
+                var prevScene = _sceneManager.CreateNew(ofd.FileName);
+                SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
+                prevScene.Dispose();
+            }
+        }
+
+        private void SaveSceneCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void SaveSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //OpenFileDialog ofd = new OpenFileDialog();
+            //ofd.ShowDialog();
+            //if (ofd.FileName != "")
+            //{
+            //    var result = SceneDeserializer.Deserialize(ofd.FileName);
+            //    var newScene = SceneDeserializer.ImportScene(result, _nodeImporter, ofd.FileName);
+            //    var prevScene = _sceneManager.SetScene(newScene);
+            //    prevScene.Dispose();
+            //}
         }
 
         private bool CanDelete(object parameter)

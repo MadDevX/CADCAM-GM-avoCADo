@@ -14,17 +14,17 @@ namespace avoCADo
 
         private GLControl _glControl;
         private ScreenBufferManager _screenBufferManager;
-        private Scene _scene;
+        private SceneManager _sceneManager;
         private Camera _camera;
         private QuadOverlayRenderer _quadOverlayRenderer;
         private FramebufferManager _framebufferManager;
         private ShaderProvider _shaderProvider;
 
-        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, Scene scene, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer, ShaderProvider shaderProvider)
+        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, SceneManager sceneManager, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer, ShaderProvider shaderProvider)
         {
             _glControl = glControl;
             _screenBufferManager = screenBufferManager;
-            _scene = scene;
+            _sceneManager = sceneManager;
             _camera = camera;
             _quadOverlayRenderer = quadRenderer;
             _framebufferManager = framebufferManager;
@@ -61,7 +61,7 @@ namespace avoCADo
                 _framebufferManager.SetFramebuffer(i);
                 _shaderProvider.UpdateShadersCameraMatrices(_camera);
                 OnRenderLoop?.Invoke();
-                _scene.Render(_camera);
+                _sceneManager.CurrentScene.Render(_camera);
             }
 
             _quadOverlayRenderer.Render();
