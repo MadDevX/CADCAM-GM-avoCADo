@@ -9,6 +9,8 @@
         KeyDown="Window_KeyDown"
         Height="768" Width="1280" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
+        <CommandBinding Command="local:UtilityCommandDefinitions.Undo" CanExecute="Undo_CanExecute" Executed="Undo_Executed"/>
+
         <CommandBinding Command="local:CommandDefinitions.LoadScene" CanExecute="LoadSceneCmd_CanExecute" Executed="LoadSceneCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.SaveScene" CanExecute="SaveSceneCmd_CanExecute" Executed="SaveSceneCmd_Executed"/>
 

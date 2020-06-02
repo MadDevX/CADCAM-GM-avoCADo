@@ -11,6 +11,16 @@ namespace avoCADo
 {
     public partial class MainWindow
     {
+        private void Undo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void Undo_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _instructionBuffer.Undo();
+        }
+
         private void LocalCursorMode_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;

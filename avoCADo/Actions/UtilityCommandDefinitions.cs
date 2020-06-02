@@ -9,6 +9,16 @@ namespace avoCADo
 {
     public static class UtilityCommandDefinitions
     {
+        public static readonly RoutedUICommand Undo = new RoutedUICommand
+            (
+                "Undo",
+                "Undo",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.Z, ModifierKeys.Control)
+                }
+            );
         public static readonly RoutedUICommand LocalMode = new RoutedUICommand
             (
                 "Local Transformation Mode",

@@ -12,8 +12,10 @@ namespace avoCADo
 
         public void IssueInstruction<TInstructionParameters>(IInstruction<TInstructionParameters> instruction, TInstructionParameters parameters)
         {
-            instruction.Execute(parameters);
-            _issuedInstructions.Add(instruction);
+            if (instruction.Execute(parameters))
+            {
+                _issuedInstructions.Add(instruction);
+            }
         }
 
         public void Undo()

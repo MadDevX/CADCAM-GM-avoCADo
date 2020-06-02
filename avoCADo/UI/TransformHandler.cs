@@ -38,7 +38,7 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            if (_selectionManager.MainSelection != null)
+            if (_selectionManager.MainSelection != null && _selectionManager.SelectedNodes.Count == 1)
             {
                 if (_transformView.Visibility != Visibility.Visible) _transformView.Visibility = Visibility.Visible;
                 _transformView.Transform = _selectionManager.MainSelection.Transform;

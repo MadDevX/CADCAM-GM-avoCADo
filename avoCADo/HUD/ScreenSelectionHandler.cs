@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Actions;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,16 +36,24 @@ namespace avoCADo
         private readonly GLControl _control;
         private readonly Camera _camera;
         private readonly SceneManager _sceneManager;
+        private readonly InstructionBuffer _instructionBuffer;
         private readonly ISelectionManager _selectionManager;
         private readonly float _selectionThreshold;
 
-        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, float selectionThreshold = 0.2f)
+        /// <summary>
+        /// Usage: replace element at index [0]
+        /// </summary>
+        private IList<INode> _singularSelectionBuffer = new List<INode>(1);
+
+        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, InstructionBuffer instructionBuffer, float selectionThreshold = 0.2f)
         {
             _control = control;
             _camera = camera;
             _sceneManager = sceneManager;
+            _instructionBuffer = instructionBuffer;
             _selectionManager = NodeSelection.Manager;
             _selectionThreshold = selectionThreshold;
+            _singularSelectionBuffer.Add(null);
             Initialize();
         }
 
@@ -105,17 +114,23 @@ namespace avoCADo
         private void SingleSelection(MouseEventArgs e)
         {
             var node = Select(e.Location);
+            _singularSelectionBuffer[0] = node;
             if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
                 if (node != null)
                 {
                     if (node is VirtualNode || _selectionManager.MainSelection is VirtualNode)
                     {
-                        _selectionManager.Select(node);
+                        ///_selectionManager.Select(node);
+                        _instructionBuffer.IssueInstruction(
+                            new SelectionChangedInstruction(),
+                            new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Select));
                     }
                     else
                     {
-                        _selectionManager.ToggleSelection(node);
+                        _instructionBuffer.IssueInstruction(
+                            new SelectionChangedInstruction(),
+                            new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.ToggleSelect));
                     }
                 }
             }
@@ -123,11 +138,15 @@ namespace avoCADo
             {
                 if (node != null)
                 {
-                    _selectionManager.Select(node);
+                    _instructionBuffer.IssueInstruction(
+                               new SelectionChangedInstruction(),
+                               new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Select));
                 }
                 else
                 {
-                    _selectionManager.ResetSelection();
+                    _instructionBuffer.IssueInstruction(
+                            new SelectionChangedInstruction(),
+                            new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Reset));
                 }
             }
         }
@@ -144,11 +163,15 @@ namespace avoCADo
             INode parent = _sceneManager.CurrentScene;
             if(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
-                _selectionManager.ToggleSelection(nodesInsideRect, ignoreGroupNodes: true);
+                _instructionBuffer.IssueInstruction(
+                    new SelectionChangedInstruction(),
+                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.ToggleSelect, true));
             }
             else
             {
-                _selectionManager.Select(nodesInsideRect, ignoreGroupNodes: true);
+                _instructionBuffer.IssueInstruction(
+                    new SelectionChangedInstruction(),
+                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.Select, true));
             }
         }
 
