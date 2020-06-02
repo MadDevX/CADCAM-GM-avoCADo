@@ -40,7 +40,7 @@ namespace avoCADo
         {
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _sceneManager.CurrentScene;
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new MeshRenderer(_shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
             torusNode.ObjectType = ObjectType.Torus;
 
             parent.AttachChild(torusNode);
