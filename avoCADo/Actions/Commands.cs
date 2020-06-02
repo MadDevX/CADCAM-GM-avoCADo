@@ -1,4 +1,5 @@
-﻿using avoCADo.Serialization;
+﻿using avoCADo.Actions;
+using avoCADo.Serialization;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -40,8 +41,8 @@ namespace avoCADo
         private void CreateTorusCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) _nodeFactory.CreateTorus();
-            else _nodeFactory.CreateTorus(parent);
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>
+                (new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.Torus, parent));
         }
 
         private void CreatePointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -68,21 +69,13 @@ namespace avoCADo
         private void CreatePointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var parent = e.Parameter as INode;
-            if (parent == null) _nodeFactory.CreatePoint();
-            else _nodeFactory.CreatePoint(parent);
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>
+                (new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.Point, parent));
         }
 
         private void CreateBezierCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            foreach(var node in NodeSelection.Manager.SelectedNodes)
-            {
-                if (node.Renderer is PointRenderer == false)
-                {
-                    e.CanExecute = false;
-                    return;
-                }
-            }
-            e.CanExecute = true;
+            e.CanExecute = PointsOnlySelected();
         }
 
         private void CreateBSplineCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -93,12 +86,14 @@ namespace avoCADo
         private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             //_nodeFactory.CreateBezierGroupCPURenderer();
-            _nodeFactory.CreateBezierGroup();
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC0, null));
         }
 
         private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _nodeFactory.CreateBSplineGroup();
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC2, null));
         }
 
         private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -108,7 +103,8 @@ namespace avoCADo
 
         private void CreateInterpolatingC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _nodeFactory.CreateInterpolatingC2Group();
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.InterpolatingCurve, null));
         }
 
         private void CreateBezierPatchC0Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -129,7 +125,9 @@ namespace avoCADo
             if (result.HasValue && result.Value == true)
             {
                 hierarchy.CollapseHierarchy();
-                _nodeFactory.CreateBezierC0Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+                var parameters = new PatchParameters(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+                _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                    new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierPatchC0, parameters));
             }
         }
 
@@ -144,7 +142,9 @@ namespace avoCADo
             if (result.HasValue && result.Value == true)
             {
                 hierarchy.CollapseHierarchy();
-                _nodeFactory.CreateBezierC2Patch(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+                var parameters = new PatchParameters(dialog.PatchType, dialog.HorizontalPatches, dialog.VerticalPatches, dialog.SurfaceWidth, dialog.SurfaceHeight);
+                _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                    new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierPatchC2, parameters));
             }
         }
 

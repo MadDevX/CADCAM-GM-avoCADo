@@ -9,7 +9,7 @@ namespace avoCADo.Actions
     public class SelectionChangedInstruction : Instruction<SelectionChangedInstruction.Parameters>
     {
         private List<INode> _previousSelection = new List<INode>();
-        private Parameters _instructionParameters;
+        private Parameters _parameters;
         private ISelectionManager _manager;
 
         public override bool Execute(Parameters parameters)
@@ -41,7 +41,7 @@ namespace avoCADo.Actions
         private void SaveData(Parameters parameters)
         {
             _manager = NodeSelection.Manager;
-            _instructionParameters = parameters;
+            _parameters = parameters;
             _previousSelection.AddRange(_manager.SelectedNodes);
         }
 

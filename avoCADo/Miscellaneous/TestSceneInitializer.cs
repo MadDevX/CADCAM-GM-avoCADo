@@ -51,7 +51,7 @@ namespace avoCADo
             //surfGen.SurfaceHeight = 2;
             //surfGen.HorizontalPatches = 2;
             //surfGen.VerticalPatches = 2;
-            nodeFactory.CreateBezierC2Patch(PatchType.Cylinder, 3, 3, 1.0f, 1.0f);
+            nodeFactory.CreateBezierPatchC2(new PatchParameters(PatchType.Cylinder, 3, 3, 1.0f, 1.0f));
         }
 
     }

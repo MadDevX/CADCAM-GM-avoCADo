@@ -1,4 +1,5 @@
-﻿using System;
+﻿using avoCADo.Actions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,9 @@ namespace avoCADo
     {
         private List<IInstructionEntry> _issuedInstructions = new List<IInstructionEntry>();
 
-        public void IssueInstruction<TInstructionParameters>(IInstruction<TInstructionParameters> instruction, TInstructionParameters parameters)
+        public void IssueInstruction<TInstruction, TParameters>(TParameters parameters) where TInstruction : Instruction<TParameters>, new()
         {
+            var instruction = new TInstruction();
             if (instruction.Execute(parameters))
             {
                 _issuedInstructions.Add(instruction);

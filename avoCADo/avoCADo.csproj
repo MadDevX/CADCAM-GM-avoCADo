@@ -85,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="Actions\Instructions\Instruction.cs" />
     <Compile Include="Actions\Instructions\InstructionBuffer.cs" />
+    <Compile Include="Actions\Instructions\NodeCreatedInstruction.cs" />
     <Compile Include="Actions\Instructions\SelectionChangedInstruction.cs" />
     <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\DependencyAddersManager.cs" />

@@ -122,14 +122,12 @@ namespace avoCADo
                     if (node is VirtualNode || _selectionManager.MainSelection is VirtualNode)
                     {
                         ///_selectionManager.Select(node);
-                        _instructionBuffer.IssueInstruction(
-                            new SelectionChangedInstruction(),
+                        _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                             new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Select));
                     }
                     else
                     {
-                        _instructionBuffer.IssueInstruction(
-                            new SelectionChangedInstruction(),
+                        _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                             new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.ToggleSelect));
                     }
                 }
@@ -138,14 +136,12 @@ namespace avoCADo
             {
                 if (node != null)
                 {
-                    _instructionBuffer.IssueInstruction(
-                               new SelectionChangedInstruction(),
+                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                                new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Select));
                 }
                 else
                 {
-                    _instructionBuffer.IssueInstruction(
-                            new SelectionChangedInstruction(),
+                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                             new SelectionChangedInstruction.Parameters(_singularSelectionBuffer, SelectionChangedInstruction.OperationType.Reset));
                 }
             }
@@ -163,14 +159,12 @@ namespace avoCADo
             INode parent = _sceneManager.CurrentScene;
             if(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
-                _instructionBuffer.IssueInstruction(
-                    new SelectionChangedInstruction(),
+                _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                     new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.ToggleSelect, true));
             }
             else
             {
-                _instructionBuffer.IssueInstruction(
-                    new SelectionChangedInstruction(),
+                _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
                     new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.Select, true));
             }
         }

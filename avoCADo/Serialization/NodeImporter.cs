@@ -43,14 +43,14 @@ namespace avoCADo
                     return p;
 
                 case SceneBezierC0 bc0:
-                    var nodeCC0 = _nodeFactory.CreateBezierGroup();
+                    var nodeCC0 = _nodeFactory.CreateBezierCurveC0();
                     nodeCC0.Name = bc0.Name;
                     var genCC0 = nodeCC0.Renderer.GetGenerator() as BezierGeneratorGeometry;
                     genCC0.ShowEdges = bc0.ShowControlPolygon;
                     return nodeCC0;
 
                 case SceneBezierC2 bc2:
-                    var nodeCC2 = _nodeFactory.CreateBSplineGroup();
+                    var nodeCC2 = _nodeFactory.CreateBezierCurveC2();
                     nodeCC2.Name = bc2.Name;
                     var genCC2 = nodeCC2.Renderer.GetGenerator() as BezierGeneratorGeometry;
                     genCC2.ShowEdges = bc2.ShowBernsteinPolygon || bc2.ShowDeBoorPolygon; //TODO: divide de boor polygon representation
@@ -58,7 +58,7 @@ namespace avoCADo
                     return nodeCC2;
 
                 case SceneBezierInter ic:
-                    var nodeIC = _nodeFactory.CreateInterpolatingC2Group();
+                    var nodeIC = _nodeFactory.CreateInterpolatingCurve();
                     nodeIC.Name = ic.Name;
                     var genIC = nodeIC.Renderer.GetGenerator() as BezierGeneratorGeometry;
                     genIC.ShowEdges = ic.ShowControlPolygon;

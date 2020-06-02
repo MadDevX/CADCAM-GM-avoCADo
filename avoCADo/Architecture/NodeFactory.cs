@@ -11,6 +11,24 @@ using System.Windows.Data;
 
 namespace avoCADo
 {
+    public struct PatchParameters
+    {
+        public PatchType patchType;
+        public int horizontalPatches;// = 1
+        public int verticalPatches;// = 1 
+        public float width;// = 1.0f
+        public float height;// = 1.0f
+
+        public PatchParameters(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        {
+            this.patchType = patchType;
+            this.horizontalPatches = horizontalPatches;
+            this.verticalPatches = verticalPatches;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
     public class NodeFactory : IDisposable
     {
         private SceneManager _sceneManager;
@@ -24,6 +42,29 @@ namespace avoCADo
             _cursor = cursor;
             _loop = loop;
             _shaderProvider = shaderProvider;
+        }
+
+        public INode CreateObject(ObjectType type, object parameters)
+        {
+            switch (type)
+            {
+                case ObjectType.Point:
+                    return CreatePoint((INode)parameters);
+                case ObjectType.Torus:
+                    return CreateTorus((INode)parameters);
+                case ObjectType.BezierCurveC0:
+                    return CreateBezierCurveC0();
+                case ObjectType.BezierCurveC2:
+                    return CreateBezierCurveC2();
+                case ObjectType.InterpolatingCurve:
+                    return CreateInterpolatingCurve();
+                case ObjectType.BezierPatchC0:
+                    return CreateBezierPatchC0((PatchParameters)parameters);
+                case ObjectType.BezierPatchC2:
+                    return CreateBezierPatchC2((PatchParameters)parameters);
+                default:
+                    return null;
+            }
         }
 
         public INode CreateTorus()
@@ -47,12 +88,12 @@ namespace avoCADo
             return torusNode;
         }
 
-        public INode CreateBezierC0Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public INode CreateBezierPatchC0(PatchParameters parameters)
         {
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, this, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfGen = new BezierPatchGenerator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC0;
 
@@ -60,12 +101,12 @@ namespace avoCADo
             return surfNode;
         }
 
-        public INode CreateBezierC2Patch(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public INode CreateBezierPatchC2(PatchParameters parameters)
         {
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC2Patch();
-            var surfGen = new BezierPatchC2Generator(surface, this, patchType, _cursor.Position, horizontalPatches, verticalPatches, width, height);
+            var surfGen = new BezierPatchC2Generator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BSplinePatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC2;
             
@@ -144,21 +185,21 @@ namespace avoCADo
             return bezierGroup;
         }
 
-        public INode CreateBezierGroup() 
+        public INode CreateBezierCurveC0() 
         { 
             var groupNode = CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve");
             groupNode.ObjectType = ObjectType.BezierCurveC0;
             return groupNode;
         }
 
-        public INode CreateBSplineGroup()
+        public INode CreateBezierCurveC2()
         {
             var groupNode = CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve");
             groupNode.ObjectType = ObjectType.BezierCurveC2;
             return groupNode;
         }
 
-        public INode CreateInterpolatingC2Group()
+        public INode CreateInterpolatingCurve()
         {
             var groupNode = CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve");
             groupNode.ObjectType = ObjectType.InterpolatingCurve;
