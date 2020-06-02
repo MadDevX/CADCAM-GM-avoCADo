@@ -80,7 +80,7 @@ namespace avoCADo
 
         private bool _isInitialized = false;
 
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
 
         public BezierGeneratorGeometry(ICurve curve)
         {

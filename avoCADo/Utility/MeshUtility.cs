@@ -13,6 +13,10 @@ namespace avoCADo.Utility
     public static class MeshUtility
     {
         public static Mesh PointMesh { get; private set; }
+
+        /// <summary>
+        /// Represents currently bound mesh.
+        /// </summary>
         public static Mesh BoundMesh { get; set; } = null;
 
         public static void Initialize()

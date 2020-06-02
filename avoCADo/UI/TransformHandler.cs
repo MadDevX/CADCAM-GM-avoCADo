@@ -11,7 +11,7 @@ namespace avoCADo
     {
         private TransformView _transformView;
         private IUpdateLoop _updateLoop;
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
         private float _refreshDelay;
         private float _timer;
 

@@ -57,7 +57,7 @@ namespace avoCADo.HUD
             }
         }
 
-        private readonly SelectionManager _selectionManager;
+        private readonly ISelectionManager _selectionManager;
         private readonly Cursor3D _cursor3D;
         private readonly GLControl _control;
         private readonly Camera _camera;

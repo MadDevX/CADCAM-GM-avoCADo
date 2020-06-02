@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class SelectionManager
+    public class SelectionManager : ISelectionManager
     {
         public event Action OnSelectionChanged;
 
@@ -14,7 +14,7 @@ namespace avoCADo
 
         public INode MainSelection { get; private set; } = null;
 
-        private List<INode> _selectedNodes;
+        private readonly List<INode> _selectedNodes;
 
         public SelectionManager()
         {
@@ -22,6 +22,10 @@ namespace avoCADo
             SelectedNodes = _selectedNodes.AsReadOnly();
         }
 
+        /// <summary>
+        /// Deselects all selected nodes. Returns buffer containing all previously selected nodes.
+        /// </summary>
+        /// <returns></returns>
         public void ResetSelection()
         {
             ClearList();
@@ -35,6 +39,18 @@ namespace avoCADo
             OnSelectionChanged?.Invoke();
         }
 
+        public void ToggleSelection(INode node)
+        {
+            ToggleSelectionInternal(node);
+            OnSelectionChanged?.Invoke();
+        }
+
+        public void Select(IList<INode> nodes, bool ignoreGroupNodes = false)
+        {
+            ResetSelection();
+            ToggleSelection(nodes, ignoreGroupNodes);
+        }
+
         public void ToggleSelection(IList<INode> nodes, bool ignoreGroupNodes = false)
         {
             foreach(var node in nodes)
@@ -44,12 +60,6 @@ namespace avoCADo
                     ToggleSelectionInternal(node);
                 }
             }
-            OnSelectionChanged?.Invoke();
-        }
-
-        public void ToggleSelection(INode node)
-        {
-            ToggleSelectionInternal(node);
             OnSelectionChanged?.Invoke();
         }
 

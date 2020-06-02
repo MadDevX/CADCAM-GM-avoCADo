@@ -20,7 +20,7 @@ namespace avoCADo
     /// </summary>
     public partial class Hierarchy : UserControl
     {
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
         private Scene _scene;
         private TreeViewItem _sceneItem;
 

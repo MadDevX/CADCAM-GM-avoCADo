@@ -38,7 +38,7 @@ namespace avoCADo
         private readonly IRenderer _gizmoRenderer;
         private readonly IRenderLoop _renderLoop;
         private readonly Camera _camera;
-        private readonly SelectionManager _selectionManager;
+        private readonly ISelectionManager _selectionManager;
         public Transform Transform { get; }
 
         public Cursor3D(GLControl control, ShaderWrapper shader, IRenderLoop renderLoop, Camera camera)
@@ -55,13 +55,24 @@ namespace avoCADo
         private void Initialize()
         {
             _control.KeyDown += KeyDown;
+            _control.MouseDown += MouseDown;
             _renderLoop.OnRenderLoop += OnRender;
         }
 
         public void Dispose()
         {
             _control.KeyDown -= KeyDown;
+            _control.MouseDown -= MouseDown;
             _renderLoop.OnRenderLoop -= OnRender;
+        }
+
+        private void MouseDown(object sender, MouseEventArgs e)
+        {
+            //TODO: Move along camera plane to match cursor position (screen coords)
+            if(e.Button == MouseButtons.Middle)
+            {
+
+            }
         }
 
         private void KeyDown(object sender, KeyEventArgs e)

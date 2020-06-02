@@ -21,7 +21,7 @@ namespace avoCADo
         private static PropertyChangedEventArgs _rotationChangedArgs = new PropertyChangedEventArgs(nameof(Rotation));
         private static PropertyChangedEventArgs _scaleChangedArgs = new PropertyChangedEventArgs(nameof(Scale));
 
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
         public Vector3 Position
         {
             get => _position;

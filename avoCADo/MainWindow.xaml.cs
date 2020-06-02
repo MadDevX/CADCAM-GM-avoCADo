@@ -35,6 +35,7 @@ namespace avoCADo
         private NodeImporter _nodeImporter;
         private TransformationsManager _transformationsManager;
         private SceneManager _sceneManager;
+        private InstructionBuffer _instructionBuffer;
 
         private GLControl _glControl;
         private CompositionRoot _compositionRoot;
@@ -59,12 +60,17 @@ namespace avoCADo
 
         }
 
-        public void Initialize(NodeFactory nodeFactory, TransformationsManager transformationsManager, NodeImporter nodeImporter, SceneManager sceneManager)
+        public void Initialize(NodeFactory nodeFactory, 
+                               TransformationsManager transformationsManager, 
+                               NodeImporter nodeImporter, 
+                               SceneManager sceneManager,
+                               InstructionBuffer instructionBuffer)
         {
             _nodeFactory = nodeFactory;
             _transformationsManager = transformationsManager;
             _nodeImporter = nodeImporter;
             _sceneManager = sceneManager;
+            _instructionBuffer = instructionBuffer;
         }
 
         private void CreateGLControl()

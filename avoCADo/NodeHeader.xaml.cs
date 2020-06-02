@@ -44,7 +44,7 @@ namespace avoCADo
         private INode _parentNode = null;
 
         private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
 
         public event Action PropertyChanged;
 

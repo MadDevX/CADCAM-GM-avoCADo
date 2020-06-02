@@ -11,7 +11,7 @@ namespace avoCADo
     {
         private TorusGeneratorView _torusView;
         private TorusGenerator _torus;
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
 
         public TorusGeneratorHandler(TorusGeneratorView torusView)
         {

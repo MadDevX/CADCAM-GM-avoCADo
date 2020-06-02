@@ -12,7 +12,7 @@ namespace avoCADo
     /// </summary>
     public static class NodeSelection
     {
-        public static SelectionManager Manager { get; } = new SelectionManager();
+        public static ISelectionManager Manager { get; } = new SelectionManager();
         /// <summary>
         /// Used to filter events invocation to reduce overhead
         /// </summary>

@@ -20,7 +20,7 @@ namespace avoCADo
     /// </summary>
     public partial class BezierGeneratorView : UserControl
     {
-        private SelectionManager _selectionManager;
+        private ISelectionManager _selectionManager;
 
         public BezierGeneratorView()
         {

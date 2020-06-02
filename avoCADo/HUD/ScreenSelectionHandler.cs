@@ -35,7 +35,7 @@ namespace avoCADo
         private readonly GLControl _control;
         private readonly Camera _camera;
         private readonly SceneManager _sceneManager;
-        private readonly SelectionManager _selectionManager;
+        private readonly ISelectionManager _selectionManager;
         private readonly float _selectionThreshold;
 
         public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, float selectionThreshold = 0.2f)
@@ -144,33 +144,14 @@ namespace avoCADo
             INode parent = _sceneManager.CurrentScene;
             if(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
-                if(_selectionManager.MainSelection != null)
-                {
-                    parent = _selectionManager.MainSelection.Transform.ParentNode;
-                }
-                else
-                {
-                    if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
-                }
-                AddToSelection(nodesInsideRect, parent, ignoreGroupNodes: true);
+                _selectionManager.ToggleSelection(nodesInsideRect, ignoreGroupNodes: true);
             }
             else
             {
-                _selectionManager.ResetSelection();
-                if (nodesInsideRect.Count > 0) parent = nodesInsideRect[0].Transform.ParentNode;
-                AddToSelection(nodesInsideRect, parent, ignoreGroupNodes: true);
+                _selectionManager.Select(nodesInsideRect, ignoreGroupNodes: true);
             }
         }
 
-        private void AddToSelection(IList<INode> nodesToSelect, INode parent, bool ignoreGroupNodes)
-        {
-            _selectionManager.ToggleSelection(nodesToSelect, ignoreGroupNodes);
-            //foreach (var node in nodesToSelect)
-            //{
-            //    //if (node is VirtualNode || node.Transform.Parent != parent) continue;
-            //    _selectionManager.ToggleSelection(node);
-            //}
-        }
 
         private List<INode> _selectionBuffer = new List<INode>(3000);
 

@@ -14,6 +14,7 @@ namespace avoCADo
 {
     public class CompositionRoot : IDisposable
     {
+        private InstructionBuffer _instructionBuffer;
         private NodeFactory _nodeFactory;
         private NodeImporter _nodeImporter;
 
@@ -62,6 +63,8 @@ namespace avoCADo
             var backgroundColorStereoscopic = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
             var backgroundColorStandard = new Color4(0.157f, 0.157f, 0.157f, 1.0f);
 
+            _instructionBuffer = new InstructionBuffer();
+
             _backgroundManager = new BackgroundManager(backgroundColorStandard);
             _screenBufferManager = new ScreenBufferManager(_backgroundManager);
             _viewportManager = new ViewportManager(_control);
@@ -101,7 +104,7 @@ namespace avoCADo
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
 
-            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _sceneManager);
+            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _sceneManager, _instructionBuffer);
             TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider);
         }
 
