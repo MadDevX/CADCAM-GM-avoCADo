@@ -48,6 +48,9 @@ namespace avoCADo
         public void AttachChildRange(IList<INode> nodes)
         {
         }
+        public void AttachChildAtIndex(INode node, int index)
+        {
+        }
 
         public void AttachChild(INode node)
         {
@@ -60,6 +63,10 @@ namespace avoCADo
         public bool DetachChild(INode node)
         {
             return false;
+        }
+        public int GetChildIndex(INode node)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

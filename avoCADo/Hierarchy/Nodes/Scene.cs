@@ -81,6 +81,17 @@ namespace avoCADo
             }
         }
 
+        public void AttachChildAtIndex(INode child, int index)
+        {
+            if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+
+            var childList = GetChildListType(child);
+
+            child.Transform.ParentNode = this;
+            childList.Insert(index, child);
+            child.OnDisposed += HandleChildDisposed;
+        }
+
         public void AttachChild(INode child)
         {
             if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
@@ -177,5 +188,10 @@ namespace avoCADo
         }
 
         public void Render(Camera camera, Matrix4 parentMatrix){}
+
+        public int GetChildIndex(INode node)
+        {
+            return Children.IndexOf(node);
+        }
     }
 }

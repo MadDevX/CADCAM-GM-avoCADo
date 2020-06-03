@@ -18,7 +18,7 @@ namespace avoCADo
         Strong
     }
 
-    interface IDependencyCollector
+    public interface IDependencyCollector
     {
         void AddDependency(DependencyType type, IDependencyAdder dependant);
         void RemoveDependency(DependencyType type, IDependencyAdder dependant);

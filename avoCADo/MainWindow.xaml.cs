@@ -35,7 +35,7 @@ namespace avoCADo
         private NodeImporter _nodeImporter;
         private TransformationsManager _transformationsManager;
         private SceneManager _sceneManager;
-        private InstructionBuffer _instructionBuffer;
+        private IInstructionBuffer _instructionBuffer;
 
         private GLControl _glControl;
         private CompositionRoot _compositionRoot;
@@ -64,7 +64,7 @@ namespace avoCADo
                                TransformationsManager transformationsManager, 
                                NodeImporter nodeImporter, 
                                SceneManager sceneManager,
-                               InstructionBuffer instructionBuffer)
+                               IInstructionBuffer instructionBuffer)
         {
             _nodeFactory = nodeFactory;
             _transformationsManager = transformationsManager;

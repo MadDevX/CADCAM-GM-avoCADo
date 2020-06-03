@@ -55,7 +55,7 @@ namespace avoCADo
         {
             foreach(var node in nodes)
             {
-                if(node.GroupNodeType == GroupNodeType.None)
+                if(node.GroupNodeType == GroupNodeType.None || ignoreGroupNodes == false)
                 { 
                     ToggleSelectionInternal(node);
                 }

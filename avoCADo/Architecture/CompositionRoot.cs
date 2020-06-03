@@ -76,7 +76,7 @@ namespace avoCADo
             _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
-            _sceneManager = new SceneManager(_window.hierarchy, new Scene("Main"));
+            _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, new Scene("Main"));
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);

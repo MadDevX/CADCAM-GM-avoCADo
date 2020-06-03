@@ -121,6 +121,15 @@ namespace avoCADo
             _children.RemoveRange(nodes);
         }
 
+        public void AttachChildAtIndex(INode child, int index)
+        {
+            if (child.Transform.ParentNode != null) throw new InvalidOperationException("Tried to attach node that has another parent");
+
+            child.Transform.ParentNode = this;
+            Children.Insert(index, child);
+            child.OnDisposed += HandleChildDisposed;
+        }
+
         /// <summary>
         /// Attaches child to this node
         /// </summary>
@@ -204,5 +213,11 @@ namespace avoCADo
         {
             return _dependencies[type];
         }
+
+        public int GetChildIndex(INode node)
+        {
+            return Children.IndexOf(node);
+        }
+
     }
 }

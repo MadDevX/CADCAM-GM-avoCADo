@@ -79,7 +79,7 @@ namespace avoCADo
 
         public INode CreateTorus(INode parent)
         {
-            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _sceneManager.CurrentScene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, "Torus"));
             torusNode.ObjectType = ObjectType.Torus;
@@ -128,7 +128,7 @@ namespace avoCADo
 
         public INode CreatePoint(INode parent)
         {
-            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = _sceneManager.CurrentScene;
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
             var pointNode = CreatePointInstance(parent);
             parent.AttachChild(pointNode);
             return pointNode;
@@ -234,6 +234,14 @@ namespace avoCADo
 
             else return null;
         }
+
+        private INode GetDefaultParent()
+        {
+            var mainSelection = NodeSelection.Manager.MainSelection;
+            if (mainSelection != null) return mainSelection;
+            else return _sceneManager.CurrentScene;
+        }
+
 
         public void Dispose()
         {

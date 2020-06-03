@@ -160,7 +160,8 @@ namespace avoCADo
                 var node = e.Parameter as INode;
                 if (node != null)
                 {
-                    node.Dispose();
+                    _instructionBuffer.IssueInstruction<NodeDeletedInstruction, NodeDeletedInstruction.Parameters>(
+                        new NodeDeletedInstruction.Parameters(new List<INode> { node }));
                 }
             }
             else
@@ -177,14 +178,20 @@ namespace avoCADo
         private void TryDeleteSelectedCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var selected = NodeSelection.Manager.SelectedNodes.ToList();
+            var toDelete = new List<INode>();
             while (selected.Count > 0)
             {
                 var node = selected[selected.Count - 1];
                 selected.RemoveAt(selected.Count - 1);
                 if (CanDelete(node))
                 {
-                    node.Dispose();
+                    toDelete.Add(node);
                 }
+            }
+            if (toDelete.Count > 0)
+            {
+                _instructionBuffer.IssueInstruction<NodeDeletedInstruction, NodeDeletedInstruction.Parameters>(
+                    new NodeDeletedInstruction.Parameters(toDelete));
             }
             
         }
@@ -201,7 +208,7 @@ namespace avoCADo
             if (ofd.FileName != "")
             {
                 var result = SceneDeserializer.Deserialize(ofd.FileName);
-                var prevScene = _sceneManager.CreateNew(ofd.FileName);
+                var prevScene = _sceneManager.CreateAndSet(ofd.FileName);
                 SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
                 prevScene.Dispose();
             }
@@ -227,8 +234,11 @@ namespace avoCADo
 
         private bool CanDelete(object parameter)
         {
-            var depColl = parameter as IDependencyCollector;
-            if (depColl != null)
+            if (parameter is VirtualNode)
+            {
+                return false;
+            }
+            else if (parameter is IDependencyCollector depColl)
             {
                 return depColl.HasDependency(DependencyType.Strong) == false;
             }

@@ -83,6 +83,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
+    <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
+    <Compile Include="Interfaces\IInstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\Instruction.cs" />
     <Compile Include="Actions\Instructions\InstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\NodeCreatedInstruction.cs" />
@@ -220,6 +223,7 @@
     <Compile Include="Actions\UtilityCommands.cs" />
     <Compile Include="Utility\Coordinates.cs" />
     <Compile Include="Utility\CoordList.cs" />
+    <Compile Include="Utility\DependencyUtility.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />
     <Compile Include="Utility\MeshUtility.cs" />

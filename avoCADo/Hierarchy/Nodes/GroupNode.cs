@@ -86,6 +86,21 @@ namespace avoCADo
             _nodesToAttachToScene.Clear();
         }
 
+        public void AttachChildAtIndex(INode node, int index)
+        {
+            if (Children.Contains(node) == false)
+            {
+                Children.Insert(index, node);
+                node.PropertyChanged += ChildNodeModified;
+                node.OnDisposed += HandleChildDisposed;
+                if (node.Transform.ParentNode == null)
+                {
+                    Transform.ParentNode.AttachChild(node);
+                }
+                AddDependencyToChild(node);
+            }
+        }
+
         public void AttachChild(INode node)
         {
             if (Children.Contains(node) == false)
@@ -176,6 +191,11 @@ namespace avoCADo
         public void Notify()
         {
             PropertyChanged?.Invoke(this, _childrenChangedArgs);
+        }
+
+        public int GetChildIndex(INode node)
+        {
+            return Children.IndexOf(node);
         }
     }
 }

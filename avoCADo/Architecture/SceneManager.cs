@@ -9,10 +9,13 @@ namespace avoCADo
     public class SceneManager : IDisposable
     {
         private readonly Hierarchy _hierarchy;
+        private readonly IInstructionBuffer _instructionBuffer;
+
         public Scene CurrentScene { get; private set; } = null;
-        public SceneManager(Hierarchy hierarchy, Scene scene)
+        public SceneManager(Hierarchy hierarchy, IInstructionBuffer instructionBuffer, Scene scene)
         {
             _hierarchy = hierarchy;
+            _instructionBuffer = instructionBuffer;
             SetScene(scene);
         }
 
@@ -31,6 +34,7 @@ namespace avoCADo
             var curScene = CurrentScene;
             _hierarchy.Initialize(scene);
             CurrentScene = scene;
+            _instructionBuffer.Clear();
             return curScene;
         }
 
@@ -39,7 +43,7 @@ namespace avoCADo
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Scene CreateNew(string name)
+        public Scene CreateAndSet(string name)
         {
             var newScene = new Scene(name);
             return SetScene(newScene);

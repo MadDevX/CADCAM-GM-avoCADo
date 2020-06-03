@@ -36,7 +36,7 @@ namespace avoCADo
         private readonly GLControl _control;
         private readonly Camera _camera;
         private readonly SceneManager _sceneManager;
-        private readonly InstructionBuffer _instructionBuffer;
+        private readonly IInstructionBuffer _instructionBuffer;
         private readonly ISelectionManager _selectionManager;
         private readonly float _selectionThreshold;
 
@@ -45,7 +45,7 @@ namespace avoCADo
         /// </summary>
         private IList<INode> _singularSelectionBuffer = new List<INode>(1);
 
-        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, InstructionBuffer instructionBuffer, float selectionThreshold = 0.2f)
+        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, IInstructionBuffer instructionBuffer, float selectionThreshold = 0.2f)
         {
             _control = control;
             _camera = camera;
