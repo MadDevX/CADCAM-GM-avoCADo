@@ -10,8 +10,10 @@ namespace avoCADo.Actions
 {
     public class TransformationInstruction : Instruction<TransformationInstruction.Parameters>
     {
+        public Vector3 CursorPosition => _parameters.cursorPosition;
         private Parameters _parameters;
-        
+        private Vector3 diffVector;
+
         public override bool Execute(Parameters parameters)
         {
             _parameters = parameters;
@@ -20,18 +22,40 @@ namespace avoCADo.Actions
 
         public void Append(Vector3 diffVector)
         {
-            throw new NotImplementedException();
+            this.diffVector += diffVector;
         }
 
         public override bool Undo()
         {
-            throw new NotImplementedException();
+            var _selectionManager = NodeSelection.Manager;
+            diffVector = -diffVector; //reverse operation
+            switch(_parameters.transformationType)
+            {
+                case TransformationType.Translation:
+                    TransformationsManager.TranslateRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
+                    break;
+                case TransformationType.Rotation:
+                    TransformationsManager.RotateRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
+                    break;
+                case TransformationType.Scale:
+                    TransformationsManager.ScaleRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
+                    break;
+            }
+            return true;
         }
 
         public struct Parameters
         {
             public TransformationMode transformationMode;
             public TransformationType transformationType;
+            public Vector3 cursorPosition;
+
+            public Parameters(TransformationMode transformationMode, TransformationType transformationType, Vector3 cursorPosition)
+            {
+                this.transformationMode = transformationMode;
+                this.transformationType = transformationType;
+                this.cursorPosition = cursorPosition;
+            }
         }
     }
 }

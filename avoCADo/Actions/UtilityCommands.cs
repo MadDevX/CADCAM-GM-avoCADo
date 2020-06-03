@@ -59,12 +59,17 @@ namespace avoCADo
             menuItemSnapValue.IsChecked = true;
             menuItemSnapToGrid.IsChecked = false;
         }
+        private void SnapToGrid_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false; //Deprecated
+        }
         private void SnapToGrid_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _transformationsManager.SnapMode = HUD.SnapMode.SnapToGrid;
-            menuItemSnapNone.IsChecked = false;
-            menuItemSnapValue.IsChecked = false;
-            menuItemSnapToGrid.IsChecked = true;
+            MessageBox.Show("Mode deprecated", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            //_transformationsManager.SnapMode = HUD.SnapMode.SnapToGrid;
+            //menuItemSnapNone.IsChecked = false;
+            //menuItemSnapValue.IsChecked = false;
+            //menuItemSnapToGrid.IsChecked = true;
         }
 
         private void SnapGrid_CanExecute(object sender, CanExecuteRoutedEventArgs e)

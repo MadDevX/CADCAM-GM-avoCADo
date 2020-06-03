@@ -43,7 +43,7 @@ namespace avoCADo
 
         public virtual void Translate(Vector3 translation) { }
 
-        public virtual void TranslateSnapped(Vector3 translation, float snapValue) { }
+        public virtual Vector3 TranslateSnapped(Vector3 translation, float snapValue) { return Vector3.Zero; }
 
         private Vector2 _screenCoords = new Vector2(float.MinValue, float.MinValue); // to avoid selecting non-3d object by clicking in the middle of viewport
     }

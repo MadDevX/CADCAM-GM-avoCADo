@@ -29,7 +29,7 @@
         <CommandBinding Command="local:UtilityCommandDefinitions.CursorMode" CanExecute="LocalCursorMode_CanExecute" Executed="CursorMode_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapNone" CanExecute="SnapMode_CanExecute" Executed="SnapNone_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapValue" CanExecute="SnapMode_CanExecute" Executed="SnapValue_Executed"/>
-        <CommandBinding Command="local:UtilityCommandDefinitions.SnapToGrid" CanExecute="SnapMode_CanExecute" Executed="SnapToGrid_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.SnapToGrid" CanExecute="SnapToGrid_CanExecute" Executed="SnapToGrid_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid01" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid01_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid025" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid025_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid05" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid05_Executed"/>

@@ -1,4 +1,5 @@
-﻿using avoCADo.Architecture;
+﻿using avoCADo.Actions;
+using avoCADo.Architecture;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace avoCADo.HUD
 {
@@ -30,7 +32,28 @@ namespace avoCADo.HUD
 
     public class TransformationsManager : IDisposable
     {
-        public TransformationMode Mode { get; set; } = TransformationMode.Local;
+        private TransformationMode _mode = TransformationMode.Local;
+        public TransformationMode Mode 
+        {
+            get => _mode; 
+            set
+            {
+                _mode = value;
+                BreakInstructions();
+            }
+        }
+        private TransformationType _transformationType = TransformationType.None;
+        public TransformationType TransformationType 
+        {
+            get => _transformationType;
+            private set
+            {
+                _transformationType = value;
+                BreakInstructions();
+            }
+        }
+
+
         public float SnapValue { get; set; } = 0.1f;
 
         private SnapMode _snapToGrid = SnapMode.None;
@@ -43,15 +66,14 @@ namespace avoCADo.HUD
                 _currentInputBuffer = Point.Empty;
             }
         }
-        public TransformationType TransformationType { get; private set; } = TransformationType.None;
         public string Axis 
         { 
             get
             {
                 var s = "";
-                if (_mults.X > 0.0f) s += "X";
-                if (_mults.Y > 0.0f) s += "Y";
-                if (_mults.Z > 0.0f) s += "Z";
+                if (Mults.X > 0.0f) s += "X";
+                if (Mults.Y > 0.0f) s += "Y";
+                if (Mults.Z > 0.0f) s += "Z";
                 if (s == "") s = "Any/None";
                 return s;
             }
@@ -62,6 +84,7 @@ namespace avoCADo.HUD
         private readonly GLControl _control;
         private readonly Camera _camera;
         private readonly DependencyAddersManager _dependencyAddersManager;
+        private readonly InstructionBuffer _instructionBuffer;
 
         private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
         private float RotateMultiplier => (_rotateSensitivity / _control.Width);
@@ -71,16 +94,29 @@ namespace avoCADo.HUD
         private float _rotateSensitivity = (float)Math.PI * 1.0f;//5.0f;
         private float _translateSensitivity = 2.5f;
         private float _scaleSensitivity = 5.0f;
+
         private Vector3 _mults = Vector3.Zero;
+        private Vector3 Mults
+        {
+            get => _mults;
+            set
+            {
+                _mults = value;
+                BreakInstructions();
+            }
+        }
+
+
         private Point _currentInputBuffer = Point.Empty;
 
-        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, DependencyAddersManager dependencyAddersManager)
+        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, DependencyAddersManager dependencyAddersManager, InstructionBuffer instructionBuffer)
         {
             _selectionManager = NodeSelection.Manager;
             _cursor3D = cursor3D;
             _control = control;
             _camera = camera;
             _dependencyAddersManager = dependencyAddersManager;
+            _instructionBuffer = instructionBuffer;
             Initialize();
         }
 
@@ -106,27 +142,27 @@ namespace avoCADo.HUD
                 else if (e.KeyCode == System.Windows.Forms.Keys.Escape) 
                 {
                     TransformationType = TransformationType.None; 
-                    _mults = Vector3.Zero;
+                    Mults = Vector3.Zero;
                 }
             }
             else
             {
                 TransformationType = TransformationType.None;
-                _mults = Vector3.Zero;
+                Mults = Vector3.Zero;
             }
             if (TransformationType != TransformationType.None)
             {
                 if (TransformationType == TransformationType.Scale)
                 {
-                    if      (e.KeyCode == System.Windows.Forms.Keys.X) _mults.X = 1.0f;
-                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults.Y = 1.0f;
-                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults.Z = 1.0f;
+                    if      (e.KeyCode == System.Windows.Forms.Keys.X) Mults = new Vector3(1.0f, Mults.Y, Mults.Z);
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) Mults = new Vector3(Mults.X, 1.0f, Mults.Z);
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) Mults = new Vector3(Mults.X, Mults.Y, 1.0f);
                 }
                 else
                 {
-                    if      (e.KeyCode == System.Windows.Forms.Keys.X) _mults = Vector3.UnitX;
-                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) _mults = Vector3.UnitY;
-                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) _mults = Vector3.UnitZ;
+                    if      (e.KeyCode == System.Windows.Forms.Keys.X) Mults = Vector3.UnitX;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Y) Mults = Vector3.UnitY;
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Z) Mults = Vector3.UnitZ;
                 }
             }
         }
@@ -147,7 +183,7 @@ namespace avoCADo.HUD
                 if (_selectionManager.MainSelection == null)
                 {
                     TransformationType = TransformationType.None;
-                    _mults = Vector3.Zero;
+                    Mults = Vector3.Zero;
                 }
                 notifyDependencyAdders = true;
             }
@@ -157,17 +193,17 @@ namespace avoCADo.HUD
             {
                 case TransformationType.Translation:
                     posDiff = BufferInput(posDiff, TranslateMultiplier);
-                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
+                    diffVector = new Vector3(Mults.X * posDiff.X, Mults.Y * posDiff.X, Mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
                     HandleTranslation(diffVector, posDiff);
                     break;
                 case TransformationType.Rotation:
                     posDiff = BufferInput(posDiff, RotateMultiplier);
-                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
+                    diffVector = new Vector3(Mults.X * posDiff.X, Mults.Y * posDiff.X, Mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
                     HandleRotation(diffVector);
                     break;
                 case TransformationType.Scale:
                     posDiff = BufferInput(posDiff, ScaleMultiplier);
-                    diffVector = new Vector3(_mults.X * posDiff.X, _mults.Y * posDiff.X, _mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
+                    diffVector = new Vector3(Mults.X * posDiff.X, Mults.Y * posDiff.X, Mults.Z * posDiff.X); //only left-right  mouse movement is used as transformation input
                     HandleScale(diffVector, posDiff);
                     break;
             }
@@ -206,41 +242,23 @@ namespace avoCADo.HUD
 
         private void HandleTranslation(Vector3 diffVector, Point posDiff)
         {
-            diffVector *= TranslateMultiplier;
-            var translationVectorCamera = _camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier;
-            if (SnapMode == SnapMode.SnapToGrid)
+            if (Mults.Length > 0.0f)
             {
-                foreach (var obj in _selectionManager.SelectedNodes)
-                {
-                    if (_mults.Length > 0.0f)
-                    {
-                        obj.Transform.TranslateSnapped(diffVector, SnapValue);
-                    }
-                    else
-                    {
-                        obj.Transform.TranslateSnapped(translationVectorCamera, SnapValue);
-                    }
-                }
+                diffVector *= TranslateMultiplier;
             }
             else
             {
-                if(SnapMode == SnapMode.SnapValue)
-                {
-                    diffVector = diffVector.RoundToDivisionValue(SnapValue);
-                    translationVectorCamera = translationVectorCamera.RoundToDivisionValue(SnapValue);
-                }
-                foreach (var obj in _selectionManager.SelectedNodes)
-                {
-                    if (_mults.Length > 0.0f)
-                    {
-                        obj.Transform.Translate(diffVector);
-                    }
-                    else
-                    {
-                        obj.Transform.Translate(translationVectorCamera);
-                    }
-                }
+                diffVector = _camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier;
             }
+
+            if(SnapMode == SnapMode.SnapValue)
+            {
+                diffVector = diffVector.RoundToDivisionValue(SnapValue);
+            }
+            
+            TranslateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
+            UpdateInstruction(ref _translationInstruction);
+            _translationInstruction.Append(diffVector);
         }
 
         private void HandleRotation(Vector3 diffVector)
@@ -250,17 +268,10 @@ namespace avoCADo.HUD
             {
                 diffVector = diffVector.RoundToDivisionValue(SnapValue, (float)Math.PI*0.5f);
             }
-            foreach (var node in _selectionManager.SelectedNodes)
-            {
-                if (Mode == TransformationMode.Cursor)
-                {
-                    node.Transform.RotateAround(_cursor3D.Position, diffVector);
-                }
-                else
-                {
-                    node.Transform.RotateAround(node.Transform.Position, diffVector);
-                }
-            }
+
+            RotateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
+            UpdateInstruction(ref _rotateInstruction);
+            _rotateInstruction.Append(diffVector);
         }
 
         private void HandleScale(Vector3 diffVector, Point posDiff)
@@ -270,11 +281,40 @@ namespace avoCADo.HUD
             {
                 diffVector = diffVector.RoundToDivisionValue(SnapValue);
             }
-            foreach (var node in _selectionManager.SelectedNodes)
+
+            ScaleRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
+            UpdateInstruction(ref _scaleInstruction);
+            _scaleInstruction.Append(diffVector);
+        }
+
+        public static void TranslateRaw(IEnumerable<INode> nodes, Vector3 diffVector, TransformationMode mode, Vector3 cursorPosition)
+        {
+            foreach (var node in nodes)
             {
-                if (Mode == TransformationMode.Cursor)
+                node.Transform.Translate(diffVector);
+            }
+        }
+        public static void RotateRaw(IEnumerable<INode> nodes, Vector3 diffVector, TransformationMode mode, Vector3 cursorPosition)
+        {
+            foreach (var node in nodes)
+            {
+                if (mode == TransformationMode.Cursor)
                 {
-                    node.Transform.ScaleAround(_cursor3D.Position, diffVector);
+                    node.Transform.RotateAround(cursorPosition, diffVector);
+                }
+                else
+                {
+                    node.Transform.RotateAround(node.Transform.Position, diffVector);
+                }
+            }
+        }
+        public static void ScaleRaw(IEnumerable<INode> nodes, Vector3 diffVector, TransformationMode mode, Vector3 cursorPosition)
+        {
+            foreach (var node in nodes)
+            {
+                if (mode == TransformationMode.Cursor)
+                {
+                    node.Transform.ScaleAround(cursorPosition, diffVector);
                 }
                 else
                 {
@@ -282,6 +322,28 @@ namespace avoCADo.HUD
                 }
             }
         }
+
+
         #endregion
+
+        private TransformationInstruction _translationInstruction,
+                                          _scaleInstruction,
+                                          _rotateInstruction;
+        private void UpdateInstruction(ref TransformationInstruction currentInstruction)
+        {
+            if (currentInstruction == null || _instructionBuffer.LastInstruction != currentInstruction || _cursor3D.Position != currentInstruction.CursorPosition)
+            {
+                _instructionBuffer.IssueInstruction<TransformationInstruction, TransformationInstruction.Parameters>(
+                    new TransformationInstruction.Parameters(Mode, TransformationType, _cursor3D.Position));
+                currentInstruction = (TransformationInstruction)_instructionBuffer.LastInstruction;
+            }
+        }
+
+        private void BreakInstructions()
+        {
+            _translationInstruction = null;
+            _scaleInstruction = null;
+            _rotateInstruction = null;
+        }
     }
 }

@@ -160,9 +160,12 @@ namespace avoCADo
             Position += translation;
         }
 
-        public void TranslateSnapped(Vector3 translation, float snapValue)
+        public Vector3 TranslateSnapped(Vector3 translation, float snapValue)
         {
-            Position = (Position + translation).RoundToDivisionValue(snapValue);
+            var newPosition = (Position + translation).RoundToDivisionValue(snapValue);
+            var correctedTranslation = newPosition - Position;
+            Position = newPosition;
+            return correctedTranslation;
         }
 
         public void ScaleAround(Vector3 pivot, Vector3 scaling)

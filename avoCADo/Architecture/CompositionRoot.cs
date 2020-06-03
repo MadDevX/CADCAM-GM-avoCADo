@@ -88,7 +88,7 @@ namespace avoCADo
             _cursor = new Cursor3D(_control, _shaderProvider.DefaultShader, _renderLoop, _camera);
             
             _dependencyAddersManager = new DependencyAddersManager();
-            _transformationsManager = new TransformationsManager(_cursor, _control, _camera, _dependencyAddersManager);
+            _transformationsManager = new TransformationsManager(_cursor, _control, _camera, _dependencyAddersManager, _instructionBuffer);
 
             _cameraModeManager = new CameraModeManager((StereoscopicCamera)_camera, _backgroundManager, backgroundColorStandard, backgroundColorStereoscopic);
             _transformHandler = new TransformHandler(_window.transformView, _window);
