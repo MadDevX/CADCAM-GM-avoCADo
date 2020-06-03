@@ -48,7 +48,6 @@ namespace avoCADo
             return _powerToBernsteinMtx * powerBasisCoefficients;
         }
 
-
         public static Vector3 RoundToDivisionValue(this Vector3 v, float divisionValue)
         {
             var newPos = v;
@@ -73,5 +72,48 @@ namespace avoCADo
             moduloZ = moduloZ > 0.5f * divisionValue ? moduloZ - divisionValue : moduloZ;
             return newPos - new Vector3(moduloX, moduloY, moduloZ);
         }
+
+
+        #region Conversion
+        public static Vector2 Float(this Vector2d v)
+        {
+            return new Vector2((float)v.X, (float)v.Y);
+        }
+
+        public static Vector2d Double(this Vector2 v)
+        {
+            return new Vector2d(v.X, v.Y);
+        }
+
+        public static Vector3 Float(this Vector3d v)
+        {
+            return new Vector3((float)v.X, (float)v.Y, (float)v.Z);
+        }
+
+        public static Vector3d Double(this Vector3 v)
+        {
+            return new Vector3d(v.X, v.Y, v.Z);
+        }
+
+        public static Vector4 Float(this Vector4d v)
+        {
+            return new Vector4((float)v.X, (float)v.Y, (float)v.Z, (float)v.W);
+        }
+
+        public static Vector4d Double(this Vector4 v)
+        {
+            return new Vector4d(v.X, v.Y, v.Z, v.W);
+        }
+
+        public static Quaternion Float(this Quaterniond v)
+        {
+            return new Quaternion((float)v.X, (float)v.Y, (float)v.Z, (float)v.W);
+        }
+
+        public static Quaterniond Double(this Quaternion v)
+        {
+            return new Quaterniond(v.X, v.Y, v.Z, v.W);
+        }
+        #endregion
     }
 }

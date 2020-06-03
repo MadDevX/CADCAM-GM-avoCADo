@@ -12,34 +12,34 @@ namespace avoCADo.Actions
     {
         public Vector3 CursorPosition => _parameters.cursorPosition;
         private Parameters _parameters;
-        private Vector3 diffVector;
-
+        private ISelectionManager _selectionManager;
+        private List<(Vector3 pos, Quaternion rot, Vector3 scl)> _startingStates;
         public override bool Execute(Parameters parameters)
         {
+            _selectionManager = NodeSelection.Manager;
             _parameters = parameters;
-            return true;
-        }
+            var selected = _selectionManager.SelectedNodes;
+            _startingStates = new List<(Vector3 pos, Quaternion rot, Vector3 scl)>(selected.Count);
+            foreach(var node in selected)
+            {
+                var tr = node.Transform;
+                _startingStates.Add((tr.Position, tr.Rotation, tr.Scale));
+            }
 
-        public void Append(Vector3 diffVector)
-        {
-            this.diffVector += diffVector;
+            return true;
         }
 
         public override bool Undo()
         {
-            var _selectionManager = NodeSelection.Manager;
-            diffVector = -diffVector; //reverse operation
-            switch(_parameters.transformationType)
+            int i = 0;
+            foreach (var node in _selectionManager.SelectedNodes)
             {
-                case TransformationType.Translation:
-                    TransformationsManager.TranslateRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
-                    break;
-                case TransformationType.Rotation:
-                    TransformationsManager.RotateRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
-                    break;
-                case TransformationType.Scale:
-                    TransformationsManager.ScaleRaw(_selectionManager.SelectedNodes, diffVector, _parameters.transformationMode, CursorPosition);
-                    break;
+                var state = _startingStates[i];
+                var tr = node.Transform;
+                tr.Position = state.pos;
+                tr.Rotation = state.rot;
+                tr.Scale = state.scl;
+                i++;
             }
             return true;
         }

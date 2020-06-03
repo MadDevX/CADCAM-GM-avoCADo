@@ -256,9 +256,8 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue);
             }
             
-            TranslateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
             UpdateInstruction(ref _translationInstruction);
-            _translationInstruction.Append(diffVector);
+            TranslateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
         private void HandleRotation(Vector3 diffVector)
@@ -269,9 +268,8 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue, (float)Math.PI*0.5f);
             }
 
-            RotateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
             UpdateInstruction(ref _rotateInstruction);
-            _rotateInstruction.Append(diffVector);
+            RotateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
         private void HandleScale(Vector3 diffVector, Point posDiff)
@@ -282,9 +280,8 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue);
             }
 
-            ScaleRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
             UpdateInstruction(ref _scaleInstruction);
-            _scaleInstruction.Append(diffVector);
+            ScaleRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
         public static void TranslateRaw(IEnumerable<INode> nodes, Vector3 diffVector, TransformationMode mode, Vector3 cursorPosition)
@@ -329,6 +326,10 @@ namespace avoCADo.HUD
         private TransformationInstruction _translationInstruction,
                                           _scaleInstruction,
                                           _rotateInstruction;
+        /// <summary>
+        /// Creates TransformationInstruction that stores state (checkpoint) - it should be created before any transformation was executed.
+        /// </summary>
+        /// <param name="currentInstruction"></param>
         private void UpdateInstruction(ref TransformationInstruction currentInstruction)
         {
             if (currentInstruction == null || _instructionBuffer.LastInstruction != currentInstruction || _cursor3D.Position != currentInstruction.CursorPosition)
