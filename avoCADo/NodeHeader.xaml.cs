@@ -1,4 +1,6 @@
-﻿using System;
+﻿using avoCADo.Actions;
+using avoCADo.Architecture;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +18,7 @@ using System.Windows.Shapes;
 
 namespace avoCADo
 {
+    using Parameters = AttachToCurveInstruction.Parameters;
     /// <summary>
     /// Interaction logic for NodeHeader.xaml
     /// </summary>
@@ -45,6 +48,7 @@ namespace avoCADo
 
         private static SolidColorBrush _highlight = new SolidColorBrush(Color.FromArgb(255, 75, 185, 255));
         private ISelectionManager _selectionManager;
+        private IInstructionBuffer _instructionBuffer;
 
         public event Action PropertyChanged;
 
@@ -53,6 +57,7 @@ namespace avoCADo
             PropertyChanged += SetIcon;
             InitializeComponent();
             _selectionManager = NodeSelection.Manager;
+            _instructionBuffer = Registry.InstructionBuffer;
             _selectionManager.OnSelectionChanged += OnSelectionChanged;
             Unloaded += Dispose;
         }
@@ -125,11 +130,13 @@ namespace avoCADo
             {
                 if (Keyboard.Modifiers == ModifierKeys.Shift)
                 {
-                    _selectionManager.ToggleSelection(Node);
+                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
+                        new SelectionChangedInstruction.Parameters(new List<INode> { Node }, SelectionChangedInstruction.OperationType.ToggleSelect));
                 }
                 else
                 {
-                    _selectionManager.Select(Node);
+                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
+                        new SelectionChangedInstruction.Parameters(new List<INode> { Node }, SelectionChangedInstruction.OperationType.Select));
                 }
             }
         }
@@ -229,16 +236,16 @@ namespace avoCADo
 
         private void MenuItemRemove_Click(object sender, RoutedEventArgs e)
         {
-            _parentNode.DetachChild(Node);
+            _instructionBuffer.IssueInstruction<DetachFromCurveInstruction, Parameters>(new Parameters(Node, _parentNode));
         }
 
         private void MenuItemAttachToCurve_Click(object sender, RoutedEventArgs e)
         {
-            _selectionManager.MainSelection.AttachChild(Node);
+            _instructionBuffer.IssueInstruction<AttachToCurveInstruction, Parameters>(new Parameters(Node, _selectionManager.MainSelection));
         }
         private void MenuItemDetachFromCurve_Click(object sender, RoutedEventArgs e)
         {
-            _selectionManager.MainSelection.DetachChild(Node);
+            _instructionBuffer.IssueInstruction<DetachFromCurveInstruction, Parameters>(new Parameters(Node, _selectionManager.MainSelection));
         }
         
     }

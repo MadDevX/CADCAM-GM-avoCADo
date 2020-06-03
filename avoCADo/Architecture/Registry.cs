@@ -18,5 +18,16 @@ namespace avoCADo.Architecture
                 _virtualNodeFactory = value;
             }
         }
+
+        private static IInstructionBuffer _instructionBuffer = null;
+        public static IInstructionBuffer InstructionBuffer
+        {
+            get => _instructionBuffer;
+            set
+            {
+                if (_instructionBuffer != null) return;
+                _instructionBuffer = value;
+            }
+        }
     }
 }

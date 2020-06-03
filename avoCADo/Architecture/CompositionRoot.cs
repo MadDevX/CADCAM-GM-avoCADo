@@ -96,9 +96,10 @@ namespace avoCADo
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);
             _nodeFactory = new NodeFactory(_sceneManager, _cursor, _window, _shaderProvider);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _sceneManager);
-            Registry.VirtualNodeFactory = _virtualNodeFactory;
             _nodeImporter = new NodeImporter(_nodeFactory);
 
+            Registry.VirtualNodeFactory = _virtualNodeFactory;
+            Registry.InstructionBuffer = _instructionBuffer;
 
             _window.cursor3dInfo.Initialize(_cursor);
             _window.transformationsInfo.DataContext = _transformationsManager;
