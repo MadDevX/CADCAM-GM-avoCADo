@@ -87,6 +87,7 @@
     <Compile Include="Actions\Instructions\DetachFromCurveInstruction.cs" />
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
+    <Compile Include="Actions\TransformationInstructionUtility.cs" />
     <Compile Include="Interfaces\IInstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\Instruction.cs" />
     <Compile Include="Actions\Instructions\InstructionBuffer.cs" />

@@ -101,6 +101,7 @@ namespace avoCADo
             Registry.VirtualNodeFactory = _virtualNodeFactory;
             Registry.InstructionBuffer = _instructionBuffer;
 
+            _window.transformView.Initialize(_instructionBuffer, _cursor);
             _window.cursor3dInfo.Initialize(_cursor);
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;

@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿using avoCADo.Actions;
+using avoCADo.HUD;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,14 +36,24 @@ namespace avoCADo
             }
         }
 
-        private Dictionary<object, Action<float>> _actionDictionary = new Dictionary<object, Action<float>>();
+        private IInstructionBuffer _instructionBuffer;
+        private Cursor3D _cursor3D;
 
+        private TransformationInstructionUtility _instructionUtility;
+        private Dictionary<object, Action<float>> _actionDictionary = new Dictionary<object, Action<float>>();
         private bool _handleInput = true;
 
         public TransformView()
         {
             InitializeComponent();
             SetupDictionary();
+        }
+
+        public void Initialize(IInstructionBuffer instructionBuffer, Cursor3D cursor3D)
+        {
+            _instructionBuffer = instructionBuffer;
+            _cursor3D = cursor3D;
+            _instructionUtility = new TransformationInstructionUtility(_instructionBuffer, _cursor3D);
         }
 
         private float Convert(string text)
@@ -97,6 +109,7 @@ namespace avoCADo
             var tb = sender as TextBox;
             var result = Convert(tb.Text);
             tb.Text = result.ToString(_format);
+            _instructionUtility.BreakInstructions();
         }
 
         private void TextBoxHandleInput(object sender, TextChangedEventArgs e)
@@ -113,12 +126,12 @@ namespace avoCADo
 
         private void SetupDictionary()
         {
-            _actionDictionary.Add(posXTextBox, (x) => Transform.Position = new Vector3(x, Transform.Position.Y, Transform.Position.Z));
-            _actionDictionary.Add(posYTextBox, (y) => Transform.Position = new Vector3(Transform.Position.X, y, Transform.Position.Z));
-            _actionDictionary.Add(posZTextBox, (z) => Transform.Position = new Vector3(Transform.Position.X, Transform.Position.Y, z));
-            _actionDictionary.Add(sclXTextBox, (x) => Transform.Scale = new Vector3(x, Transform.Scale.Y, Transform.Scale.Z));
-            _actionDictionary.Add(sclYTextBox, (y) => Transform.Scale = new Vector3(Transform.Scale.X, y, Transform.Scale.Z));
-            _actionDictionary.Add(sclZTextBox, (z) => Transform.Scale = new Vector3(Transform.Scale.X, Transform.Scale.Y, z));
+            _actionDictionary.Add(posXTextBox, (x) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Translation); Transform.Position = new Vector3(x, Transform.Position.Y, Transform.Position.Z);});
+            _actionDictionary.Add(posYTextBox, (y) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Translation); Transform.Position = new Vector3(Transform.Position.X, y, Transform.Position.Z);});
+            _actionDictionary.Add(posZTextBox, (z) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Translation); Transform.Position = new Vector3(Transform.Position.X, Transform.Position.Y, z);});
+            _actionDictionary.Add(sclXTextBox, (x) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Scale);       Transform.Scale =    new Vector3(x, Transform.Scale.Y, Transform.Scale.Z);});
+            _actionDictionary.Add(sclYTextBox, (y) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Scale);       Transform.Scale =    new Vector3(Transform.Scale.X, y, Transform.Scale.Z);});
+            _actionDictionary.Add(sclZTextBox, (z) => { _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Scale);       Transform.Scale =    new Vector3(Transform.Scale.X, Transform.Scale.Y, z);});
             _actionDictionary.Add(rotXTextBox, UpdateRotation);
             _actionDictionary.Add(rotYTextBox, UpdateRotation);
             _actionDictionary.Add(rotZTextBox, UpdateRotation);
@@ -132,6 +145,7 @@ namespace avoCADo
             var zE = MathHelper.DegreesToRadians(Convert(rotZTextBox.Text));
             if (float.IsNaN(xE) == false && float.IsNaN(yE) == false && float.IsNaN(zE) == false)
             {
+                _instructionUtility.UpdateInstruction(TransformationMode.Local, TransformationType.Rotation);
                 Transform.RotationEulerAngles = new Vector3(xE, yE, zE);
             }
         }
@@ -157,11 +171,13 @@ namespace avoCADo
         private void PosXTextBox_GotMouseCapture(object sender, MouseEventArgs e)
         {
             (sender as TextBox).SelectAll();
+            _instructionUtility.BreakInstructions();
         }
 
         private void SclXTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             (sender as TextBox).SelectAll();
+            _instructionUtility.BreakInstructions();
         }
     }
 }

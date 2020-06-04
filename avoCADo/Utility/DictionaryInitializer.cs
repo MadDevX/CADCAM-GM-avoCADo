@@ -8,6 +8,24 @@ namespace avoCADo
 {
     public static class DictionaryInitializer
     {
+        /// <summary>
+        /// <br>Initializes dictionary with all entries with keys defined by existing enum type <see cref="TEnumKey"/>.</br>
+        /// <br>Each entry is initialized with null value.</br>
+        /// </summary>
+        /// <typeparam name="TEnumKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        public static Dictionary<TEnumKey, TValue> InitializeEnumDictionaryNull<TEnumKey, TValue>() where TEnumKey : struct, IConvertible
+                                                                                 where TValue : class
+        {
+            var dict = new Dictionary<TEnumKey, TValue>();
+            foreach (TEnumKey key in Enum.GetValues(typeof(TEnumKey)))
+            {
+                dict.Add(key, null);
+            }
+            return dict;
+        }
+
 
         /// <summary>
         /// <br>Initializes dictionary with all entries with keys defined by existing enum type <see cref="TEnumKey"/>.</br>

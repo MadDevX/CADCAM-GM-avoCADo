@@ -39,7 +39,7 @@ namespace avoCADo.HUD
             set
             {
                 _mode = value;
-                BreakInstructions();
+                _instructionUtility.BreakInstructions();
             }
         }
         private TransformationType _transformationType = TransformationType.None;
@@ -49,7 +49,7 @@ namespace avoCADo.HUD
             private set
             {
                 _transformationType = value;
-                BreakInstructions();
+                _instructionUtility.BreakInstructions();
             }
         }
 
@@ -85,7 +85,7 @@ namespace avoCADo.HUD
         private readonly Camera _camera;
         private readonly DependencyAddersManager _dependencyAddersManager;
         private readonly InstructionBuffer _instructionBuffer;
-
+        private TransformationInstructionUtility _instructionUtility;
         private float TranslateMultiplier => (_translateSensitivity / _control.Width) * _camera.DistanceToTarget;
         private float RotateMultiplier => (_rotateSensitivity / _control.Width);
         private float ScaleMultiplier => (_scaleSensitivity / _control.Width);
@@ -102,7 +102,7 @@ namespace avoCADo.HUD
             set
             {
                 _mults = value;
-                BreakInstructions();
+                _instructionUtility.BreakInstructions();
             }
         }
 
@@ -117,6 +117,7 @@ namespace avoCADo.HUD
             _camera = camera;
             _dependencyAddersManager = dependencyAddersManager;
             _instructionBuffer = instructionBuffer;
+            _instructionUtility = new TransformationInstructionUtility(_instructionBuffer, _cursor3D);
             Initialize();
         }
 
@@ -256,7 +257,7 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue);
             }
             
-            UpdateInstruction(ref _translationInstruction);
+            _instructionUtility.UpdateInstruction(Mode, TransformationType);
             TranslateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
@@ -268,7 +269,7 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue, (float)Math.PI*0.5f);
             }
 
-            UpdateInstruction(ref _rotateInstruction);
+            _instructionUtility.UpdateInstruction(Mode, TransformationType);
             RotateRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
@@ -280,7 +281,7 @@ namespace avoCADo.HUD
                 diffVector = diffVector.RoundToDivisionValue(SnapValue);
             }
 
-            UpdateInstruction(ref _scaleInstruction);
+            _instructionUtility.UpdateInstruction(Mode, TransformationType);
             ScaleRaw(_selectionManager.SelectedNodes, diffVector, Mode, _cursor3D.Position);
         }
 
@@ -322,29 +323,5 @@ namespace avoCADo.HUD
 
 
         #endregion
-
-        private TransformationInstruction _translationInstruction,
-                                          _scaleInstruction,
-                                          _rotateInstruction;
-        /// <summary>
-        /// Creates TransformationInstruction that stores state (checkpoint) - it should be created before any transformation was executed.
-        /// </summary>
-        /// <param name="currentInstruction"></param>
-        private void UpdateInstruction(ref TransformationInstruction currentInstruction)
-        {
-            if (currentInstruction == null || _instructionBuffer.LastInstruction != currentInstruction || _cursor3D.Position != currentInstruction.CursorPosition)
-            {
-                _instructionBuffer.IssueInstruction<TransformationInstruction, TransformationInstruction.Parameters>(
-                    new TransformationInstruction.Parameters(Mode, TransformationType, _cursor3D.Position));
-                currentInstruction = (TransformationInstruction)_instructionBuffer.LastInstruction;
-            }
-        }
-
-        private void BreakInstructions()
-        {
-            _translationInstruction = null;
-            _scaleInstruction = null;
-            _rotateInstruction = null;
-        }
     }
 }
