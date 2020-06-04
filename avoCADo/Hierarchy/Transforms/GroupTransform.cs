@@ -49,51 +49,6 @@ namespace avoCADo
             }
         }
 
-        public override void RotateAround(Vector3 pivot, Vector3 eulerAngles)
-        {
-            if (NodeSelection.Manager.SelectedNodes.Count == 1 && NodeSelection.Manager.MainSelection == Node)
-            {
-                foreach (var child in Node.Children)
-                {
-                    child.Transform.RotateAround(pivot, eulerAngles);
-                }
-            }
-        }
-
-        public override void ScaleAround(Vector3 pivot, Vector3 scaling)
-        {
-            if (NodeSelection.Manager.SelectedNodes.Count == 1 && NodeSelection.Manager.MainSelection == Node)
-            {
-                foreach (var child in Node.Children)
-                {
-                    child.Transform.ScaleAround(pivot, scaling);
-                }
-            }
-        }
-
-        public override void Translate(Vector3 translation)
-        {
-            if (NodeSelection.Manager.SelectedNodes.Count == 1 && NodeSelection.Manager.MainSelection == Node)
-            {
-                foreach (var child in Node.Children)
-                {
-                    child.Transform.Translate(translation);
-                }
-            }
-        }
-
-        public override Vector3 TranslateSnapped(Vector3 translation, float snapValue)
-        {
-            if (NodeSelection.Manager.SelectedNodes.Count == 1 && NodeSelection.Manager.MainSelection == Node)
-            {
-                foreach (var child in Node.Children)
-                {
-                    child.Transform.TranslateSnapped(translation, snapValue);
-                }
-            }
-            return Vector3.Zero;
-        }
-
         private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             UpdateAveragePosition();

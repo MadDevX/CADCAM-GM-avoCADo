@@ -51,6 +51,18 @@ namespace avoCADo
             ToggleSelection(nodes, ignoreGroupNodes);
         }
 
+        public void AddToSelection(IList<INode> nodes, bool ignoreGroupNodes = false)
+        {
+            foreach (var node in nodes)
+            {
+                if (node.GroupNodeType == GroupNodeType.None || ignoreGroupNodes == false)
+                {
+                    AddToSelectionInternal(node);
+                }
+            }
+            OnSelectionChanged?.Invoke();
+        }
+
         public void ToggleSelection(IList<INode> nodes, bool ignoreGroupNodes = false)
         {
             foreach(var node in nodes)
@@ -75,11 +87,12 @@ namespace avoCADo
             }
         }
 
-        private void SelectInternal(INode node)
+        private void AddToSelectionInternal(INode node)
         {
-            ClearList();
-            AddToList(node);
-            MainSelection = node;
+            if(node.IsSelected == false)
+            {
+                AddToSelected(node);
+            }
         }
 
         private void AddToSelected(INode node)
@@ -93,6 +106,13 @@ namespace avoCADo
             {
                 SelectInternal(node);
             }
+        }
+
+        private void SelectInternal(INode node)
+        {
+            ClearList();
+            AddToList(node);
+            MainSelection = node;
         }
 
         private void RemoveFromSelected(INode node)

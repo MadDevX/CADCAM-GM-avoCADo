@@ -17,5 +17,6 @@ namespace avoCADo
         void Select(IList<INode> nodes, bool ignoreGroupNodes = false);
         void ToggleSelection(INode node);
         void ToggleSelection(IList<INode> nodes, bool ignoreGroupNodes = false);
+        void AddToSelection(IList<INode> nodes, bool ignoreGroupNodes = false);
     }
 }

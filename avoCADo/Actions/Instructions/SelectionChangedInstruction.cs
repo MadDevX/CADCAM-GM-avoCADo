@@ -27,6 +27,9 @@ namespace avoCADo.Actions
                 case OperationType.ToggleSelect:
                     _manager.ToggleSelection(parameters.nodes, parameters.ignoreGroupNodes);
                     break;
+                case OperationType.AddToSelect:
+                    _manager.AddToSelection(parameters.nodes, parameters.ignoreGroupNodes);
+                    break;
             }
 
             return true;
@@ -64,6 +67,7 @@ namespace avoCADo.Actions
         {
             Select,
             ToggleSelect,
+            AddToSelect,
             Reset
         }
     }

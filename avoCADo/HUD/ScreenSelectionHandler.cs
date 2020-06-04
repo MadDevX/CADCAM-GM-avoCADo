@@ -62,7 +62,14 @@ namespace avoCADo
             _control.MouseDown += SelectionOnMouseDown;
             _control.MouseUp += SelectionOnMouseUp;
             _control.MouseMove += SelectionOnMouseMove;
+            _control.MouseDoubleClick += SetDoubleClick;
             _control.GotFocus += IgnoreFirstClick;
+        }
+
+        private bool _wasDoubleClick = false;
+        private void SetDoubleClick(object sender, MouseEventArgs e)
+        {
+            _wasDoubleClick = true;
         }
 
         public void Dispose()
@@ -99,15 +106,33 @@ namespace avoCADo
         {
             if (State == HandlingState.InProgress)
             {
+
                 if(CurrentSelectionDistance <= SingleSelectionThreshold)
                 {
-                    SingleSelection(e);
+                    if (_wasDoubleClick)
+                    {
+                        SelectGroupNodeChildren();
+                        _wasDoubleClick = false;
+                    }
+                    else
+                    {
+                        SingleSelection(e);
+                    }
                 }
                 else
                 {
                     MultiSelect(e);
                 }
                 State = HandlingState.Ready;
+            }
+        }
+
+        private void SelectGroupNodeChildren()
+        {
+            if (_selectionManager.MainSelection != null && _selectionManager.MainSelection.GroupNodeType != GroupNodeType.None)
+            {
+                _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
+                    new SelectionChangedInstruction.Parameters(_selectionManager.MainSelection.Children, SelectionChangedInstruction.OperationType.AddToSelect));
             }
         }
 
@@ -160,12 +185,12 @@ namespace avoCADo
             if(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
                 _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
-                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.ToggleSelect, true));
+                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.ToggleSelect, ignoreGroupNodes: true));
             }
             else
             {
                 _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
-                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.Select, true));
+                    new SelectionChangedInstruction.Parameters(nodesInsideRect, SelectionChangedInstruction.OperationType.Select, ignoreGroupNodes: true));
             }
         }
 
