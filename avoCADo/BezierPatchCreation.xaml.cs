@@ -26,7 +26,7 @@ namespace avoCADo
         public float SurfaceHeight { get; set; } = 1.0f;
         public float SurfaceWidth { get; set; } = 1.0f;
 
-        public PatchType PatchType { get; private set; }
+        public WrapMode PatchType { get; private set; }
 
         public bool InputOk
         {
@@ -61,7 +61,7 @@ namespace avoCADo
                 lblCX.Visibility = Visibility.Visible;
                 lblFX.Visibility = Visibility.Collapsed;
                 surfaceParams.Header = "Cylinder Parameters";
-                PatchType = PatchType.Cylinder;
+                PatchType = WrapMode.Column;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace avoCADo
                 lblCX.Visibility = Visibility.Collapsed;
                 lblFX.Visibility = Visibility.Visible;
                 surfaceParams.Header = "Flat Surface Parameters";
-                PatchType = PatchType.Flat;
+                PatchType = WrapMode.None;
             }
         }
 

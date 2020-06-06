@@ -13,13 +13,13 @@ namespace avoCADo
 {
     public struct PatchParameters
     {
-        public PatchType patchType;
+        public WrapMode patchType;
         public int horizontalPatches;// = 1
         public int verticalPatches;// = 1 
         public float width;// = 1.0f
         public float height;// = 1.0f
 
-        public PatchParameters(PatchType patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public PatchParameters(WrapMode patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             this.patchType = patchType;
             this.horizontalPatches = horizontalPatches;

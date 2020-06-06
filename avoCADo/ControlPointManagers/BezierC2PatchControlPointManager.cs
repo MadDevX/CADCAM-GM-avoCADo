@@ -21,14 +21,14 @@ namespace avoCADo
             return 3 + verticalPatches;
         }
 
-        protected override int GetHorizontalControlPointCount(int horizontalPatches, PatchType type)
+        protected override int GetHorizontalControlPointCount(int horizontalPatches, WrapMode type)
         {
-            return type == PatchType.Flat ? 3 + horizontalPatches : horizontalPatches;
+            return type == WrapMode.Column ? horizontalPatches : 3 + horizontalPatches;
         }
 
-        protected override int GetVerticalControlPointCount(int verticalPatches, PatchType type)
+        protected override int GetVerticalControlPointCount(int verticalPatches, WrapMode type)
         {
-            return 3 + verticalPatches;
+            return type == WrapMode.Row ? verticalPatches : 3 + verticalPatches;
         }
     }
 }

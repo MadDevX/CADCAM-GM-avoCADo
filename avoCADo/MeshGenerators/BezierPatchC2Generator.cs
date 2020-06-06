@@ -11,7 +11,7 @@ namespace avoCADo
     {
         protected override DrawCallShaderType SurfaceDrawType => DrawCallShaderType.SurfaceDeBoor;
 
-        public BezierPatchC2Generator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1, float height = 1) : base(surface, nodeFactory, patchType, position, horizontalPatches, verticalPatches, width, height)
+        public BezierPatchC2Generator(IBezierSurface surface, NodeFactory nodeFactory, WrapMode patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1, float height = 1) : base(surface, nodeFactory, patchType, position, horizontalPatches, verticalPatches, width, height)
         {
         }
 

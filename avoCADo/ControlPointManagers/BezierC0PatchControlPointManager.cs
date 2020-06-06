@@ -46,7 +46,7 @@ namespace avoCADo
 
         public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
-            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType) * GetVerticalControlPointCount(verticalPatches, _generator.PatchType));
+            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
             var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
@@ -59,13 +59,16 @@ namespace avoCADo
 
         private void SetControlPointPoisitionsWrapper(Vector3 position)
         {
-            switch (_generator.PatchType)
+            switch (_generator.WrapMode)
             {
-                case PatchType.Flat:
+                case WrapMode.None:
                     SetControlPointPoisitionsFlat(position);
                     break;
-                case PatchType.Cylinder:
-                    SetControlPointPoisitionsCylinder(position);
+                case WrapMode.Column:
+                    SetControlPointPoisitionsCylinderColumnWrap(position);
+                    break;
+                case WrapMode.Row:
+                    SetControlPointPoisitionsCylinderRowWrap(position);
                     break;
             }
         }
@@ -84,8 +87,8 @@ namespace avoCADo
         {
             var width = GetHorizontalAbstractCPCount(horizontalPatches);
             var height = GetVerticalAbstractCPCount(verticalPatches);
-            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType);
-            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.PatchType);
+            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
+            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
             _generator.Surface.ControlPoints.SetData(_controlPointNodes, dataWidth, dataHeight, width, height);
         }
 
@@ -111,8 +114,8 @@ namespace avoCADo
         /// <returns></returns>
         private bool CorrectControlPointCount(int horizontalPatches, int verticalPatches)
         {
-            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.PatchType);
-            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.PatchType);
+            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
+            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
             var dataCount = dataWidth * dataHeight;
             var shouldAddPoints = dataCount > _controlPointNodes.Count;
 
@@ -142,22 +145,14 @@ namespace avoCADo
             return shouldAddPoints;
         }
 
-        protected virtual int GetHorizontalControlPointCount(int horizontalPatches, PatchType type)
+        protected virtual int GetHorizontalControlPointCount(int horizontalPatches, WrapMode type)
         {
-            switch(type)
-            {
-                case PatchType.Flat:
-                    return (3 * horizontalPatches) + 1;
-                case PatchType.Cylinder:
-                    return 3 * horizontalPatches;
-                default:
-                    return (3 * horizontalPatches) + 1;
-            }
+            return type == WrapMode.Column ? 3 * horizontalPatches : (3 * horizontalPatches) + 1;
         }
 
-        protected virtual int GetVerticalControlPointCount(int verticalPatches, PatchType type)
+        protected virtual int GetVerticalControlPointCount(int verticalPatches, WrapMode type)
         {
-            return (3 * verticalPatches) + 1;
+            return type == WrapMode.Row ? 3 * verticalPatches : (3 * verticalPatches) + 1;
         }
 
         private void DisposeControlPoint(INode node)
@@ -257,7 +252,7 @@ namespace avoCADo
             }
         }
 
-        private void SetControlPointPoisitionsCylinder(Vector3 position)
+        private void SetControlPointPoisitionsCylinderColumnWrap(Vector3 position)
         {
             var width = _generator.Surface.ControlPoints.DataWidth;
             var height = _generator.Surface.ControlPoints.DataHeight;
@@ -265,13 +260,29 @@ namespace avoCADo
             {
                 for (int i = 0; i < width; i++)
                 {
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + 
-                        new Vector3
-                        (
+                    var offset = new Vector3(
                             _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width)) * Math.PI * 2.0), 
                             _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)i / (width)) * Math.PI * 2.0),
-                            ((float)j / (height - 1)) * _generator.SurfaceHeight
-                        );
+                            ((float)j / (height - 1)) * _generator.SurfaceHeight);
+                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + offset;
+                }
+            }
+        }
+
+        private void SetControlPointPoisitionsCylinderRowWrap(Vector3 position)
+        {
+            var width = _generator.Surface.ControlPoints.DataWidth;
+            var height = _generator.Surface.ControlPoints.DataHeight;
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    var offset = new Vector3(
+                            ((float)i / (width - 1)) * _generator.SurfaceHeight,
+                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)j / (height)) * Math.PI * 2.0),
+                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)j / (height)) * Math.PI * 2.0)
+                            );
+                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + offset;
                 }
             }
         }

@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public enum PatchType
+    public enum WrapMode
     {
-        Flat,
-        Cylinder
+        None,
+        Column,
+        Row
     }
 
     public class BezierPatchGenerator : IMeshGenerator, ICircularDependent<INode>
@@ -72,20 +73,20 @@ namespace avoCADo
         public float SurfaceHeight { get; set; } = 1.0f;
         public IBezierSurface Surface { get; }
 
-        public PatchType PatchType 
+        public WrapMode WrapMode 
         { 
             get
             {
-                return _patchType;
+                return _wrapMode;
             }
             set
             {
-                _patchType = value;
+                _wrapMode = value;
                 _ctrlPointManager.UpdateControlPoints(_defaultPosition, HorizontalPatches, VerticalPatches);
             }
         }
 
-        private PatchType _patchType = PatchType.Flat;
+        private WrapMode _wrapMode = WrapMode.None;
         private INode _node;
         private NodeFactory _nodeFactory;
         private BezierC0PatchControlPointManager _ctrlPointManager;
@@ -93,11 +94,11 @@ namespace avoCADo
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
         private Vector3 _defaultPosition;
 
-        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, PatchType patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, WrapMode patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
             Surface = surface;
             _nodeFactory = nodeFactory;
-            _patchType = patchType;
+            _wrapMode = patchType;
             _defaultHorizontalPatches = horizontalPatches;
             _defaultVerticalPatches = verticalPatches;
             _defaultPosition = position;
