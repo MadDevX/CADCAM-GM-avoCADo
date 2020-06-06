@@ -47,6 +47,7 @@ namespace avoCADo
                     nodeCC0.Name = bc0.Name;
                     var genCC0 = nodeCC0.Renderer.GetGenerator() as BezierGeneratorGeometry;
                     genCC0.ShowEdges = bc0.ShowControlPolygon;
+                    
                     return nodeCC0;
 
                 case SceneBezierC2 bc2:
@@ -65,8 +66,8 @@ namespace avoCADo
                     return nodeIC;
 
                 //case ScenePatchC0 pc0:
-                //    var type = pc0.WrapDirection != WrapType.None ? PatchType.Cylinder : PatchType.Flat;
-                //    var nodePC0 = _nodeFactory.CreateBezierC0Patch(type, pc0.RowSlices/3???)
+                //    var type = pc0.WrapDirection != WrapType.None ? WrapMode.C : PatchType.Flat;
+                //    var nodePC0 = _nodeFactory.CreateBezierC0Patch(type, pc0.RowSlices / 3 ???)
                 default:
                     return null;
             }

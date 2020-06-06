@@ -16,7 +16,9 @@ namespace avoCADo
 
         public int Count => Width * Height;
         public int DataCount => DataWidth * DataHeight;
+        
         private List<T> _list;
+        public IList<T> RawData => _list;
 
         public CoordList()
         {

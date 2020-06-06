@@ -93,6 +93,7 @@ namespace avoCADo
 
         private int _defaultHorizontalPatches, _defaultVerticalPatches;
         private Vector3 _defaultPosition;
+        private CoordList<INode> _existingNodes = null;
 
         public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, WrapMode patchType, Vector3 position, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
         {
@@ -106,11 +107,24 @@ namespace avoCADo
             SurfaceHeight = height;
         }
 
+        public BezierPatchGenerator(IBezierSurface surface, NodeFactory nodeFactory, WrapMode patchType, Vector3 position, int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
+        {
+            Surface = surface;
+            _nodeFactory = nodeFactory;
+            _wrapMode = patchType;
+            _defaultHorizontalPatches = horizontalPatches;
+            _defaultVerticalPatches = verticalPatches;
+            _defaultPosition = position;
+            SurfaceWidthOrRadius = 0.0f;
+            SurfaceHeight = 0.0f;
+            _existingNodes = existingNodes;
+        }
+
         public void Initialize(INode node)
         {
             _node = node;
             _ctrlPointManager = CreateCPManager(_nodeFactory, this, _node);
-            Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches);
+            Initialize(_defaultPosition, _defaultHorizontalPatches, _defaultVerticalPatches, _existingNodes);
         }
 
         protected virtual BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node)
@@ -118,9 +132,16 @@ namespace avoCADo
             return new BezierC0PatchControlPointManager(nodeFactory, generator, node);
         }
 
-        private void Initialize(Vector3 position, int horizontalPatches, int verticalPatches)
+        private void Initialize(Vector3 position, int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
         {
-            _ctrlPointManager.UpdateControlPoints(position, horizontalPatches, verticalPatches);
+            if (existingNodes == null)
+            {
+                _ctrlPointManager.UpdateControlPoints(position, horizontalPatches, verticalPatches);
+            }
+            else
+            {
+                _ctrlPointManager.UpdateControlPoints(position, horizontalPatches, verticalPatches, existingNodes);
+            }
         }
 
 

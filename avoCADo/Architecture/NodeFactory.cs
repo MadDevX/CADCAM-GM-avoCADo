@@ -18,14 +18,16 @@ namespace avoCADo
         public int verticalPatches;// = 1 
         public float width;// = 1.0f
         public float height;// = 1.0f
+        public CoordList<INode> existingNodes;
 
-        public PatchParameters(WrapMode patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f)
+        public PatchParameters(WrapMode patchType, int horizontalPatches = 1, int verticalPatches = 1, float width = 1.0f, float height = 1.0f, CoordList<INode> existingNodes = null)
         {
             this.patchType = patchType;
             this.horizontalPatches = horizontalPatches;
             this.verticalPatches = verticalPatches;
             this.width = width;
             this.height = height;
+            this.existingNodes = existingNodes;
         }
     }
 

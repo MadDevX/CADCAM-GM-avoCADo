@@ -42,6 +42,14 @@ namespace avoCADo
         }
 
 
+        public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
+        {
+            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
+            SetExistingControlPoints(horizontalPatches, verticalPatches, existingNodes);
+
+            ShouldUpdateData = true;
+        }
+
         public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
             if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
@@ -98,6 +106,21 @@ namespace avoCADo
         {
             return (3 * verticalPatches) + 1;
         }
+
+        private void SetExistingControlPoints(int horizontalPatches, int verticalPatches, CoordList<INode> existingCP)
+        {
+            var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
+            var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
+            var dataCount = dataWidth * dataHeight;
+
+            if(existingCP.DataHeight != dataHeight || existingCP.DataWidth != dataWidth)
+            {
+                throw new InvalidOperationException("existing CP list does not match provided dimensions");
+            }
+            TrackControlPointsBatch(existingCP.RawData);
+            _generator.Surface.ControlPoints.SetData(existingCP.RawData, existingCP.DataWidth, existingCP.DataHeight, existingCP.Width, existingCP.Height);
+        }
+
 
         /// <summary>
         /// Used by <see cref="CorrectControlPointCount(int, int)"/> while removing nodes.
