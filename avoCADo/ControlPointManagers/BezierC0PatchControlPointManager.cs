@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.ControlPointManagers;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +60,13 @@ namespace avoCADo
             switch (_generator.WrapMode)
             {
                 case WrapMode.None:
-                    SetControlPointPoisitionsFlat(position);
+                    CPStartingPositionUtility.SetControlPointPoisitionsFlat(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
                     break;
                 case WrapMode.Column:
-                    SetControlPointPoisitionsCylinderColumnWrap(position);
+                    CPStartingPositionUtility.SetControlPointPoisitionsCylinderColumnWrap(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
                     break;
                 case WrapMode.Row:
-                    SetControlPointPoisitionsCylinderRowWrap(position);
+                    CPStartingPositionUtility.SetControlPointPoisitionsCylinderRowWrap(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
                     break;
             }
         }
@@ -247,54 +248,5 @@ namespace avoCADo
                 ShouldUpdateData = true;
             }
         }
-
-        private void SetControlPointPoisitionsFlat(Vector3 position)
-        {
-            var width = _generator.Surface.ControlPoints.Width;
-            var height = _generator.Surface.ControlPoints.Height;
-            for (int j = 0; j < height; j++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + new Vector3(((float)i / (width - 1)) * _generator.SurfaceWidthOrRadius, 0.0f, ((float)j / (height - 1)) * _generator.SurfaceHeight);
-                }
-            }
-        }
-
-        private void SetControlPointPoisitionsCylinderColumnWrap(Vector3 position)
-        {
-            var width = _generator.Surface.ControlPoints.DataWidth;
-            var height = _generator.Surface.ControlPoints.DataHeight;
-            for (int j = 0; j < height; j++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    var offset = new Vector3(
-                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)i / (width)) * Math.PI * 2.0), 
-                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)i / (width)) * Math.PI * 2.0),
-                            ((float)j / (height - 1)) * _generator.SurfaceHeight);
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + offset;
-                }
-            }
-        }
-
-        private void SetControlPointPoisitionsCylinderRowWrap(Vector3 position)
-        {
-            var width = _generator.Surface.ControlPoints.DataWidth;
-            var height = _generator.Surface.ControlPoints.DataHeight;
-            for (int j = 0; j < height; j++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    var offset = new Vector3(
-                            ((float)i / (width - 1)) * _generator.SurfaceHeight,
-                            _generator.SurfaceWidthOrRadius * (float)Math.Cos(((double)j / (height)) * Math.PI * 2.0),
-                            _generator.SurfaceWidthOrRadius * (float)Math.Sin(((double)j / (height)) * Math.PI * 2.0)
-                            );
-                    _generator.Surface.ControlPoints[i, j].Transform.WorldPosition = position + offset;
-                }
-            }
-        }
-
     }
 }
