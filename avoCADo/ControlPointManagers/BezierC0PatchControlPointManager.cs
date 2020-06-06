@@ -15,18 +15,15 @@ namespace avoCADo
         private readonly NodeFactory _nodeFactory;
         private readonly BezierPatchGenerator _generator;
         private readonly INode _node;
+        private readonly IDependencyAdder _depAdd;
 
-        private float _timer = 0.0f;
-        private float _nextDelay = 0.0f;
-        private float _delayMin = 0.05f;
-        private float _delayMaxDiffMin = 0.05f;
-        private Random _rand = new Random();
-
-        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode parentNode)
+        public BezierC0PatchControlPointManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode ownerNode)
         {
             _nodeFactory = nodeFactory;
             _generator = generator;
-            _node = parentNode;
+            _node = ownerNode;
+            _depAdd = _node as IDependencyAdder;
+            if (_depAdd == null) throw new InvalidOperationException("Owner node does not implement IDependencyAdder!");
             Initialize();
         }
 
@@ -47,7 +44,7 @@ namespace avoCADo
         public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
             if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
-            var newPointsAdded = CorrectControlPointCount(horizontalPatches, verticalPatches);
+            CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
             PauseTransformHandling();
@@ -179,13 +176,32 @@ namespace avoCADo
 
         private void DisposeControlPointsBatch(IList<INode> nodes)
         {
+            GetCPsWithoutDependencies(nodes);
+            UntrackControlPointsBatch(nodes);
+            if (_disposeNodesBuffer.Count > 0)
+            {
+                _disposeNodesBuffer[0].Transform.ParentNode.DetachChildRange(_disposeNodesBuffer);
+                foreach(var nodeToDispose in _disposeNodesBuffer)
+                {
+                    nodeToDispose.Dispose();
+                }
+            }
             _disposeNodesBuffer.Clear();
-            foreach(var node in nodes)
+        }
+
+        /// <summary>
+        /// Finds nodes without dependencies in provided list, and stores them in <see cref="_disposeNodesBuffer"/>.
+        /// </summary>
+        /// <param name="nodes"></param>
+        private void GetCPsWithoutDependencies(IList<INode> nodes)
+        {
+            _disposeNodesBuffer.Clear();
+            foreach (var node in nodes)
             {
                 var depColl = node as IDependencyCollector;
                 if (depColl != null)
                 {
-                    if (depColl.HasDependency(DependencyType.Weak) == false)
+                    if (depColl.HasDependencyOtherThan(_depAdd) == false)
                     {
                         _disposeNodesBuffer.Add(node);
                     }
@@ -195,14 +211,7 @@ namespace avoCADo
                     throw new InvalidOperationException("Object tracked by surface was not a node!");
                 }
             }
-            UntrackControlPointsBatch(nodes);
-            if (_disposeNodesBuffer.Count > 0)
-            {
-                _disposeNodesBuffer[0].Transform.ParentNode.DetachChildRange(_disposeNodesBuffer);
-            }
-            _disposeNodesBuffer.Clear();
         }
-
 
         private void TrackControlPointsBatch(IList<INode> nodes)
         {

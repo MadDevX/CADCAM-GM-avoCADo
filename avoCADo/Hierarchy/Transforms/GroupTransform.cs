@@ -17,14 +17,14 @@ namespace avoCADo
             get => base.Node;
             set
             {
-                //Unsubscribe from previous parent
+                //Unsubscribe from previous owner
                 var prevParent = Node; 
                 if(prevParent != null)
                 {
                     prevParent.PropertyChanged -= Node_PropertyChanged;
                     prevParent.Children.CollectionChanged -= Children_CollectionChanged;
                 }
-                //Subscribe to new parent
+                //Subscribe to new owner
                 base.Node = value;
                 if (Node != null)
                 {

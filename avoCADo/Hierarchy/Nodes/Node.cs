@@ -204,6 +204,18 @@ namespace avoCADo
             return HasDependency(DependencyType.Strong) || HasDependency(DependencyType.Weak);
         }
 
+        public bool HasDependencyOtherThan(IDependencyAdder depAdd)
+        {
+            var strongList = _dependencies[DependencyType.Strong];
+            var weakList = _dependencies[DependencyType.Weak];
+
+            var strongCount = strongList.Contains(depAdd) ? strongList.Count - 1 : strongList.Count;
+            var weakCount = weakList.Contains(depAdd) ? weakList.Count - 1 : weakList.Count;
+
+            return strongCount + weakCount > 0;
+        }
+
+
         protected void InvokeOnDisposed()
         {
             OnDisposed?.Invoke(this);

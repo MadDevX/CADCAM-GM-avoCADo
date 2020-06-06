@@ -25,52 +25,61 @@ namespace avoCADo.Actions
 
         public override bool Execute(Parameters parameters)
         {
-            _deleteInfos = new DeleteInfo[parameters.nodes.Count];
-            for (int j = 0; j < parameters.nodes.Count; j++)
+            //_deleteInfos = new DeleteInfo[parameters.nodes.Count];
+            //for (int j = 0; j < parameters.nodes.Count; j++)
+            //{
+            //    var node = parameters.nodes[j];
+            //    _deleteInfos[j] = new DeleteInfo();
+            //    var info = _deleteInfos[j];
+
+            //    if (node is IDependencyCollector depColl && depColl.HasDependency())
+            //    {
+            //        DependencyUtility.AddAllDependenciesOfType(info._depAdders, depColl);
+            //        info._depAddersIndices = new int[info._depAdders.Count];
+            //    }
+
+            //    for (int i = 0; i < info._depAdders.Count; i++)
+            //    {
+            //        info._depAddersIndices[i] = info._depAdders[i].GetChildIndex(node);
+            //        info._depAdders[i].DetachChild(node);
+            //    }
+
+            //    info._deletedNode = node;
+            //    info._deletedNodeParent = node.Transform.ParentNode;
+
+            //    if (info._deletedNode.IsSelected)
+            //    {
+            //        NodeSelection.Manager.ToggleSelection(info._deletedNode);
+            //        info._wasSelected = true;
+            //    }
+
+            //    info._deletedNodeChildIndex = info._deletedNodeParent.GetChildIndex(node);
+            //    info._deletedNodeParent.DetachChild(info._deletedNode);
+            //}
+            //return true; 
+            //TODO: fix handling of dependent children/groupnodes (detachment from parent should be handled by other group nodes maybe?)
+            //Temporary solution:
+            foreach (var node in parameters.nodes)
             {
-                var node = parameters.nodes[j];
-                _deleteInfos[j] = new DeleteInfo();
-                var info = _deleteInfos[j];
-
-                if (node is IDependencyCollector depColl && depColl.HasDependency())
-                {
-                    DependencyUtility.AddAllDependenciesOfType(info._depAdders, depColl);
-                    info._depAddersIndices = new int[info._depAdders.Count];
-                }
-
-                for (int i = 0; i < info._depAdders.Count; i++)
-                {
-                    info._depAddersIndices[i] = info._depAdders[i].GetChildIndex(node);
-                    info._depAdders[i].DetachChild(node);
-                }
-
-                info._deletedNode = node;
-                info._deletedNodeParent = node.Transform.ParentNode;
-
-                if (info._deletedNode.IsSelected)
-                {
-                    NodeSelection.Manager.ToggleSelection(info._deletedNode);
-                    info._wasSelected = true;
-                }
-
-                info._deletedNodeChildIndex = info._deletedNodeParent.GetChildIndex(node);
-                info._deletedNodeParent.DetachChild(info._deletedNode);
+                node.Dispose();
             }
-            return true;
+            _instructionBuffer.Clear();
+            return false;
         }
 
         public override bool Undo()
         {
-            for(int j = _deleteInfos.Length - 1; j >= 0; j--)
-            {
-                var info = _deleteInfos[j];
-                info._deletedNodeParent.AttachChildAtIndex(info._deletedNode, info._deletedNodeChildIndex);
-                for (int i = 0; i < info._depAdders.Count; i++)
-                {
-                    info._depAdders[i].AttachChildAtIndex(info._deletedNode, info._depAddersIndices[i]);
-                }
-                if (info._wasSelected) NodeSelection.Manager.ToggleSelection(info._deletedNode);
-            }
+            //TODO: fix
+            ////for(int j = _deleteInfos.Length - 1; j >= 0; j--)
+            ////{
+            ////    var info = _deleteInfos[j];
+            ////    info._deletedNodeParent.AttachChildAtIndex(info._deletedNode, info._deletedNodeChildIndex);
+            ////    for (int i = 0; i < info._depAdders.Count; i++)
+            ////    {
+            ////        info._depAdders[i].AttachChildAtIndex(info._deletedNode, info._depAddersIndices[i]);
+            ////    }
+            ////    if (info._wasSelected) NodeSelection.Manager.ToggleSelection(info._deletedNode);
+            ////}
             return true;
         }
 

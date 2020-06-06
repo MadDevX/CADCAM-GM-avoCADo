@@ -12,6 +12,7 @@ namespace avoCADo
     public class Transform : ITransform
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event Action<INode> ParentChanged;
 
         private Vector3 _position = Vector3.Zero;
         private Vector3 _scale = Vector3.One;
@@ -74,7 +75,17 @@ namespace avoCADo
             }
         }
 
-        public INode ParentNode { get; set; }
+        private INode _parentNode = null;
+        public INode ParentNode 
+        {
+            get => _parentNode; 
+            set
+            {
+                var prev = _parentNode;
+                _parentNode = value;
+                ParentChanged?.Invoke(prev);
+            }
+        }
 
         private INode _node = null;
         public INode Node { 

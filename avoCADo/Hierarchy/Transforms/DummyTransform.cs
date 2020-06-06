@@ -11,12 +11,25 @@ namespace avoCADo
     public class DummyTransform : ITransform
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event Action<INode> ParentChanged;
+
         public virtual Vector3 Position { get => Vector3.Zero; set { } }
         public Quaternion Rotation { get => Quaternion.Identity; set { } }
         public Vector3 RotationEulerAngles { get => Vector3.Zero; set { } }
         public Vector3 Scale { get => Vector3.One; set { } }
-        public INode ParentNode { get; set; }
-        
+
+        private INode _parentNode = null;
+        public INode ParentNode
+        {
+            get => _parentNode;
+            set
+            {
+                var prev = _parentNode;
+                _parentNode = value;
+                ParentChanged?.Invoke(prev);
+            }
+        }
+
         private INode _node = null;
         public virtual INode Node
         {

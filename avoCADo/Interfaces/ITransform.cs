@@ -10,6 +10,11 @@ namespace avoCADo
 {
     public interface ITransform : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Returns previous parent as a parameter.
+        /// </summary>
+        event Action<INode> ParentChanged;
+
         Vector3 Position { get; set; }
         Quaternion Rotation { get; set; }
         Vector3 RotationEulerAngles { get; set; }
