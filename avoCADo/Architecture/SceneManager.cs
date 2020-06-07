@@ -35,6 +35,10 @@ namespace avoCADo
             _hierarchy.Initialize(scene);
             CurrentScene = scene;
             _instructionBuffer.Clear();
+
+            NameGenerator.ResetState();
+            NameGenerator.GenerateKeywords(CurrentScene);
+
             return curScene;
         }
 

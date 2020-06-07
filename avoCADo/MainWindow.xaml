@@ -34,6 +34,7 @@
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid01" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid01_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid025" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid025_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapGrid05" CanExecute="SnapGrid_CanExecute" Executed="SnapGrid05_Executed"/>
+        <CommandBinding Command="local:UtilityCommandDefinitions.EnableViewPlaneTranslate" CanExecute="EnableViewPlaneTranslate_CanExecute" Executed="EnableViewPlaneTranslate_Executed"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -52,6 +53,8 @@
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC2"/>
             </MenuItem>
             <MenuItem Header="Utility">
+                <MenuItem x:Name="menuItemEnableViewPlaneTranslate" Command="local:UtilityCommandDefinitions.EnableViewPlaneTranslate" IsCheckable="True"/>
+                <Separator/>
                 <MenuItem x:Name="menuItemLocalMode" Command="local:UtilityCommandDefinitions.LocalMode" IsChecked="True"/>
                 <MenuItem x:Name="menuItemCursorMode" Command="local:UtilityCommandDefinitions.CursorMode"/>
                 <Separator/>

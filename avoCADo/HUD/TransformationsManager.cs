@@ -32,6 +32,8 @@ namespace avoCADo.HUD
 
     public class TransformationsManager : IDisposable
     {
+        public bool EnableViewPlaneTranslation { get; set; } = false;
+
         private TransformationMode _mode = TransformationMode.Local;
         public TransformationMode Mode 
         {
@@ -247,7 +249,7 @@ namespace avoCADo.HUD
             {
                 diffVector *= TranslateMultiplier;
             }
-            else
+            else if(EnableViewPlaneTranslation)
             {
                 diffVector = _camera.ViewPlaneVectorToWorldSpace(new Vector2(posDiff.X, -posDiff.Y)) * TranslateMultiplier;
             }

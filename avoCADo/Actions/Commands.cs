@@ -214,6 +214,8 @@ namespace avoCADo
                     _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
                     SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
                     prevScene.Dispose();
+                    NameGenerator.ResetState();
+                    NameGenerator.GenerateKeywords(_sceneManager.CurrentScene);
                 }
             }
             catch(Exception)

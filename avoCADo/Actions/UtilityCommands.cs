@@ -98,5 +98,14 @@ namespace avoCADo
             menuItemSnapGrid025.IsChecked = false;
             menuItemSnapGrid05.IsChecked = true;
         }
+
+        private void EnableViewPlaneTranslate_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+        private void EnableViewPlaneTranslate_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _transformationsManager.EnableViewPlaneTranslation = menuItemEnableViewPlaneTranslate.IsChecked;// !_transformationsManager.EnableViewPlaneTranslation;
+        }
     }
 }

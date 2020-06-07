@@ -36,7 +36,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.F2)
+                    new KeyGesture(Key.F2)
                 }
             );
         public static readonly RoutedUICommand SnapNone = new RoutedUICommand
@@ -46,7 +46,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad1, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad1, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapValue = new RoutedUICommand
@@ -56,7 +56,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad2, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad2, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapToGrid = new RoutedUICommand
@@ -66,7 +66,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad3, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad3, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid01 = new RoutedUICommand
@@ -76,7 +76,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad7, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad7, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid025 = new RoutedUICommand
@@ -86,7 +86,7 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad8, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad8, ModifierKeys.Control)
                 }
             );
         public static readonly RoutedUICommand SnapGrid05 = new RoutedUICommand
@@ -96,8 +96,14 @@ namespace avoCADo
                 typeof(CommandDefinitions),
                 new InputGestureCollection()
                 {
-                            new KeyGesture(Key.NumPad9, ModifierKeys.Control)
+                    new KeyGesture(Key.NumPad9, ModifierKeys.Control)
                 }
+            );
+        public static readonly RoutedUICommand EnableViewPlaneTranslate = new RoutedUICommand
+            (
+                "Enable View Plane Translate",
+                "ViewPlaneTranslate",
+                typeof(CommandDefinitions)
             );
     }
 }

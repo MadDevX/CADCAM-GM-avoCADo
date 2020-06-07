@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace avoCADo
@@ -24,8 +27,57 @@ namespace avoCADo
             }
         }
 
+        public static void ResetState()
+        {
+            _objectIds.Clear();
+        }
 
+        public static void GenerateKeywords(INode root)
+        {
+            var names = root.Children.Select((x) => x.Name).ToList();
+            names.Sort();
+            int i = 0;
+            while (i < names.Count)
+            {
+                var keyword = KeywordWithoutSuffix(names[i]);
+                var startIdx = i;
+                while (i < names.Count && names[i].StartsWith(keyword)) i++;
+                var keywordCount = i - startIdx;
+                var lastIdx = FindIndexOf(names[i - 1]);
+                _objectIds.Add(keyword, Math.Max(keywordCount, lastIdx+1));
+            }
+        }   
 
+        private static string KeywordWithoutSuffix(string name)
+        {
+            var match = Regex.Match(name, "\\s{1}[(]{1}[0-9]+[)]{1}$");
+            if(match.Success)
+            {
+                return name.Substring(0, name.Length - match.Value.Length);
+            }
+            else
+            {
+                return name;
+            }
+        }
+
+        private static int FindIndexOf(string name)
+        {
+            int i = name.Length - 1;
+            while (i > 0 && char.IsDigit(name[i]) == false) i--;
+            int numberLastIdx = i;
+            while (i > 0 && char.IsDigit(name[i])) i--;
+            int numberFirstIdx = i + 1;
+            var numberLength = (numberLastIdx + 1) - numberFirstIdx;
+            if(int.TryParse(name.Substring(numberFirstIdx, numberLength), out int index))
+            {
+                return index;
+            }
+            else
+            {
+                return 1;
+            }
+        }
 
         /// <summary>
         /// Not usable for creating bezier patches
