@@ -658,15 +658,15 @@ namespace avoCADo.Serialization
     public partial class ScenePointPosition
     {
 
-        private decimal xField;
+        private float xField;
 
-        private decimal yField;
+        private float yField;
 
-        private decimal zField;
+        private float zField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal X
+        public float X
         {
             get
             {
@@ -680,7 +680,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Y
+        public float Y
         {
             get
             {
@@ -694,7 +694,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Z
+        public float Z
         {
             get
             {
@@ -722,9 +722,9 @@ namespace avoCADo.Serialization
 
         private SceneTorusScale scaleField;
 
-        private decimal majorRadiusField;
+        private float majorRadiusField;
 
-        private decimal minorRadiusField;
+        private float minorRadiusField;
 
         private string verticalSlicesField;
 
@@ -771,7 +771,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal MajorRadius
+        public float MajorRadius
         {
             get
             {
@@ -785,7 +785,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal MinorRadius
+        public float MinorRadius
         {
             get
             {
@@ -835,15 +835,15 @@ namespace avoCADo.Serialization
     public partial class SceneTorusPosition
     {
 
-        private decimal xField;
+        private float xField;
 
-        private decimal yField;
+        private float yField;
 
-        private decimal zField;
+        private float zField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal X
+        public float X
         {
             get
             {
@@ -857,7 +857,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Y
+        public float Y
         {
             get
             {
@@ -871,7 +871,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Z
+        public float Z
         {
             get
             {
@@ -893,15 +893,15 @@ namespace avoCADo.Serialization
     public partial class SceneTorusRotation
     {
 
-        private decimal xField;
+        private float xField;
 
-        private decimal yField;
+        private float yField;
 
-        private decimal zField;
+        private float zField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal X
+        public float X
         {
             get
             {
@@ -915,7 +915,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Y
+        public float Y
         {
             get
             {
@@ -929,7 +929,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Z
+        public float Z
         {
             get
             {
@@ -951,15 +951,15 @@ namespace avoCADo.Serialization
     public partial class SceneTorusScale
     {
 
-        private decimal xField;
+        private float xField;
 
-        private decimal yField;
+        private float yField;
 
-        private decimal zField;
+        private float zField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal X
+        public float X
         {
             get
             {
@@ -973,7 +973,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Y
+        public float Y
         {
             get
             {
@@ -987,7 +987,7 @@ namespace avoCADo.Serialization
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal Z
+        public float Z
         {
             get
             {

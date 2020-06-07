@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class CoordList<T>
+    public class CoordList<T> where T : class
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -30,6 +30,22 @@ namespace avoCADo
         {
             _list = new List<T>(width * height);
             SetData(list, width, height);
+        }
+
+        /// <summary>
+        /// Clears data and initializes table of given dimensions filled with nulls
+        /// </summary>
+        /// <param name="dataWidth"></param>
+        /// <param name="dataHeight"></param>
+        public void ResetSize(int dataWidth, int dataHeight)
+        {
+            DataWidth = Width = dataWidth;
+            DataHeight = Height = dataHeight;
+            _list.Clear();
+            for (int i = 0; i < dataWidth * dataHeight; i++)
+            {
+                _list.Add(null);
+            }
         }
 
         public void SetData(IList<T> list, int dataWidth, int dataHeight, int width, int height)

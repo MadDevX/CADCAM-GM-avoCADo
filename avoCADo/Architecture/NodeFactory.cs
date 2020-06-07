@@ -31,6 +31,16 @@ namespace avoCADo
         }
     }
 
+    public struct CurveParameters
+    {
+        public List<INode> controlPoints;
+
+        public CurveParameters(List<INode> controlPoints = null)
+        {
+            this.controlPoints = controlPoints;
+        }
+    }
+
     public class NodeFactory : IDisposable
     {
         private SceneManager _sceneManager;
@@ -55,11 +65,11 @@ namespace avoCADo
                 case ObjectType.Torus:
                     return CreateTorus((INode)parameters);
                 case ObjectType.BezierCurveC0:
-                    return CreateBezierCurveC0();
+                    return CreateBezierCurveC0((CurveParameters)parameters);
                 case ObjectType.BezierCurveC2:
-                    return CreateBezierCurveC2();
+                    return CreateBezierCurveC2((CurveParameters)parameters);
                 case ObjectType.InterpolatingCurve:
-                    return CreateInterpolatingCurve();
+                    return CreateInterpolatingCurve((CurveParameters)parameters);
                 case ObjectType.BezierPatchC0:
                     return CreateBezierPatchC0((PatchParameters)parameters);
                 case ObjectType.BezierPatchC2:
@@ -203,28 +213,28 @@ namespace avoCADo
             return bezierGroup;
         }
 
-        public INode CreateBezierCurveC0() 
+        public INode CreateBezierCurveC0(CurveParameters parameters) 
         { 
-            var groupNode = CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve");
+            var groupNode = CreateGeometryCurveGroup<BezierC0Curve>("BezierCurve", parameters.controlPoints);
             groupNode.ObjectType = ObjectType.BezierCurveC0;
             return groupNode;
         }
 
-        public INode CreateBezierCurveC2()
+        public INode CreateBezierCurveC2(CurveParameters parameters)
         {
-            var groupNode = CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve");
+            var groupNode = CreateGeometryCurveGroup<BezierC2Curve>("BSplineCurve", parameters.controlPoints);
             groupNode.ObjectType = ObjectType.BezierCurveC2;
             return groupNode;
         }
 
-        public INode CreateInterpolatingCurve()
+        public INode CreateInterpolatingCurve(CurveParameters parameters)
         {
-            var groupNode = CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve");
+            var groupNode = CreateGeometryCurveGroup<InterpolatingC2Curve>("InterpolatingC2Curve", parameters.controlPoints);
             groupNode.ObjectType = ObjectType.InterpolatingCurve;
             return groupNode;
         }
 
-        private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName) where T : ICurve
+        private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName, List<INode> controlPoints) where T : ICurve
         {
             var parent = _sceneManager.CurrentScene;
             var source = new WpfObservableRangeCollection<INode>();
@@ -232,7 +242,7 @@ namespace avoCADo
 
             var generator = new BezierGeneratorGeometry(curve);
             var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, defaultName));
-            var selected = NodeSelection.Manager.SelectedNodes;
+            var selected = controlPoints != null ? controlPoints.AsReadOnly() : NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {
                 if (node.Renderer is PointRenderer)

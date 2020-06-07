@@ -111,6 +111,8 @@ namespace avoCADo
         {
             var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
             var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
+            var width = GetHorizontalAbstractCPCount(horizontalPatches);
+            var height = GetVerticalAbstractCPCount(verticalPatches);
             var dataCount = dataWidth * dataHeight;
 
             if(existingCP.DataHeight != dataHeight || existingCP.DataWidth != dataWidth)
@@ -118,7 +120,7 @@ namespace avoCADo
                 throw new InvalidOperationException("existing CP list does not match provided dimensions");
             }
             TrackControlPointsBatch(existingCP.RawData);
-            _generator.Surface.ControlPoints.SetData(existingCP.RawData, existingCP.DataWidth, existingCP.DataHeight, existingCP.Width, existingCP.Height);
+            _generator.Surface.ControlPoints.SetData(existingCP.RawData, existingCP.DataWidth, existingCP.DataHeight, width, height);
         }
 
 
