@@ -24,18 +24,6 @@ namespace avoCADo.Serialization
             return deserializedScene;
         }
 
-        struct GroupNodePair
-        {
-            public INode groupNode;
-            public NamedType serializedNode;
-
-            public GroupNodePair(INode groupNode, NamedType serializedNode)
-            {
-                this.groupNode = groupNode;
-                this.serializedNode = serializedNode;
-            }
-        }
-
         public static void ImportScene(Serialization.Scene serializedScene, NodeImporter nodeImporter, avoCADo.Scene currentScene)
         {
             var groupNodes = new List<NamedType>();

@@ -17,6 +17,7 @@ namespace avoCADo
         private InstructionBuffer _instructionBuffer;
         private NodeFactory _nodeFactory;
         private NodeImporter _nodeImporter;
+        private NodeExporter _nodeExporter;
 
         private MainWindow _window;
         private GLControl _control;
@@ -95,6 +96,7 @@ namespace avoCADo
             _nodeFactory = new NodeFactory(_sceneManager, _cursor, _window, _shaderProvider);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _sceneManager);
             _nodeImporter = new NodeImporter(_nodeFactory);
+            _nodeExporter = new NodeExporter();
 
             Registry.VirtualNodeFactory = _virtualNodeFactory;
             Registry.InstructionBuffer = _instructionBuffer;
@@ -104,7 +106,7 @@ namespace avoCADo
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
 
-            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _sceneManager, _instructionBuffer);
+            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _instructionBuffer);
             TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider);
         }
 

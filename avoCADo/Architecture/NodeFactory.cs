@@ -190,6 +190,11 @@ namespace avoCADo
             _pointPool.Add(node);
         }
 
+        /// <summary>
+        /// Inefficient implementation of renderer, demonstrational purposes only.
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete]
         public INode CreateBezierGroupCPURenderer() //OLD RENDERER
         {
             var parent = _sceneManager.CurrentScene;

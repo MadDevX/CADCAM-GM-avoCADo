@@ -72,5 +72,18 @@ namespace avoCADo
             }
         }
 
+
+        public static string DiscardPath(string path, bool discardExtension)
+        {
+            var splits = path.Split('\\');
+            if (splits.Length == 1) splits = path.Split('/');
+            var ret = splits[splits.Length - 1];
+            if (discardExtension)
+            {
+                splits = ret.Split('.');
+                ret = splits[0];
+            }
+            return ret;
+        }
     }
 }

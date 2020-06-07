@@ -208,7 +208,7 @@ namespace avoCADo
             if (ofd.FileName != "")
             {
                 var result = SceneDeserializer.Deserialize(ofd.FileName);
-                var prevScene = _sceneManager.CreateAndSet(ofd.FileName);
+                var prevScene = _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
                 SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
                 prevScene.Dispose();
             }
@@ -221,15 +221,15 @@ namespace avoCADo
 
         private void SaveSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //OpenFileDialog ofd = new OpenFileDialog();
-            //ofd.ShowDialog();
-            //if (ofd.FileName != "")
-            //{
-            //    var result = SceneDeserializer.Deserialize(ofd.FileName);
-            //    var newScene = SceneDeserializer.ImportScene(result, _nodeImporter, ofd.FileName);
-            //    var prevScene = _sceneManager.SetScene(newScene);
-            //    prevScene.Dispose();
-            //}
+            SaveFileDialog ofd = new SaveFileDialog();
+            ofd.Filter = "XML file (*.xml)|*.xml";
+            ofd.DefaultExt = "xml";
+            ofd.ShowDialog();
+            if (ofd.FileName != "")
+            {
+                var result = SceneSerializer.Serialize(_nodeExporter, _sceneManager.CurrentScene);
+                SceneSerializer.SaveSceneTo(ofd.FileName, result);
+            }
         }
 
         private bool CanDelete(object parameter)

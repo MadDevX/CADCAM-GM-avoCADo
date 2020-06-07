@@ -159,6 +159,9 @@
     <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\Mesh.cs" />
+    <Compile Include="Serialization\NodeExporter.cs" />
+    <Compile Include="Serialization\SceneSerializer.cs" />
+    <Compile Include="Serialization\SerializationUtility.cs" />
     <Compile Include="Shaders\ShaderWrappers\AbstractShaderWrapper.cs" />
     <Compile Include="Rendering\BufferManagers\BackgroundManager.cs" />
     <Compile Include="Shaders\ShaderWrappers\BufferShaderWrapper.cs" />

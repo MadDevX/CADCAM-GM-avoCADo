@@ -33,6 +33,7 @@ namespace avoCADo
     {
         private NodeFactory _nodeFactory;
         private NodeImporter _nodeImporter;
+        private NodeExporter _nodeExporter;
         private TransformationsManager _transformationsManager;
         private SceneManager _sceneManager;
         private IInstructionBuffer _instructionBuffer;
@@ -62,13 +63,15 @@ namespace avoCADo
 
         public void Initialize(NodeFactory nodeFactory, 
                                TransformationsManager transformationsManager, 
-                               NodeImporter nodeImporter, 
+                               NodeImporter nodeImporter,
+                               NodeExporter nodeExporter,
                                SceneManager sceneManager,
                                IInstructionBuffer instructionBuffer)
         {
             _nodeFactory = nodeFactory;
             _transformationsManager = transformationsManager;
             _nodeImporter = nodeImporter;
+            _nodeExporter = nodeExporter;
             _sceneManager = sceneManager;
             _instructionBuffer = instructionBuffer;
         }
