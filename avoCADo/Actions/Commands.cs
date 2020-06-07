@@ -203,15 +203,29 @@ namespace avoCADo
 
         private void LoadSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.ShowDialog();
-            if (ofd.FileName != "")
+            var prevScene = _sceneManager.CurrentScene;
+            try
             {
-                var result = SceneDeserializer.Deserialize(ofd.FileName);
-                var prevScene = _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
-                SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
-                prevScene.Dispose();
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.ShowDialog();
+                if (ofd.FileName != "")
+                {
+                    var result = SceneDeserializer.Deserialize(ofd.FileName);
+                    _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
+                    SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
+                    prevScene.Dispose();
+                }
             }
+            catch(Exception)
+            {
+                System.Windows.MessageBox.Show("File corrupted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                if(_sceneManager.CurrentScene != prevScene)
+                {
+                    var invalidScene = _sceneManager.SetScene(prevScene);
+                    invalidScene.Dispose();
+                }
+            }
+
         }
 
         private void SaveSceneCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -221,14 +235,21 @@ namespace avoCADo
 
         private void SaveSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveFileDialog ofd = new SaveFileDialog();
-            ofd.Filter = "XML file (*.xml)|*.xml";
-            ofd.DefaultExt = "xml";
-            ofd.ShowDialog();
-            if (ofd.FileName != "")
+            try
             {
-                var result = SceneSerializer.Serialize(_nodeExporter, _sceneManager.CurrentScene);
-                SceneSerializer.SaveSceneTo(ofd.FileName, result);
+                SaveFileDialog ofd = new SaveFileDialog();
+                ofd.Filter = "XML file (*.xml)|*.xml";
+                ofd.DefaultExt = "xml";
+                ofd.ShowDialog();
+                if (ofd.FileName != "")
+                {
+                    var result = SceneSerializer.Serialize(_nodeExporter, _sceneManager.CurrentScene);
+                    SceneSerializer.SaveSceneTo(ofd.FileName, result);
+                }
+            }
+            catch(Exception)
+            {
+                System.Windows.MessageBox.Show("Unexpected error occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
