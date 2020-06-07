@@ -25,5 +25,23 @@ namespace avoCADo
             Manager = new SelectionManager();
             DependencyAddersManager = new DependencyAddersManager(Manager);
         }
+        
+        public static float GetSelectionThreshold(ObjectType type)
+        {
+            return _distances[type];
+        }
+
+        private static Dictionary<ObjectType, float> _distances = DictionaryInitializer.InitializeEnumDictionary<ObjectType, float>
+            (
+                0.07f,//Point,
+                0.3f,//Torus,
+                0.3f,//InterpolatingCurve,
+                0.3f,//BezierCurveC0,
+                0.3f,//BezierCurveC2,
+                0.3f,//BezierPatchC0,
+                0.3f,//BezierPatchC2,
+                0.07f,//VirtualPoint,
+                0.0f//Scene
+            );
     }
 }

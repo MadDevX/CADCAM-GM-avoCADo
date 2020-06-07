@@ -38,21 +38,19 @@ namespace avoCADo
         private readonly SceneManager _sceneManager;
         private readonly IInstructionBuffer _instructionBuffer;
         private readonly ISelectionManager _selectionManager;
-        private readonly float _selectionThreshold;
 
         /// <summary>
         /// Usage: replace element at index [0]
         /// </summary>
         private IList<INode> _singularSelectionBuffer = new List<INode>(1);
 
-        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, IInstructionBuffer instructionBuffer, float selectionThreshold = 0.2f)
+        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, IInstructionBuffer instructionBuffer)
         {
             _control = control;
             _camera = camera;
             _sceneManager = sceneManager;
             _instructionBuffer = instructionBuffer;
             _selectionManager = NodeSelection.Manager;
-            _selectionThreshold = selectionThreshold;
             _singularSelectionBuffer.Add(null);
             Initialize();
         }
@@ -247,7 +245,7 @@ namespace avoCADo
         private void CheckSelection(INode node, Vector3 mousePosition, ref float curDist, ref INode curSelect)
         {
             var dist = CheckDistanceFromScreenCoords(_camera, mousePosition, node);
-            if (dist <= _selectionThreshold && dist < curDist)
+            if (dist <= NodeSelection.GetSelectionThreshold(node.ObjectType) && dist < curDist)
             {
                 curDist = dist;
                 curSelect = node;
