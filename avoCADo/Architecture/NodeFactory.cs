@@ -181,6 +181,7 @@ namespace avoCADo
                 pointNode.Transform.WorldPosition = _cursor.Position;
                 pointNode.Transform.Rotation = Quaternion.Identity;
                 pointNode.Transform.Scale = Vector3.One;
+                pointNode.IsSelectable = true;
             }
             return pointNode;
         }
