@@ -204,7 +204,9 @@ namespace avoCADo
             UntrackControlPointsBatch(nodes);
             if (_disposeNodesBuffer.Count > 0)
             {
-                _disposeNodesBuffer[0].Transform.ParentNode.DetachChildRange(_disposeNodesBuffer);
+                //TODO: RangeObservableCollection doesn't work properly for segmented data - commented line optimizes node deletion. 
+                //      Suggestion: add blockEvents and FireEvents or fix DetachRange
+                //_disposeNodesBuffer[0].Transform.ParentNode.DetachChildRange(_disposeNodesBuffer);
                 foreach(var nodeToDispose in _disposeNodesBuffer)
                 {
                     nodeToDispose.Dispose();

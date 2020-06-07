@@ -15,6 +15,10 @@ namespace avoCADo
         {
         }
 
+        public BezierPatchC2Generator(IBezierSurface surface, NodeFactory nodeFactory, WrapMode patchType, Vector3 position, int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes) : base(surface, nodeFactory, patchType, position, horizontalPatches, verticalPatches, existingNodes)
+        {
+        }
+
         protected override BezierC0PatchControlPointManager CreateCPManager(NodeFactory nodeFactory, BezierPatchGenerator generator, INode node)
         {
             return new BezierC2PatchControlPointManager(nodeFactory, generator, node);

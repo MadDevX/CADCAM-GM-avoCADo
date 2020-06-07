@@ -51,7 +51,19 @@ namespace avoCADo
             //surfGen.SurfaceHeight = 2;
             //surfGen.HorizontalPatches = 2;
             //surfGen.VerticalPatches = 2;
-            nodeFactory.CreateBezierPatchC2(new PatchParameters(WrapMode.Column, 3, 3, 1.0f, 1.0f));
+            var list = new List<INode>(16);
+            for (int i = 0; i < 16; i++) list.Add(null);
+            var existingCP = new CoordList<INode>(list, 4, 4);
+            for(int x = 0; x < 4; x++)
+            {
+                for(int y = 0; y < 4; y++)
+                {
+                    var node = nodeFactory.CreateObject(ObjectType.Point, null);
+                    node.Transform.WorldPosition = new Vector3(x, 0, y);
+                    existingCP[x, y] = node;
+                }
+            }
+            nodeFactory.CreateBezierPatchC2(new PatchParameters(WrapMode.None, 1, 1, 2.0f, 2.0f, existingCP));
         }
 
     }

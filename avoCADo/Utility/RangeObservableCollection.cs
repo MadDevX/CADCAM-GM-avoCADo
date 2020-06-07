@@ -132,6 +132,7 @@ namespace System.Collections.ObjectModel
         }
 
 
+        //TODO: doesn't work for segmented data
         /// <summary> 
         /// Removes the first occurence of each item in the specified collection from the <see cref="ObservableCollection{T}"/>.
         /// </summary>

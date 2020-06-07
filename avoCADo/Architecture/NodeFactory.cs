@@ -95,7 +95,15 @@ namespace avoCADo
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC0Patch();
-            var surfGen = new BezierPatchGenerator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
+            BezierPatchGenerator surfGen;
+            if (parameters.existingNodes == null)
+            {
+                surfGen = new BezierPatchGenerator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
+            }
+            else
+            {
+                surfGen = new BezierPatchGenerator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.existingNodes);
+            }
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BezierPatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC0;
 
@@ -108,7 +116,15 @@ namespace avoCADo
             var parent = _sceneManager.CurrentScene;
             var bezierSurfCollection = new WpfObservableRangeCollection<INode>();
             var surface = new BezierC2Patch();
-            var surfGen = new BezierPatchC2Generator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
+            BezierPatchC2Generator surfGen;
+            if (parameters.existingNodes == null)
+            {
+                surfGen = new BezierPatchC2Generator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.width, parameters.height);
+            }
+            else
+            {
+                surfGen = new BezierPatchC2Generator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.existingNodes);
+            }
             var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, "BSplinePatch"));
             surfNode.ObjectType = ObjectType.BezierPatchC2;
             
