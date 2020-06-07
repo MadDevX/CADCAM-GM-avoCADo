@@ -109,13 +109,13 @@ namespace avoCADo.HUD
 
         private Point _currentInputBuffer = Point.Empty;
 
-        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, DependencyAddersManager dependencyAddersManager, InstructionBuffer instructionBuffer)
+        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, InstructionBuffer instructionBuffer)
         {
             _selectionManager = NodeSelection.Manager;
+            _dependencyAddersManager = NodeSelection.DependencyAddersManager;
             _cursor3D = cursor3D;
             _control = control;
             _camera = camera;
-            _dependencyAddersManager = dependencyAddersManager;
             _instructionBuffer = instructionBuffer;
             _instructionUtility = new TransformationInstructionUtility(_instructionBuffer, _cursor3D);
             Initialize();

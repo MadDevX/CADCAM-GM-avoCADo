@@ -1,4 +1,5 @@
-﻿using avoCADo.HUD;
+﻿using avoCADo.Architecture;
+using avoCADo.HUD;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace avoCADo.Actions
         public Vector3 CursorPosition => _parameters.cursorPosition;
         private Parameters _parameters;
         private ISelectionManager _selectionManager;
+        private DependencyAddersManager _dependencyAddersManager;
         private List<(Vector3 pos, Quaternion rot, Vector3 scl)> _startingStates;
         public override bool Execute(Parameters parameters)
         {
             _selectionManager = NodeSelection.Manager;
+            _dependencyAddersManager = NodeSelection.DependencyAddersManager;
             _parameters = parameters;
             var selected = _selectionManager.SelectedNodes;
             _startingStates = new List<(Vector3 pos, Quaternion rot, Vector3 scl)>(selected.Count);
@@ -41,6 +44,7 @@ namespace avoCADo.Actions
                 tr.Scale = state.scl;
                 i++;
             }
+            _dependencyAddersManager.NotifyDependencyAdders();
             return true;
         }
 

@@ -12,9 +12,9 @@ namespace avoCADo.Architecture
         private static Array _dependencyTypes = Enum.GetValues(typeof(DependencyType));
         private readonly ISelectionManager _selectionManager;
         public IReadOnlyCollection<IDependencyAdder> DependencyAddersFromCurrentSelection { get; }
-        public DependencyAddersManager()
+        public DependencyAddersManager(ISelectionManager selectionManager)
         {
-            _selectionManager = NodeSelection.Manager;
+            _selectionManager = selectionManager;
             DependencyAddersFromCurrentSelection = _dependencyAddersBuffer.AsReadOnly();
             Initialize();
         }

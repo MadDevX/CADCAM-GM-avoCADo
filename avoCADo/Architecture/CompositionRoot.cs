@@ -39,7 +39,6 @@ namespace avoCADo
         private Grid _grid;
         private Cursor3D _cursor;
 
-        private DependencyAddersManager _dependencyAddersManager;
         private TransformationsManager _transformationsManager;
         private CameraModeManager _cameraModeManager;
         private TransformHandler _transformHandler;
@@ -87,8 +86,7 @@ namespace avoCADo
             _grid = new Grid(_camera, _renderLoop, new LineRenderer(_shaderProvider.DefaultShader, new GridGenerator(200, 1, _camera)));
             _cursor = new Cursor3D(_control, _shaderProvider.DefaultShader, _renderLoop, _camera);
             
-            _dependencyAddersManager = new DependencyAddersManager();
-            _transformationsManager = new TransformationsManager(_cursor, _control, _camera, _dependencyAddersManager, _instructionBuffer);
+            _transformationsManager = new TransformationsManager(_cursor, _control, _camera, _instructionBuffer);
 
             _cameraModeManager = new CameraModeManager((StereoscopicCamera)_camera, _backgroundManager, backgroundColorStandard, backgroundColorStereoscopic);
             _transformHandler = new TransformHandler(_window.transformView, _window);
@@ -117,7 +115,6 @@ namespace avoCADo
             _torusHandler.Dispose();
             _transformHandler.Dispose();
             _transformationsManager.Dispose();
-            _dependencyAddersManager.Dispose();
             _cursor.Dispose();
             _grid.Dispose();
             _rectangularSelectionDrawer.Dispose();
@@ -132,6 +129,7 @@ namespace avoCADo
             _framebufferManager.Dispose();
             _viewportManager.Dispose();
             MeshUtility.Dispose();
+            NodeSelection.DependencyAddersManager.Dispose();
         }
     }
 }

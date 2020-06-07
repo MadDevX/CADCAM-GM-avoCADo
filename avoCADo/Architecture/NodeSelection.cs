@@ -1,4 +1,5 @@
-﻿using System;
+﻿using avoCADo.Architecture;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,17 @@ namespace avoCADo
     /// </summary>
     public static class NodeSelection
     {
-        public static ISelectionManager Manager { get; } = new SelectionManager();
+        public static ISelectionManager Manager { get; }
+        public static DependencyAddersManager DependencyAddersManager { get; }
         /// <summary>
         /// Used to filter events invocation to reduce overhead
         /// </summary>
         public static readonly int SensibleSelectionLimit = 100;
+
+        static NodeSelection()
+        {
+            Manager = new SelectionManager();
+            DependencyAddersManager = new DependencyAddersManager(Manager);
+        }
     }
 }
