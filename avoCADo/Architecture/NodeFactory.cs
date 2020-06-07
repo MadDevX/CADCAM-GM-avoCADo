@@ -33,9 +33,9 @@ namespace avoCADo
 
     public struct CurveParameters
     {
-        public List<INode> controlPoints;
+        public IReadOnlyCollection<INode> controlPoints;
 
-        public CurveParameters(List<INode> controlPoints = null)
+        public CurveParameters(IReadOnlyCollection<INode> controlPoints = null)
         {
             this.controlPoints = controlPoints;
         }
@@ -239,7 +239,7 @@ namespace avoCADo
             return groupNode;
         }
 
-        private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName, List<INode> controlPoints) where T : ICurve
+        private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName, IReadOnlyCollection<INode> controlPoints) where T : ICurve
         {
             var parent = _sceneManager.CurrentScene;
             var source = new WpfObservableRangeCollection<INode>();
@@ -247,7 +247,7 @@ namespace avoCADo
 
             var generator = new BezierGeneratorGeometry(curve);
             var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, defaultName));
-            var selected = controlPoints != null ? controlPoints.AsReadOnly() : NodeSelection.Manager.SelectedNodes;
+            var selected = controlPoints != null ? controlPoints : NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {
                 if (node.Renderer is PointRenderer)

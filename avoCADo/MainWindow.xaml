@@ -13,6 +13,7 @@
 
         <CommandBinding Command="local:CommandDefinitions.LoadScene" CanExecute="LoadSceneCmd_CanExecute" Executed="LoadSceneCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.SaveScene" CanExecute="SaveSceneCmd_CanExecute" Executed="SaveSceneCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.NewScene" CanExecute="NewSceneCmd_CanExecute" Executed="NewSceneCmd_Executed"/>
 
         <CommandBinding Command="local:CommandDefinitions.Torus" CanExecute="CreateTorusCmd_CanExecute" Executed="CreateTorusCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.Point" CanExecute="CreatePointCmd_CanExecute" Executed="CreatePointCmd_Executed"/>
@@ -37,6 +38,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Height="23">
+                <MenuItem Command="local:CommandDefinitions.NewScene"/>
                 <MenuItem Command="local:CommandDefinitions.SaveScene"/>
                 <MenuItem Command="local:CommandDefinitions.LoadScene"/>
             </MenuItem>

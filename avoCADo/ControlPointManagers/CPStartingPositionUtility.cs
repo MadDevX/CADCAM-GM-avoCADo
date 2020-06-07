@@ -33,7 +33,7 @@ namespace avoCADo.ControlPointManagers
                     var offset = new Vector3(
                             surfaceRadius * (float)Math.Sin(((double)i / (width)) * Math.PI * 2.0),
                             surfaceRadius * (float)Math.Cos(((double)i / (width)) * Math.PI * 2.0),
-                            ((float)j / (height - 1)) * surfaceHeight);
+                            ((float)j / (height - 1)) * surfaceHeight - 0.5f*surfaceHeight);
                     controlPoints[i, j].Transform.WorldPosition = position + offset;
                 }
             }
@@ -48,7 +48,7 @@ namespace avoCADo.ControlPointManagers
                 for (int i = 0; i < width; i++)
                 {
                     var offset = new Vector3(
-                            ((float)i / (width - 1)) * surfaceHeight,
+                            ((float)i / (width - 1)) * surfaceHeight - 0.5f * surfaceHeight,
                             surfaceRadius * (float)Math.Cos(((double)j / (height)) * Math.PI * 2.0),
                             surfaceRadius * (float)Math.Sin(((double)j / (height)) * Math.PI * 2.0)
                             );

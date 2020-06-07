@@ -125,5 +125,15 @@ namespace avoCADo
                     new KeyGesture(Key.F5)
                 }
             );
+        public static readonly RoutedUICommand NewScene = new RoutedUICommand
+            (
+                "New Scene",
+                "NewScene",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)
+                }
+            );
     }
 }

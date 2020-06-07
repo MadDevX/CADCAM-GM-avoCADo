@@ -78,22 +78,22 @@ namespace avoCADo
             e.CanExecute = PointsOnlySelected();
         }
 
+        private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //_nodeFactory.CreateBezierGroupCPURenderer();
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC0, new CurveParameters(NodeSelection.Manager.SelectedNodes)));
+        }
+
         private void CreateBSplineCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = PointsOnlySelected();
         }
 
-        private void CreateBezierCmd_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            //_nodeFactory.CreateBezierGroupCPURenderer();
-            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
-                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC0, null));
-        }
-
         private void CreateBSplineCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
-                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC2, null));
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierCurveC2, new CurveParameters(NodeSelection.Manager.SelectedNodes)));
         }
 
         private void CreateInterpolatingC2Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -104,7 +104,7 @@ namespace avoCADo
         private void CreateInterpolatingC2Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
-                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.InterpolatingCurve, null));
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.InterpolatingCurve, new CurveParameters(NodeSelection.Manager.SelectedNodes)));
         }
 
         private void CreateBezierPatchC0Cmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -222,7 +222,7 @@ namespace avoCADo
                 if(_sceneManager.CurrentScene != prevScene)
                 {
                     var invalidScene = _sceneManager.SetScene(prevScene);
-                    invalidScene.Dispose();
+                    invalidScene?.Dispose();
                 }
             }
 
@@ -251,6 +251,17 @@ namespace avoCADo
             {
                 System.Windows.MessageBox.Show("Unexpected error occurred.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void NewSceneCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void NewSceneCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var prevScene = _sceneManager.CreateAndSet("Main");
+            prevScene?.Dispose();
         }
 
         private bool CanDelete(object parameter)
