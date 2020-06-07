@@ -208,7 +208,7 @@ namespace avoCADo
             {
                 if (ignoreVirtualNodes && node.ObjectType == ObjectType.VirtualPoint) continue;
                 if (selectionList.Count > 0 && node.Transform.ParentNode != selectionList[0].Transform.ParentNode) continue;
-                if (IsNodeInsideRect(node, rect))
+                if (node.IsSelectable && IsNodeInsideRect(node, rect))
                 {
                     selectionList.Add(node);
                 }
@@ -244,11 +244,14 @@ namespace avoCADo
 
         private void CheckSelection(INode node, Vector3 mousePosition, ref float curDist, ref INode curSelect)
         {
-            var dist = CheckDistanceFromScreenCoords(_camera, mousePosition, node);
-            if (dist <= NodeSelection.GetSelectionThreshold(node.ObjectType) && dist < curDist)
+            if (node.IsSelectable)
             {
-                curDist = dist;
-                curSelect = node;
+                var dist = CheckDistanceFromScreenCoords(_camera, mousePosition, node);
+                if (dist <= NodeSelection.GetSelectionThreshold(node.ObjectType) && dist < curDist)
+                {
+                    curDist = dist;
+                    curSelect = node;
+                }
             }
         }
 

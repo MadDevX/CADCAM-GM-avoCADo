@@ -50,6 +50,7 @@ namespace avoCADo
 
         public void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
+            if (_node != null && _node.IsSelectable == false) return;
             _mesh.BindMesh();
             SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
             GetGenerator()?.RefreshDataPreRender();

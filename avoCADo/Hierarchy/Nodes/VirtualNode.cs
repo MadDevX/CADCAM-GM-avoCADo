@@ -14,6 +14,7 @@ namespace avoCADo
     /// </summary>
     public class VirtualNode : INode, INotifyPropertyChanged
     {
+        public bool IsSelectable { get; set; } = true;
         public bool IsSelected { get; set; } = false;
         public GroupNodeType GroupNodeType => GroupNodeType.None;
         public ObjectType ObjectType => ObjectType.VirtualPoint;

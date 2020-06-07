@@ -13,6 +13,7 @@ namespace avoCADo
 {
     public class Node : INode, IObject, INotifyPropertyChanged, IDependencyCollector
     {
+        public bool IsSelectable { get; set; } = true;
         public bool IsSelected { get; set; } = false;
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -45,6 +45,21 @@ namespace avoCADo
         public int IsolineDivisionsV { get; set; } = 4;
         public bool ShowEdges { get; set; } = false;
 
+        private bool _showControlPoints = true; 
+        public bool ShowControlPoints 
+        {
+            get => _showControlPoints; 
+            set
+            {
+                _showControlPoints = value;
+                foreach(var node in _node.Children)
+                {
+                    node.IsSelectable = value;
+                }
+            }
+        }
+
+
         public int HorizontalPatches
         { 
             get

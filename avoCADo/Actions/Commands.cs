@@ -210,6 +210,8 @@ namespace avoCADo
                 ofd.ShowDialog();
                 if (ofd.FileName != "")
                 {
+                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
+                        new SelectionChangedInstruction.Parameters(null, SelectionChangedInstruction.OperationType.Reset));
                     var result = SceneDeserializer.Deserialize(ofd.FileName);
                     _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
                     SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
@@ -225,6 +227,7 @@ namespace avoCADo
                 {
                     var invalidScene = _sceneManager.SetScene(prevScene);
                     invalidScene?.Dispose();
+                    _instructionBuffer.Undo();
                 }
             }
 

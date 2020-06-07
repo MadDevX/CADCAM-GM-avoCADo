@@ -12,6 +12,7 @@ namespace avoCADo
 {
     public class Scene : IDisposable, INode
     {
+        public bool IsSelectable { get; set; } = false;
         public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;

@@ -19,6 +19,7 @@ namespace avoCADo
     public interface INode : IDisposable, INotifyPropertyChanged
     {
         event Action<INode> OnDisposed;
+        bool IsSelectable { get; set; }
         bool IsSelected { get; set; }
         ObjectType ObjectType { get; }
         GroupNodeType GroupNodeType { get; }

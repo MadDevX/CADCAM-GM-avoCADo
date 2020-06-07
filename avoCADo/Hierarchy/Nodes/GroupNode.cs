@@ -16,6 +16,7 @@ namespace avoCADo
     /// </summary>
     public abstract class GroupNode<T> : INode, IObject, INotifyPropertyChanged, IDependencyAdder where T : ICircularDependent<INode>
     {
+        public bool IsSelectable { get; set; } = true;
         public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
