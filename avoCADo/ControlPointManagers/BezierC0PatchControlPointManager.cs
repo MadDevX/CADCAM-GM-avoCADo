@@ -117,7 +117,7 @@ namespace avoCADo
 
             if(existingCP.DataHeight != dataHeight || existingCP.DataWidth != dataWidth)
             {
-                throw new InvalidOperationException("existing CP list does not match provided dimensions");
+                throw new InvalidOperationException("existing CP list does not match provided patch dimensions");
             }
             TrackControlPointsBatch(existingCP.RawData);
             _generator.Surface.ControlPoints.SetData(existingCP.RawData, existingCP.DataWidth, existingCP.DataHeight, width, height);

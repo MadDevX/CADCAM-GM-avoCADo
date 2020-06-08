@@ -60,6 +60,11 @@ namespace avoCADo
             {
                 return name.Substring(0, name.Length - match.Value.Length);
             }
+            match = Regex.Match(name, "\\s{1}[0-9]+$");
+            if (match.Success)
+            {
+                return name.Substring(0, name.Length - match.Value.Length);
+            }
             else
             {
                 return name;

@@ -220,9 +220,9 @@ namespace avoCADo
                     NameGenerator.GenerateKeywords(_sceneManager.CurrentScene);
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                System.Windows.MessageBox.Show("File corrupted.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"File corrupted.\n Message: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 if(_sceneManager.CurrentScene != prevScene)
                 {
                     var invalidScene = _sceneManager.SetScene(prevScene);

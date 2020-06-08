@@ -171,24 +171,27 @@ namespace avoCADo
                 pointNode = new PoolableNode(new PointTransform(_cursor.Position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderProvider.DefaultShader, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, "Point"));
                 pointNode.ObjectType = ObjectType.Point;
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
+                pointNode.GetFromPool();
             }
             else
             {
                 pointNode = _pointPool[_pointPool.Count - 1];
                 _pointPool.RemoveAt(_pointPool.Count - 1);
+                pointNode.GetFromPool();
 
                 pointNode.Name = NameGenerator.GenerateName(parent, "Point");
                 pointNode.Transform.WorldPosition = _cursor.Position;
-                pointNode.Transform.Rotation = Quaternion.Identity;
-                pointNode.Transform.Scale = Vector3.One;
-                pointNode.IsSelectable = true;
             }
             return pointNode;
         }
 
         private void PointNode_OnReturnToPool(PoolableNode node)
         {
-            _pointPool.Add(node);
+            if (node.IsInPool == false)
+            {
+                _pointPool.Add(node);
+                node.ReturnToPool();
+            }
         }
 
         /// <summary>
