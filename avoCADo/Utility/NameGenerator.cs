@@ -41,10 +41,15 @@ namespace avoCADo
             {
                 var keyword = KeywordWithoutSuffix(names[i]);
                 var startIdx = i;
-                while (i < names.Count && names[i].StartsWith(keyword)) i++;
+                var largestIdx = -1;
+                while (i < names.Count && names[i].StartsWith(keyword))
+                {
+                    var nameIdx = FindIndexOf(names[i]);
+                    if (nameIdx > largestIdx) largestIdx = nameIdx;
+                    i++;
+                }
                 var keywordCount = i - startIdx;
-                var lastIdx = FindIndexOf(names[i - 1]);
-                _objectIds.Add(keyword, Math.Max(keywordCount, lastIdx+1));
+                _objectIds.Add(keyword, Math.Max(keywordCount, largestIdx+1));
             }
         }   
 
