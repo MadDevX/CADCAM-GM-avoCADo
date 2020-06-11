@@ -76,7 +76,7 @@ namespace avoCADo
 
         private void CalculateCoefficients(Vector3[] a, Vector3[] result, float[] seg, IList<Vector3> bernsteins)
         {
-            var N = a.Length - 1; //TODO: check
+            var N = a.Length - 1;
             var c = new Vector3[a.Length];
             var b = new Vector3[N];
             var d = new Vector3[N];

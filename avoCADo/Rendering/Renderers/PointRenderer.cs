@@ -19,7 +19,7 @@ namespace avoCADo
         public PointRenderer(ShaderWrapper shaderWrapper, Color4 color, Color4 selectedColor) : base(shaderWrapper, MeshUtility.PointMesh)
         {
             _color = color;
-            _selectedColor = selectedColor;//new Color4(_color.R * 0.5f, _color.G * 0.5f, _color.B * 0.5f, _color.A);
+            _selectedColor = selectedColor;
         }
 
         public override IMeshGenerator GetGenerator() => null;

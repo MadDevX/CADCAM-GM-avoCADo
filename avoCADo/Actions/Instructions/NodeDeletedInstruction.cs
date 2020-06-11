@@ -10,7 +10,6 @@ namespace avoCADo.Actions
 {
     public class NodeDeletedInstruction : Instruction<NodeDeletedInstruction.Parameters>
     {
-        //TODO: parent should be able to return child's index - that index should be then used for child insertion (i.e. delete middle node from curve, then undo)
         private class DeleteInfo
         {
             public INode _deletedNode = null;

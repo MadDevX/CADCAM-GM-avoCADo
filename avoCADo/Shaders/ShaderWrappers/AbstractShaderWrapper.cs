@@ -22,7 +22,6 @@ namespace avoCADo
 
         protected void CheckShaderBinding()
         {
-            //TODO: check if it's possible to check currently bound shader program
             Shader.Use();
         }
     }
