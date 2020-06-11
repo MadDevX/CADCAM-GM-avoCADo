@@ -9,7 +9,23 @@ namespace avoCADo.ControlPointManagers
 {
     public static class CPStartingPositionUtility
     {
-        public static void SetControlPointPoisitionsFlat(Vector3 position, CoordList<INode> controlPoints, float surfaceWidth, float surfaceHeight)
+        public static void SetControlPointPositions(WrapMode mode, Vector3 position, CoordList<INode> controlPoints, float surfaceWidth, float surfaceHeight)
+        {
+            switch (mode)
+            {
+                case WrapMode.None:
+                    SetControlPointPoisitionsFlat(position, controlPoints, surfaceWidth, surfaceHeight);
+                    break;
+                case WrapMode.Column:
+                    SetControlPointPoisitionsCylinderColumnWrap(position, controlPoints, surfaceWidth, surfaceHeight);
+                    break;
+                case WrapMode.Row:
+                    SetControlPointPoisitionsCylinderRowWrap(position, controlPoints, surfaceWidth, surfaceHeight);
+                    break;
+            }
+        }
+
+        private static void SetControlPointPoisitionsFlat(Vector3 position, CoordList<INode> controlPoints, float surfaceWidth, float surfaceHeight)
         {
             var width =  controlPoints.Width;
             var height = controlPoints.Height;
@@ -22,7 +38,7 @@ namespace avoCADo.ControlPointManagers
             }
         }
 
-        public static void SetControlPointPoisitionsCylinderColumnWrap(Vector3 position, CoordList<INode> controlPoints, float surfaceRadius, float surfaceHeight)
+        private static void SetControlPointPoisitionsCylinderColumnWrap(Vector3 position, CoordList<INode> controlPoints, float surfaceRadius, float surfaceHeight)
         {
             var width = controlPoints.DataWidth;
             var height = controlPoints.DataHeight;
@@ -39,7 +55,7 @@ namespace avoCADo.ControlPointManagers
             }
         }
 
-        public static void SetControlPointPoisitionsCylinderRowWrap(Vector3 position, CoordList<INode> controlPoints, float surfaceRadius, float surfaceHeight)
+        private static void SetControlPointPoisitionsCylinderRowWrap(Vector3 position, CoordList<INode> controlPoints, float surfaceRadius, float surfaceHeight)
         {
             var width = controlPoints.DataWidth;
             var height = controlPoints.DataHeight;

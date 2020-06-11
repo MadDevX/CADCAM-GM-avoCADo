@@ -42,7 +42,7 @@ namespace avoCADo
         }
 
 
-        public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
+        public void UpdateControlPoints(int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
         {
             if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
             SetExistingControlPoints(horizontalPatches, verticalPatches, existingNodes);
@@ -63,20 +63,28 @@ namespace avoCADo
             ShouldUpdateData = true;
         }
 
+        protected virtual int GetHorizontalAbstractCPCount(int horizontalPatches)
+        {
+            return (3 * horizontalPatches) + 1;
+        }
+        protected virtual int GetVerticalAbstractCPCount(int verticalPatches)
+        {
+            return (3 * verticalPatches) + 1;
+        }
+
+        protected virtual int GetHorizontalControlPointCount(int horizontalPatches, WrapMode type)
+        {
+            return type == WrapMode.Column ? 3 * horizontalPatches : (3 * horizontalPatches) + 1;
+        }
+
+        protected virtual int GetVerticalControlPointCount(int verticalPatches, WrapMode type)
+        {
+            return type == WrapMode.Row ? 3 * verticalPatches : (3 * verticalPatches) + 1;
+        }
+
         private void SetControlPointPoisitionsWrapper(Vector3 position)
         {
-            switch (_generator.WrapMode)
-            {
-                case WrapMode.None:
-                    CPStartingPositionUtility.SetControlPointPoisitionsFlat(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
-                    break;
-                case WrapMode.Column:
-                    CPStartingPositionUtility.SetControlPointPoisitionsCylinderColumnWrap(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
-                    break;
-                case WrapMode.Row:
-                    CPStartingPositionUtility.SetControlPointPoisitionsCylinderRowWrap(position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
-                    break;
-            }
+            CPStartingPositionUtility.SetControlPointPositions(_generator.WrapMode, position, _generator.Surface.ControlPoints, _generator.SurfaceWidthOrRadius, _generator.SurfaceHeight);
         }
 
         private void ResumeTransformHandling()
@@ -98,22 +106,12 @@ namespace avoCADo
             _generator.Surface.ControlPoints.SetData(_controlPointNodes, dataWidth, dataHeight, width, height);
         }
 
-        protected virtual int GetHorizontalAbstractCPCount(int horizontalPatches)
-        {
-            return (3 * horizontalPatches) + 1;
-        }
-        protected virtual int GetVerticalAbstractCPCount(int verticalPatches)
-        {
-            return (3 * verticalPatches) + 1;
-        }
-
         private void SetExistingControlPoints(int horizontalPatches, int verticalPatches, CoordList<INode> existingCP)
         {
             var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
             var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
             var width = GetHorizontalAbstractCPCount(horizontalPatches);
             var height = GetVerticalAbstractCPCount(verticalPatches);
-            var dataCount = dataWidth * dataHeight;
 
             if(existingCP.DataHeight != dataHeight || existingCP.DataWidth != dataWidth)
             {
@@ -166,16 +164,6 @@ namespace avoCADo
             }
 
             return shouldAddPoints;
-        }
-
-        protected virtual int GetHorizontalControlPointCount(int horizontalPatches, WrapMode type)
-        {
-            return type == WrapMode.Column ? 3 * horizontalPatches : (3 * horizontalPatches) + 1;
-        }
-
-        protected virtual int GetVerticalControlPointCount(int verticalPatches, WrapMode type)
-        {
-            return type == WrapMode.Row ? 3 * verticalPatches : (3 * verticalPatches) + 1;
         }
 
         private void DisposeControlPoint(INode node)

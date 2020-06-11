@@ -17,7 +17,6 @@ namespace avoCADo
 
     public class BezierPatchGenerator : IMeshGenerator, ICircularDependent<INode>
     {
-
         protected virtual DrawCallShaderType SurfaceDrawType { get; } = DrawCallShaderType.SurfaceBezier;
         private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         public IList<DrawCall> DrawCalls
@@ -156,7 +155,7 @@ namespace avoCADo
             }
             else
             {
-                _ctrlPointManager.UpdateControlPoints(position, horizontalPatches, verticalPatches, existingNodes);
+                _ctrlPointManager.UpdateControlPoints(horizontalPatches, verticalPatches, existingNodes);
             }
         }
 
