@@ -1,4 +1,5 @@
-﻿using avoCADo.Utility;
+﻿using avoCADo.Constants;
+using avoCADo.Utility;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;

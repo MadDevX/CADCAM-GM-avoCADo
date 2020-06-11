@@ -15,6 +15,7 @@ namespace avoCADo
     public class CompositionRoot : IDisposable
     {
         private InstructionBuffer _instructionBuffer;
+        private PointNodePool _pointNodePool;
         private NodeFactory _nodeFactory;
         private NodeImporter _nodeImporter;
         private NodeExporter _nodeExporter;
@@ -93,7 +94,9 @@ namespace avoCADo
             _transformHandler = new TransformHandler(_window.transformView, _window);
             _torusHandler = new TorusGeneratorHandler(_window.torusGeneratorView);
             _labelBindingRefresher = new LabelBindingRefresher(_window, _window.cursor3dInfo, _window.transformationsInfo);
-            _nodeFactory = new NodeFactory(_sceneManager, _cursor, _window, _shaderProvider);
+
+            _pointNodePool = new PointNodePool(_shaderProvider);
+            _nodeFactory = new NodeFactory(_sceneManager, _cursor, _shaderProvider, _pointNodePool);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _sceneManager);
             _nodeImporter = new NodeImporter(_nodeFactory);
             _nodeExporter = new NodeExporter();
@@ -112,7 +115,7 @@ namespace avoCADo
 
         public void Dispose()
         {
-            _nodeFactory.Dispose();
+            _pointNodePool.Dispose();
             _labelBindingRefresher.Dispose();
             _torusHandler.Dispose();
             _transformHandler.Dispose();

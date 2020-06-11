@@ -95,6 +95,7 @@ namespace avoCADo
         /// <param name="root"></param>
         /// <param name="genericName"></param>
         /// <returns></returns>
+        [Obsolete]
         public static string GenerateNameSlow(INode root, string genericName)
         {
             bool found = false;

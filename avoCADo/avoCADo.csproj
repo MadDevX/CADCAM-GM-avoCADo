@@ -88,6 +88,7 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
+    <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
     <Compile Include="Interfaces\IInstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\Instruction.cs" />
@@ -96,7 +97,7 @@
     <Compile Include="Actions\Instructions\SelectionChangedInstruction.cs" />
     <Compile Include="Architecture\CompositionRoot.cs" />
     <Compile Include="Architecture\DependencyAddersManager.cs" />
-    <Compile Include="Architecture\RenderConstants.cs" />
+    <Compile Include="Constants\RenderConstants.cs" />
     <Compile Include="Architecture\Registry.cs" />
     <Compile Include="Architecture\SceneManager.cs" />
     <Compile Include="Architecture\ShaderProvider.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Actions\UtilityCommands.cs" />
     <Compile Include="Utility\Coordinates.cs" />
     <Compile Include="Utility\CoordList.cs" />
+    <Compile Include="Constants\DefaultNodeNames.cs" />
     <Compile Include="Utility\DependencyUtility.cs" />
     <Compile Include="Utility\DictionaryInitializer.cs" />
     <Compile Include="Utility\MathExtensions.cs" />

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
+    /// <summary>
+    /// Should be acknowledged in DrawCall
+    /// </summary>
     public class TessellationManager
     {
         public TessellationManager()
