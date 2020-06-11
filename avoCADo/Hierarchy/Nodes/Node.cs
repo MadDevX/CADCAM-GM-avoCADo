@@ -46,7 +46,7 @@ namespace avoCADo
         public ObservableCollection<INode> Children => _children;
         private WpfObservableRangeCollection<INode> _children = new WpfObservableRangeCollection<INode>();
 
-        private Dictionary<DependencyType, List<IDependencyAdder>> _dependencies;
+        private IDependencyCollector _depColl;
 
         public Matrix4 GlobalModelMatrix
         {
@@ -58,7 +58,7 @@ namespace avoCADo
 
         public Node(ITransform transform, IRenderer renderer, string name)
         {
-            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, List<IDependencyAdder>>();
+            _depColl = new DependencyCollector();
             Transform = transform;
             Transform.Node = this;
             Renderer = renderer;
@@ -164,73 +164,24 @@ namespace avoCADo
             DetachChild(node);
         }
 
-        public void AddDependency(DependencyType type, IDependencyAdder dependant)
-        {
-            if(_dependencies.TryGetValue(type, out var dependencyList))
-            {
-                dependencyList.Add(dependant);
-            }
-            else
-            {
-                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
-            }
-        }
-
-        public void RemoveDependency(DependencyType type, IDependencyAdder dependant)
-        {
-            if (_dependencies.TryGetValue(type, out var dependencyList))
-            {
-                dependencyList.Remove(dependant);
-            }
-            else
-            {
-                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
-            }
-        }
-
-        public bool HasDependency(DependencyType type)
-        {
-            if(_dependencies.TryGetValue(type, out var dependencyList))
-            {
-                return dependencyList.Count > 0;
-            }
-            else
-            {
-                throw new InvalidOperationException("Dictionary is not initialized properly - enquired entry was not created");
-            }
-        }
-
-        public bool HasDependency()
-        {
-            return HasDependency(DependencyType.Strong) || HasDependency(DependencyType.Weak);
-        }
-
-        public bool HasDependencyOtherThan(IDependencyAdder depAdd)
-        {
-            var strongList = _dependencies[DependencyType.Strong];
-            var weakList = _dependencies[DependencyType.Weak];
-
-            var strongCount = strongList.Contains(depAdd) ? strongList.Count - 1 : strongList.Count;
-            var weakCount = weakList.Contains(depAdd) ? weakList.Count - 1 : weakList.Count;
-
-            return strongCount + weakCount > 0;
-        }
-
-
         protected void InvokeOnDisposed()
         {
             OnDisposed?.Invoke(this);
         }
 
-        public IList<IDependencyAdder> GetDependencies(DependencyType type)
-        {
-            return _dependencies[type];
-        }
 
         public int GetChildIndex(INode node)
         {
             return Children.IndexOf(node);
         }
 
+        #region Dependency forwarding
+        public void AddDependency(DependencyType type, IDependencyAdder dependant) => _depColl.AddDependency(type, dependant);
+        public void RemoveDependency(DependencyType type, IDependencyAdder dependant) => _depColl.RemoveDependency(type, dependant);
+        public bool HasDependency(DependencyType type) => _depColl.HasDependency(type);
+        public bool HasDependency() => _depColl.HasDependency();
+        public bool HasDependencyOtherThan(IDependencyAdder dependant) => _depColl.HasDependencyOtherThan(dependant);
+        public IList<IDependencyAdder> GetDependencies(DependencyType type) => _depColl.GetDependencies(type);
+        #endregion
     }
 }

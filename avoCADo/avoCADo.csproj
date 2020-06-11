@@ -90,6 +90,7 @@
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
+    <Compile Include="Hierarchy\DependencyCollector.cs" />
     <Compile Include="Interfaces\IInstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\Instruction.cs" />
     <Compile Include="Actions\Instructions\InstructionBuffer.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="Interfaces\ISelectionManager.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
+    <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
     <Compile Include="Rendering\BufferManagers\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
