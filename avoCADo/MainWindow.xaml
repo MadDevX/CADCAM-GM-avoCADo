@@ -75,7 +75,13 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
-            <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
+            <WindowsFormsHost Grid.Column="0" x:Name="Host">
+                <WindowsFormsHost.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="test"/>
+                    </ContextMenu>
+                </WindowsFormsHost.ContextMenu>
+            </WindowsFormsHost>
             <ScrollViewer Grid.Column="2">
                 <StackPanel Name="StackPanelInspector" HorizontalAlignment="Stretch">
                     <!--<GroupBox Header="Transformation" FontWeight="SemiBold" HorizontalAlignment="Stretch">
