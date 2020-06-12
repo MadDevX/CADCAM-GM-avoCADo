@@ -69,16 +69,13 @@ namespace avoCADo
             _nodesToAttachToScene.Clear();
             foreach (var node in nodes)
             {
-                ////if (Children.Contains(node) == false)
-                ////{
-                    node.PropertyChanged += ChildNodeModified;
-                    node.OnDisposed += HandleChildDisposed;
-                    if (node.Transform.ParentNode == null)
-                    {
-                        _nodesToAttachToScene.Add(node);
-                    }
-                    AddDependencyToChild(node);
-                ////}
+                node.PropertyChanged += ChildNodeModified;
+                node.OnDisposed += HandleChildDisposed;
+                if (node.Transform.ParentNode == null)
+                {
+                    _nodesToAttachToScene.Add(node);
+                }
+                AddDependencyToChild(node);
             }
             _children.AddRange(nodes);
             if (_nodesToAttachToScene.Count > 0)
@@ -90,32 +87,26 @@ namespace avoCADo
 
         public void AttachChildAtIndex(INode node, int index)
         {
-            ////if (Children.Contains(node) == false)
-            ////{
-                Children.Insert(index, node);
-                node.PropertyChanged += ChildNodeModified;
-                node.OnDisposed += HandleChildDisposed;
-                if (node.Transform.ParentNode == null)
-                {
-                    Transform.ParentNode.AttachChild(node);
-                }
-                AddDependencyToChild(node);
-            ////}
+            Children.Insert(index, node);
+            node.PropertyChanged += ChildNodeModified;
+            node.OnDisposed += HandleChildDisposed;
+            if (node.Transform.ParentNode == null)
+            {
+                Transform.ParentNode.AttachChild(node);
+            }
+            AddDependencyToChild(node);
         }
 
         public void AttachChild(INode node)
         {
-            ////if (Children.Contains(node) == false)
-            ////{
-                Children.Add(node);
-                node.PropertyChanged += ChildNodeModified;
-                node.OnDisposed += HandleChildDisposed;
-                if(node.Transform.ParentNode == null)
-                {
-                    Transform.ParentNode.AttachChild(node);
-                }
-                AddDependencyToChild(node);
-            ////}
+            Children.Add(node);
+            node.PropertyChanged += ChildNodeModified;
+            node.OnDisposed += HandleChildDisposed;
+            if(node.Transform.ParentNode == null)
+            {
+                Transform.ParentNode.AttachChild(node);
+            }
+            AddDependencyToChild(node);
         }
 
         public bool DetachChild(INode node)
