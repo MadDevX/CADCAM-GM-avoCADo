@@ -84,15 +84,6 @@
             </WindowsFormsHost>
             <ScrollViewer Grid.Column="2">
                 <StackPanel Name="StackPanelInspector" HorizontalAlignment="Stretch">
-                    <!--<GroupBox Header="Transformation" FontWeight="SemiBold" HorizontalAlignment="Stretch">
-                        <StackPanel>
-                            <TextBlock x:Name="transformationsLabel" TextWrapping="Wrap" FontWeight="SemiBold" Margin="5"/>
-                            <StackPanel Orientation="Horizontal">
-                                <RadioButton x:Name="radioBtnLocalMode" Content="Local Mode" IsChecked="True" Margin="5"/>
-                                <RadioButton x:Name="radioBtnCursorMode" Content="Cursor Mode" Margin="5"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>-->
                     <local:Cursor3DInfo x:Name="cursor3dInfo"/>
                     <local:TransformationsInfo x:Name="transformationsInfo"/>
                     <local:CameraSettings x:Name="cameraSettings"/>

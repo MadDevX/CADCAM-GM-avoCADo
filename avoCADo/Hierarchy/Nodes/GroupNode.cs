@@ -20,6 +20,7 @@ namespace avoCADo
         public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<INode> OnDisposed;
+        public event Action<IDependencyCollector, IDependencyCollector> DependencyReplaced;
 
         public ObjectType ObjectType { get; set; }
         public abstract GroupNodeType GroupNodeType { get; }
@@ -197,6 +198,11 @@ namespace avoCADo
         public int GetChildIndex(INode node)
         {
             return Children.IndexOf(node);
+        }
+
+        public void ReplaceDependency(IDependencyCollector current, IDependencyCollector newDepColl)
+        {
+            DependencyReplaced?.Invoke(current, newDepColl);
         }
     }
 }

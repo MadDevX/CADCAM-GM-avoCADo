@@ -17,6 +17,8 @@ namespace avoCADo
     /// </summary>
     public partial class MainWindow
     {
+        #region Create Commands
+
         private void CreateTorusCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var arg = e.Parameter as INode;
@@ -148,6 +150,10 @@ namespace avoCADo
             }
         }
 
+        #endregion
+
+        #region Delete Commands
+
         private void DeleteNodeCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = CanDelete(e.Parameter);
@@ -195,6 +201,10 @@ namespace avoCADo
             }
             
         }
+
+        #endregion
+
+        #region Scene Management Commands
 
         private void LoadSceneCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -269,6 +279,24 @@ namespace avoCADo
             prevScene?.Dispose();
         }
 
+        #endregion
+
+        #region Various Commands
+
+        private void MergePointsCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = PointsOnlySelected() && NodeSelection.Manager.SelectedNodes.Count == 2;
+        }
+
+        private void MergePointsCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            
+        }
+
+        #endregion
+
+        #region Helper Methods
+
         private bool CanDelete(object parameter)
         {
             if (parameter is VirtualNode)
@@ -293,12 +321,14 @@ namespace avoCADo
         {
             foreach (var node in NodeSelection.Manager.SelectedNodes)
             {
-                if (node.Renderer is PointRenderer == false)
+                if (node.ObjectType != ObjectType.Point)
                 {
                     return false;
                 }
             }
             return true;
         }
+
+        #endregion
     }
 }

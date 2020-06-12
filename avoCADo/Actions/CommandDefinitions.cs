@@ -86,6 +86,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand MergePoints = new RoutedUICommand
+            (
+                "Merge Points",
+                "MergePoints",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.M, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",
