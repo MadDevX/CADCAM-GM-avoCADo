@@ -53,7 +53,6 @@ namespace avoCADo
             _compositionRoot = new CompositionRoot(_glControl, this);
 
             InitLoop();
-            _glControl.MouseDown += _glControl_MouseDown;
         }
 
         public void Initialize(NodeFactory nodeFactory, 
@@ -107,7 +106,6 @@ namespace avoCADo
 
         protected override void OnClosed(EventArgs e)
         {
-            _glControl.MouseDown -= _glControl_MouseDown;
             CompositionTarget.Rendering -= OnTick;
             _compositionRoot.Dispose();
             _timer.Tick -= SetDirty;
@@ -120,15 +118,6 @@ namespace avoCADo
             if(e.Key == Key.System && e.OriginalSource is System.Windows.Forms.Integration.WindowsFormsHost)
             {
                 e.Handled = true;
-            }
-        }
-
-        private void _glControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-
-                Host.ContextMenu.IsOpen = true;
             }
         }
     }

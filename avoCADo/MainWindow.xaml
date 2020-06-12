@@ -53,6 +53,9 @@
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC0"/>
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC2"/>
             </MenuItem>
+            <MenuItem Header="Operations">
+                <MenuItem Command="local:CommandDefinitions.MergePoints"/>
+            </MenuItem>
             <MenuItem Header="Utility">
                 <MenuItem x:Name="menuItemEnableViewPlaneTranslate" Command="local:UtilityCommandDefinitions.EnableViewPlaneTranslate" IsCheckable="True"/>
                 <Separator/>
@@ -70,19 +73,13 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-        <Grid Name="GridMain">
+        <Grid x:Name="GridMain">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="6*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="300"/>
             </Grid.ColumnDefinitions>
-            <WindowsFormsHost Grid.Column="0" x:Name="Host">
-                <WindowsFormsHost.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="local:CommandDefinitions.MergePoints"/>
-                    </ContextMenu>
-                </WindowsFormsHost.ContextMenu>
-            </WindowsFormsHost>
+            <WindowsFormsHost Grid.Column="0" x:Name="Host"/>
             <ScrollViewer Grid.Column="2">
                 <StackPanel Name="StackPanelInspector" HorizontalAlignment="Stretch">
                     <local:Cursor3DInfo x:Name="cursor3dInfo"/>
