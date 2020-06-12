@@ -125,7 +125,11 @@ namespace avoCADo
 
         private void _glControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right) Host.ContextMenu.IsOpen = true;
+            if (e.Button == MouseButtons.Right)
+            {
+
+                Host.ContextMenu.IsOpen = true;
+            }
         }
     }
 }

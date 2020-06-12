@@ -28,6 +28,18 @@ namespace avoCADo.Miscellaneous
             }
         }
 
+        public int ElementCount(T item)
+        {
+            var idx = IndexOf(item);
+            if (idx == -1) return 0;
+            else return ElementCount(idx);
+        }
+
+        public int ElementCount(int idx)
+        {
+            return _counts[idx];
+        }
+
         public new bool Remove(T item)
         {
             var idx = IndexOf(item);

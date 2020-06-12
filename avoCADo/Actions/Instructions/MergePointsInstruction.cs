@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,14 @@ namespace avoCADo.Actions
             DependencyUtility.AddAllDependencies(depAddersOfPointB, parameters.pointB as IDependencyCollector);
             foreach(var depAdd in depAddersOfPointB)
             {
-                depAdd.ReplaceDependency(current: depCollB, newDepColl: depCollA);
+                depAdd.ReplaceDependency(current: depCollB, newDepColl: depCollA); //TODO: should return array of replaced indices (to enable reversing dependency replacement)
             }
 
+            if (parameters.averagePosition)
+            {
+                var avgPosition = (parameters.pointA.Transform.WorldPosition + parameters.pointB.Transform.WorldPosition) * 0.5f;
+                parameters.pointA.Transform.WorldPosition = avgPosition;
+            }
             //TODO: gather execution data and reverse dependency replacement
             _instructionBuffer.Clear();
             return false;
@@ -35,6 +41,14 @@ namespace avoCADo.Actions
         {
             public INode pointA;
             public INode pointB;
+            public bool averagePosition;
+
+            public Parameters(INode pointA, INode pointB, bool averagePosition = true)
+            {
+                this.pointA = pointA;
+                this.pointB = pointB;
+                this.averagePosition = averagePosition;
+            }
         }
     }
 }

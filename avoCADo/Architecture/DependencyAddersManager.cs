@@ -47,7 +47,7 @@ namespace avoCADo.Architecture
                 {
                     foreach (DependencyType type in _dependencyTypes)
                     {
-                        foreach (var depAdd in depColl.GetDependencies(type))
+                        foreach (var depAdd in depColl.GetUniqueDependencies(type))
                         {
                             if (_dependencyAddersBuffer.Contains(depAdd) == false) _dependencyAddersBuffer.Add(depAdd);
                         }

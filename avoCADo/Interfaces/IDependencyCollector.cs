@@ -27,6 +27,7 @@ namespace avoCADo
 
         bool HasDependencyOtherThan(IDependencyAdder dependant);
 
-        IList<IDependencyAdder> GetDependencies(DependencyType type);
+        IList<IDependencyAdder> GetUniqueDependencies(DependencyType type);
+        IList<IDependencyAdder> GetNonUniqueDependencies(DependencyType type);
     }
 }

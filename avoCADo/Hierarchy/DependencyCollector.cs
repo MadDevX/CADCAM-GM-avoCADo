@@ -5,16 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace avoCADo
 {
+    using DepList = CountedList<avoCADo.IDependencyAdder>;
     public class DependencyCollector : IDependencyCollector
     {
 
-        private Dictionary<DependencyType, CountedList<IDependencyAdder>> _dependencies;
+        private Dictionary<DependencyType, DepList> _dependencies;
 
         public DependencyCollector()
         {
-            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, CountedList<IDependencyAdder>>();
+            _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, DepList>();
         }
 
         public void AddDependency(DependencyType type, IDependencyAdder dependant)
@@ -48,9 +50,24 @@ namespace avoCADo
             return strongCount + weakCount > 0;
         }
 
-        public IList<IDependencyAdder> GetDependencies(DependencyType type)
+        public IList<IDependencyAdder> GetUniqueDependencies(DependencyType type)
         {
             return _dependencies[type];
+        }
+
+        public IList<IDependencyAdder> GetNonUniqueDependencies(DependencyType type)
+        {
+            var buffer = new List<IDependencyAdder>();
+            var depList = _dependencies[type];
+            var uniqueCount = depList.Count;
+            for(int i = 0; i < uniqueCount; i++)
+            {
+                for(int j = 0; j < depList.ElementCount(i); j++)
+                {
+                    buffer.Add(depList[i]);
+                }
+            }
+            return buffer;
         }
     }
 }

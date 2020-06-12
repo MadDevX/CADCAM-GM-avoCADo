@@ -25,6 +25,7 @@
         
         <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.TryDeleteSelected" CanExecute="TryDeleteSelectedCmd_CanExecute" Executed="TryDeleteSelectedCmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.MergePoints" CanExecute="MergePointsCmd_CanExecute" Executed="MergePointsCmd_Executed"/>
         
         <CommandBinding Command="local:UtilityCommandDefinitions.LocalMode" CanExecute="LocalCursorMode_CanExecute" Executed="LocalMode_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.CursorMode" CanExecute="LocalCursorMode_CanExecute" Executed="CursorMode_Executed"/>
@@ -78,7 +79,7 @@
             <WindowsFormsHost Grid.Column="0" x:Name="Host">
                 <WindowsFormsHost.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="test"/>
+                        <MenuItem Command="local:CommandDefinitions.MergePoints"/>
                     </ContextMenu>
                 </WindowsFormsHost.ContextMenu>
             </WindowsFormsHost>

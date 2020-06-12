@@ -82,6 +82,23 @@ namespace avoCADo
             OnDisposed?.Invoke(this);
         }
 
+        /// <summary>
+        /// Does not dispose if any references are left (except from caller)
+        /// </summary>
+        public void DisposeSafe(IDependencyAdder caller)
+        {
+            if (caller != null)
+            {
+                if (HasDependencyOtherThan(caller)) return;
+                else Dispose();
+            }
+            else
+            {
+                if (HasDependency()) return;
+                else Dispose();
+            }
+        }
+
         private void TransformModified(object sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, _transformChangedArgs);
@@ -181,7 +198,8 @@ namespace avoCADo
         public bool HasDependency(DependencyType type) => _depColl.HasDependency(type);
         public bool HasDependency() => _depColl.HasDependency();
         public bool HasDependencyOtherThan(IDependencyAdder dependant) => _depColl.HasDependencyOtherThan(dependant);
-        public IList<IDependencyAdder> GetDependencies(DependencyType type) => _depColl.GetDependencies(type);
+        public IList<IDependencyAdder> GetUniqueDependencies(DependencyType type) => _depColl.GetUniqueDependencies(type);
+        public IList<IDependencyAdder> GetNonUniqueDependencies(DependencyType type) => _depColl.GetNonUniqueDependencies(type);
         #endregion
     }
 }

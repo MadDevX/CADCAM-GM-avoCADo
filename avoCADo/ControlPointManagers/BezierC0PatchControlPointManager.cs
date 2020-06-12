@@ -10,7 +10,6 @@ namespace avoCADo
 {
     public class BezierC0PatchControlPointManager : IDisposable
     {
-        private List<INode> _controlPointNodes;
         private bool _handleTransformChanges = true;
         public bool ShouldUpdateData { get; set; } = false;
         private readonly NodeFactory _nodeFactory;
@@ -31,12 +30,18 @@ namespace avoCADo
         private void Initialize()
         {
             _node.PropertyChanged += HandleCPTransformChanged;
+            _depAdd.DependencyReplaced += DependencyReplaced;
+        }
+
+        private void DependencyReplaced(IDependencyCollector prev, IDependencyCollector next)
+        {
+            SetNewSurfaceData(_generator.HorizontalPatches, _generator.VerticalPatches);
         }
 
         public void Dispose()
         {
             _node.PropertyChanged -= HandleCPTransformChanged;
-            var allChildren = new List<INode>(_controlPointNodes);
+            var allChildren = new List<INode>(_node.Children);
             DisposeControlPointsBatch(allChildren);
             allChildren.Clear();
         }
@@ -44,7 +49,6 @@ namespace avoCADo
 
         public void UpdateControlPoints(int horizontalPatches, int verticalPatches, CoordList<INode> existingNodes)
         {
-            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
             SetExistingControlPoints(horizontalPatches, verticalPatches, existingNodes);
 
             ShouldUpdateData = true;
@@ -52,7 +56,6 @@ namespace avoCADo
 
         public void UpdateControlPoints(Vector3 position, int horizontalPatches, int verticalPatches)
         {
-            if (_controlPointNodes == null) _controlPointNodes = new List<INode>(GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode) * GetVerticalControlPointCount(verticalPatches, _generator.WrapMode));
             CorrectControlPointCount(horizontalPatches, verticalPatches);
             SetNewSurfaceData(horizontalPatches, verticalPatches);
 
@@ -103,7 +106,7 @@ namespace avoCADo
             var height = GetVerticalAbstractCPCount(verticalPatches);
             var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
             var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
-            _generator.Surface.ControlPoints.SetData(_controlPointNodes, dataWidth, dataHeight, width, height);
+            _generator.Surface.ControlPoints.SetData(_node.Children, dataWidth, dataHeight, width, height);
         }
 
         private void SetExistingControlPoints(int horizontalPatches, int verticalPatches, CoordList<INode> existingCP)
@@ -138,11 +141,11 @@ namespace avoCADo
             var dataWidth = GetHorizontalControlPointCount(horizontalPatches, _generator.WrapMode);
             var dataHeight = GetVerticalControlPointCount(verticalPatches, _generator.WrapMode);
             var dataCount = dataWidth * dataHeight;
-            var shouldAddPoints = dataCount > _controlPointNodes.Count;
+            var shouldAddPoints = dataCount > _node.Children.Count;
 
             if (shouldAddPoints)
             {
-                int toCreate = dataCount - _controlPointNodes.Count;
+                int toCreate = dataCount - _node.Children.Count;
                 var newPoints = _nodeFactory.CreatePointsBatch(toCreate);
                 TrackControlPointsBatch(newPoints);
             }
@@ -232,28 +235,21 @@ namespace avoCADo
         private void TrackControlPointsBatch(IList<INode> nodes)
         {
             _node.AttachChildRange(nodes);
-            _controlPointNodes.AddRange(nodes);
         }
 
         private void TrackControlPoint(INode node)
         {
             _node.AttachChild(node);
-            _controlPointNodes.Add(node);
         }
 
         private void UntrackControlPointsBatch(IList<INode> nodes)
         {
-            foreach (var node in nodes)
-            {
-                _controlPointNodes.Remove(node);
-            }
             _node.DetachChildRange(nodes);
         }
 
         private void UntrackControlPoint(INode node)
         {
             _node.DetachChild(node);
-            _controlPointNodes.Remove(node);
         }
 
         private void HandleCPTransformChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

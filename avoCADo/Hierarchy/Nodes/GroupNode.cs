@@ -69,8 +69,8 @@ namespace avoCADo
             _nodesToAttachToScene.Clear();
             foreach (var node in nodes)
             {
-                if (Children.Contains(node) == false)
-                {
+                ////if (Children.Contains(node) == false)
+                ////{
                     node.PropertyChanged += ChildNodeModified;
                     node.OnDisposed += HandleChildDisposed;
                     if (node.Transform.ParentNode == null)
@@ -78,7 +78,7 @@ namespace avoCADo
                         _nodesToAttachToScene.Add(node);
                     }
                     AddDependencyToChild(node);
-                }
+                ////}
             }
             _children.AddRange(nodes);
             if (_nodesToAttachToScene.Count > 0)
@@ -90,8 +90,8 @@ namespace avoCADo
 
         public void AttachChildAtIndex(INode node, int index)
         {
-            if (Children.Contains(node) == false)
-            {
+            ////if (Children.Contains(node) == false)
+            ////{
                 Children.Insert(index, node);
                 node.PropertyChanged += ChildNodeModified;
                 node.OnDisposed += HandleChildDisposed;
@@ -100,13 +100,13 @@ namespace avoCADo
                     Transform.ParentNode.AttachChild(node);
                 }
                 AddDependencyToChild(node);
-            }
+            ////}
         }
 
         public void AttachChild(INode node)
         {
-            if (Children.Contains(node) == false)
-            {
+            ////if (Children.Contains(node) == false)
+            ////{
                 Children.Add(node);
                 node.PropertyChanged += ChildNodeModified;
                 node.OnDisposed += HandleChildDisposed;
@@ -115,7 +115,7 @@ namespace avoCADo
                     Transform.ParentNode.AttachChild(node);
                 }
                 AddDependencyToChild(node);
-            }
+            ////}
         }
 
         public bool DetachChild(INode node)
@@ -128,6 +128,16 @@ namespace avoCADo
                 RemoveDependencyFromChild(node);
             }
             return res;
+        }
+
+        private bool DetachChildAtIndex(int idx)
+        {
+            var node = Children[idx];
+            Children.RemoveAt(idx);
+            node.PropertyChanged -= ChildNodeModified;
+            node.OnDisposed -= HandleChildDisposed;
+            RemoveDependencyFromChild(node);
+            return true;
         }
 
         public void DetachChildRange(IList<INode> nodes)
@@ -174,6 +184,7 @@ namespace avoCADo
 
         public void Dispose()
         {
+            Renderer.Dispose();
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 _children[i].PropertyChanged -= ChildNodeModified;
@@ -181,7 +192,6 @@ namespace avoCADo
                 RemoveDependencyFromChild(_children[i]);
             }
             _children.Clear();
-            Renderer.Dispose();
             OnDisposed?.Invoke(this);
         }
 
@@ -199,10 +209,29 @@ namespace avoCADo
         {
             return Children.IndexOf(node);
         }
+ 
+        private IList<int> GetChildIndices(INode node)
+        {
+            var indices = new List<int>();
+            for(int i = 0; i < Children.Count; i++)
+            {
+                if (Children[i] == node) indices.Add(i);
+            }
+            return indices;
+        }
 
         public void ReplaceDependency(IDependencyCollector current, IDependencyCollector newDepColl)
         {
+            if (!(current is INode nodeCur) || !(newDepColl is INode nodeNew)) throw new InvalidOperationException("Provided DependencyCollectors do not implement INode interface.");
+            var indices = GetChildIndices(nodeCur);
+            foreach (var idx in indices)
+            {
+                DetachChildAtIndex(idx);
+                AttachChildAtIndex(nodeNew, idx);
+            }
+            (nodeCur as Node).DisposeSafe(this);
             DependencyReplaced?.Invoke(current, newDepColl);
+            Notify();
         }
     }
 }

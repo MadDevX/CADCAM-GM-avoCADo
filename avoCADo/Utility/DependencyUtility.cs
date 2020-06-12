@@ -14,7 +14,19 @@ namespace avoCADo
             depAdders.Clear();
             foreach (DependencyType type in _dependencyTypes)
             {
-                foreach (var depAdd in depColl.GetDependencies(type))
+                foreach (var depAdd in depColl.GetUniqueDependencies(type))
+                {
+                    depAdders.Add(depAdd);
+                }
+            }
+        }
+
+        public static void AddAllNonUniqueDependencies(IList<IDependencyAdder> depAdders, IDependencyCollector depColl)
+        {
+            depAdders.Clear();
+            foreach (DependencyType type in _dependencyTypes)
+            {
+                foreach (var depAdd in depColl.GetNonUniqueDependencies(type))
                 {
                     depAdders.Add(depAdd);
                 }
@@ -26,7 +38,7 @@ namespace avoCADo
             depAdders.Clear();
             foreach (DependencyType type in _dependencyTypes)
             {
-                foreach (T depAdd in depColl.GetDependencies(type))
+                foreach (T depAdd in depColl.GetUniqueDependencies(type))
                 {
                     depAdders.Add(depAdd);
                 }

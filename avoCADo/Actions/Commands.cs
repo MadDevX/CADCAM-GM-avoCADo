@@ -290,7 +290,9 @@ namespace avoCADo
 
         private void MergePointsCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            
+            var selected = NodeSelection.Manager.SelectedNodes;
+            _instructionBuffer.IssueInstruction<MergePointsInstruction, MergePointsInstruction.Parameters>(
+                new MergePointsInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1)));
         }
 
         #endregion
