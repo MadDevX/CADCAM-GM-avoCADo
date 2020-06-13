@@ -97,6 +97,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand FillHole = new RoutedUICommand
+            (
+                "Fill Hole",
+                "FillHole",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.F, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

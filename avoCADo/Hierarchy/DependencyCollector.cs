@@ -14,6 +14,8 @@ namespace avoCADo
 
         private Dictionary<DependencyType, DepList> _dependencies;
 
+        public int UniqueDependencyCount => _dependencies[DependencyType.Weak].Count + _dependencies[DependencyType.Strong].Count; //TODO: auto-iterate through every dependency type
+
         public DependencyCollector()
         {
             _dependencies = DictionaryInitializer.InitializeEnumDictionary<DependencyType, DepList>();

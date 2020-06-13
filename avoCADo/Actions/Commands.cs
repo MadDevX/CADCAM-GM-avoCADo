@@ -1,4 +1,5 @@
 ﻿using avoCADo.Actions;
+using avoCADo.Miscellaneous;
 using avoCADo.Serialization;
 using OpenTK;
 using System;
@@ -295,6 +296,21 @@ namespace avoCADo
                 new MergePointsInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1)));
         }
 
+        private void FillHoleCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            e.CanExecute = ObjectTypeOnlySelected(ObjectType.BezierPatchC0) &&
+                           selected.Count == 3 &&
+                           LoopDetector.AreConnected(selected.ElementAt(0), selected.ElementAt(1), selected.ElementAt(2));
+        }
+
+        private void FillHoleCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            _instructionBuffer.IssueInstruction<MergePointsInstruction, MergePointsInstruction.Parameters>(
+                new MergePointsInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1)));
+        }
+
         #endregion
 
         #region Helper Methods
@@ -324,6 +340,18 @@ namespace avoCADo
             foreach (var node in NodeSelection.Manager.SelectedNodes)
             {
                 if (node.ObjectType != ObjectType.Point)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool ObjectTypeOnlySelected(ObjectType type)
+        {
+            foreach(var node in NodeSelection.Manager.SelectedNodes)
+            {
+                if(node.ObjectType != type)
                 {
                     return false;
                 }

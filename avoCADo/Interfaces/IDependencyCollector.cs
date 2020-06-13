@@ -20,6 +20,7 @@ namespace avoCADo
 
     public interface IDependencyCollector
     {
+        int UniqueDependencyCount { get; }
         void AddDependency(DependencyType type, IDependencyAdder dependant);
         void RemoveDependency(DependencyType type, IDependencyAdder dependant);
         bool HasDependency(DependencyType type);

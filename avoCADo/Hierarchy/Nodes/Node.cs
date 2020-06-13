@@ -193,6 +193,7 @@ namespace avoCADo
         }
 
         #region Dependency forwarding
+        public int UniqueDependencyCount => _depColl.UniqueDependencyCount;
         public void AddDependency(DependencyType type, IDependencyAdder dependant) => _depColl.AddDependency(type, dependant);
         public void RemoveDependency(DependencyType type, IDependencyAdder dependant) => _depColl.RemoveDependency(type, dependant);
         public bool HasDependency(DependencyType type) => _depColl.HasDependency(type);
