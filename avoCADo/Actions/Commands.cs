@@ -123,8 +123,9 @@ namespace avoCADo
         private void CreatBezierPatchC0Cmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var dialog = new BezierPatchCreation();
+            dialog.HorizontalPatches = 1;
+            dialog.VerticalPatches = 1;
             var result = dialog.ShowDialog();
-
             if (result.HasValue && result.Value == true)
             {
                 hierarchy.CollapseHierarchy();
@@ -301,7 +302,7 @@ namespace avoCADo
             var selected = NodeSelection.Manager.SelectedNodes;
             e.CanExecute = ObjectTypeOnlySelected(ObjectType.BezierPatchC0) &&
                            selected.Count == 3 &&
-                           LoopDetector.AreConnected(selected.ElementAt(0), selected.ElementAt(1), selected.ElementAt(2));
+                           LoopDetector.ValidForFilling(selected.ElementAt(0), selected.ElementAt(1), selected.ElementAt(2));
         }
 
         private void FillHoleCmd_Executed(object sender, ExecutedRoutedEventArgs e)
