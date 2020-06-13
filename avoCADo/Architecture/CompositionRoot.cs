@@ -27,7 +27,6 @@ namespace avoCADo
         private ScreenBufferManager _screenBufferManager;
         private ViewportManager _viewportManager;
         private FramebufferManager _framebufferManager;
-        private TessellationManager _tesselationManager;
 
         private ShaderProvider _shaderProvider;
 
@@ -70,7 +69,6 @@ namespace avoCADo
             _screenBufferManager = new ScreenBufferManager(_backgroundManager);
             _viewportManager = new ViewportManager(_control);
             _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager);
-            _tesselationManager = new TessellationManager();
 
             _shaderProvider = new ShaderProvider();
 

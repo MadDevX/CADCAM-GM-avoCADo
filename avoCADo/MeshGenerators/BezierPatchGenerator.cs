@@ -18,6 +18,7 @@ namespace avoCADo
     public class BezierPatchGenerator : IMeshGenerator, ICircularDependent<INode>
     {
         protected virtual DrawCallShaderType SurfaceDrawType { get; } = DrawCallShaderType.SurfaceBezier;
+        protected virtual int PatchCount { get; } = RenderConstants.PATCH_COUNT;
         private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         public IList<DrawCall> DrawCalls
         {
@@ -27,14 +28,14 @@ namespace avoCADo
                 if(ShowEdges)
                 {
 
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
                     _drawCalls.Add(new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 }
                 else
                 {
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, IsolineDivisionsV, 64));
+                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
                 }
                 return _drawCalls;
             }

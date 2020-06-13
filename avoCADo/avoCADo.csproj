@@ -199,7 +199,6 @@
     <Compile Include="Rendering\Renderers\SimpleRenderer.cs" />
     <Compile Include="Shaders\ShaderWrappers\SimpleShaderWrapper.cs" />
     <Compile Include="Shaders\ShaderWrappers\TesselationShaderWrapper.cs" />
-    <Compile Include="Rendering\TessellationManager.cs" />
     <Compile Include="Serialization\format_draft3.cs">
       <DependentUpon>format_draft3.xsd</DependentUpon>
     </Compile>

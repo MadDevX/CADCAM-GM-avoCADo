@@ -26,10 +26,11 @@ namespace avoCADo
         public float size;
         public Color4 defaultColor;
         public Color4 selectedColor;
+        public int patchCount;
         public int tessLevelOuter0;
         public int tessLevelOuter1;
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 defaultColor, Color4 selectedColor, int outerTess0 = 0, int outerTess1 = 0)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 defaultColor, Color4 selectedColor, int patchCount = 16, int outerTess0 = 0, int outerTess1 = 0)
         {
             this.startIndex = startIndex;
             this.elementCount = elementCount;
@@ -37,11 +38,12 @@ namespace avoCADo
             this.size = size;
             this.defaultColor = defaultColor;
             this.selectedColor = selectedColor;
+            this.patchCount = patchCount;
             this.tessLevelOuter0 = outerTess0;
             this.tessLevelOuter1 = outerTess1;
         }
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, int outerTess0 = 0, int outerTess1 = 0)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, int patchCount = 16, int outerTess0 = 0, int outerTess1 = 0)
         {
             this.startIndex = startIndex;
             this.elementCount = elementCount;
@@ -49,6 +51,7 @@ namespace avoCADo
             this.size = size;
             this.defaultColor = RenderConstants.PARAMETRIC_OBJECT_DEFAULT_COLOR;
             this.selectedColor = RenderConstants.PARAMETRIC_OBJECT_SELECTED_COLOR;
+            this.patchCount = patchCount;
             this.tessLevelOuter0 = outerTess0;
             this.tessLevelOuter1 = outerTess1;
         }

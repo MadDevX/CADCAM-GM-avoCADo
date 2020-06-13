@@ -50,6 +50,7 @@ namespace avoCADo
                     var tess = shaderWrapper as TesselationShaderWrapper;
                     if (tess != null)
                     {
+                        GL.PatchParameter(PatchParameterInt.PatchVertices, calls[i].patchCount);
                         tess.SetTessLevelOuter0(calls[i].tessLevelOuter0);
                         tess.SetTessLevelOuter1(calls[i].tessLevelOuter1);
                     }
