@@ -52,18 +52,18 @@ namespace avoCADo.MeshGenerators
                 _cps[i] [4] = boundary[i][4];
                 _cps[i][10] = boundary[i][5];
                 _cps[i][16] = boundary[i][6];
-                _cps[i][17] = boundary[i+1][1];
-                _cps[i][18] = boundary[i+1][2];
-                _cps[i][19] = boundary[i+1][3];
+                _cps[i][17] = boundary[(i+1)%3][1];
+                _cps[i][18] = boundary[(i+1)%3][2];
+                _cps[i][19] = boundary[(i+1)%3][3];
 
                 _cps[i][5] = _cps[i][6] = 2.0f * _cps[i][4] - secondaryBoundary[i][4];
                 _cps[i][11] = 2.0f * _cps[i][10] - secondaryBoundary[i][5];
-                _cps[i][12] = 2.0f * _cps[i][17] - secondaryBoundary[i + 1][1];
-                _cps[i][13] = _cps[i][14] = 2.0f * _cps[i][18] - secondaryBoundary[i + 1][2];
+                _cps[i][12] = 2.0f * _cps[i][17] - secondaryBoundary[(i+1)%3][1];
+                _cps[i][13] = _cps[i][14] = 2.0f * _cps[i][18] - secondaryBoundary[(i+1)%3][2];
             }
             for(int i = 0; i < 3; i++)
             {
-                _cps[i+1][1] = _cps[i][15] = Vector3.Lerp(_cps[i][13], _cps[i + 1][5], 0.5f);
+                _cps[(i+1)%3][1] = _cps[i][15] = Vector3.Lerp(_cps[i][13], _cps[(i+1)%3][5], 0.5f);
             }
             
             var q = new Vector3[3];
@@ -78,7 +78,18 @@ namespace avoCADo.MeshGenerators
             
             for(int i = 0; i < 3; i++)
             {
-                _cps[i][9] = _cps[i+1][2] = (2.0f * q[i+1] + mid) / 3.0f;
+                _cps[i][3] = mid;
+                _cps[i][9] = _cps[(i+1)%3][2] = (2.0f * q[(i+1)%3] + mid) / 3.0f;
+            }
+
+            for(int i = 0; i < 3; i++)
+            {
+                var g2 = (_cps[(i+1)%3][4] - _cps[(i+1)%3][0]);
+                var g0 = ((_cps[(i+1)%3][9] - _cps[(i+1)%3][3]) + (_cps[i][3] - _cps[i][2]))*0.5f;
+                var g1 = (g0 + g2) * 0.5f;
+                var diff = BezierHelper.Bezier2(g0, g1, g2, 1.0f / 3.0f);
+                _cps[i][8] = _cps[i][9] - diff;
+                _cps[(i+1)%3][7] = _cps[(i+1)%3][2] + diff;
             }
         }
 
