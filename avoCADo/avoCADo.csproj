@@ -123,6 +123,7 @@
     <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="Interfaces\ISelectionManager.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
+    <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
