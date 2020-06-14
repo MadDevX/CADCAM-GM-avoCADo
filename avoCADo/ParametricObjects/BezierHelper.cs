@@ -10,6 +10,19 @@ namespace avoCADo.ParametricObjects.Curves
 {
     public static class BezierHelper
     {
+        public static List<Vector3> SplitBezier(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        {
+            var dividedCPs = new List<Vector3>();
+            dividedCPs.Add(a);
+            dividedCPs.Add(Bezier1(a, b, t));
+            dividedCPs.Add(Bezier2(a, b, c, t));
+            dividedCPs.Add(Bezier3(a, b, c, d, t));
+            dividedCPs.Add(Bezier2(b, c, d, t));
+            dividedCPs.Add(Bezier1(c, d, t));
+            dividedCPs.Add(d);
+            return dividedCPs;
+        }
+
         public static Vector3 Bezier1(Vector3 a, Vector3 b, float t)
         {
             return Vector3.Lerp(a, b, t);

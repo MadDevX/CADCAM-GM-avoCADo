@@ -51,21 +51,18 @@ namespace avoCADo.Miscellaneous
             RR
         }
 
-        public static IList<CoordList<INode>> GetLoopedCoords(INode a, INode b, INode c)
+        public static IList<CoordList<INode>> GetLoopedCoords(IBezierSurface a, IBezierSurface b, IBezierSurface c)
         {
             var coordsLists = new List<CoordList<INode>>();
-            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var common = CommonCPs(surfA, surfB, surfC);
+            var common = CommonCPs(a, b, c);
             if (common.HasValue == false) throw new InvalidOperationException("Provided surfaces do not create triangular loop");
             var comPts = common.Value;
-            var caseA = GetEdgeCase(comPts.ca, comPts.ab, surfA);
-            var caseB = GetEdgeCase(comPts.ab, comPts.bc, surfB);
-            var caseC = GetEdgeCase(comPts.bc, comPts.ca, surfC);
-            coordsLists.Add(RemapCoords(surfA.ControlPoints, caseA));
-            coordsLists.Add(RemapCoords(surfB.ControlPoints, caseB));
-            coordsLists.Add(RemapCoords(surfC.ControlPoints, caseC));
+            var caseA = GetEdgeCase(comPts.ca, comPts.ab, a);
+            var caseB = GetEdgeCase(comPts.ab, comPts.bc, b);
+            var caseC = GetEdgeCase(comPts.bc, comPts.ca, c);
+            coordsLists.Add(RemapCoords(a.ControlPoints, caseA));
+            coordsLists.Add(RemapCoords(b.ControlPoints, caseB));
+            coordsLists.Add(RemapCoords(c.ControlPoints, caseC));
             return coordsLists;
         }
 
