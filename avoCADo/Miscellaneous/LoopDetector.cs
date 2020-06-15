@@ -51,18 +51,21 @@ namespace avoCADo.Miscellaneous
             RR
         }
 
-        public static IList<CoordList<INode>> GetLoopedCoords(IBezierSurface a, IBezierSurface b, IBezierSurface c)
+        public static IList<CoordList<INode>> GetLoopedCoords(INode a, INode b, INode c)
         {
             var coordsLists = new List<CoordList<INode>>();
             var common = CommonCPs(a, b, c);
+            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
             if (common.HasValue == false) throw new InvalidOperationException("Provided surfaces do not create triangular loop");
             var comPts = common.Value;
-            var caseA = GetEdgeCase(comPts.ca, comPts.ab, a);
-            var caseB = GetEdgeCase(comPts.ab, comPts.bc, b);
-            var caseC = GetEdgeCase(comPts.bc, comPts.ca, c);
-            coordsLists.Add(RemapCoords(a.ControlPoints, caseA));
-            coordsLists.Add(RemapCoords(b.ControlPoints, caseB));
-            coordsLists.Add(RemapCoords(c.ControlPoints, caseC));
+            var caseA = GetEdgeCase(comPts.ca, comPts.ab, surfA);
+            var caseB = GetEdgeCase(comPts.ab, comPts.bc, surfB);
+            var caseC = GetEdgeCase(comPts.bc, comPts.ca, surfC);
+            coordsLists.Add(RemapCoords(surfA.ControlPoints, caseA));
+            coordsLists.Add(RemapCoords(surfB.ControlPoints, caseB));
+            coordsLists.Add(RemapCoords(surfC.ControlPoints, caseC));
             return coordsLists;
         }
 
@@ -178,7 +181,8 @@ namespace avoCADo.Miscellaneous
             var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
             var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
             var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var common = CommonCPs(surfA, surfB, surfC);
+            if (surfA == null || surfB == null || surfC == null) return false;
+            var common = CommonCPs(a, b, c);
             if (common.HasValue == false) return false;
             var comPts = common.Value;
             if (IsCornerPoint(comPts.ab, surfA) == false ||
@@ -233,11 +237,15 @@ namespace avoCADo.Miscellaneous
             return (-1, -1);
         }
 
-        private static (INode ab, INode bc, INode ca)? CommonCPs(IBezierSurface a, IBezierSurface b, IBezierSurface c)
+        private static (INode ab, INode bc, INode ca)? CommonCPs(INode a, INode b, INode c)
         {
-            var interusedA = GetCornersWithMultipleUniqueDependencies(a);
-            var interusedB = GetCornersWithMultipleUniqueDependencies(b);
-            var interusedC = GetCornersWithMultipleUniqueDependencies(c);
+            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+
+            var interusedA = GetCornersWithMultipleUniqueDependencies(surfA, b, c);
+            var interusedB = GetCornersWithMultipleUniqueDependencies(surfB, a, c);
+            var interusedC = GetCornersWithMultipleUniqueDependencies(surfC, a, b);
             var commonAB = GetCommon(interusedA, interusedB);
             var commonBC = GetCommon(interusedB, interusedC);
             var commonCA = GetCommon(interusedC, interusedA);
@@ -258,7 +266,7 @@ namespace avoCADo.Miscellaneous
             return null;
         }
 
-        private static IList<INode> GetCornersWithMultipleUniqueDependencies(IBezierSurface surface)
+        private static IList<INode> GetCornersWithMultipleUniqueDependencies(IBezierSurface surface, INode neighbor1, INode neighbor2)
         {
             var list = new List<INode>();
             var cps = surface.ControlPoints;
@@ -266,10 +274,10 @@ namespace avoCADo.Miscellaneous
             var r = cps.Width - 1;
             var d = 0;
             var u = cps.Height - 1;
-            if ((cps[l, d] as IDependencyCollector).UniqueDependencyCount > 1) list.Add(cps[l, d]);
-            if ((cps[r, d] as IDependencyCollector).UniqueDependencyCount > 1) list.Add(cps[r, d]);
-            if ((cps[r, u] as IDependencyCollector).UniqueDependencyCount > 1) list.Add(cps[r, u]);
-            if ((cps[l, u] as IDependencyCollector).UniqueDependencyCount > 1) list.Add(cps[l, u]);
+            {if (cps[l, d] is IDependencyCollector corner && corner.UniqueDependencyCount > 1 && (corner.Contains(neighbor1 as IDependencyAdder) || corner.Contains(neighbor2 as IDependencyAdder))) list.Add(cps[l, d]);}
+            {if (cps[r, d] is IDependencyCollector corner && corner.UniqueDependencyCount > 1 && (corner.Contains(neighbor1 as IDependencyAdder) || corner.Contains(neighbor2 as IDependencyAdder))) list.Add(cps[r, d]);}
+            {if (cps[r, u] is IDependencyCollector corner && corner.UniqueDependencyCount > 1 && (corner.Contains(neighbor1 as IDependencyAdder) || corner.Contains(neighbor2 as IDependencyAdder))) list.Add(cps[r, u]);}
+            {if (cps[l, u] is IDependencyCollector corner && corner.UniqueDependencyCount > 1 && (corner.Contains(neighbor1 as IDependencyAdder) || corner.Contains(neighbor2 as IDependencyAdder))) list.Add(cps[l, u]);}
             return list;
         }
 

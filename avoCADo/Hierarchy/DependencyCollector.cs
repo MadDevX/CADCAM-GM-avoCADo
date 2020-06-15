@@ -71,5 +71,10 @@ namespace avoCADo
             }
             return buffer;
         }
+
+        public bool Contains(IDependencyAdder adder)
+        {
+            return _dependencies[adder.ChildrenDependencyType].Contains(adder);
+        }
     }
 }

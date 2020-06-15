@@ -25,7 +25,7 @@ namespace avoCADo
         void RemoveDependency(DependencyType type, IDependencyAdder dependant);
         bool HasDependency(DependencyType type);
         bool HasDependency();
-
+        bool Contains(IDependencyAdder adder);
         bool HasDependencyOtherThan(IDependencyAdder dependant);
 
         IList<IDependencyAdder> GetUniqueDependencies(DependencyType type);

@@ -237,6 +237,8 @@ namespace avoCADo
         public bool HasDependencyOtherThan(IDependencyAdder dependant) => _depColl.HasDependencyOtherThan(dependant);
         public IList<IDependencyAdder> GetUniqueDependencies(DependencyType type) => _depColl.GetUniqueDependencies(type);
         public IList<IDependencyAdder> GetNonUniqueDependencies(DependencyType type) => _depColl.GetNonUniqueDependencies(type);
+        public bool Contains(IDependencyAdder adder) => _depColl.Contains(adder);
+
         #endregion
     }
 }
