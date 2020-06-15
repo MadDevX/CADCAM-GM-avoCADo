@@ -49,11 +49,6 @@ namespace avoCADo.MeshGenerators
             _b = b;
             _c = c;
 
-            var surfA = (_a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (_b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (_c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            _boundaryCoords = LoopDetector.GetLoopedCoords(surfA, surfB, surfC);
-
             UpdateControlPoints();
         }
 
@@ -80,6 +75,10 @@ namespace avoCADo.MeshGenerators
 
         private void UpdateControlPoints()
         {
+            var surfA = (_a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (_b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (_c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            _boundaryCoords = LoopDetector.GetLoopedCoords(surfA, surfB, surfC);
             SetPositions();
             UpdateBuffers();
         }
