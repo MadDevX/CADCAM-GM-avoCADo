@@ -11,7 +11,7 @@ namespace avoCADo
     class GroupTransform : DummyTransform
     {
         private Vector3 _averageChildWorldPosition;
-
+        private static PropertyChangedEventArgs _positionChangedArgs = new PropertyChangedEventArgs(nameof(Position));
         public override INode Node
         {
             get => base.Node;
@@ -67,6 +67,7 @@ namespace avoCADo
                 _averageChildWorldPosition += child.Transform.WorldPosition;
             }
             _averageChildWorldPosition /= Node.Children.Count;
+            RaisePropertyChanged(this, _positionChangedArgs);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace avoCADo
     /// This node type only groups independent nodes. It does not have scene properties of its own, its only defined by children nodes that are assigned to it.
     /// Moreover, assigning child to GroupNode, does not alter node hierarchy in usual sense - it does not affect Parent node of assigned children.
     /// </summary>
-    public abstract class GroupNode<T> : INode, IObject, INotifyPropertyChanged, IDependencyAdder where T : ICircularDependent<INode>
+    public abstract class GroupNode<T> : INode, IObject, INotifyPropertyChanged, IDependencyCollector, IDependencyAdder where T : ICircularDependent<INode>
     {
         public bool IsSelectable { get; set; } = true;
         public bool IsSelected { get; set; } = false;
@@ -53,8 +53,11 @@ namespace avoCADo
         public ObservableCollection<INode> Children => _children;
         private WpfObservableRangeCollection<INode> _children;
 
+        protected IDependencyCollector _depColl;
+
         public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
         {
+            _depColl = new DependencyCollector();
             _children = childrenSource;
             Transform.Node = this;
             dependent.Initialize(this);
@@ -224,5 +227,16 @@ namespace avoCADo
             DependencyReplaced?.Invoke(current, newDepColl);
             Notify();
         }
+
+        #region Dependency forwarding
+        public int UniqueDependencyCount => _depColl.UniqueDependencyCount;
+        public void AddDependency(DependencyType type, IDependencyAdder dependant) => _depColl.AddDependency(type, dependant);
+        public void RemoveDependency(DependencyType type, IDependencyAdder dependant) => _depColl.RemoveDependency(type, dependant);
+        public bool HasDependency(DependencyType type) => _depColl.HasDependency(type);
+        public bool HasDependency() => _depColl.HasDependency();
+        public bool HasDependencyOtherThan(IDependencyAdder dependant) => _depColl.HasDependencyOtherThan(dependant);
+        public IList<IDependencyAdder> GetUniqueDependencies(DependencyType type) => _depColl.GetUniqueDependencies(type);
+        public IList<IDependencyAdder> GetNonUniqueDependencies(DependencyType type) => _depColl.GetNonUniqueDependencies(type);
+        #endregion
     }
 }

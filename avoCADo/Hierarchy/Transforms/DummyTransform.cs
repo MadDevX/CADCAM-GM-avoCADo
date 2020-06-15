@@ -59,5 +59,10 @@ namespace avoCADo
         public virtual Vector3 TranslateSnapped(Vector3 translation, float snapValue) { return Vector3.Zero; }
 
         private Vector2 _screenCoords = new Vector2(float.MinValue, float.MinValue); // to avoid selecting non-3d object by clicking in the middle of viewport
+
+        protected void RaisePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(sender, e);
+        }
     }
 }
