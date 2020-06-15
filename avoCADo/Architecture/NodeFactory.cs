@@ -1,5 +1,6 @@
 ﻿using avoCADo.Architecture;
 using avoCADo.Constants;
+using avoCADo.MeshGenerators;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -76,9 +77,22 @@ namespace avoCADo
                     return CreateBezierPatchC0((PatchParameters)parameters);
                 case ObjectType.BezierPatchC2:
                     return CreateBezierPatchC2((PatchParameters)parameters);
+                case ObjectType.GregoryPatch:
+                    return CreateGregoryPatch((IReadOnlyCollection<INode>)parameters);
                 default:
                     return null;
             }
+        }
+
+        public INode CreateGregoryPatch(IReadOnlyCollection<INode> nodes)
+        {
+            var parent = _sceneManager.CurrentScene; 
+            var generator = new GregoryPatchGenerator(nodes.ElementAt(0), nodes.ElementAt(1), nodes.ElementAt(2));
+            var node = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator), NameGenerator.GenerateName(parent, DefaultNodeNames.GregoryPatch));
+            node.ObjectType = ObjectType.GregoryPatch;
+
+            parent.AttachChild(node);
+            return node;
         }
 
         public INode CreateTorus()
@@ -95,7 +109,7 @@ namespace avoCADo
         {
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
             var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), NameGenerator.GenerateName(parent, DefaultNodeNames.Torus));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator), NameGenerator.GenerateName(parent, DefaultNodeNames.Torus));
             torusNode.ObjectType = ObjectType.Torus;
 
             parent.AttachChild(torusNode);
@@ -116,7 +130,7 @@ namespace avoCADo
             {
                 surfGen = new BezierPatchGenerator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.existingNodes);
             }
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, DefaultNodeNames.BezierPatchC0));
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, CreateParametricObjectRenderer(surfGen), surfGen, NameGenerator.GenerateName(parent, DefaultNodeNames.BezierPatchC0));
             surfNode.ObjectType = ObjectType.BezierPatchC0;
 
             parent.AttachChild(surfNode);
@@ -137,7 +151,7 @@ namespace avoCADo
             {
                 surfGen = new BezierPatchC2Generator(surface, this, parameters.patchType, _cursor.Position, parameters.horizontalPatches, parameters.verticalPatches, parameters.existingNodes);
             }
-            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, surfGen), surfGen, NameGenerator.GenerateName(parent, DefaultNodeNames.BezierPatchC2));
+            var surfNode = new BezierPatchGroupNode(bezierSurfCollection, CreateParametricObjectRenderer(surfGen), surfGen, NameGenerator.GenerateName(parent, DefaultNodeNames.BezierPatchC2));
             surfNode.ObjectType = ObjectType.BezierPatchC2;
             
             parent.AttachChild(surfNode);
@@ -190,7 +204,7 @@ namespace avoCADo
             ICurve curve = CreateCurve<T>(source);
 
             var generator = new BezierGeneratorGeometry(curve);
-            var bezierGroup = new BezierGeomGroupNode(source, new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.CurveShader, _shaderProvider.DefaultShader, generator), generator, NameGenerator.GenerateName(parent, defaultName));
+            var bezierGroup = new BezierGeomGroupNode(source, CreateParametricObjectRenderer(generator), generator, NameGenerator.GenerateName(parent, defaultName));
             var selected = controlPoints != null ? controlPoints : NodeSelection.Manager.SelectedNodes;
             foreach (var node in selected)
             {
@@ -210,6 +224,17 @@ namespace avoCADo
             if (typeof(T) == typeof(InterpolatingC2Curve)) return new InterpolatingC2Curve(source);
 
             else return null;
+        }
+
+
+        private IRenderer CreateParametricObjectRenderer(IMeshGenerator generator)
+        {
+            return new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier,
+                                                _shaderProvider.SurfaceShaderDeBoor,
+                                                _shaderProvider.SurfaceShaderGregory,
+                                                _shaderProvider.CurveShader,
+                                                _shaderProvider.DefaultShader,
+                                                generator);
         }
 
         private INode GetDefaultParent()

@@ -14,20 +14,23 @@ namespace avoCADo
         private ShaderWrapper _curveShaderWrapper;
         private TesselationShaderWrapper _tessBezierShaderWraper;
         private TesselationShaderWrapper _tessDeBoorShaderWraper;
+        private TesselationShaderWrapper _tessGregoryShaderWrapper;
 
         private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
         private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;
 
         public ParametricObjectRenderer(TesselationShaderWrapper tessBezierShaderWrapper, 
-                                        TesselationShaderWrapper tessDeBoorShaderWrapper, 
+                                        TesselationShaderWrapper tessDeBoorShaderWrapper,
+                                        TesselationShaderWrapper tessGregoryShaderWrapper,
                                         ShaderWrapper curveShaderWrapper, 
                                         ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {
             _tessBezierShaderWraper = tessBezierShaderWrapper;
             _tessDeBoorShaderWraper = tessDeBoorShaderWrapper;
+            _tessGregoryShaderWrapper = tessGregoryShaderWrapper;
             _curveShaderWrapper = curveShaderWrapper;
-            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessBezierShaderWraper, _tessDeBoorShaderWraper);
-            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches);
+            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessBezierShaderWraper, _tessDeBoorShaderWraper, _tessGregoryShaderWrapper);
+            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches, PrimitiveType.Patches);
         }
 
         protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)

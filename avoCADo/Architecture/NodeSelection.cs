@@ -41,7 +41,8 @@ namespace avoCADo
                 0.3f,//BezierPatchC0,
                 0.3f,//BezierPatchC2,
                 0.07f,//VirtualPoint,
-                0.0f//Scene
+                0.0f,//Scene
+                0.0f//GregoryPatch
             );
     }
 }

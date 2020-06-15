@@ -308,8 +308,8 @@ namespace avoCADo
         private void FillHoleCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var selected = NodeSelection.Manager.SelectedNodes;
-            _instructionBuffer.IssueInstruction<MergePointsInstruction, MergePointsInstruction.Parameters>(
-                new MergePointsInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1)));
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.GregoryPatch, selected));
         }
 
         #endregion

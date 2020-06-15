@@ -13,6 +13,7 @@ namespace avoCADo
         public readonly ShaderWrapper CurveShader;
         public readonly TesselationShaderWrapper SurfaceShaderBezier;
         public readonly TesselationShaderWrapper SurfaceShaderDeBoor;
+        public readonly TesselationShaderWrapper SurfaceShaderGregory;
         public readonly SimpleShaderWrapper OverlayShader;
 
         public ShaderProvider()
@@ -22,6 +23,7 @@ namespace avoCADo
             CurveShader = new ShaderWrapper(new Shader(ShaderPaths.VSPath, ShaderPaths.GSPath, ShaderPaths.FSPath), nameof(CurveShader));
             SurfaceShaderBezier = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEBezierPath, ShaderPaths.FSPath), nameof(SurfaceShaderBezier));
             SurfaceShaderDeBoor = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEDeBoorPath, ShaderPaths.FSPath), nameof(SurfaceShaderDeBoor));
+            SurfaceShaderGregory = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESC20Path, ShaderPaths.TESEGregoryPath, ShaderPaths.FSPath), nameof(SurfaceShaderGregory));
             OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath), nameof(OverlayShader));
         }
 
@@ -35,11 +37,14 @@ namespace avoCADo
             camera.SetCameraMatrices(SurfaceShaderBezier);
             SurfaceShaderDeBoor.Shader.Use();
             camera.SetCameraMatrices(SurfaceShaderDeBoor);
+            SurfaceShaderGregory.Shader.Use();
+            camera.SetCameraMatrices(SurfaceShaderGregory);
         }
 
         public void Dispose()
         {
             OverlayShader.Dispose();
+            SurfaceShaderGregory.Dispose();
             SurfaceShaderDeBoor.Dispose();
             SurfaceShaderBezier.Dispose();
             CurveShader.Dispose();

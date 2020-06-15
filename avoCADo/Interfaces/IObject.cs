@@ -16,7 +16,8 @@ namespace avoCADo
         BezierPatchC0,
         BezierPatchC2,
         VirtualPoint,
-        Scene
+        Scene,
+        GregoryPatch
     }
 
     public interface IObject

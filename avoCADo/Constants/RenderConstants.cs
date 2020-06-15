@@ -24,6 +24,6 @@ namespace avoCADo.Constants
         public static Color4 POLYGON_SELECTED_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
 
         public static int PATCH_COUNT = 16;
-        public static int GREGORY_PATCH_SIZE = 20;
+        public static int GREGORY_PATCH_COUNT = 20;
     }
 }
