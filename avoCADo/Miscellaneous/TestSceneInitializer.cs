@@ -12,7 +12,7 @@ namespace avoCADo
 {
     public static class TestSceneInitializer
     {
-        public static void SpawnTestObjects(Scene scene, NodeFactory nodeFactory, IUpdateLoop loop, ShaderProvider provider)
+        public static void SpawnTestObjects(Scene scene, NodeFactory nodeFactory, IUpdateLoop loop, ShaderProvider provider, Cursor3D cursor3D)
         {
             var point = nodeFactory.CreateObject(ObjectType.Point, null);
             point.Transform.WorldPosition = Vector3.UnitX;
@@ -40,6 +40,15 @@ namespace avoCADo
                 }
             }
             nodeFactory.CreateObject(ObjectType.BezierPatchC2, new PatchParameters(WrapMode.None, 1, 1, 2.0f, 2.0f, existingCP));
+
+
+            cursor3D.Transform.WorldPosition = new Vector3(-6.0f, 0.0f, -2.0f);
+            nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.None));
+            cursor3D.Transform.WorldPosition = new Vector3(-3.0f, 0.0f, -2.0f);
+            nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.None));
+            cursor3D.Transform.WorldPosition = new Vector3(-4.5f, 0.0f, 0.0f);
+            nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.None));
+            cursor3D.Transform.WorldPosition = new Vector3(0.0f, 0.0f, 0.0f);
         }
 
     }

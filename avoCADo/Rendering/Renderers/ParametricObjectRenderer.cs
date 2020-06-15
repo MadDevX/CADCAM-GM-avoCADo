@@ -48,7 +48,7 @@ namespace avoCADo
                     currentShader = shaderWrapper;
                 }
                 currentShader.SetColor(color);
-                if (calls[i].shaderType == DrawCallShaderType.SurfaceBezier || calls[i].shaderType == DrawCallShaderType.SurfaceDeBoor)
+                if (calls[i].shaderType == DrawCallShaderType.SurfaceBezier || calls[i].shaderType == DrawCallShaderType.SurfaceDeBoor || calls[i].shaderType == DrawCallShaderType.SurfaceGregory)
                 {
                     var tess = shaderWrapper as TesselationShaderWrapper;
                     if (tess != null)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using avoCADo.MeshGenerators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,7 +53,16 @@ namespace avoCADo
             }
             else
             {
-                Visibility = Visibility.Collapsed;
+                var gen2 = _selectionManager.MainSelection?.Renderer.GetGenerator() as GregoryPatchGenerator;
+                DataContext = gen2;
+                if(gen2 != null)
+                {
+                    Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
+                }
             }
         }
     }

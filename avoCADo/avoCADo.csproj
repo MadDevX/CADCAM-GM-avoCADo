@@ -92,6 +92,7 @@
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
     <Compile Include="Hierarchy\DependencyCollector.cs" />
+    <Compile Include="Hierarchy\Nodes\Overrides\GregoryPatchGroupNode.cs" />
     <Compile Include="Interfaces\IInstructionBuffer.cs" />
     <Compile Include="Actions\Instructions\Instruction.cs" />
     <Compile Include="Actions\Instructions\InstructionBuffer.cs" />

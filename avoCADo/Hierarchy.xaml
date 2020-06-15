@@ -33,6 +33,9 @@
                     <HierarchicalDataTemplate DataType="{x:Type local:BezierPatchGroupNode}" ItemsSource="{Binding Children}">
                         <local:NodeHeader Node="{Binding}"/>
                     </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type local:GregoryPatchGroupNode}" ItemsSource="{Binding Children}">
+                        <local:NodeHeader Node="{Binding}"/>
+                    </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:Scene}" ItemsSource="{Binding Children}">
                         <Grid>
                             <Grid.ColumnDefinitions>

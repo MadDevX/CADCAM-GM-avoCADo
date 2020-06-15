@@ -88,7 +88,8 @@ namespace avoCADo
         {
             var parent = _sceneManager.CurrentScene; 
             var generator = new GregoryPatchGenerator(nodes.ElementAt(0), nodes.ElementAt(1), nodes.ElementAt(2));
-            var node = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator), NameGenerator.GenerateName(parent, DefaultNodeNames.GregoryPatch));
+            var childCollection = new WpfObservableRangeCollection<INode>();
+            var node = new GregoryPatchGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, NameGenerator.GenerateName(parent, DefaultNodeNames.GregoryPatch));
             node.ObjectType = ObjectType.GregoryPatch;
 
             parent.AttachChild(node);

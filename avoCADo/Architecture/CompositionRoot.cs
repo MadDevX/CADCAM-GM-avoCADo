@@ -72,7 +72,7 @@ namespace avoCADo
 
             _shaderProvider = new ShaderProvider();
 
-            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier);
+            _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.SurfaceShaderGregory);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
             _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, new Scene("Main"));
@@ -108,7 +108,7 @@ namespace avoCADo
             _window.cameraSettings.DataContext = _cameraModeManager;
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _instructionBuffer);
-            TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider);
+            TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
         }
 
         public void Dispose()

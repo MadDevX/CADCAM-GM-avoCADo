@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo.MeshGenerators
 {
-    public class GregoryPatchGenerator : IMeshGenerator
+    public class GregoryPatchGenerator : IMeshGenerator, ICircularDependent<INode>
     {
         private List<DrawCall> _drawCalls = new List<DrawCall>(3);
         protected virtual int PatchCount { get; } = RenderConstants.GREGORY_PATCH_COUNT;
@@ -19,7 +19,8 @@ namespace avoCADo.MeshGenerators
             get
             {
                 _drawCalls.Clear();
-                _drawCalls.Add(new DrawCall(0, _indices.Length, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                _drawCalls.Add(new DrawCall(0, _indices.Length/2, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                _drawCalls.Add(new DrawCall(_indices.Length/2, _indices.Length/2, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
                 return _drawCalls;
             }
         }
@@ -38,6 +39,7 @@ namespace avoCADo.MeshGenerators
         private bool _shouldUpdateData = false;
 
         private INode _a, _b, _c;
+        private INode _ownerNode;
 
         public GregoryPatchGenerator(INode a, INode b, INode c)
         {
@@ -45,17 +47,20 @@ namespace avoCADo.MeshGenerators
             _b = b;
             _c = c;
 
-            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfA = (_a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (_b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (_c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
             _boundaryCoords = LoopDetector.GetLoopedCoords(surfA, surfB, surfC);
-            UpdateControlPoints();
 
-            Initialize();
+            UpdateControlPoints();
         }
 
-        private void Initialize()
+        public void Initialize(INode node)
         {
+            _ownerNode = node;
+            _ownerNode.AttachChild(_a);
+            _ownerNode.AttachChild(_b);
+            _ownerNode.AttachChild(_c);
             _a.PropertyChanged += DataChanged;
             _b.PropertyChanged += DataChanged;
             _c.PropertyChanged += DataChanged;
@@ -63,6 +68,9 @@ namespace avoCADo.MeshGenerators
 
         public void Dispose()
         {
+            _ownerNode.DetachChild(_a);
+            _ownerNode.DetachChild(_b);
+            _ownerNode.DetachChild(_c);
             _a.PropertyChanged -= DataChanged;
             _b.PropertyChanged -= DataChanged;
             _c.PropertyChanged -= DataChanged;
@@ -79,7 +87,7 @@ namespace avoCADo.MeshGenerators
             if (_vertices == null || _vertices.Length != 20 * 3 * 3)
             {
                 Array.Resize(ref _vertices, 20 * 3 * 3);
-                Array.Resize(ref _indices, 20 * 3);
+                Array.Resize(ref _indices, 20 * 3 * 2); //*2 because both sides
             }
             UpdateVertices();
             UpdateIndices();
@@ -98,7 +106,30 @@ namespace avoCADo.MeshGenerators
 
         private void UpdateIndices()
         {
-            for (int i = 0; i < _indices.Length; i++) _indices[i] = (uint)i;
+            for (int i = 0; i < _indices.Length/2; i++) _indices[i] = (uint)i;
+            for (int i = 0; i < 3; i++)//which patch
+            {
+                _indices[(i + 3) * 20 + 0] = (uint)(i * 20 + 0);
+                _indices[(i + 3) * 20 + 1] = (uint)(i * 20 + 4);
+                _indices[(i + 3) * 20 + 2] = (uint)(i * 20 + 10);
+                _indices[(i + 3) * 20 + 3] = (uint)(i * 20 + 16);
+                _indices[(i + 3) * 20 + 4] = (uint)(i * 20 + 1);
+                _indices[(i + 3) * 20 + 5] = (uint)(i * 20 + 6);
+                _indices[(i + 3) * 20 + 6] = (uint)(i * 20 + 5);
+                _indices[(i + 3) * 20 + 7] = (uint)(i * 20 + 11);
+                _indices[(i + 3) * 20 + 8] = (uint)(i * 20 + 12);
+                _indices[(i + 3) * 20 + 9] = (uint)(i * 20 + 17);
+                _indices[(i + 3) * 20 +10] = (uint)(i * 20 + 2);
+                _indices[(i + 3) * 20 +11] = (uint)(i * 20 + 7);
+                _indices[(i + 3) * 20 +12] = (uint)(i * 20 + 8);
+                _indices[(i + 3) * 20 +13] = (uint)(i * 20 + 14);
+                _indices[(i + 3) * 20 +14] = (uint)(i * 20 + 13);
+                _indices[(i + 3) * 20 +15] = (uint)(i * 20 + 18);
+                _indices[(i + 3) * 20 +16] = (uint)(i * 20 + 3);
+                _indices[(i + 3) * 20 +17] = (uint)(i * 20 + 9);
+                _indices[(i + 3) * 20 +18] = (uint)(i * 20 + 15);
+                _indices[(i + 3) * 20 +19] = (uint)(i * 20 + 19);
+            }
         }
 
         private void SetPositions()
@@ -187,6 +218,8 @@ namespace avoCADo.MeshGenerators
             if(_shouldUpdateData)
             {
                 UpdateControlPoints();
+                _shouldUpdateData = false;
+                OnParametersChanged?.Invoke();
             }
         }
     }
