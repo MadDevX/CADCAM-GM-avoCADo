@@ -19,8 +19,10 @@ namespace avoCADo.MeshGenerators
             get
             {
                 _drawCalls.Clear();
-                _drawCalls.Add(new DrawCall(0, _indices.Length/2, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
-                _drawCalls.Add(new DrawCall(_indices.Length/2, _indices.Length/2, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
+                _drawCalls.Add(new DrawCall(0, 60, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                _drawCalls.Add(new DrawCall(60, 60, DrawCallShaderType.SurfaceGregory, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
+                if (ShowEdges)
+                    _drawCalls.Add(new DrawCall(120, 120, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 return _drawCalls;
             }
         }
@@ -87,7 +89,7 @@ namespace avoCADo.MeshGenerators
             if (_vertices == null || _vertices.Length != 20 * 3 * 3)
             {
                 Array.Resize(ref _vertices, 20 * 3 * 3);
-                Array.Resize(ref _indices, 20 * 3 * 2); //*2 because both sides
+                Array.Resize(ref _indices, 20 * 3 * 2 + 40 * 3); //*2 because both sides (+40*3 for control polygon)
             }
             UpdateVertices();
             UpdateIndices();
@@ -106,8 +108,8 @@ namespace avoCADo.MeshGenerators
 
         private void UpdateIndices()
         {
-            for (int i = 0; i < _indices.Length/2; i++) _indices[i] = (uint)i;
-            for (int i = 0; i < 3; i++)//which patch
+            for (int i = 0; i < 20*3; i++) _indices[i] = (uint)i; //first 3 patches
+            for (int i = 0; i < 3; i++)//which patch - duplicate, change direction (isolines of v)
             {
                 _indices[(i + 3) * 20 + 0] = (uint)(i * 20 + 0);
                 _indices[(i + 3) * 20 + 1] = (uint)(i * 20 + 4);
@@ -129,6 +131,52 @@ namespace avoCADo.MeshGenerators
                 _indices[(i + 3) * 20 +17] = (uint)(i * 20 + 9);
                 _indices[(i + 3) * 20 +18] = (uint)(i * 20 + 15);
                 _indices[(i + 3) * 20 +19] = (uint)(i * 20 + 19);
+            }
+
+            int idx = 120; //control polygon
+            for(int i = 0; i < 3; i++)
+            {
+                _indices[idx++] = (uint)(i * 20 + 0);
+                _indices[idx++] = (uint)(i * 20 + 1);
+                _indices[idx++] = (uint)(i * 20 + 1);
+                _indices[idx++] = (uint)(i * 20 + 2);
+                _indices[idx++] = (uint)(i * 20 + 2);
+                _indices[idx++] = (uint)(i * 20 + 3);
+                _indices[idx++] = (uint)(i * 20 + 3);
+                _indices[idx++] = (uint)(i * 20 + 9);
+                _indices[idx++] = (uint)(i * 20 + 9);
+                _indices[idx++] = (uint)(i * 20 + 15);
+                _indices[idx++] = (uint)(i * 20 + 15);
+                _indices[idx++] = (uint)(i * 20 + 19);
+                _indices[idx++] = (uint)(i * 20 + 19);
+                _indices[idx++] = (uint)(i * 20 + 18);
+                _indices[idx++] = (uint)(i * 20 + 18);
+                _indices[idx++] = (uint)(i * 20 + 17);
+                _indices[idx++] = (uint)(i * 20 + 17);
+                _indices[idx++] = (uint)(i * 20 + 16);
+                _indices[idx++] = (uint)(i * 20 + 16);
+                _indices[idx++] = (uint)(i * 20 + 10);
+                _indices[idx++] = (uint)(i * 20 + 10);
+                _indices[idx++] = (uint)(i * 20 + 4);
+                _indices[idx++] = (uint)(i * 20 + 4);
+                _indices[idx++] = (uint)(i * 20 + 0);
+
+                _indices[idx++] = (uint)(i * 20 + 1);
+                _indices[idx++] = (uint)(i * 20 + 6);
+                _indices[idx++] = (uint)(i * 20 + 4);
+                _indices[idx++] = (uint)(i * 20 + 5);
+                _indices[idx++] = (uint)(i * 20 + 2);
+                _indices[idx++] = (uint)(i * 20 + 7);
+                _indices[idx++] = (uint)(i * 20 + 9);
+                _indices[idx++] = (uint)(i * 20 + 8);
+                _indices[idx++] = (uint)(i * 20 + 15);
+                _indices[idx++] = (uint)(i * 20 + 14);
+                _indices[idx++] = (uint)(i * 20 + 18);
+                _indices[idx++] = (uint)(i * 20 + 13);
+                _indices[idx++] = (uint)(i * 20 + 17);
+                _indices[idx++] = (uint)(i * 20 + 12);
+                _indices[idx++] = (uint)(i * 20 + 10);
+                _indices[idx++] = (uint)(i * 20 + 11);
             }
         }
 

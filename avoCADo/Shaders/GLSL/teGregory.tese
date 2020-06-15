@@ -31,6 +31,12 @@ void main() {
    vec3 p21 = (u * gl_in[12].gl_Position.xyz + (1.0f - v) * gl_in[11].gl_Position.xyz)/(u + (1.0f - v));
    vec3 p22 = ((1.0f-u) * gl_in[13].gl_Position.xyz + (1.0f - v) * gl_in[14].gl_Position.xyz)/((1.0f - u) + (1.0f - v));
 
+   if(isnan(p11.x)) p11 = vec3(0.0f, 0.0f, 0.0f);
+   if(isnan(p12.x)) p12 = vec3(0.0f, 0.0f, 0.0f);
+   if(isnan(p21.x)) p21 = vec3(0.0f, 0.0f, 0.0f);
+   if(isnan(p22.x)) p22 = vec3(0.0f, 0.0f, 0.0f);
+
+
    vec3 v1 = bezier4(gl_in[0].gl_Position.xyz, gl_in[1].gl_Position.xyz, gl_in[2].gl_Position.xyz, gl_in[3].gl_Position.xyz, u);
    vec3 v2 = bezier4(gl_in[4].gl_Position.xyz, p11, p12, gl_in[9].gl_Position.xyz, u);
    vec3 v3 = bezier4(gl_in[10].gl_Position.xyz, p21, p22, gl_in[15].gl_Position.xyz, u);
