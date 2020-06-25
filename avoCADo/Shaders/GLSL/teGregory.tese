@@ -41,10 +41,6 @@ void main() {
    vec3 v2 = bezier4(gl_in[4].gl_Position.xyz, p11, p12, gl_in[9].gl_Position.xyz, v);
    vec3 v3 = bezier4(gl_in[10].gl_Position.xyz, p21, p22, gl_in[15].gl_Position.xyz, v);
    vec3 v4 = bezier4(gl_in[16].gl_Position.xyz, gl_in[17].gl_Position.xyz, gl_in[18].gl_Position.xyz, gl_in[19].gl_Position.xyz, v);
-////   vec3 v1 = bezier4(gl_in[0].gl_Position.xyz, gl_in[1].gl_Position.xyz, gl_in[2].gl_Position.xyz, gl_in[3].gl_Position.xyz, v);
-////   vec3 v2 = bezier4(gl_in[4].gl_Position.xyz, gl_in[5].gl_Position.xyz, gl_in[7].gl_Position.xyz, gl_in[9].gl_Position.xyz, v);
-////   vec3 v3 = bezier4(gl_in[10].gl_Position.xyz, gl_in[11].gl_Position.xyz, gl_in[13].gl_Position.xyz, gl_in[15].gl_Position.xyz, v);
-////   vec3 v4 = bezier4(gl_in[16].gl_Position.xyz, gl_in[17].gl_Position.xyz, gl_in[18].gl_Position.xyz, gl_in[19].gl_Position.xyz, v);
    vec3 pos = bezier4(v1, v2, v3, v4, u);
 
    gl_Position = projection * view * model * vec4(pos, 1.0f);

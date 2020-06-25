@@ -108,6 +108,7 @@ namespace avoCADo.MeshGenerators
         private void UpdateIndices()
         {
             for (int i = 0; i < 20*3; i++) _indices[i] = (uint)i; //first 3 patches
+            //TODO: cleanup indexing
             for (int i = 0; i < 3; i++)//which patch - duplicate, change direction (isolines of v)
             {
                 _indices[(i + 3) * 20 + 0] = (uint)(i * 20 + 0);
