@@ -38,6 +38,17 @@ namespace avoCADo.ParametricObjects.Curves
             return Vector3.Lerp(Bezier2(a, b, c, t), Bezier2(b, c, d, t), t);
         }
 
+        public static Vector3 BezierTangent(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        {
+            return Vector3.Normalize(Bezier2(b, c, d, t) - Bezier2(a, b, c, t));
+        }
+
+        public static Vector3 DeBoorTangent(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        {
+            var bezier = MathExtensions.BSplineToBernstein(a, b, c, d);
+            return BezierTangent(bezier.a, bezier.b, bezier.c, bezier.d, t);
+        }
+
         public static Vector3 DeBoor(float t, params Vector3[] p)
         {
             Vector3 r = Vector3.Zero;

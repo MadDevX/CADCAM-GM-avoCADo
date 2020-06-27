@@ -56,5 +56,28 @@ namespace avoCADo
                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
                );
         }
+
+        public Vector3 GetTangent(float u, float v)
+        {
+            return new Vector3(
+                    (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u)),
+                    0.0f,
+                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u))
+                );
+        }
+
+        public Vector3 GetBitangent(float u, float v)
+        {
+            return new Vector3(
+                    (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u)),
+                    (float)(TubeRadius * Math.Cos(v)),
+                    (float)(-TubeRadius * Math.Sin(v) * Math.Sin(u))
+                );
+        }
+
+        public Vector3 GetNormal(float u, float v)
+        {
+            return Vector3.Cross(GetTangent(u, v), GetBitangent(u, v));
+        }
     }
 }

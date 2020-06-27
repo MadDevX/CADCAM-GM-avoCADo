@@ -26,6 +26,23 @@ namespace avoCADo
             return new Vector3(eX, eY, eZ);
         }
 
+        public static (Vector3 a, Vector3 b, Vector3 c, Vector3 d) BSplineToBernstein(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        {
+            Vector3 bernA, bernB, bernC, bernD;
+            var oneThird = 1.0f / 3.0f;
+            var twoThirds = 2.0f / 3.0f;
+
+            var firstMid = Vector3.Lerp(a, b, twoThirds);
+            var secondMid = Vector3.Lerp(b, c, oneThird);
+            var thirdMid = Vector3.Lerp(b, c, twoThirds);
+            var fourthMid = Vector3.Lerp(c, d, oneThird);
+            bernA = Vector3.Lerp(firstMid, secondMid, 0.5f);
+            bernB = secondMid;
+            bernC = thirdMid;
+            bernD = Vector3.Lerp(thirdMid, fourthMid, 0.5f);
+            return (bernA, bernB, bernC, bernD);
+        }
+
         public static void PowerToBernstein(Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref Vector3[] result)
         {
             var x = new Vector4(a.X, b.X, c.X, d.X);

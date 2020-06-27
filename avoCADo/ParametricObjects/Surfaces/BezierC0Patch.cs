@@ -77,5 +77,58 @@ namespace avoCADo
                 return 1.0f;
             }
         }
+
+        public Vector3 GetTangent(float u, float v)
+        {
+            int uPatchIdx = (int)u;
+            int vPatchIdx = (int)v;
+            var uIdx = GetStartingIndex(uPatchIdx, USegments);
+            var vIdx = GetStartingIndex(vPatchIdx, VSegments);
+            u = GetScaledParameter(u, uPatchIdx, USegments);
+            v = GetScaledParameter(v, vPatchIdx, VSegments);
+
+            for (int i = 0; i < 4; i++)
+            {
+                _coordBuffer[i] =
+                BezierHelper.Bezier3(ControlPoints[uIdx + i, vIdx + 0].Transform.WorldPosition,
+                                     ControlPoints[uIdx + i, vIdx + 1].Transform.WorldPosition,
+                                     ControlPoints[uIdx + i, vIdx + 2].Transform.WorldPosition,
+                                     ControlPoints[uIdx + i, vIdx + 3].Transform.WorldPosition, v);
+            }
+            return Vector3.Normalize(BezierHelper.BezierTangent(_coordBuffer[0],
+                                                                _coordBuffer[1],
+                                                                _coordBuffer[2],
+                                                                _coordBuffer[3], u));
+
+        }
+
+        public Vector3 GetBitangent(float u, float v)
+        {
+            int uPatchIdx = (int)u;
+            int vPatchIdx = (int)v;
+            var uIdx = GetStartingIndex(uPatchIdx, USegments);
+            var vIdx = GetStartingIndex(vPatchIdx, VSegments);
+            u = GetScaledParameter(u, uPatchIdx, USegments);
+            v = GetScaledParameter(v, vPatchIdx, VSegments);
+
+            for (int i = 0; i < 4; i++)
+            {
+                _coordBuffer[i] =
+                BezierHelper.Bezier3(ControlPoints[uIdx + 0, vIdx + i].Transform.WorldPosition,
+                                     ControlPoints[uIdx + 1, vIdx + i].Transform.WorldPosition,
+                                     ControlPoints[uIdx + 2, vIdx + i].Transform.WorldPosition,
+                                     ControlPoints[uIdx + 3, vIdx + i].Transform.WorldPosition, u);
+            }
+            return Vector3.Normalize(BezierHelper.BezierTangent(_coordBuffer[0],
+                                                                _coordBuffer[1],
+                                                                _coordBuffer[2],
+                                                                _coordBuffer[3], v));
+
+        }
+
+        public Vector3 GetNormal(float u, float v)
+        {
+            return Vector3.Cross(GetTangent(u, v), GetBitangent(u, v));
+        }
     }
 }

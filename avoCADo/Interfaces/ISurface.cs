@@ -16,7 +16,9 @@ namespace avoCADo
         bool VLoop { get; }
 
         Vector3 GetVertex(float u, float v);
+        Vector3 GetTangent(float u, float v);
+        Vector3 GetBitangent(float u, float v);
+        Vector3 GetNormal(float u, float v);
 
-        //GetNormal/Binormal
     }
 }
