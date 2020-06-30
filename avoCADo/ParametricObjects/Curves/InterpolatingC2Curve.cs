@@ -49,7 +49,7 @@ namespace avoCADo
             }
             if (BernsteinControlPoints.Count >= startIdx + 4)
             {
-                return BezierHelper.Bezier3(
+                return BezierHelper.Bezier(
                                BernsteinControlPoints[startIdx],
                                BernsteinControlPoints[startIdx + 1],
                                BernsteinControlPoints[startIdx + 2],

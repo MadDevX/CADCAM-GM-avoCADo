@@ -77,7 +77,7 @@ namespace avoCADo
 
         public Vector3 GetNormal(float u, float v)
         {
-            return Vector3.Cross(GetTangent(u, v), GetBitangent(u, v));
+            return Vector3.Cross(GetTangent(u, v), GetBitangent(u, v)).Normalized();
         }
     }
 }

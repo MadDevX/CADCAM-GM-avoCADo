@@ -44,7 +44,7 @@ namespace avoCADo
             if (ControlPoints.Count == startIdx + 2)
             {
                 return BezierHelper.
-                       Bezier1(ControlPoints[startIdx].Transform.WorldPosition,
+                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
                                ControlPoints[startIdx + 1].Transform.WorldPosition,
                                segmentT
                                );
@@ -52,7 +52,7 @@ namespace avoCADo
             if (ControlPoints.Count == startIdx + 3)
             {
                 return BezierHelper.
-                       Bezier2(ControlPoints[startIdx].Transform.WorldPosition,
+                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
                                ControlPoints[startIdx + 1].Transform.WorldPosition,
                                ControlPoints[startIdx + 2].Transform.WorldPosition,
                                segmentT
@@ -61,7 +61,7 @@ namespace avoCADo
             if (ControlPoints.Count >= startIdx + 4)
             {
                 return BezierHelper.
-                       Bezier3(ControlPoints[startIdx].Transform.WorldPosition,
+                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
                                ControlPoints[startIdx + 1].Transform.WorldPosition,
                                ControlPoints[startIdx + 2].Transform.WorldPosition,
                                ControlPoints[startIdx + 3].Transform.WorldPosition,

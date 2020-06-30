@@ -108,6 +108,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand FindIntersection = new RoutedUICommand
+            (
+                "Find Intersection",
+                "FindIntersection",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.C, ModifierKeys.Control)
+                }
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

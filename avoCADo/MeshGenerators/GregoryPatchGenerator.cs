@@ -226,7 +226,7 @@ namespace avoCADo.MeshGenerators
                 var g2 = (_cps[(i + 1) % 3][4] - _cps[(i + 1) % 3][0]);
                 var g0 = ((_cps[(i + 1) % 3][9] - _cps[(i + 1) % 3][3]) + (_cps[i][3] - _cps[i][2])) * 0.5f;
                 var g1 = (g0 + g2) * 0.5f;
-                var diff = BezierHelper.Bezier2(g0, g1, g2, 1.0f / 3.0f);
+                var diff = BezierHelper.Bezier(g0, g1, g2, 1.0f / 3.0f);
                 _cps[i][8] = _cps[i][9] - diff;
                 _cps[(i + 1) % 3][7] = _cps[(i + 1) % 3][2] + diff;
             }

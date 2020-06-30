@@ -9,6 +9,13 @@ namespace avoCADo
 {
     public static class MathExtensions
     {
+        public static T[] SubArray<T>(this T[] data, int index, int length)
+        {
+            T[] result = new T[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+
         private static Matrix4 _powerToBernsteinMtx = new Matrix4(1.0f,    0.0f,        0.0f,     0.0f,
                                                                   1.0f, 1.0f / 3.0f,    0.0f,     0.0f,
                                                                   1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 0.0f,

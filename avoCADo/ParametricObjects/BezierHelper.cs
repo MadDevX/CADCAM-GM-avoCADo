@@ -14,33 +14,72 @@ namespace avoCADo.ParametricObjects.Curves
         {
             var dividedCPs = new List<Vector3>();
             dividedCPs.Add(a);
-            dividedCPs.Add(Bezier1(a, b, t));
-            dividedCPs.Add(Bezier2(a, b, c, t));
-            dividedCPs.Add(Bezier3(a, b, c, d, t));
-            dividedCPs.Add(Bezier2(b, c, d, t));
-            dividedCPs.Add(Bezier1(c, d, t));
+            dividedCPs.Add(Bezier(a, b, t));
+            dividedCPs.Add(Bezier(a, b, c, t));
+            dividedCPs.Add(Bezier(a, b, c, d, t));
+            dividedCPs.Add(Bezier(b, c, d, t));
+            dividedCPs.Add(Bezier(c, d, t));
             dividedCPs.Add(d);
             return dividedCPs;
         }
 
-        public static Vector3 Bezier1(Vector3 a, Vector3 b, float t)
+        public static Vector3 Bezier(Vector3 a, Vector3 b, float t)
         {
             return Vector3.Lerp(a, b, t);
         }
 
-        public static Vector3 Bezier2(Vector3 a, Vector3 b, Vector3 c, float t)
+        public static Vector3 Bezier(Vector3 a, Vector3 b, Vector3 c, float t)
         {
-            return Vector3.Lerp(Bezier1(a, b, t), Bezier1(b, c, t), t);
+            return Vector3.Lerp(Bezier(a, b, t), Bezier(b, c, t), t);
         }
 
-        public static Vector3 Bezier3(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        public static Vector3 Bezier(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
         {
-            return Vector3.Lerp(Bezier2(a, b, c, t), Bezier2(b, c, d, t), t);
+            return Vector3.Lerp(Bezier(a, b, c, t), Bezier(b, c, d, t), t);
         }
 
         public static Vector3 BezierTangent(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
         {
-            return Vector3.Normalize(Bezier2(b, c, d, t) - Bezier2(a, b, c, t));
+            return 3.0f * (Bezier(b, c, d, t) - Bezier(a, b, c, t));
+        }
+
+        public static Vector3 BezierTangent(Vector3 a, Vector3 b, Vector3 c, float t)
+        {
+            return 2.0f * (Bezier(b, c, t) - Bezier(a, b, t));
+        }
+
+        public static Vector3 BezierTangent(Vector3 a, Vector3 b, float t)
+        {
+            return b - a;
+        }
+
+        public static Vector3 DeboorDerivative(float t, int order, params Vector3[] cps)
+        {
+            if (cps.Length != 4) throw new InvalidOperationException("Only cubic splines are properly handled, 4 control points expected");
+            var bezier = MathExtensions.BSplineToBernstein(cps[0], cps[1], cps[2], cps[3]);
+            return BezierDerivative(t, order, bezier.a, bezier.b, bezier.c, bezier.d);
+        }
+
+        public static Vector3 BezierDerivative(float t, int order, params Vector3[] cps)
+        {
+            var n = cps.Length - 1;
+            if (order > n) return Vector3.Zero;
+            for(int i = 0; i < order; i++)
+            {
+                var degree = n - i;
+                for(int j = 0; j < n - i; j++)
+                {
+                    cps[j] = (cps[j + 1] - cps[j]) * degree;
+                }
+            }
+            return Bezier(t, cps.SubArray(0, cps.Length - order));
+        }
+
+        private static Vector3 Bezier(float t, params Vector3[] cps)
+        {
+            if (cps.Length == 1) return cps[0];
+            var len = cps.Length;
+            return Vector3.Lerp(Bezier(t, cps.SubArray(0, len - 1)), Bezier(t, cps.SubArray(1, len - 1)), t);
         }
 
         public static Vector3 DeBoorTangent(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)

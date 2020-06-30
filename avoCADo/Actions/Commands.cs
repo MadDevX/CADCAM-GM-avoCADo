@@ -312,9 +312,27 @@ namespace avoCADo
                 new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.GregoryPatch, selected));
         }
 
+        private void FindIntersectionCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            e.CanExecute = selected.Count == 2 && SurfacesSelected();
+        }
+
+        private void FindIntersectionCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
+                new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), 0.001f));
+        }
+
         #endregion
 
         #region Helper Methods
+
+        private bool SurfacesSelected()
+        {
+            return ObjectTypeOnlySelected(ObjectType.BezierPatchC0, ObjectType.BezierPatchC2, ObjectType.Torus);
+        }
 
         private bool CanDelete(object parameter)
         {
@@ -348,11 +366,16 @@ namespace avoCADo
             return true;
         }
 
-        private bool ObjectTypeOnlySelected(ObjectType type)
+        private bool ObjectTypeOnlySelected(params ObjectType[] types)
         {
             foreach(var node in NodeSelection.Manager.SelectedNodes)
             {
-                if(node.ObjectType != type)
+                var correctType = false;
+                foreach(var type in types)
+                {
+                    if (node.ObjectType == type) { correctType = true; continue; }
+                }
+                if(correctType == false)
                 {
                     return false;
                 }
