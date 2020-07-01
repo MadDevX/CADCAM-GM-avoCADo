@@ -79,7 +79,12 @@ namespace avoCADo
             }
         }
 
-        public Vector3 GetTangent(float u, float v)
+        public Vector3 DerivU(float u, float v) => Deriv(u, v, true, 1);
+        public Vector3 DerivUU(float u, float v) => Deriv(u, v, true, 2);
+        public Vector3 DerivV(float u, float v) => Deriv(u, v, false, 1);
+        public Vector3 DerivVV(float u, float v) => Deriv(u, v, false, 2);
+
+        private Vector3 Deriv(float u, float v, bool uDeriv, int order)
         {
             int uPatchIdx = (int)u;
             int vPatchIdx = (int)v;
@@ -87,49 +92,71 @@ namespace avoCADo
             var vIdx = GetStartingIndex(vPatchIdx, VSegments);
             u = GetScaledParameter(u, uPatchIdx, USegments);
             v = GetScaledParameter(v, vPatchIdx, VSegments);
+            if(uDeriv)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _coordBuffer[i] =
+                    BezierHelper.DeBoor(v,
+                                        ControlPoints[uIdx + i, vIdx + 0].Transform.WorldPosition,
+                                        ControlPoints[uIdx + i, vIdx + 1].Transform.WorldPosition,
+                                        ControlPoints[uIdx + i, vIdx + 2].Transform.WorldPosition,
+                                        ControlPoints[uIdx + i, vIdx + 3].Transform.WorldPosition);
+                }
+                return BezierHelper.DeboorDerivative(u, order, 
+                                                  _coordBuffer[0],
+                                                  _coordBuffer[1],
+                                                  _coordBuffer[2],
+                                                  _coordBuffer[3]);
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _coordBuffer[i] =
+                    BezierHelper.DeBoor(u,
+                                        ControlPoints[uIdx + 0, vIdx + i].Transform.WorldPosition,
+                                        ControlPoints[uIdx + 1, vIdx + i].Transform.WorldPosition,
+                                        ControlPoints[uIdx + 2, vIdx + i].Transform.WorldPosition,
+                                        ControlPoints[uIdx + 3, vIdx + i].Transform.WorldPosition);
+                }
+                return BezierHelper.DeboorDerivative(v, order, 
+                                                  _coordBuffer[0],
+                                                  _coordBuffer[1],
+                                                  _coordBuffer[2],
+                                                  _coordBuffer[3]);
+            }
+        }
 
+
+
+        public Vector3 Normal(float u, float v)
+        {
+            return Vector3.Cross(DerivU(u, v), DerivV(u, v)).Normalized();
+        }
+
+        public Vector3 Twist(float u, float v)
+        {
+            int uPatchIdx = (int)u;
+            int vPatchIdx = (int)v;
+            var uIdx = GetStartingIndex(uPatchIdx, USegments);
+            var vIdx = GetStartingIndex(vPatchIdx, VSegments);
+            u = GetScaledParameter(u, uPatchIdx, USegments);
+            v = GetScaledParameter(v, vPatchIdx, VSegments);
             for (int i = 0; i < 4; i++)
             {
                 _coordBuffer[i] =
-                BezierHelper.DeBoor(v,
+                BezierHelper.DeboorDerivative(v, 1,
                                     ControlPoints[uIdx + i, vIdx + 0].Transform.WorldPosition,
                                     ControlPoints[uIdx + i, vIdx + 1].Transform.WorldPosition,
                                     ControlPoints[uIdx + i, vIdx + 2].Transform.WorldPosition,
                                     ControlPoints[uIdx + i, vIdx + 3].Transform.WorldPosition);
             }
-            return BezierHelper.DeBoorTangent(_coordBuffer[0],
-                                              _coordBuffer[1],
-                                              _coordBuffer[2],
-                                              _coordBuffer[3], u);
-        }
-
-        public Vector3 GetBitangent(float u, float v)
-        {
-            int uPatchIdx = (int)u;
-            int vPatchIdx = (int)v;
-            var uIdx = GetStartingIndex(uPatchIdx, USegments);
-            var vIdx = GetStartingIndex(vPatchIdx, VSegments);
-            u = GetScaledParameter(u, uPatchIdx, USegments);
-            v = GetScaledParameter(v, vPatchIdx, VSegments);
-
-            for (int i = 0; i < 4; i++)
-            {
-                _coordBuffer[i] =
-                BezierHelper.DeBoor(u,
-                                    ControlPoints[uIdx + 0, vIdx + i].Transform.WorldPosition,
-                                    ControlPoints[uIdx + 1, vIdx + i].Transform.WorldPosition,
-                                    ControlPoints[uIdx + 2, vIdx + i].Transform.WorldPosition,
-                                    ControlPoints[uIdx + 3, vIdx + i].Transform.WorldPosition);
-            }
-            return BezierHelper.DeBoorTangent(_coordBuffer[0],
-                                              _coordBuffer[1],
-                                              _coordBuffer[2],
-                                              _coordBuffer[3], v);
-        }
-
-        public Vector3 GetNormal(float u, float v)
-        {
-            return Vector3.Cross(GetTangent(u, v), GetBitangent(u, v)).Normalized();
+            return BezierHelper.DeboorDerivative(u, 1,
+                                                _coordBuffer[0],
+                                                _coordBuffer[1],
+                                                _coordBuffer[2],
+                                                _coordBuffer[3]);
         }
     }
 }

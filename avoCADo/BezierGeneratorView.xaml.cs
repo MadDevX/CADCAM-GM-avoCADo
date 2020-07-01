@@ -67,7 +67,7 @@ namespace avoCADo
             }
             else
             {
-                var gen2 = NodeSelection.Manager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                var gen2 = _selectionManager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorGeometry;
                 if (gen2 != null)
                 {
                     if (gen2.Curve is IVirtualControlPoints)
