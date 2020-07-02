@@ -129,6 +129,7 @@
     <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
+    <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
     <Compile Include="Rendering\BufferManagers\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />

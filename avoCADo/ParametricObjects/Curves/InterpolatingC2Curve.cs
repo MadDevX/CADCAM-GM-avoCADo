@@ -10,16 +10,16 @@ namespace avoCADo
 {
     public class InterpolatingC2Curve : ICurve
     {
-        public int Segments => ControlNodes.Count - 1;
+        public virtual int Segments => ControlNodes.Count - 1;
 
         public Vector2 ParameterRange => new Vector2(0.0f, Segments);
 
-        public IList<Vector3> ControlPoints => ControlNodes.Select(x => x.Transform.WorldPosition).ToList(); //TODO: optimize list creation
+        public virtual IList<Vector3> ControlPoints => ControlNodes.Select(x => x.Transform.WorldPosition).ToList(); //TODO: optimize list creation
         public IList<INode> ControlNodes { get; }
 
         public IList<Vector3> BernsteinControlPoints { get; } = new List<Vector3>();
 
-        public IList<Vector3> PolygonPoints => ControlNodes.Select((x)=>x.Transform.WorldPosition).ToList();
+        public IList<Vector3> PolygonPoints => ControlPoints;
 
 
         private TridiagonalSolver _solver;
@@ -64,10 +64,12 @@ namespace avoCADo
         public void Refresh()
         {
             BernsteinControlPoints.Clear();
+            
+            var cps = ControlPoints;
+            
+            if (cps.Count < 2) return;
 
-            if (ControlNodes.Count < 2) return;
-
-            var knots = ControlNodes.Select((x) => x.Transform.WorldPosition).ToArray();
+            var knots = cps.ToArray();
 
             _solver.Solve(knots, BernsteinControlPoints);
         }
