@@ -38,7 +38,7 @@ namespace avoCADo
     {
         public IReadOnlyCollection<INode> controlPoints;
 
-        public CurveParameters(IReadOnlyCollection<INode> controlPoints = null)
+        public CurveParameters(IReadOnlyCollection<INode> controlPoints)
         {
             this.controlPoints = controlPoints;
         }
@@ -79,6 +79,8 @@ namespace avoCADo
                     return CreateBezierPatchC2((PatchParameters)parameters);
                 case ObjectType.GregoryPatch:
                     return CreateGregoryPatch((IReadOnlyCollection<INode>)parameters);
+                case ObjectType.IntersectionCurve:
+                    return CreateIntersectionCurve((IList<Vector3>)parameters);
                 default:
                     return null;
             }
@@ -197,6 +199,23 @@ namespace avoCADo
             groupNode.ObjectType = ObjectType.InterpolatingCurve;
             return groupNode;
         }
+
+
+        private INode CreateIntersectionCurve(IList<Vector3> parameters)
+        {
+            var parent = _sceneManager.CurrentScene;
+            var source = new WpfObservableRangeCollection<INode>();
+            ICurve curve = new IntersectionCurve(parameters);
+
+            var generator = new BezierGeneratorGeometry(curve);
+            var childCollection = new WpfObservableRangeCollection<INode>();
+            var node = new IntersectionCurveGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, NameGenerator.GenerateName(parent, DefaultNodeNames.IntersectionCurve));
+            node.ObjectType = ObjectType.IntersectionCurve;
+
+            parent.AttachChild(node);
+            return node;
+        }
+
 
         private BezierGeomGroupNode CreateGeometryCurveGroup<T>(string defaultName, IReadOnlyCollection<INode> controlPoints) where T : ICurve
         {

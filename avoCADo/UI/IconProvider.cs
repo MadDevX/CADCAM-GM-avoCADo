@@ -29,6 +29,7 @@ namespace avoCADo
                 case ObjectType.BezierCurveC0:
                 case ObjectType.BezierCurveC2:
                 case ObjectType.InterpolatingCurve:
+                case ObjectType.IntersectionCurve:
                     return iconCurve;
                 case ObjectType.BezierPatchC0:
                 case ObjectType.BezierPatchC2:

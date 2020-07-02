@@ -181,6 +181,11 @@ namespace avoCADo
                 menuItemAttachToCurve.Visibility = Visibility.Collapsed;
                 menuItemDetachFromCurve.Visibility = Visibility.Collapsed;
             }
+
+            if (Node.ObjectType == ObjectType.IntersectionCurve)
+                convertToInterpolatingCurve.Visibility = Visibility.Visible;
+            else 
+                convertToInterpolatingCurve.Visibility = Visibility.Collapsed;
         }
 
         private void SetParentNode()
@@ -247,6 +252,23 @@ namespace avoCADo
         {
             _instructionBuffer.IssueInstruction<DetachFromCurveInstruction, Parameters>(new Parameters(Node, _selectionManager.MainSelection));
         }
-        
+
+        private void convertToInterpolatingCurve_Click(object sender, RoutedEventArgs e)
+        {
+            var nodeFactory = Registry.NodeFactory;
+
+            var gen = (Node.Renderer.GetGenerator() as BezierGeneratorGeometry);
+            var cps = gen.Curve.ControlPoints;
+
+            var nodes = new List<INode>(nodeFactory.CreatePointsBatch(cps.Count));
+            for(int i = 0; i < cps.Count; i++)
+            {
+                nodes[i].Transform.WorldPosition = cps[i];
+            }
+
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(nodeFactory, ObjectType.InterpolatingCurve, new CurveParameters(nodes)));
+            _instructionBuffer.Clear();
+        }
     }
 }

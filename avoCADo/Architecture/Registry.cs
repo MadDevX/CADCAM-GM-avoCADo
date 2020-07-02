@@ -29,5 +29,16 @@ namespace avoCADo.Architecture
                 _instructionBuffer = value;
             }
         }
+
+        private static NodeFactory _nodeFactory = null;
+        public static NodeFactory NodeFactory
+        {
+            get => _nodeFactory;
+            set
+            {
+                if (_nodeFactory != null) return;
+                _nodeFactory = value;
+            }
+        }
     }
 }

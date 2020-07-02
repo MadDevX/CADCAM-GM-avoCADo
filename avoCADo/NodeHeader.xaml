@@ -17,6 +17,7 @@
         <TextBlock x:Name="label" Grid.Column="1" Text="{Binding Name}" MouseDown="Label_MouseDown" KeyDown="Label_KeyDown">
                 <TextBlock.ContextMenu>
                 <ContextMenu IsVisibleChanged="ContextMenu_IsVisibleChanged">
+                    <MenuItem x:Name="convertToInterpolatingCurve" Header="Convert to IC" Click="convertToInterpolatingCurve_Click" Visibility="Collapsed"/>
                     <MenuItem x:Name="menuItemAttachToCurve" Header="Attach to curve" Click="MenuItemAttachToCurve_Click" Visibility="Collapsed"/>
                     <MenuItem x:Name="menuItemDetachFromCurve" Header="Detach from curve" Click="MenuItemDetachFromCurve_Click" Visibility="Collapsed"/>
                     <MenuItem Header="Rename" Click="MenuItem_Click"/>

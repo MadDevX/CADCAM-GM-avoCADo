@@ -15,4 +15,12 @@ namespace avoCADo
         {
         }
     }
+
+    public class IntersectionCurveGroupNode : BezierGeomGroupNode
+    {
+        public override GroupNodeType GroupNodeType => GroupNodeType.Fixed;
+        public IntersectionCurveGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(childrenSource, renderer, dependent, name)
+        {
+        }
+    }
 }

@@ -24,7 +24,9 @@ namespace avoCADo
             point4.Transform.WorldPosition = Vector3.UnitY * 3.0f;
 
 
-            nodeFactory.CreateObject(ObjectType.InterpolatingCurve, new CurveParameters(new List<INode> { point, point2, point3, point4 }));
+            var pointList = new List<INode> { point, point2, point3, point4 };
+            nodeFactory.CreateObject(ObjectType.InterpolatingCurve, new CurveParameters(pointList));
+            nodeFactory.CreateObject(ObjectType.IntersectionCurve, pointList.Select(x => x.Transform.WorldPosition).ToList());
 
             nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.Column));
 

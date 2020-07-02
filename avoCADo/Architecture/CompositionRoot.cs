@@ -101,6 +101,7 @@ namespace avoCADo
 
             Registry.VirtualNodeFactory = _virtualNodeFactory;
             Registry.InstructionBuffer = _instructionBuffer;
+            Registry.NodeFactory = _nodeFactory;
 
             _window.transformView.Initialize(_instructionBuffer, _cursor);
             _window.cursor3dInfo.Initialize(_cursor);
