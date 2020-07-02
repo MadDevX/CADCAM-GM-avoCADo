@@ -349,7 +349,7 @@ namespace avoCADo
 
         private void HandleVirtualTranslation(object sender, PropertyChangedEventArgs e)
         {
-            var nodes = Curve.ControlPoints;
+            var nodes = (Curve as BezierC2Curve).ControlNodes;
             var idx = _virtualNodes.IndexOf(_currentVirtualNode);
             int toMoveIdx, refIdx;
             Vector3 pos;

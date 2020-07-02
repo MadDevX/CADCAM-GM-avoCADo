@@ -14,7 +14,7 @@ namespace avoCADo
         Vector2 ParameterRange { get; }
         Vector3 GetVertex(float t);
 
-        IList<INode> ControlPoints { get; }
+        IList<Vector3> ControlPoints { get; }
 
         IList<Vector3> BernsteinControlPoints { get; }
 

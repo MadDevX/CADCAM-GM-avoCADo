@@ -12,18 +12,20 @@ namespace avoCADo
     {
         public Vector2 ParameterRange => new Vector2(0.0f, Segments);
 
-        public int Segments => (ControlPoints.Count + 1) / 3;
+        public int Segments => (ControlNodes.Count + 1) / 3;
 
-        public IList<INode> ControlPoints { get; }
+        public IList<Vector3> ControlPoints => ControlNodes.Select(x => x.Transform.WorldPosition).ToList();
+
+        public IList<INode> ControlNodes { get; }
 
         //TODO: keep separate list and update it accordingly. 
-        public IList<Vector3> BernsteinControlPoints => ControlPoints.Select((x) => x.Transform.WorldPosition).ToList(); //wrong at so many levels
+        public IList<Vector3> BernsteinControlPoints => ControlNodes.Select((x) => x.Transform.WorldPosition).ToList(); //wrong at so many levels
 
         public IList<Vector3> PolygonPoints => BernsteinControlPoints;
 
         public BezierC0Curve(IList<INode> controlPointsSource)
         {
-            ControlPoints = controlPointsSource;
+            ControlNodes = controlPointsSource;
         }
 
         public Vector3 GetVertex(float t)
@@ -41,30 +43,30 @@ namespace avoCADo
                 startIdx = (segment - 1) * 3;
                 segmentT = 1.0f;
             }
-            if (ControlPoints.Count == startIdx + 2)
+            if (ControlNodes.Count == startIdx + 2)
             {
                 return BezierHelper.
-                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
-                               ControlPoints[startIdx + 1].Transform.WorldPosition,
+                       Bezier(ControlNodes[startIdx].Transform.WorldPosition,
+                               ControlNodes[startIdx + 1].Transform.WorldPosition,
                                segmentT
                                );
             }
-            if (ControlPoints.Count == startIdx + 3)
+            if (ControlNodes.Count == startIdx + 3)
             {
                 return BezierHelper.
-                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
-                               ControlPoints[startIdx + 1].Transform.WorldPosition,
-                               ControlPoints[startIdx + 2].Transform.WorldPosition,
+                       Bezier(ControlNodes[startIdx].Transform.WorldPosition,
+                               ControlNodes[startIdx + 1].Transform.WorldPosition,
+                               ControlNodes[startIdx + 2].Transform.WorldPosition,
                                segmentT
                                );
             }
-            if (ControlPoints.Count >= startIdx + 4)
+            if (ControlNodes.Count >= startIdx + 4)
             {
                 return BezierHelper.
-                       Bezier(ControlPoints[startIdx].Transform.WorldPosition,
-                               ControlPoints[startIdx + 1].Transform.WorldPosition,
-                               ControlPoints[startIdx + 2].Transform.WorldPosition,
-                               ControlPoints[startIdx + 3].Transform.WorldPosition,
+                       Bezier(ControlNodes[startIdx].Transform.WorldPosition,
+                               ControlNodes[startIdx + 1].Transform.WorldPosition,
+                               ControlNodes[startIdx + 2].Transform.WorldPosition,
+                               ControlNodes[startIdx + 3].Transform.WorldPosition,
                                segmentT
                                );
             }

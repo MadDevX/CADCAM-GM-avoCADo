@@ -170,7 +170,7 @@ namespace avoCADo
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                VBOUtility.SetVertex(_edgeVertexData, nodes[i].Transform.WorldPosition, i);
+                VBOUtility.SetVertex(_edgeVertexData, nodes[i], i);
             }
 
         }

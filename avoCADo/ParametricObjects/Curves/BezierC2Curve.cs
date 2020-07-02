@@ -16,22 +16,24 @@ namespace avoCADo
         {
             get
             {
-                if (ControlPoints.Count < 4) return 0;
-                return ((1 + 3 * (ControlPoints.Count - 3)) + 1) / 3;
+                if (ControlNodes.Count < 4) return 0;
+                return ((1 + 3 * (ControlNodes.Count - 3)) + 1) / 3;
             }
         }
 
-        public IList<INode> ControlPoints { get; }
+        public IList<Vector3> ControlPoints => ControlNodes.Select(x => x.Transform.WorldPosition).ToList();
+
+        public IList<INode> ControlNodes { get; }
 
         public IList<Vector3> BernsteinControlPoints { get; } = new List<Vector3>();
 
         public IList<Vector3> VirtualControlPoints { get; } = new List<Vector3>();
 
-        public IList<Vector3> PolygonPoints => ControlPoints.Select((x)=> x.Transform.WorldPosition).ToList();
+        public IList<Vector3> PolygonPoints => ControlNodes.Select((x)=> x.Transform.WorldPosition).ToList();
 
         public BezierC2Curve(IList<INode> controlPointsSource)
         {
-            ControlPoints = controlPointsSource;
+            ControlNodes = controlPointsSource;
         }
 
         public Vector3 GetVertex(float t)
@@ -66,7 +68,7 @@ namespace avoCADo
         {
             VirtualControlPoints.Clear();
             BernsteinControlPoints.Clear();
-            var deBoorPoints = ControlPoints;
+            var deBoorPoints = ControlNodes;
             if(deBoorPoints.Count > 3)
             {
                 VirtualControlPoints.Add(Vector3.Lerp(deBoorPoints[0].Transform.WorldPosition, deBoorPoints[1].Transform.WorldPosition, 2.0f / 3.0f));
