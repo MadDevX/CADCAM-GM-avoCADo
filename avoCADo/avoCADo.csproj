@@ -90,6 +90,7 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
+    <Compile Include="Algebra\ConjugateGradient.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
     <Compile Include="Hierarchy\DependencyCollector.cs" />
