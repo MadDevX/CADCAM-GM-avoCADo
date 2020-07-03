@@ -91,6 +91,11 @@
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
     <Compile Include="Algebra\ConjugateGradient.cs" />
+    <Compile Include="Algebra\IntersectionData.cs" />
+    <Compile Include="Algebra\IntersectionFinder.cs" />
+    <Compile Include="Algebra\LinearEquationSolver.cs" />
+    <Compile Include="Algebra\NewtonMethod.cs" />
+    <Compile Include="Algebra\SurfaceConditions.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
     <Compile Include="Hierarchy\DependencyCollector.cs" />

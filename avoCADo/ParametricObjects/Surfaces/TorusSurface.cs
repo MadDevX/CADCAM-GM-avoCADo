@@ -42,6 +42,8 @@ namespace avoCADo
 
         public bool VLoop => true;
 
+        public IList<IntersectionCurve> BoundingCurves { get; } = new List<IntersectionCurve>();
+
         public TorusSurface(float mainRadius, float tubeRadius)
         {
             MainRadius = mainRadius;

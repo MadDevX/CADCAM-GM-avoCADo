@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace avoCADo
@@ -26,7 +27,7 @@ namespace avoCADo
 
             var pointList = new List<INode> { point, point2, point3, point4 };
             nodeFactory.CreateObject(ObjectType.InterpolatingCurve, new CurveParameters(pointList));
-            nodeFactory.CreateObject(ObjectType.IntersectionCurve, pointList.Select(x => x.Transform.WorldPosition).ToList());
+            //nodeFactory.CreateObject(ObjectType.IntersectionCurve, new IntersectionCurveParameters());
 
             nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.Column));
 

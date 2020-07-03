@@ -44,6 +44,20 @@ namespace avoCADo
         }
     }
 
+    public struct IntersectionCurveParameters
+    {
+        public ISurface p;
+        public ISurface q;
+        public IList<Vector4> parameterList;
+
+        public IntersectionCurveParameters(ISurface p, ISurface q, IList<Vector4> parameterList)
+        {
+            this.p = p;
+            this.q = q;
+            this.parameterList = parameterList;
+        }
+    }
+
     public class NodeFactory
     {
         private SceneManager _sceneManager;
@@ -80,7 +94,7 @@ namespace avoCADo
                 case ObjectType.GregoryPatch:
                     return CreateGregoryPatch((IReadOnlyCollection<INode>)parameters);
                 case ObjectType.IntersectionCurve:
-                    return CreateIntersectionCurve((IList<Vector3>)parameters);
+                    return CreateIntersectionCurve((IntersectionCurveParameters)parameters);
                 default:
                     return null;
             }
@@ -201,11 +215,10 @@ namespace avoCADo
         }
 
 
-        private INode CreateIntersectionCurve(IList<Vector3> parameters)
+        private INode CreateIntersectionCurve(IntersectionCurveParameters parameters)
         {
             var parent = _sceneManager.CurrentScene;
-            var source = new WpfObservableRangeCollection<INode>();
-            ICurve curve = new IntersectionCurve(parameters);
+            ICurve curve = new IntersectionCurve(parameters.p, parameters.q, parameters.parameterList);
 
             var generator = new BezierGeneratorGeometry(curve);
             var childCollection = new WpfObservableRangeCollection<INode>();

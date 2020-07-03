@@ -176,7 +176,7 @@ namespace avoCADo
             PropertyChanged?.Invoke(this, _childrenChangedArgs);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Renderer.Dispose();
             for (int i = Children.Count - 1; i >= 0; i--)

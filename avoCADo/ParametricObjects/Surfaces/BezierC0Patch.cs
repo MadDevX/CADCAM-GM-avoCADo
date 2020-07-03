@@ -20,6 +20,7 @@ namespace avoCADo
 
         public bool ULoop => false; //possibly changeable
         public bool VLoop => false;
+        public IList<IntersectionCurve> BoundingCurves { get; } = new List<IntersectionCurve>();
 
         public CoordList<INode> ControlPoints { get; } = new CoordList<INode>();
 

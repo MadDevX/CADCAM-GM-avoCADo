@@ -12,6 +12,10 @@ namespace avoCADo
         private List<Vector3> _controlPoints = new List<Vector3>();
         public override int Segments => ControlPoints.Count - 1;
         public override IList<Vector3> ControlPoints => _controlPoints;
+        private ISurface _p;
+        private ISurface _q;
+        private List<Vector4> _parameters;
+        public IReadOnlyCollection<Vector4> Parameters => _parameters.AsReadOnly();
 
         public IntersectionCurve(IList<INode> knotList) : base(null)
         {
@@ -21,12 +25,31 @@ namespace avoCADo
             }
         }
 
-        public IntersectionCurve(IList<Vector3> knotList) : base(null)
+        public IntersectionCurve(ISurface p, ISurface q, IList<Vector4> uvstParameters) : base(null)
         {
-            foreach(var pos in knotList)
+            _p = p;
+            _q = q;
+            foreach(var pos in uvstParameters)
             {
-                ControlPoints.Add(pos);
+                ControlPoints.Add(p.GetVertex(pos.X, pos.Y));
+                _parameters.Add(pos);
             }
+
+            _p.BoundingCurves.Add(this);
+            _q.BoundingCurves.Add(this);
+        }
+
+        public IList<Vector2> GetParameterList(ISurface surf)
+        {
+            if (surf == _p) return _parameters.Select(x => x.Xy).ToList();
+            if (surf == _q) return _parameters.Select(x => x.Zw).ToList();
+            throw new InvalidOperationException("Provided surface is not described by this intersection curve");
+        }
+
+        public void Dispose()
+        {
+            _p.BoundingCurves.Remove(this);
+            _q.BoundingCurves.Remove(this);
         }
     }
 }

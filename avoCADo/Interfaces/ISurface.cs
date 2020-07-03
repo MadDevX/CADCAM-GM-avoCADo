@@ -13,8 +13,8 @@ namespace avoCADo
         event Action ParametersChanged;
         Vector2 ParameterURange { get; }
         Vector2 ParameterVRange { get; }
-        bool ULoop { get; }
-        bool VLoop { get; }
+        bool ULoop { get; } //TODO: update for cylindrical patches
+        bool VLoop { get; } //TODO: update for cylindrical patches
 
         Vector3 GetVertex(float u, float v);
 
@@ -25,6 +25,6 @@ namespace avoCADo
         Vector3 Twist(float u, float v);
         Vector3 Normal(float u, float v);
 
-
+        IList<IntersectionCurve> BoundingCurves { get; }
     }
 }

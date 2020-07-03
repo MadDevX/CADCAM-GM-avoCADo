@@ -6,23 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace avoCADo
+namespace avoCADo.Algebra
 {
-    public class ConjugateGradient
+
+    public static class ConjugateGradient
     {
-        public struct Data
-        {
-            public ISurface p;
-            public ISurface q;
 
-            public Data(ISurface a, ISurface b)
-            {
-                this.p = a;
-                this.q = b;
-            }
-        }
-
-        public Vector4 FindStartingPoint(Data d, Vector4 x0, float epsilon)
+        public static Vector4 FindStartingPoint(IntersectionData d, Vector4 x0, float epsilon)
         {
             int maxIterations = 100;
 
@@ -33,7 +23,7 @@ namespace avoCADo
             var pPrev = p0;
 
             int i = 0;
-            while (ParametersInBounds(d, xPrev) && EpsilonCondition(d, xPrev, epsilon) && i < maxIterations)
+            while (SurfaceConditions.ParametersInBounds(d, xPrev) && EpsilonCondition(d, xPrev, epsilon) && i < maxIterations)
             {
                 var xCur = X(d, x0, p0);
                 var pCur = P(d, xPrev, xCur, pPrev);
@@ -42,35 +32,13 @@ namespace avoCADo
                 pPrev = pCur;
             }
 
-            if (ParametersInBounds(d, xPrev) == false || i >= maxIterations) return new Vector4(float.NaN, float.NaN, float.NaN, float.NaN);
+            if (SurfaceConditions.ParametersInBounds(d, xPrev) == false || i >= maxIterations) return new Vector4(float.NaN, float.NaN, float.NaN, float.NaN);
             else return xPrev;
         }
 
         #region END CONDITIONS
 
-        private bool ParametersInBounds(Data d, Vector4 x)
-        {
-            var u = x.X;
-            var v = x.Y;
-            var s = x.Z;
-            var t = x.W;
-            var minU = d.p.ParameterURange.X;
-            var minV = d.p.ParameterVRange.X;
-            var minS = d.q.ParameterURange.X;
-            var minT = d.q.ParameterVRange.X;
-            var maxU = d.p.ParameterURange.Y;
-            var maxV = d.p.ParameterVRange.Y;
-            var maxS = d.q.ParameterURange.Y;
-            var maxT = d.q.ParameterVRange.Y;
-
-            return
-                minU <= u && maxU >= u &&
-                minV <= v && maxV >= v &&
-                minS <= s && maxS >= s &&
-                minT <= t && maxT >= t;
-        }
-
-        private bool EpsilonCondition(Data d, Vector4 x, float epsilon)
+        private static bool EpsilonCondition(IntersectionData d, Vector4 x, float epsilon)
         {
             return (d.p.GetVertex(x.X, x.Y) - d.q.GetVertex(x.Z, x.W)).Length > epsilon;
         }
@@ -79,31 +47,31 @@ namespace avoCADo
 
         #region CONJUGATE GRADIENT METHOD
 
-        private Vector4 X(Data d, Vector4 x, Vector4 p)
+        private static Vector4 X(IntersectionData d, Vector4 x, Vector4 p)
         {
             return x + Alpha(d, x, p) * p;
         }
 
-        private float Alpha(Data d, Vector4 x, Vector4 p)
+        private static float Alpha(IntersectionData d, Vector4 x, Vector4 p)
         {
             var grad = CalculateGradient(d.p, d.q, x);
             var hes = CalculateHessian(d.p, d.q, x);
             return Vector4.Dot(-grad, p) / (Vector4.Dot(p, hes * p));
         }
 
-        private Vector4 P(Data d, Vector4 xPrev, Vector4 xCur, Vector4 pPrev)
+        private static Vector4 P(IntersectionData d, Vector4 xPrev, Vector4 xCur, Vector4 pPrev)
         {
             return R(d, xCur) + Beta(d, xPrev, xCur) * pPrev;
         }
 
-        private float Beta(Data d, Vector4 xPrev, Vector4 xCur)
+        private static float Beta(IntersectionData d, Vector4 xPrev, Vector4 xCur)
         {
             var rPrev = R(d, xPrev);
             var rCur = R(d, xCur);
             return Math.Max((Vector4.Dot(rCur, rCur - rPrev))/(Vector4.Dot(rPrev, rPrev)), 0.0f);
         }
 
-        private Vector4 R(Data d, Vector4 x)
+        private static Vector4 R(IntersectionData d, Vector4 x)
         {
             return CalculateGradient(d.p, d.q, x);
         }
@@ -112,7 +80,7 @@ namespace avoCADo
 
         #region DERIVATIVES
 
-        private Vector4 CalculateGradient(ISurface surfP, ISurface surfQ, Vector4 parameters)
+        private static Vector4 CalculateGradient(ISurface surfP, ISurface surfQ, Vector4 parameters)
         {
             //func: F(x) = <P(u, v) - Q(s, t), P(u, v) - Q(s, t)>
             var u = parameters.X;
@@ -136,7 +104,7 @@ namespace avoCADo
             return new Vector4(du, dv, ds, dt);
         }
 
-        private Matrix4 CalculateHessian(ISurface surfP, ISurface surfQ, Vector4 parameters)
+        private static Matrix4 CalculateHessian(ISurface surfP, ISurface surfQ, Vector4 parameters)
         {
             //func: F(x) = <P(u, v) - Q(s, t), P(u, v) - Q(s, t)>
             var u = parameters.X;
