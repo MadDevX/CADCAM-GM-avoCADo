@@ -7,80 +7,116 @@ using System.Threading.Tasks;
 
 namespace avoCADo.Algebra
 {
+    using real = Double;
+    using Matrix = Matrix4d;
+    using Vector = Vector4d;
+
     public static class LinearEquationSolver
     {
-        private static float[,] _helper = new float[4, 5];
 
         public static Vector4 Solve(Matrix4 A, Vector4 b)
         {
-            for(int i = 0; i < 4; i++)
-            {
-                for(int j = 0; j < 4; j++)
-                {
-                    _helper[i, j] = A[i, j]; //fill with A elements
-                }
-                _helper[i, 4] = b[i]; //fill with b elements
-            }
-            Solve(_helper);
-            return new Vector4(_helper[0, 4], _helper[1, 4], _helper[2, 4], _helper[3, 4]);
+            var ret = Solve(ConvertMat(A), ConvertVec(b));
+            return new Vector4((float)ret.X, (float)ret.Y, (float)ret.Z, (float)ret.W);
         }
 
-        /// <summary>Computes the solution of a linear equation system.</summary>
-        /// <param name="M">
-        /// The system of linear equations as an augmented matrix[row, col] where (rows + 1 == cols).
-        /// It will contain the solution in "row canonical form" if the function returns "true".
-        /// </param>
-        /// <returns>Returns whether the matrix has a unique solution or not.</returns>
-        public static bool Solve(float[,] M)
+        private static Vector Solve(Matrix A, Vector b)
         {
-            // input checks
-            int rowCount = M.GetUpperBound(0) + 1;
-            if (M == null || M.Length != rowCount * (rowCount + 1))
-                throw new ArgumentException("The algorithm must be provided with a (n x n+1) matrix.");
-            if (rowCount < 1)
-                throw new ArgumentException("The matrix must at least have one row.");
-
-            // pivoting
-            for (int col = 0; col + 1 < rowCount; col++) if (M[col, col] == 0)
-                // check for zero coefficients
+            for (int i = 0; i < 4; i++)
+            {
+                var idx = FindMaxAbsInColumn(A, i, i);
+                if (idx == -1) throw new InvalidOperationException("multiple/none solutions exist");
+                SwapRows(ref A, ref b, idx, i);
+                for (int j = i + 1; j < 4; j++)
                 {
-                    // find non-zero coefficient
-                    int swapRow = col + 1;
-                    for (; swapRow < rowCount; swapRow++) if (M[swapRow, col] != 0) break;
-
-                    if (M[swapRow, col] != 0) // found a non-zero coefficient?
-                    {
-                        // yes, then swap it with the above
-                        float[] tmp = new float[rowCount + 1];
-                        for (int i = 0; i < rowCount + 1; i++)
-                        { tmp[i] = M[swapRow, i]; M[swapRow, i] = M[col, i]; M[col, i] = tmp[i]; }
-                    }
-                    else return false; // no, then the matrix has no unique solution
+                    SubstractRows(ref A, ref b, j, i, A[j, i] / A[i, i]);
                 }
 
-            // elimination
-            for (int sourceRow = 0; sourceRow + 1 < rowCount; sourceRow++)
+            }
+
+            for (int i = 3; i >= 0; i--)//subtrahend (column)
             {
-                for (int destRow = sourceRow + 1; destRow < rowCount; destRow++)
+                for (int j = 0; j < i; j++)//minunend 
                 {
-                    float df = M[sourceRow, sourceRow];
-                    float sf = M[destRow, sourceRow];
-                    for (int i = 0; i < rowCount + 1; i++)
-                        M[destRow, i] = M[destRow, i] * df - M[sourceRow, i] * sf;
+                    SubstractRows(ref A, ref b, i, j, A[j, i] / A[i, i]);
                 }
             }
 
-            // back-insertion
-            for (int row = rowCount - 1; row >= 0; row--)
+            for (int i = 0; i < 4; i++)
             {
-                float f = M[row, row];
-                if (f == 0) return false;
-
-                for (int i = 0; i < rowCount + 1; i++) M[row, i] /= f;
-                for (int destRow = 0; destRow < row; destRow++)
-                { M[destRow, rowCount] -= M[destRow, row] * M[row, rowCount]; M[destRow, row] = 0; }
+                MultiplyRow(ref A, ref b, i, 1.0f / A[i, i]);
             }
-            return true;
+
+            return b;
+        }
+
+        private static void SwapRows(ref Matrix mat, ref Vector v, int rowA, int rowB)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                var temp = mat[rowA, i];
+                mat[rowA, i] = mat[rowB, i];
+                mat[rowB, i] = temp;
+            }
+            var tempV = v[rowA];
+            v[rowA] = v[rowB];
+            v[rowB] = tempV;
+        }
+
+        private static void MultiplyRow(ref Matrix mat, ref Vector v, int row, real mult)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                mat[row, i] *= mult;
+            }
+            v[row] *= mult;
+        }
+
+        private static void SubstractRows(ref Matrix mat, ref Vector v, int minunendRow, int subtrahendRow, real subtrahendMult = 1.0)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                mat[minunendRow, i] -= mat[subtrahendRow, i] * subtrahendMult;
+            }
+            v[minunendRow] -= v[subtrahendRow] * subtrahendMult;
+        }
+
+        /// <summary>
+        /// Returns -1 if all elements in column are 0
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        private static int FindMaxAbsInColumn(Matrix A, int column, int minRow)
+        {
+            real curMax = 0.0;
+            int idx = -1;
+
+            for(int i = minRow; i < 4; i++)
+            {
+                var abs = Math.Abs(A[i, column]);
+                if (abs > curMax)
+                {
+                    curMax = abs;
+                    idx = i;
+                }
+            }
+            return idx;
+        }
+
+        private static Matrix ConvertMat(Matrix4 a)
+        {
+            return new Matrix(
+                a[0, 0], a[0, 1], a[0, 2], a[0, 3],
+                a[1, 0], a[1, 1], a[1, 2], a[1, 3],
+                a[2, 0], a[2, 1], a[2, 2], a[2, 3],
+                a[3, 0], a[3, 1], a[3, 2], a[3, 3]
+                );
+        }
+
+        private static Vector ConvertVec(Vector4 vec)
+        {
+            return new Vector(vec.X, vec.Y, vec.Z, vec.W);
         }
     }
 }

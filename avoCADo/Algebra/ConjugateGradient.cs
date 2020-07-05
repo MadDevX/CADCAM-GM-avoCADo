@@ -12,27 +12,32 @@ namespace avoCADo.Algebra
     public static class ConjugateGradient
     {
 
-        public static Vector4 FindStartingPoint(IntersectionData d, Vector4 x0, float epsilon)
+        public static Vector4 FindStartingPoint(IntersectionData data, Vector4 x0, float epsilon)
         {
-            int maxIterations = 100;
+            int maxIterations = 20;
 
-            var r0 = -CalculateGradient(d.p, d.q, x0);
+            var r0 = -CalculateGradient(data.p, data.q, x0);
             var p0 = r0;
 
             var xPrev = x0;
             var pPrev = p0;
 
             int i = 0;
-            while (SurfaceConditions.ParametersInBounds(d, xPrev) && EpsilonCondition(d, xPrev, epsilon) && i < maxIterations)
+            while (SurfaceConditions.ParametersInBounds(data, xPrev) && EpsilonCondition(data, xPrev, epsilon) && i < maxIterations)
             {
-                var xCur = X(d, x0, p0);
-                var pCur = P(d, xPrev, xCur, pPrev);
+                var xCur = X(data, x0, p0);
+                var pCur = P(data, xPrev, xCur, pPrev);
 
                 xPrev = xCur;
                 pPrev = pCur;
+
+                i++;
             }
 
-            if (SurfaceConditions.ParametersInBounds(d, xPrev) == false || i >= maxIterations) return new Vector4(float.NaN, float.NaN, float.NaN, float.NaN);
+            if (SurfaceConditions.ParametersInBounds(data, xPrev) == false || i >= maxIterations)
+            {
+                return new Vector4(float.NaN, float.NaN, float.NaN, float.NaN);
+            }
             else return xPrev;
         }
 

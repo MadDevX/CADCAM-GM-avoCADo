@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Algebra;
+using OpenTK;
 using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,9 @@ namespace avoCADo
             cursor3D.Transform.WorldPosition = new Vector3(-4.5f, 0.0f, 0.0f);
             nodeFactory.CreateObject(ObjectType.BezierPatchC0, new PatchParameters(WrapMode.None));
             cursor3D.Transform.WorldPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
+            //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
+            //MessageBox.Show(ret.ToString());
         }
 
     }

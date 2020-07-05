@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class TorusGenerator : IMeshGenerator
+    public class TorusGenerator : IMeshGenerator, ISurfaceGenerator
     {
         public ISurface Surface { get; }
         public event Action OnParametersChanged;

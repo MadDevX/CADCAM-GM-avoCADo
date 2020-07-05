@@ -14,7 +14,7 @@ namespace avoCADo
         public override IList<Vector3> ControlPoints => _controlPoints;
         private ISurface _p;
         private ISurface _q;
-        private List<Vector4> _parameters;
+        private List<Vector4> _parameters = new List<Vector4>();
         public IReadOnlyCollection<Vector4> Parameters => _parameters.AsReadOnly();
 
         public IntersectionCurve(IList<INode> knotList) : base(null)

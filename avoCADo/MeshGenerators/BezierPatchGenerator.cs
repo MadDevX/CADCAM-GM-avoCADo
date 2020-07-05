@@ -15,7 +15,7 @@ namespace avoCADo
         Row
     }
 
-    public class BezierPatchGenerator : IMeshGenerator, ICircularDependent<INode>
+    public class BezierPatchGenerator : IMeshGenerator, ISurfaceGenerator, ICircularDependent<INode>
     {
         protected virtual DrawCallShaderType SurfaceDrawType { get; } = DrawCallShaderType.SurfaceBezier;
         protected virtual int PatchCount { get; } = RenderConstants.PATCH_COUNT;
@@ -88,6 +88,7 @@ namespace avoCADo
         public float SurfaceWidthOrRadius { get; set; } = 1.0f;
         public float SurfaceHeight { get; set; } = 1.0f;
         public IBezierSurface Surface { get; }
+        ISurface ISurfaceGenerator.Surface => Surface;
 
         public WrapMode WrapMode 
         { 

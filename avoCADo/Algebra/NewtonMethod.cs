@@ -10,7 +10,6 @@ namespace avoCADo.Algebra
 {
     public static class NewtonMethod
     {
-
         public static IList<Vector4> CalculateIntersectionPoints(IntersectionData data, Vector4 startingPoint, float knotDistance, float epsilon = 0.00001f)
         {
             var pointList = new List<Vector4>();
@@ -19,22 +18,24 @@ namespace avoCADo.Algebra
             {
                 pointList.Add(CalculateNextPoint(data, pointList.Last(), knotDistance, epsilon));
             }
+            //TODO: check if intersection is looped
 
-            if(pointList.First() != pointList.Last())
+            if(pointList.First() != pointList.Last() && false)
             {
                 var data2 = new IntersectionData(data.q, data.p);
                 var pointList2 = new List<Vector4>();
-                pointList2.Add(startingPoint);
+                pointList2.Add(startingPoint.Zwxy);
 
                 while (ContinueIntersectionTracing(data2, startingPoint, pointList2.Last(), knotDistance))
                 {
-                    pointList.Add(CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon));
+                    pointList2.Add(CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon));
                 }
 
                 //We go from startingPoint in both directions, thus second list needs to be reversed 
                 //thus, correct order: pointList2.last -> startingPoint -> pointList.last
                 pointList2.Reverse(); 
                 pointList2.RemoveAt(pointList2.Count - 1);//remove startingPoint (it is already included in pointList)
+                pointList2 = pointList2.Select(x => x.Zwxy).ToList();
                 pointList2.AddRange(pointList);
                 return pointList2;
             }
@@ -54,19 +55,29 @@ namespace avoCADo.Algebra
             var xPrev = x0;
 
             int i = 0;
-            while(NewtonCondition(data, xPrev, xCur, epsilon) && i < maxIterations)
+            while(NewtonCondition(data, xPrev, xCur, x0, knotDistance, epsilon) && i < maxIterations)
             {
                 xPrev = xCur;
                 xCur = NewtonIteration(data, xCur, x0, knotDistance);
                 i++;
             }
 
+            //if (SurfaceConditions.ParametersInBounds(data, xCur) == false)
+            //{
+            //    return Vector4.Lerp(xPrev, xCur, );
+            //}
             return xCur; //TODO: throw exception when no solution was found
         }
 
-        private static bool NewtonCondition(IntersectionData data, Vector4 xPrev, Vector4 xCur, float epsilon)
+        //private static Vector4 ClampToParameterBounds(IntersectionData data, Vector4 x0, Vector4 xCur)
+        //{
+
+        //}
+
+        private static bool NewtonCondition(IntersectionData data, Vector4 xPrev, Vector4 xCur, Vector4 x0, float knotDistance, float epsilon)
         {
-            return SurfaceConditions.ParametersInBounds(data, xCur) && (xPrev-xCur).Length > epsilon; //TODO: tweak end condition, use previous approx.
+            return SurfaceConditions.ParametersInBounds(data, xCur);// && //TODO : check condition
+                //((xPrev-xCur).Length > epsilon || Math.Abs(StepDistance(data, xCur, x0, knotDistance)) > epsilon); //TODO: tweak end condition, use previous approx.
         }
 
         private static Vector4 NewtonIteration(IntersectionData data, Vector4 xCur, Vector4 x0, float knotDistance)
@@ -86,15 +97,23 @@ namespace avoCADo.Algebra
             var s = xCur.Z;
             var t = xCur.W;
 
-            var u0 = x0.X;
-            var v0 = x0.Y;
-            var s0 = x0.Z;
-            var t0 = x0.W;
-
             var posDiff = p.GetVertex(u, v) - q.GetVertex(s, t);
-            var dir = Vector3.Dot(p.GetVertex(u, v) - p.GetVertex(u0, v0), ICTangent(data, x0)) - knotDistance;
+            var dir = StepDistance(data, xCur, x0, knotDistance);
 
             return new Vector4(posDiff, dir);
+        }
+
+        private static float StepDistance(IntersectionData data, Vector4 xCur, Vector4 x0, float knotDistance)
+        {
+            var p = data.p;
+
+            var u = xCur.X;
+            var v = xCur.Y;
+
+            var u0 = x0.X;
+            var v0 = x0.Y;
+
+            return Vector3.Dot(p.GetVertex(u, v) - p.GetVertex(u0, v0), ICTangent(data, x0)) - knotDistance;
         }
 
         private static Vector3 ICTangent(IntersectionData data, Vector4 x)
