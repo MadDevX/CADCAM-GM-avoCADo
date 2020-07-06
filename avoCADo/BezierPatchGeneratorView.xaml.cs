@@ -76,7 +76,9 @@ namespace avoCADo
                 var derivV = gen.Surface.DerivV(0.0f, 0.0f);
                 var derivVV = gen.Surface.DerivVV(0.0f, 0.0f);
                 var twist = gen.Surface.Twist(0.0f, 0.0f);
+                var normal = gen.Surface.Normal(0.5f, 0.5f);
                 vectorInfo.Text =
+                    $"Normal: {normal}\n" +
                     $"DerivU: {derivU}\n" +
                     $"DerivUU: {derivUU}\n" +
                     $"DerivV: {derivV}\n" +

@@ -82,7 +82,9 @@ namespace avoCADo.Algebra
 
         private static Vector4 NewtonIteration(IntersectionData data, Vector4 xCur, Vector4 x0, float knotDistance)
         {
-            var dx = LinearEquationSolver.Solve(NewtonMatrix(data, xCur, x0), -F(data, xCur, x0, knotDistance));
+            var mat = NewtonMatrix(data, xCur, x0);
+            var f = F(data, xCur, x0, knotDistance);
+            var dx = LinearEquationSolver.Solve(mat, -f);
 
             return dx + xCur;
         }
