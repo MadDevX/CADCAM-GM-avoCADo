@@ -71,11 +71,13 @@ namespace avoCADo
             _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager);
 
             _shaderProvider = new ShaderProvider();
+            _nodeImporter = new NodeImporter();
+            _nodeExporter = new NodeExporter();
 
             _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.SurfaceShaderGregory);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
-            _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, new Scene("Main"));
+            _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, _nodeImporter, new Scene("Main"));
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
@@ -96,8 +98,7 @@ namespace avoCADo
             _pointNodePool = new PointNodePool(_shaderProvider);
             _nodeFactory = new NodeFactory(_sceneManager, _cursor, _shaderProvider, _pointNodePool);
             _virtualNodeFactory = new VirtualNodeFactory(_shaderProvider.DefaultShader, _sceneManager);
-            _nodeImporter = new NodeImporter(_nodeFactory);
-            _nodeExporter = new NodeExporter();
+            _nodeImporter.Initialize(_nodeFactory);
 
             Registry.VirtualNodeFactory = _virtualNodeFactory;
             Registry.InstructionBuffer = _instructionBuffer;
@@ -109,7 +110,9 @@ namespace avoCADo
             _window.cameraSettings.DataContext = _cameraModeManager;
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _instructionBuffer);
-            TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
+
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTest.xml");
+            //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
         }
 
         public void Dispose()

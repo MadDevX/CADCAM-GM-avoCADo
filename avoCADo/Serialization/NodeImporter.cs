@@ -13,7 +13,7 @@ namespace avoCADo
     {
         private NodeFactory _nodeFactory;
 
-        public NodeImporter(NodeFactory nodeFactory)
+        public void Initialize(NodeFactory nodeFactory)
         {
             _nodeFactory = nodeFactory;
         }

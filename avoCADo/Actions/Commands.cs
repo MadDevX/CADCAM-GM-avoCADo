@@ -222,14 +222,8 @@ namespace avoCADo
                 ofd.ShowDialog();
                 if (ofd.FileName != "")
                 {
-                    _instructionBuffer.IssueInstruction<SelectionChangedInstruction, SelectionChangedInstruction.Parameters>(
-                        new SelectionChangedInstruction.Parameters(null, SelectionChangedInstruction.OperationType.Reset));
-                    var result = SceneDeserializer.Deserialize(ofd.FileName);
-                    _sceneManager.CreateAndSet(NameGenerator.DiscardPath(ofd.FileName, discardExtension: true));
-                    SceneDeserializer.ImportScene(result, _nodeImporter, _sceneManager.CurrentScene);
+                    _sceneManager.ImportScene(ofd.FileName);
                     prevScene.Dispose();
-                    NameGenerator.ResetState();
-                    NameGenerator.GenerateKeywords(_sceneManager.CurrentScene);
                 }
             }
             catch(Exception ex)
