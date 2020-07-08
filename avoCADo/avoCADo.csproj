@@ -95,6 +95,7 @@
     <Compile Include="Algebra\IntersectionFinder.cs" />
     <Compile Include="Algebra\LinearEquationSolver.cs" />
     <Compile Include="Algebra\NewtonMethod.cs" />
+    <Compile Include="Algebra\SimpleGradient.cs" />
     <Compile Include="Algebra\SurfaceConditions.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
@@ -137,6 +138,9 @@
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
+    <Compile Include="ParametricSpaceExplorer.xaml.cs">
+      <DependentUpon>ParametricSpaceExplorer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Rendering\BufferManagers\FramebufferManager.cs" />
     <Compile Include="Camera\StereoscopicCamera.cs" />
     <Compile Include="ControlPointManagers\BezierC0PatchControlPointManager.cs" />
@@ -296,6 +300,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NodeHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ParametricSpaceExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

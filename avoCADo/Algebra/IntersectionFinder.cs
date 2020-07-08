@@ -9,7 +9,7 @@ namespace avoCADo.Algebra
 {
     public static class IntersectionFinder
     {
-        private const float _epsilon = 0.001f;
+        private const float _epsilon = 0.0001f;
         private const float _domainSamplingMult = 0.1f;
         private const float _discardLength = 0.1f;
 
@@ -55,7 +55,7 @@ namespace avoCADo.Algebra
 
         public static IList<Vector4> FindIntersection(IntersectionData data, Vector4 startingParameters, float knotDistance)
         {
-            var x0 = ConjugateGradient.FindStartingPoint(data, startingParameters, _epsilon);
+            var x0 = SimpleGradient.FindStartingPoint(data, startingParameters, _epsilon);
             if (float.IsNaN(x0.X)) return null;
 
             var loop = NewtonMethod.CalculateIntersectionPoints(data, x0, knotDistance, _epsilon);
