@@ -38,7 +38,7 @@ namespace avoCADo.Algebra
             {
                 for (int j = 0; j < i; j++)//minunend 
                 {
-                    SubstractRows(ref A, ref b, i, j, A[j, i] / A[i, i]);
+                    SubstractRows(ref A, ref b, j, i, A[j, i] / A[i, i]);
                 }
             }
 
@@ -72,6 +72,17 @@ namespace avoCADo.Algebra
             v[row] *= mult;
         }
 
+
+        /// <summary>
+        /// a - b
+        /// a -> minunend
+        /// b -> subtrahend
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <param name="v"></param>
+        /// <param name="minunendRow"></param>
+        /// <param name="subtrahendRow"></param>
+        /// <param name="subtrahendMult"></param>
         private static void SubstractRows(ref Matrix mat, ref Vector v, int minunendRow, int subtrahendRow, real subtrahendMult = 1.0)
         {
             for(int i = 0; i < 4; i++)

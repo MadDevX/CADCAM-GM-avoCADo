@@ -30,7 +30,7 @@ namespace avoCADo.Actions
                 return false;
             }
 
-            var intersection = IntersectionFinder.FindIntersection(new IntersectionData(p, q), parameters.step);
+            var intersection = IntersectionFinder.FindIntersection(new IntersectionData(p, q), parameters.knotDistance);
             if (intersection == null)
             {
                 MessageBox.Show("No intersection found");
@@ -55,20 +55,20 @@ namespace avoCADo.Actions
         {
             public INode a;
             public INode b;
-            public float step;
+            public float knotDistance;
             public bool useStartingPoint;
             public Vector3 startingPoint;
 
-            public Parameters(INode a, INode b, float step)
+            public Parameters(INode a, INode b, float knotDistance)
             {
                 this.a = a;
                 this.b = b;
-                this.step = step;
+                this.knotDistance = knotDistance;
                 this.useStartingPoint = false;
                 this.startingPoint = Vector3.Zero;
             }
 
-            public Parameters(INode a, INode b, float step, Vector3 startingPoint) : this(a, b, step)
+            public Parameters(INode a, INode b, float knotDistance, Vector3 startingPoint) : this(a, b, knotDistance)
             {
                 this.useStartingPoint = true;
                 this.startingPoint = startingPoint;

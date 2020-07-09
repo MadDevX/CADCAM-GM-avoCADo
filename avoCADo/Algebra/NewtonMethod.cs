@@ -16,11 +16,19 @@ namespace avoCADo.Algebra
             pointList.Add(startingPoint);
             while (ContinueIntersectionTracing(data, startingPoint, pointList.Last(), knotDistance))
             {
-                pointList.Add(CalculateNextPoint(data, pointList.Last(), knotDistance, epsilon));
+                var point = CalculateNextPoint(data, pointList.Last(), knotDistance, epsilon);
+                if (SurfaceConditions.ParametersInBounds(data, point))
+                {
+                    pointList.Add(point);
+                }
+                else
+                {
+                    break;
+                }
             }
             //TODO: check if intersection is looped
 
-            if(pointList.First() != pointList.Last() && false)
+            if(pointList.Count == 1 || pointList.First() != pointList.Last())
             {
                 var data2 = new IntersectionData(data.q, data.p);
                 var pointList2 = new List<Vector4>();
@@ -28,7 +36,15 @@ namespace avoCADo.Algebra
 
                 while (ContinueIntersectionTracing(data2, startingPoint, pointList2.Last(), knotDistance))
                 {
-                    pointList2.Add(CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon));
+                    var point = CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon);
+                    if (SurfaceConditions.ParametersInBounds(data, point))
+                    {
+                        pointList2.Add(point);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
                 //We go from startingPoint in both directions, thus second list needs to be reversed 
@@ -62,17 +78,8 @@ namespace avoCADo.Algebra
                 i++;
             }
 
-            //if (SurfaceConditions.ParametersInBounds(data, xCur) == false)
-            //{
-            //    return Vector4.Lerp(xPrev, xCur, );
-            //}
             return xCur; //TODO: throw exception when no solution was found
         }
-
-        //private static Vector4 ClampToParameterBounds(IntersectionData data, Vector4 x0, Vector4 xCur)
-        //{
-
-        //}
 
         private static bool NewtonCondition(IntersectionData data, Vector4 xPrev, Vector4 xCur, Vector4 x0, float knotDistance, float epsilon)
         {
@@ -120,7 +127,7 @@ namespace avoCADo.Algebra
 
         private static Vector3 ICTangent(IntersectionData data, Vector4 x)
         {
-            return Vector3.Cross(data.p.Normal(x.X, x.Y), data.q.Normal(x.Z, x.W));
+            return Vector3.Cross(data.p.Normal(x.X, x.Y), data.q.Normal(x.Z, x.W)).Normalized();
         }
 
         private static Matrix4 NewtonMatrix(IntersectionData data, Vector4 xCur, Vector4 x0)

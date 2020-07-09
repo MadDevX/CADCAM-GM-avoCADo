@@ -316,7 +316,7 @@ namespace avoCADo
         {
             var selected = NodeSelection.Manager.SelectedNodes;
             _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
-                new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), 0.0001f));
+                new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), 0.1f));
         }
 
         #endregion
