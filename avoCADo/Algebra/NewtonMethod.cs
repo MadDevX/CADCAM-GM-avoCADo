@@ -83,8 +83,9 @@ namespace avoCADo.Algebra
 
         private static bool NewtonCondition(IntersectionData data, Vector4 xPrev, Vector4 xCur, Vector4 x0, float knotDistance, float epsilon)
         {
-            return SurfaceConditions.ParametersInBounds(data, xCur);// && //TODO : check condition
-                //((xPrev-xCur).Length > epsilon || Math.Abs(StepDistance(data, xCur, x0, knotDistance)) > epsilon); //TODO: tweak end condition, use previous approx.
+            return SurfaceConditions.ParametersInBounds(data, xCur) && //TODO : check condition
+                 (Vector3.Dot(data.p.GetVertex(xCur.X, xCur.Y), data.q.GetVertex(xCur.Z, xCur.W)) > epsilon || 
+                 Math.Abs(StepDistance(data, xCur, x0, knotDistance)) > epsilon); //TODO: tweak end condition, use previous approx.
         }
 
         private static Vector4 NewtonIteration(IntersectionData data, Vector4 xCur, Vector4 x0, float knotDistance)
@@ -133,7 +134,7 @@ namespace avoCADo.Algebra
         private static Matrix4 NewtonMatrix(IntersectionData data, Vector4 xCur, Vector4 x0)
         {
             //F(u,v,s,t) = P(u,v) - Q(s,t) [3 equations]
-            //G(u,v,s,t) = <P(u,v) - pPrev> - knotDistance [1 equation]
+            //G(u,v,s,t) = <P(u,v) - p0, t> - knotDistance [1 equation]
             var p = data.p;
             var q = data.q;
 
