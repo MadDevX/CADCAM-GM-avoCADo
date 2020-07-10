@@ -37,7 +37,7 @@ namespace avoCADo.Algebra
                 while (ContinueIntersectionTracing(data2, startingPoint, pointList2.Last(), knotDistance))
                 {
                     var point = CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon);
-                    if (SurfaceConditions.ParametersInBounds(data, point))
+                    if (SurfaceConditions.ParametersInBounds(data2, point))
                     {
                         pointList2.Add(point);
                     }
