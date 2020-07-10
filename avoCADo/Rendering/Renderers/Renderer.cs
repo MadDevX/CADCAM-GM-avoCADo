@@ -48,7 +48,7 @@ namespace avoCADo
 
         public abstract IMeshGenerator GetGenerator();
 
-        public void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        public void Render(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             if (_node != null && _node.IsSelectable == false) return;
             _mesh.BindMesh();
@@ -57,13 +57,13 @@ namespace avoCADo
             Draw(camera, localMatrix, parentMatrix);
         }
 
-        protected void SetShader(ShaderWrapper shaderWrapper, Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected void SetShader(ShaderWrapper shaderWrapper, ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             shaderWrapper.Shader.Use();
             SetModelMatrix(shaderWrapper, localMatrix, parentMatrix);
         }
 
-        protected abstract void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix);
+        protected abstract void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix);
 
         private void SetModelMatrix(ShaderWrapper shader, Matrix4 localMatrix, Matrix4 parentMatrix)
         {

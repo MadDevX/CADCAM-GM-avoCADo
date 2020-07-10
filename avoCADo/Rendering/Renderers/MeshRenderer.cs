@@ -31,7 +31,7 @@ namespace avoCADo
             return _meshGenerator;
         }
 
-        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             GL.DrawElements(PrimitiveType.Lines, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
         }

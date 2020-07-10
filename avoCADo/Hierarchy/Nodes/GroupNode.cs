@@ -189,7 +189,7 @@ namespace avoCADo
             OnDisposed?.Invoke(this);
         }
 
-        public void Render(Camera camera, Matrix4 parentMatrix)
+        public void Render(ICamera camera, Matrix4 parentMatrix)
         {
             Renderer.Render(camera, Matrix4.Identity, Matrix4.Identity);
         }

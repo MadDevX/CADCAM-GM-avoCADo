@@ -97,6 +97,9 @@
     <Compile Include="Algebra\NewtonMethod.cs" />
     <Compile Include="Algebra\SimpleGradient.cs" />
     <Compile Include="Algebra\SurfaceConditions.cs" />
+    <Compile Include="Camera\DummyCamera.cs" />
+    <Compile Include="Camera\ICamera.cs" />
+    <Compile Include="Interfaces\IShaderProvider.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />
     <Compile Include="Hierarchy\DependencyCollector.cs" />
@@ -134,6 +137,7 @@
     <Compile Include="Interfaces\ISurfaceGenerator.cs" />
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
+    <Compile Include="MeshGenerators\RawDataGenerator.cs" />
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />

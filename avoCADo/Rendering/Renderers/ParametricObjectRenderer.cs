@@ -19,21 +19,17 @@ namespace avoCADo
         private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
         private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;
 
-        public ParametricObjectRenderer(TesselationShaderWrapper tessBezierShaderWrapper, 
-                                        TesselationShaderWrapper tessDeBoorShaderWrapper,
-                                        TesselationShaderWrapper tessGregoryShaderWrapper,
-                                        ShaderWrapper curveShaderWrapper, 
-                                        ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
+        public ParametricObjectRenderer(IShaderProvider provider, IMeshGenerator meshGenerator) : base(provider.DefaultShader, meshGenerator)
         {
-            _tessBezierShaderWraper = tessBezierShaderWrapper;
-            _tessDeBoorShaderWraper = tessDeBoorShaderWrapper;
-            _tessGregoryShaderWrapper = tessGregoryShaderWrapper;
-            _curveShaderWrapper = curveShaderWrapper;
+            _tessBezierShaderWraper = provider.SurfaceShaderBezier;
+            _tessDeBoorShaderWraper = provider.SurfaceShaderDeBoor;
+            _tessGregoryShaderWrapper = provider.SurfaceShaderGregory;
+            _curveShaderWrapper = provider.CurveShader;
             _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessBezierShaderWraper, _tessDeBoorShaderWraper, _tessGregoryShaderWrapper);
             _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches, PrimitiveType.Patches);
         }
 
-        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             var currentShader = _shaderWrapper;
             var calls = _meshGenerator.DrawCalls;

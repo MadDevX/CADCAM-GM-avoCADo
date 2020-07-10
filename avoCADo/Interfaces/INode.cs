@@ -29,7 +29,7 @@ namespace avoCADo
         Matrix4 GlobalModelMatrix { get; }
         ObservableCollection<INode> Children { get; }
 
-        void Render(Camera camera, Matrix4 parentMatrix);
+        void Render(ICamera camera, Matrix4 parentMatrix);
         void AttachChild(INode node);
         void AttachChildAtIndex(INode node, int index);
         bool DetachChild(INode node);

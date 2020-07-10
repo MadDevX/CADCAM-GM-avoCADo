@@ -1,4 +1,7 @@
-﻿using OpenTK;
+﻿using avoCADo.Constants;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +27,18 @@ namespace avoCADo
     {
         private GLControl _glControlP;
         private GLControl _glControlQ;
-        private ParametricObjectRenderer _renderer;
+        private IShaderProvider _shaderProvider;
+
+        private RawDataGenerator _genP;
+        private ParametricObjectRenderer _rendP;
+        private RawDataGenerator _genQ;
+        private ParametricObjectRenderer _rendQ;
+
+        private DummyCamera _cam = new DummyCamera();
+
+
+        private BackgroundManager _backgroundManager;
+        private ScreenBufferManager _screenBufferManager;
 
         public ParametricSpaceExplorer()
         {
@@ -32,18 +46,52 @@ namespace avoCADo
 
             _glControlP = CreateGLControl(hostP);
             _glControlQ = CreateGLControl(hostQ);
+
+            _backgroundManager = new BackgroundManager(Color4.White);
+            _screenBufferManager = new ScreenBufferManager(_backgroundManager);
         }
 
-        public void Initialize(ShaderProvider shaderProvider)
+        public void Initialize(IShaderProvider shaderProvider, ISurface p, ISurface q)
         {
+            _shaderProvider = shaderProvider;
+
+            _genP = new RawDataGenerator();
+            _genQ = new RawDataGenerator();
+            _rendP = new ParametricObjectRenderer(_shaderProvider, _genP);
+            _rendQ = new ParametricObjectRenderer(_shaderProvider, _genQ);
+
+            SetupData(p, _genP, _rendP, _glControlP);
+            SetupData(q, _genQ, _rendQ, _glControlQ);
+
+            Render();
         }
 
-        public void Render(ISurface p, ISurface q)
+        private void SetupData(ISurface surf, RawDataGenerator gen, ParametricObjectRenderer rend, GLControl control)
         {
-            foreach(var c in p.BoundingCurves)
+            foreach(var c in surf.BoundingCurves)
             {
-                var list = c.GetParameterList(p);
+                var list = c.Curve.GetParameterList(surf);
+                gen.SetData(list.Select(x => new Vector3(x.X, x.Y, 0.0f)).ToList());
             }
+            gen.Size = RenderConstants.CURVE_SIZE;
+            gen.SelectedColor = Color4.Red;
+            gen.DefaultColor = Color4.Red;
+            gen.DrawCallShaderType = DrawCallShaderType.Default;
+        }
+
+        private void Render()
+        {
+            Render(_glControlP, _rendP);
+            Render(_glControlQ, _rendQ);
+        }
+
+        private void Render(GLControl control, ParametricObjectRenderer rend)
+        {
+            control.MakeCurrent();
+            _screenBufferManager.ResetScreenBuffer();
+            rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+            GL.Finish();
+            control.SwapBuffers();
         }
 
         private GLControl CreateGLControl(WindowsFormsHost host)

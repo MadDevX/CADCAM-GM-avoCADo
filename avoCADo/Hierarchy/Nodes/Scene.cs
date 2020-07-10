@@ -70,7 +70,7 @@ namespace avoCADo
             OnDisposed?.Invoke(this);
         }
 
-        public void Render(Camera camera)
+        public void Render(ICamera camera)
         {
             for(int i = 0; i < Children.Count; i++)
             {
@@ -188,7 +188,7 @@ namespace avoCADo
             DetachChild(node);
         }
 
-        public void Render(Camera camera, Matrix4 parentMatrix){}
+        public void Render(ICamera camera, Matrix4 parentMatrix){}
 
         public int GetChildIndex(INode node)
         {

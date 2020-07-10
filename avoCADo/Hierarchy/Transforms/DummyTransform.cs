@@ -52,7 +52,7 @@ namespace avoCADo
 
         public virtual void ScaleAround(Vector3 pivot, Vector3 scaling) { }
 
-        public virtual Vector2 ScreenCoords(Camera camera) { return _screenCoords; }
+        public virtual Vector2 ScreenCoords(ICamera camera) { return _screenCoords; }
 
         public virtual void Translate(Vector3 translation) { }
 

@@ -22,7 +22,7 @@ namespace avoCADo
             return null;
         }
 
-        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             GL.LineWidth(RenderConstants.GIZMO_SIZE);
 

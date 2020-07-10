@@ -37,11 +37,11 @@ namespace avoCADo
         private readonly GLControl _control;
         private readonly IRenderer _gizmoRenderer;
         private readonly IRenderLoop _renderLoop;
-        private readonly Camera _camera;
+        private readonly ICamera _camera;
         private readonly ISelectionManager _selectionManager;
         public Transform Transform { get; }
 
-        public Cursor3D(GLControl control, ShaderWrapper shader, IRenderLoop renderLoop, Camera camera)
+        public Cursor3D(GLControl control, ShaderWrapper shader, IRenderLoop renderLoop, ICamera camera)
         {
             _control = control;
             _renderLoop = renderLoop;

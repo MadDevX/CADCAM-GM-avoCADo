@@ -15,7 +15,7 @@ namespace avoCADo
         Orthographic
     }
 
-    public class Camera : IDisposable
+    public class Camera : IDisposable, ICamera
     {
 
         public Vector3 Target => _target;

@@ -84,7 +84,7 @@ namespace avoCADo.HUD
         private readonly ISelectionManager _selectionManager;
         private readonly Cursor3D _cursor3D;
         private readonly GLControl _control;
-        private readonly Camera _camera;
+        private readonly ICamera _camera;
         private readonly DependencyAddersManager _dependencyAddersManager;
         private readonly InstructionBuffer _instructionBuffer;
         private TransformationInstructionUtility _instructionUtility;
@@ -111,7 +111,7 @@ namespace avoCADo.HUD
 
         private Point _currentInputBuffer = Point.Empty;
 
-        public TransformationsManager(Cursor3D cursor3D, GLControl control, Camera camera, InstructionBuffer instructionBuffer)
+        public TransformationsManager(Cursor3D cursor3D, GLControl control, ICamera camera, InstructionBuffer instructionBuffer)
         {
             _selectionManager = NodeSelection.Manager;
             _dependencyAddersManager = NodeSelection.DependencyAddersManager;

@@ -104,7 +104,7 @@ namespace avoCADo
             PropertyChanged?.Invoke(this, _transformChangedArgs);
         }
 
-        public void Render(Camera camera, Matrix4 parentMatrix)
+        public void Render(ICamera camera, Matrix4 parentMatrix)
         {
             Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
             var modelMat = Transform.LocalModelMatrix * parentMatrix;

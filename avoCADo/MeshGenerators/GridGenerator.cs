@@ -51,12 +51,12 @@ namespace avoCADo
         private int _density;
         private int _maxDensity = 100;
 
-        private Camera _camera;
+        private ICamera _camera;
 
         private float[] _vertices = new float[0];
         private uint[] _indices = new uint[0];
 
-        public GridGenerator(int size, int density, Camera camera)
+        public GridGenerator(int size, int density, ICamera camera)
         {
             Size = size;
             Density = density;

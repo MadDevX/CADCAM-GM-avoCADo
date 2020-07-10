@@ -11,14 +11,14 @@ namespace avoCADo
     public class Grid : IDisposable
     {
 
-        private Camera _camera;
+        private ICamera _camera;
         private IRenderLoop _renderLoop;
 
         private IRenderer _gridRenderer;
 
         public bool Enabled { get; set; } = true;
 
-        public Grid(Camera camera, IRenderLoop renderLoop, IRenderer gridRenderer)
+        public Grid(ICamera camera, IRenderLoop renderLoop, IRenderer gridRenderer)
         {
             _camera = camera;
             _renderLoop = renderLoop;

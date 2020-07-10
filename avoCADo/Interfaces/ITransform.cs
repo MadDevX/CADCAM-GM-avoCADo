@@ -33,7 +33,7 @@ namespace avoCADo
 
         Matrix4 LocalModelMatrix { get; }
         Vector3 WorldPosition { get; set; }
-        Vector2 ScreenCoords(Camera camera);
+        Vector2 ScreenCoords(ICamera camera);
 
         void RotateAround(Vector3 pivot, Vector3 eulerAngles);
         void Translate(Vector3 translation);

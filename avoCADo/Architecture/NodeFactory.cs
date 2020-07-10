@@ -218,11 +218,11 @@ namespace avoCADo
         private INode CreateIntersectionCurve(IntersectionCurveParameters parameters)
         {
             var parent = _sceneManager.CurrentScene;
-            ICurve curve = new IntersectionCurve(parameters.p, parameters.q, parameters.parameterList);
+            IntersectionCurve curve = new IntersectionCurve(parameters.p, parameters.q, parameters.parameterList);
 
             var generator = new BezierGeneratorGeometry(curve);
             var childCollection = new WpfObservableRangeCollection<INode>();
-            var node = new IntersectionCurveGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, NameGenerator.GenerateName(parent, DefaultNodeNames.IntersectionCurve));
+            var node = new IntersectionCurveGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, curve, new Algebra.IntersectionData(parameters.p, parameters.q), NameGenerator.GenerateName(parent, DefaultNodeNames.IntersectionCurve));
             node.ObjectType = ObjectType.IntersectionCurve;
 
             parent.AttachChild(node);
@@ -262,12 +262,7 @@ namespace avoCADo
 
         private IRenderer CreateParametricObjectRenderer(IMeshGenerator generator)
         {
-            return new ParametricObjectRenderer(_shaderProvider.SurfaceShaderBezier,
-                                                _shaderProvider.SurfaceShaderDeBoor,
-                                                _shaderProvider.SurfaceShaderGregory,
-                                                _shaderProvider.CurveShader,
-                                                _shaderProvider.DefaultShader,
-                                                generator);
+            return new ParametricObjectRenderer(_shaderProvider, generator);
         }
 
         private INode GetDefaultParent()

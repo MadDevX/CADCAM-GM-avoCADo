@@ -11,7 +11,7 @@ namespace avoCADo
     {
         public void Dispose() { }
         public IMeshGenerator GetGenerator() => null;
-        public void Render(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix) { }
+        public void Render(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix) { }
 
         public void SetNode(INode node) { }
     }

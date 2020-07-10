@@ -34,9 +34,6 @@ namespace avoCADo
                 ControlPoints.Add(p.GetVertex(pos.X, pos.Y));
                 _parameters.Add(pos);
             }
-
-            _p.BoundingCurves.Add(this);
-            _q.BoundingCurves.Add(this);
         }
 
         public IList<Vector2> GetParameterList(ISurface surf)
@@ -44,12 +41,6 @@ namespace avoCADo
             if (surf == _p) return _parameters.Select(x => x.Xy).ToList();
             if (surf == _q) return _parameters.Select(x => x.Zw).ToList();
             throw new InvalidOperationException("Provided surface is not described by this intersection curve");
-        }
-
-        public void Dispose()
-        {
-            _p.BoundingCurves.Remove(this);
-            _q.BoundingCurves.Remove(this);
         }
     }
 }

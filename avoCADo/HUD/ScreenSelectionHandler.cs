@@ -34,7 +34,7 @@ namespace avoCADo
         }
 
         private readonly GLControl _control;
-        private readonly Camera _camera;
+        private readonly ICamera _camera;
         private readonly SceneManager _sceneManager;
         private readonly IInstructionBuffer _instructionBuffer;
         private readonly ISelectionManager _selectionManager;
@@ -44,7 +44,7 @@ namespace avoCADo
         /// </summary>
         private IList<INode> _singularSelectionBuffer = new List<INode>(1);
 
-        public ScreenSelectionHandler(GLControl control, Camera camera, SceneManager sceneManager, IInstructionBuffer instructionBuffer)
+        public ScreenSelectionHandler(GLControl control, ICamera camera, SceneManager sceneManager, IInstructionBuffer instructionBuffer)
         {
             _control = control;
             _camera = camera;
@@ -262,7 +262,7 @@ namespace avoCADo
             return rect.Contains(pixelCoords);
         }
 
-        private float CheckDistanceFromScreenCoords(Camera camera, Vector3 mousePosition, INode node)
+        private float CheckDistanceFromScreenCoords(ICamera camera, Vector3 mousePosition, INode node)
         {
             var screenSpace = node.Transform.ScreenCoords(camera);
             Vector2 diff = new Vector2(mousePosition.X - screenSpace.X, mousePosition.Y - screenSpace.Y);

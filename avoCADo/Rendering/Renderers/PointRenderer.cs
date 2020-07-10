@@ -24,7 +24,7 @@ namespace avoCADo
 
         public override IMeshGenerator GetGenerator() => null;
 
-        protected override void Draw(Camera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             if (_node.IsSelected)
             {

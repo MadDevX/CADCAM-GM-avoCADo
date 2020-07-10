@@ -37,7 +37,7 @@ namespace avoCADo
         public override Vector3 Position { get => _averageChildWorldPosition; set => base.Position = value; }
         public override Vector3 WorldPosition { get => _averageChildWorldPosition; set => base.WorldPosition = value; }
 
-        public override Vector2 ScreenCoords(Camera camera)
+        public override Vector2 ScreenCoords(ICamera camera)
         {
             if(Node.GroupNodeType != GroupNodeType.None)
             {

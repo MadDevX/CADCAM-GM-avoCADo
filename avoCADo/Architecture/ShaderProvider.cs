@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class ShaderProvider : IDisposable
+    public class ShaderProvider : IDisposable, IShaderProvider
     {
-        public readonly BufferShaderWrapper BufferShader;
-        public readonly ShaderWrapper DefaultShader;
-        public readonly ShaderWrapper CurveShader;
-        public readonly TesselationShaderWrapper SurfaceShaderBezier;
-        public readonly TesselationShaderWrapper SurfaceShaderDeBoor;
-        public readonly TesselationShaderWrapper SurfaceShaderGregory;
-        public readonly SimpleShaderWrapper OverlayShader;
+        public BufferShaderWrapper BufferShader { get; }
+        public ShaderWrapper DefaultShader { get; }
+        public ShaderWrapper CurveShader { get; }
+        public TesselationShaderWrapper SurfaceShaderBezier { get; }
+        public TesselationShaderWrapper SurfaceShaderDeBoor { get; }
+        public TesselationShaderWrapper SurfaceShaderGregory { get; }
+        public SimpleShaderWrapper OverlayShader { get; }
 
         public ShaderProvider()
         {
@@ -27,7 +27,7 @@ namespace avoCADo
             OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath), nameof(OverlayShader));
         }
 
-        public void UpdateShadersCameraMatrices(Camera camera)
+        public void UpdateShadersCameraMatrices(ICamera camera)
         {
             DefaultShader.Shader.Use();
             camera.SetCameraMatrices(DefaultShader);

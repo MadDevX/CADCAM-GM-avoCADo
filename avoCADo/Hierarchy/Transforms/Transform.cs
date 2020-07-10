@@ -146,7 +146,7 @@ namespace avoCADo
             }
         }
 
-        public Vector2 ScreenCoords(Camera camera)
+        public Vector2 ScreenCoords(ICamera camera)
         {
             return Coordinates.ScreenCoords(camera, WorldPosition);
         }
