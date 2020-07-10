@@ -119,6 +119,13 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand ShowParametricExplorer = new RoutedUICommand
+            (
+                "Show Parametric Explorer",
+                "ShowParametricExplorer",
+                typeof(CommandDefinitions)
+            );
+
         public static readonly RoutedUICommand DeleteNode = new RoutedUICommand
             (
                 "Delete",

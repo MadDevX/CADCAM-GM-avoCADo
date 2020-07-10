@@ -28,6 +28,7 @@ namespace avoCADo
         public void Init()
         {
             _control.SizeChanged += SetViewport;
+            _control.MakeCurrent();
             GL.Viewport(_control.Size);
         }
 
@@ -38,8 +39,16 @@ namespace avoCADo
 
         private void SetViewport(object sender, EventArgs e)
         {
+            _control.MakeCurrent();
             GL.Viewport(_control.Size);
             OnViewportChanged?.Invoke(_control.Size);
+        }
+
+        public void SetCustomViewport(Point leftUpperCorner, Size size)
+        {
+            _control.MakeCurrent();
+            GL.Viewport(leftUpperCorner, size);
+            OnViewportChanged?.Invoke(size);
         }
     }
 }

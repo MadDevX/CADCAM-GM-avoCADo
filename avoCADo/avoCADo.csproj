@@ -99,6 +99,7 @@
     <Compile Include="Algebra\SurfaceConditions.cs" />
     <Compile Include="Camera\DummyCamera.cs" />
     <Compile Include="Camera\ICamera.cs" />
+    <Compile Include="Hierarchy\Nodes\DummyNode.cs" />
     <Compile Include="Interfaces\IShaderProvider.cs" />
     <Compile Include="Architecture\PointNodePool.cs" />
     <Compile Include="ControlPointManagers\CPStartingPositionUtility.cs" />

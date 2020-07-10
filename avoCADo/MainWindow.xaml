@@ -29,6 +29,8 @@
         <CommandBinding Command="local:CommandDefinitions.FillHole" CanExecute="FillHoleCmd_CanExecute" Executed="FillHoleCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.FindIntersection" CanExecute="FindIntersectionCmd_CanExecute" Executed="FindIntersectionCmd_Executed"/>
         
+        <CommandBinding Command="local:CommandDefinitions.ShowParametricExplorer" CanExecute="ShowParametricExplorerCmd_CanExecute" Executed="ShowParametricExplorerCmd_Executed"/>
+        
         <CommandBinding Command="local:UtilityCommandDefinitions.LocalMode" CanExecute="LocalCursorMode_CanExecute" Executed="LocalMode_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.CursorMode" CanExecute="LocalCursorMode_CanExecute" Executed="CursorMode_Executed"/>
         <CommandBinding Command="local:UtilityCommandDefinitions.SnapNone" CanExecute="SnapMode_CanExecute" Executed="SnapNone_Executed"/>
@@ -59,6 +61,7 @@
                 <MenuItem Command="local:CommandDefinitions.MergePoints"/>
                 <MenuItem Command="local:CommandDefinitions.FillHole"/>
                 <MenuItem Command="local:CommandDefinitions.FindIntersection"/>
+                <MenuItem Command="local:CommandDefinitions.ShowParametricExplorer"/>
             </MenuItem>
             <MenuItem Header="Utility">
                 <MenuItem x:Name="menuItemEnableViewPlaneTranslate" Command="local:UtilityCommandDefinitions.EnableViewPlaneTranslate" IsCheckable="True"/>

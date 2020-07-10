@@ -9,11 +9,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <WindowsFormsHost x:Name="hostP" Grid.Column="0"/>
-        <WindowsFormsHost x:Name="hostQ" Grid.Column="2"/>
+        <WindowsFormsHost x:Name="host" Grid.Column="0"/>
 
     </Grid>
 </Window>

@@ -319,6 +319,22 @@ namespace avoCADo
                 new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), 0.1f));
         }
 
+        private void ShowParametricExplorerCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            e.CanExecute = selected.Count == 2 && SurfacesSelected();
+        }
+
+        private void ShowParametricExplorerCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selected = NodeSelection.Manager.SelectedNodes;
+            _renderLoop.Paused = true;
+            var window = new ParametricSpaceExplorer();
+            window.Owner = this;
+            window.Show(selected.ElementAt(0), selected.ElementAt(1));
+            _renderLoop.Paused = false;
+        }
+
         #endregion
 
         #region Helper Methods

@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics;
+﻿using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace avoCADo
 
         private int _samples = 8;
 
-        public FramebufferManager(int bufferCount, ViewportManager viewportManager, BackgroundManager backgroundManager)
+        public FramebufferManager(int bufferCount, ViewportManager viewportManager, BackgroundManager backgroundManager, GLControl gLControl)
         {
             _viewportManager = viewportManager;
             _backgroundManager = backgroundManager;
@@ -31,14 +32,15 @@ namespace avoCADo
             _FBOs = new int[_bufferCount];
             _textures = new int[_bufferCount];
             _RBOs = new int[_bufferCount];
-            InitializeFramebuffers();
+            InitializeFramebuffers(gLControl);
             SetTextureUnits();
 
             _viewportManager.OnViewportChanged += UpdateTextureSize;
         }
 
-        private void InitializeFramebuffers()
+        private void InitializeFramebuffers(GLControl gLControl)
         {
+            gLControl.MakeCurrent();
             GL.Enable(EnableCap.Multisample);
             GL.CreateFramebuffers(_bufferCount, _FBOs);
             GL.CreateTextures(TextureTarget.Texture2DMultisample, _bufferCount, _textures);

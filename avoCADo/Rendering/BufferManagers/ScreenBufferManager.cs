@@ -10,9 +10,15 @@ namespace avoCADo
     {
         private BackgroundManager _backgroundManager;
 
-        public ScreenBufferManager(BackgroundManager backgroundManager)
+        public ScreenBufferManager(BackgroundManager backgroundManager, GLControl control)
         {
             _backgroundManager = backgroundManager;
+            SetupContext(control);
+        }
+
+        private void SetupContext(GLControl control)
+        {
+            control.MakeCurrent();
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
             GL.Enable(EnableCap.Blend);

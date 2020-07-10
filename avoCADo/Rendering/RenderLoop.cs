@@ -11,6 +11,16 @@ namespace avoCADo
     public class RenderLoop : IDisposable, IRenderLoop
     {
         public event Action OnRenderLoop;
+        private bool _paused = false;
+        public bool Paused 
+        {
+            get => _paused;
+            set
+            {
+                _paused = value;
+                if (value == true) _glControl.Context.MakeCurrent(null);
+            }
+        }
 
         private GLControl _glControl;
         private ScreenBufferManager _screenBufferManager;
@@ -45,6 +55,7 @@ namespace avoCADo
 
         private void GLControlOnPaint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
+            if (Paused) return;
             #region Timer
             //_stopwatch.Start();
             #endregion

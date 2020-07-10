@@ -66,9 +66,9 @@ namespace avoCADo
             _instructionBuffer = new InstructionBuffer();
 
             _backgroundManager = new BackgroundManager(backgroundColorStandard);
-            _screenBufferManager = new ScreenBufferManager(_backgroundManager);
+            _screenBufferManager = new ScreenBufferManager(_backgroundManager, _control);
             _viewportManager = new ViewportManager(_control);
-            _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager);
+            _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager, _control);
 
             _shaderProvider = new ShaderProvider();
             _nodeImporter = new NodeImporter();
@@ -109,9 +109,9 @@ namespace avoCADo
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
 
-            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _instructionBuffer);
+            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTest.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTest2.xml");
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
         }
 

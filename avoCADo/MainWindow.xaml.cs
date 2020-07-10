@@ -37,6 +37,7 @@ namespace avoCADo
         private NodeExporter _nodeExporter;
         private TransformationsManager _transformationsManager;
         private SceneManager _sceneManager;
+        private RenderLoop _renderLoop;
         private IInstructionBuffer _instructionBuffer;
 
         private GLControl _glControl;
@@ -61,6 +62,7 @@ namespace avoCADo
                                NodeImporter nodeImporter,
                                NodeExporter nodeExporter,
                                SceneManager sceneManager,
+                               RenderLoop renderLoop,
                                IInstructionBuffer instructionBuffer)
         {
             _nodeFactory = nodeFactory;
@@ -68,6 +70,7 @@ namespace avoCADo
             _nodeImporter = nodeImporter;
             _nodeExporter = nodeExporter;
             _sceneManager = sceneManager;
+            _renderLoop = renderLoop;
             _instructionBuffer = instructionBuffer;
         }
 
