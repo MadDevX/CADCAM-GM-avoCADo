@@ -111,7 +111,7 @@ namespace avoCADo
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTest2.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTestLooped.xml");
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
         }
 

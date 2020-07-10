@@ -8,9 +8,16 @@
         Title="ParametricSpaceExplorer" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
-        <WindowsFormsHost x:Name="host" Grid.Column="0"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <WindowsFormsHost x:Name="host" Grid.Column="1" Grid.Row="1"/>
 
     </Grid>
 </Window>
