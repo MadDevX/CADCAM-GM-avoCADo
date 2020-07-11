@@ -28,7 +28,7 @@ namespace avoCADo
     {
         class DualGLContext : IDisposable
         {
-            private const int _viewportMargin = 5;
+            private const int _viewportMargin = 15;
 
             public BackgroundManager BackgroundManager { get; }
             public ShaderProvider ShaderProvider { get; }
@@ -117,16 +117,24 @@ namespace avoCADo
             var qGen = (qNode.Renderer.GetGenerator() as ISurfaceGenerator);
             if (pGen == null || qGen == null) throw new InvalidOperationException("Provided nodes do not represent valid surfaces");
             Initialize(pGen.Surface, qGen.Surface);
-            SetLabels(pNode, qNode);
+            SetLabels(pNode, qNode, pGen.Surface, qGen.Surface);
 
             CompositionTarget.Rendering += OnTick;
             base.ShowDialog();
         }
 
-        private void SetLabels(INode pNode, INode qNode)
+        private void SetLabels(INode pNode, INode qNode, ISurface p, ISurface q)
         {
             pLabel.Text = $"P surface [ {pNode.Name} ]";
             qLabel.Text = $"Q surface [ {qNode.Name} ]";
+            pUMinVal.Text = $"U={p.ParameterURange.X}";
+            pUMaxVal.Text = $"U={p.ParameterURange.Y}";
+            pVMinVal.Text = $"V={p.ParameterVRange.X}";
+            pVMaxVal.Text = $"V={p.ParameterVRange.Y}";
+            qUMinVal.Text = $"U={q.ParameterURange.X}";
+            qUMaxVal.Text = $"U={q.ParameterURange.Y}";
+            qVMinVal.Text = $"V={q.ParameterVRange.X}";
+            qVMaxVal.Text = $"V={q.ParameterVRange.Y}";
         }
 
         private void Initialize(ISurface p, ISurface q)

@@ -8,19 +8,35 @@
         Title="ParametricSpaceExplorer" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <WindowsFormsHost x:Name="host" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"/>
-        <TextBlock x:Name="pLabel" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" Text="P surface" TextAlignment="Center"/>
-        <TextBlock x:Name="qLabel" HorizontalAlignment="Stretch" Grid.Column="2" Grid.Row="2" Text="Q surface" TextAlignment="Center"/>
+        <WindowsFormsHost x:Name="host" Grid.Column="1" Grid.ColumnSpan="7" Grid.RowSpan="3" Grid.Row="1"/>
+        <TextBlock x:Name="pLabel" HorizontalAlignment="Stretch" Grid.Column="2" Grid.Row="4" Text="P surface" TextAlignment="Center"/>
+        <TextBlock x:Name="qLabel" HorizontalAlignment="Stretch" Grid.Column="6" Grid.Row="4" Text="Q surface" TextAlignment="Center"/>
+        <TextBlock x:Name="pUMaxVal" Text="U" Grid.Column="3" Grid.Row="4" TextAlignment="Center"/>
+        <TextBlock x:Name="pVMaxVal" Text="V" Grid.Column="0" Grid.Row="1" TextAlignment="Center"/>
+        <TextBlock x:Name="qUMaxVal" Text="U" Grid.Column="7" Grid.Row="4" TextAlignment="Center"/>
+        <TextBlock x:Name="qVMaxVal" Text="V" Grid.Column="8" Grid.Row="1" TextAlignment="Center"/>
+        
+        <TextBlock x:Name="pUMinVal" Text="U" Grid.Column="1" Grid.Row="4" TextAlignment="Center"/>
+        <TextBlock x:Name="pVMinVal" Text="V" Grid.Column="0" Grid.Row="3" TextAlignment="Center"/>
+        <TextBlock x:Name="qUMinVal" Text="U" Grid.Column="5" Grid.Row="4" TextAlignment="Center"/>
+        <TextBlock x:Name="qVMinVal" Text="V" Grid.Column="8" Grid.Row="3" TextAlignment="Center"/>
 
     </Grid>
 </Window>
