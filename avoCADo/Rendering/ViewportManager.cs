@@ -19,6 +19,8 @@ namespace avoCADo
         public int Width => _control.Width;
         public int Height => _control.Height;
 
+        public Point ViewportLeftUpper { get; private set; }
+        public Size ViewportSize { get; private set; }
         public ViewportManager(GLControl control)
         {
             _control = control;
@@ -40,6 +42,8 @@ namespace avoCADo
         private void SetViewport(object sender, EventArgs e)
         {
             _control.MakeCurrent();
+            ViewportLeftUpper = Point.Empty;
+            ViewportSize = _control.Size;
             GL.Viewport(_control.Size);
             OnViewportChanged?.Invoke(_control.Size);
         }
@@ -47,6 +51,8 @@ namespace avoCADo
         public void SetCustomViewport(Point leftUpperCorner, Size size)
         {
             _control.MakeCurrent();
+            ViewportLeftUpper = leftUpperCorner;
+            ViewportSize = size;
             GL.Viewport(leftUpperCorner, size);
             OnViewportChanged?.Invoke(size);
         }

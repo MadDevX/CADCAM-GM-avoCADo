@@ -28,17 +28,21 @@ namespace avoCADo
     {
         class DualGLContext : IDisposable
         {
+            private const int _viewportMargin = 5;
+
+            public BackgroundManager BackgroundManager { get; }
             public ShaderProvider ShaderProvider { get; }
             public GLControl Control { get; }
             public ViewportManager ViewportManager { get; }
             public ScreenBufferManager ScreenBufferManager { get; }
 
-            public DualGLContext(WindowsFormsHost host, BackgroundManager bgManager)
+            public DualGLContext(WindowsFormsHost host)
             {
                 Control = CreateGLControl(host);
+                BackgroundManager = new BackgroundManager(Color4.Black);
                 ShaderProvider = new ShaderProvider();
                 ViewportManager = new ViewportManager(Control);
-                ScreenBufferManager = new ScreenBufferManager(bgManager, Control);
+                ScreenBufferManager = new ScreenBufferManager(ViewportManager, BackgroundManager, Control);
             }
 
             public void MakeCurrent(bool left)
@@ -46,8 +50,8 @@ namespace avoCADo
                 Control.MakeCurrent();
                 System.Drawing.Point pt;
                 if (left) pt = System.Drawing.Point.Empty;
-                else pt = new System.Drawing.Point(Control.Size.Width / 2, 0);
-                ViewportManager.SetCustomViewport(pt, new System.Drawing.Size(Control.Size.Width / 2, Control.Size.Height));
+                else pt = new System.Drawing.Point(Control.Size.Width / 2 + _viewportMargin, 0);
+                ViewportManager.SetCustomViewport(pt, new System.Drawing.Size(Control.Size.Width / 2 - _viewportMargin, Control.Size.Height));
             }
 
             private GLControl CreateGLControl(WindowsFormsHost host)
@@ -79,21 +83,17 @@ namespace avoCADo
         private DummyCamera _cam = new DummyCamera();
         private DummyNode _node = new DummyNode();
 
-        private BackgroundManager _backgroundManager;
-
         public ParametricSpaceExplorer()
         {
             InitializeComponent();
 
-            _backgroundManager = new BackgroundManager(Color4.Black);
-
-            _glContext = new DualGLContext(host, _backgroundManager);
-            _glContext.Control.Paint += Control_PaintP;
+            _glContext = new DualGLContext(host);
+            _glContext.Control.Paint += Control_Paint;
 
             this.Closed += DisposeResources;
         }
 
-        private void Control_PaintP(object sender, PaintEventArgs e) => Render();
+        private void Control_Paint(object sender, PaintEventArgs e) => Render();
 
         private void OnTick(object sender, EventArgs e)
         {
@@ -105,7 +105,7 @@ namespace avoCADo
             this.Closed -= DisposeResources;
             CompositionTarget.Rendering -= OnTick;
 
-            _glContext.Control.Paint -= Control_PaintP;
+            _glContext.Control.Paint -= Control_Paint;
             _rendP.Dispose();
             _rendQ.Dispose();
             _glContext.Dispose();
@@ -117,9 +117,16 @@ namespace avoCADo
             var qGen = (qNode.Renderer.GetGenerator() as ISurfaceGenerator);
             if (pGen == null || qGen == null) throw new InvalidOperationException("Provided nodes do not represent valid surfaces");
             Initialize(pGen.Surface, qGen.Surface);
+            SetLabels(pNode, qNode);
 
             CompositionTarget.Rendering += OnTick;
             base.ShowDialog();
+        }
+
+        private void SetLabels(INode pNode, INode qNode)
+        {
+            pLabel.Text = $"P surface [ {pNode.Name} ]";
+            qLabel.Text = $"Q surface [ {qNode.Name} ]";
         }
 
         private void Initialize(ISurface p, ISurface q)
@@ -158,12 +165,32 @@ namespace avoCADo
             gen.DrawCallShaderType = DrawCallShaderType.Default;
         }
 
+        private void Render()
+        {
+            _glContext.BackgroundManager.BackgroundColor = Color4.White;
+            _glContext.ScreenBufferManager.ResetScreenBuffer();
+            _glContext.BackgroundManager.BackgroundColor = Color4.Black;
+            Render(_glContext, _rendP, true);
+            Render(_glContext, _rendQ, false);
+            _glContext.Control.SwapBuffers();
+        }
+
+        private void Render(DualGLContext context, ParametricObjectRenderer rend, bool left)
+        {
+            context.MakeCurrent(left);
+            context.ScreenBufferManager.ResetScreenBuffer(true);
+            context.ShaderProvider.UpdateShadersCameraMatrices(_cam);
+            rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+        }
+
+        #region Looping corrections
+
         private IList<uint> CorrectLooping(IList<Vector3> vects)
         {
             var alts = new Vector3[8];
             var alts2 = new Vector3[8];
 
-            for(int i = vects.Count - 2; i >= 0; i--)
+            for (int i = vects.Count - 2; i >= 0; i--)
             {
                 var pos = vects[i];
                 var pos2 = vects[i + 1];
@@ -173,7 +200,7 @@ namespace avoCADo
 
                 var minDist = len;
                 var minIdx = -1;
-                for(int j = 0; j < 8; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     var altDist = (pos - alts2[j]).Length;
                     if (altDist < minDist)
@@ -184,7 +211,7 @@ namespace avoCADo
                 }
 
                 //found better alternative
-                if(minIdx != -1)
+                if (minIdx != -1)
                 {
                     vects.Insert(i + 1, alts2[minIdx]); //first half of "corrected" edge (normal Pos to corrected Pos2)
                     vects.Insert(i + 2, alts[minIdx]); //second half of "corrected" edge (corrected Pos to normal Pos2)
@@ -206,14 +233,14 @@ namespace avoCADo
 
         private void RemoveOffNDCLines(IList<Vector3> vertices, List<uint> indices)
         {
-            for(int i = indices.Count -2; i >=0; i-=2)
+            for (int i = indices.Count - 2; i >= 0; i -= 2)
             {
                 var maxA = MaxAbsXYCoord(vertices[(int)indices[i]]);
-                var maxB = MaxAbsXYCoord(vertices[(int)indices[i+1]]);
+                var maxB = MaxAbsXYCoord(vertices[(int)indices[i + 1]]);
 
-                if(maxA > 1.0f && maxB > 1.0f)
+                if (maxA > 1.0f && maxB > 1.0f)
                 {
-                    indices.RemoveAt(i+1);
+                    indices.RemoveAt(i + 1);
                     indices.RemoveAt(i);
                 }
             }
@@ -236,20 +263,6 @@ namespace avoCADo
         {
             return Math.Max(Math.Abs(pos.X), Math.Abs(pos.Y));
         }
-
-        private void Render()
-        {
-            _glContext.ScreenBufferManager.ResetScreenBuffer();
-            Render(_glContext, _rendP, true);
-            Render(_glContext, _rendQ, false);
-            _glContext.Control.SwapBuffers();
-        }
-
-        private void Render(DualGLContext context, ParametricObjectRenderer rend, bool left)
-        {
-            context.MakeCurrent(left);
-            context.ShaderProvider.UpdateShadersCameraMatrices(_cam);
-            rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
-        }
+        #endregion
     }
 }

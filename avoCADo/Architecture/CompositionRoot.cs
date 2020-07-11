@@ -66,8 +66,8 @@ namespace avoCADo
             _instructionBuffer = new InstructionBuffer();
 
             _backgroundManager = new BackgroundManager(backgroundColorStandard);
-            _screenBufferManager = new ScreenBufferManager(_backgroundManager, _control);
             _viewportManager = new ViewportManager(_control);
+            _screenBufferManager = new ScreenBufferManager(_viewportManager, _backgroundManager, _control);
             _framebufferManager = new FramebufferManager(2, _viewportManager, _backgroundManager, _control);
 
             _shaderProvider = new ShaderProvider();

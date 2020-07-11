@@ -8,16 +8,19 @@
         Title="ParametricSpaceExplorer" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <WindowsFormsHost x:Name="host" Grid.Column="1" Grid.Row="1"/>
+        <WindowsFormsHost x:Name="host" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <TextBlock x:Name="pLabel" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" Text="P surface" TextAlignment="Center"/>
+        <TextBlock x:Name="qLabel" HorizontalAlignment="Stretch" Grid.Column="2" Grid.Row="2" Text="Q surface" TextAlignment="Center"/>
 
     </Grid>
 </Window>
