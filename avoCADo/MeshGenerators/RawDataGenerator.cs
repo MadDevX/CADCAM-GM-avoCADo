@@ -52,5 +52,18 @@ namespace avoCADo
             for (int i = 0; i < _indices.Length; i++) _indices[i] = (uint)((i+1) / 2);
             OnParametersChanged?.Invoke();
         }
+
+        public void SetData(IList<Vector3> vertices, IList<uint> indices)
+        {
+            Array.Resize(ref _vertices, vertices.Count * 3);
+            Array.Resize(ref _indices, indices.Count);
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                VBOUtility.SetVertex(_vertices, vertices[i], i);
+            }
+            for (int i = 0; i < _indices.Length; i++) _indices[i] = indices[i];
+            OnParametersChanged?.Invoke();
+        }
     }
 }
