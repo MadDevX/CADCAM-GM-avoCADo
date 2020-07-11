@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.ParametricObjects;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace avoCADo.Algebra
         {
             var pointList = new List<Vector4>();
             pointList.Add(startingPoint);
-            while (ContinueIntersectionTracing(data, startingPoint, pointList.Last(), knotDistance))
+            while (ContinueIntersectionTracing(data, startingPoint, pointList, knotDistance))
             {
                 var point = CalculateNextPoint(data, pointList.Last(), knotDistance, epsilon);
                 if (SurfaceConditions.ParametersInBounds(data, point))
@@ -34,7 +35,7 @@ namespace avoCADo.Algebra
                 var pointList2 = new List<Vector4>();
                 pointList2.Add(startingPoint.Zwxy);
 
-                while (ContinueIntersectionTracing(data2, startingPoint, pointList2.Last(), knotDistance))
+                while (ContinueIntersectionTracing(data2, startingPoint, pointList2, knotDistance))
                 {
                     var point = CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon);
                     if (SurfaceConditions.ParametersInBounds(data2, point))
@@ -59,9 +60,29 @@ namespace avoCADo.Algebra
             return pointList;
         }
 
-        private static bool ContinueIntersectionTracing(IntersectionData data, Vector4 startingPoint, Vector4 lastPoint, float knotDistance)
+        private static bool ContinueIntersectionTracing(IntersectionData data, Vector4 startingPoint, IList<Vector4> pointList, float knotDistance)
         {
-            return SurfaceConditions.ParametersInBounds(data, lastPoint);
+            if(pointList.Count > 2)
+            {
+                var looped = IsLooped(data, startingPoint, pointList[1], pointList.Last(), knotDistance);
+                if(looped)
+                {
+                    pointList.RemoveAt(pointList.Count - 1);
+                    pointList.Add(startingPoint);
+                    return false;
+                }
+            }
+
+            return SurfaceConditions.ParametersInBounds(data, pointList.Last());
+        }
+
+        private static bool IsLooped(IntersectionData data, Vector4 startingPoint, Vector4 secondPoint, Vector4 currentPoint, float knotDistance)
+        {
+            var stepFirst = StepDistance(data, currentPoint, startingPoint, knotDistance);
+            var stepSecond = StepDistance(data, currentPoint, secondPoint, knotDistance);
+            var distCur = (currentPoint - startingPoint).Length;
+            var distSec = (secondPoint - startingPoint).Length;
+            return (stepFirst >= -knotDistance && stepFirst <= 0.0f && stepSecond <= -knotDistance && distCur <= distSec);
         }
 
         private static Vector4 CalculateNextPoint(IntersectionData data, Vector4 x0, float knotDistance, float epsilon)
@@ -75,6 +96,7 @@ namespace avoCADo.Algebra
             {
                 xPrev = xCur;
                 xCur = NewtonIteration(data, xCur, x0, knotDistance);
+                xCur = ParameterHelper.CorrectUVST(data.p, data.q, xCur);
                 i++;
             }
 

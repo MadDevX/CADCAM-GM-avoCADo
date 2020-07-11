@@ -259,11 +259,25 @@ namespace avoCADo
 
             var gen = (Node.Renderer.GetGenerator() as BezierGeneratorGeometry);
             var cps = gen.Curve.ControlPoints;
+            var uvst = (gen.Curve as IntersectionCurve).Parameters;
 
-            var nodes = new List<INode>(nodeFactory.CreatePointsBatch(cps.Count));
-            for(int i = 0; i < cps.Count; i++)
+            //Check looping
+            int pointCount;
+            var looped = uvst.Count > 1 && uvst.First() == uvst.Last();
+            if (looped) pointCount = cps.Count - 1;
+            else pointCount = cps.Count;
+
+            //Create points
+            var nodes = new List<INode>(nodeFactory.CreatePointsBatch(pointCount));
+            for(int i = 0; i < pointCount; i++)
             {
                 nodes[i].Transform.WorldPosition = cps[i];
+            }
+
+            //Loop last point if necessary
+            if(looped)
+            {
+                nodes.Add(nodes[0]);
             }
 
             _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(

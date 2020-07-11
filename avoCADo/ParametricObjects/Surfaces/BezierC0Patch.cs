@@ -18,8 +18,8 @@ namespace avoCADo
         public int USegments => (ControlPoints.Width + 1) / 3;
         public int VSegments => (ControlPoints.Height + 1) / 3;
 
-        public bool ULoop => false; //possibly changeable
-        public bool VLoop => false;
+        public bool ULoop => ControlPoints.DataWidth != ControlPoints.Width; //possibly changeable
+        public bool VLoop => ControlPoints.DataHeight != ControlPoints.Height;
         public IList<IntersectionCurveData> BoundingCurves { get; } = new List<IntersectionCurveData>();
 
         public CoordList<INode> ControlPoints { get; } = new CoordList<INode>();

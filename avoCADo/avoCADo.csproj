@@ -142,6 +142,7 @@
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />
+    <Compile Include="ParametricObjects\ParameterHelper.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
     <Compile Include="ParametricSpaceExplorer.xaml.cs">
       <DependentUpon>ParametricSpaceExplorer.xaml</DependentUpon>
