@@ -11,7 +11,7 @@ namespace avoCADo.Algebra
     {
         private const float _epsilon = 0.0001f;
         private const float _domainSamplingMult = 0.1f;
-        private const float _discardLength = 0.1f;
+        private const float _discardLength = 0.3f;
 
         public static IList<Vector4> FindIntersection(IntersectionData data, float knotDistance)
         {

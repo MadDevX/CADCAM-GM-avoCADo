@@ -10,7 +10,8 @@ namespace avoCADo
 {
     public class TorusGenerator : IMeshGenerator, ISurfaceGenerator
     {
-        public ISurface Surface { get; }
+        private TorusSurface _surface;
+        public ISurface Surface => _surface;
         public event Action OnParametersChanged;
 
         public IList<DrawCall> DrawCalls => new List<DrawCall>{new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.LINE_SIZE)};
@@ -43,11 +44,11 @@ namespace avoCADo
 
         private static int _maxDivisions = 100;
 
-        public TorusGenerator(int xDivisions, int yDivisions, ISurface surface)
+        public TorusGenerator(int xDivisions, int yDivisions, TorusSurface surface)
         {
             _xDivisions = xDivisions;
             _yDivisions = yDivisions;
-            Surface = surface;
+            _surface = surface;
             Surface.ParametersChanged += UpdateData;
             GenerateData();
         }
@@ -95,7 +96,7 @@ namespace avoCADo
                 for (int x = 0; x < _xDivisions; x++)
                 {
                     var alpha = (((float)x / _xDivisions) * (uParamRange.Y - uParamRange.X)) + uParamRange.X;
-                    var vertex = Surface.GetVertex(alpha, beta);
+                    var vertex = _surface.GetVertexLocalSpace(alpha, beta);
                     VBOUtility.SetVertex(_vertices, vertex, (x + y * _xDivisions));
                 }
             }

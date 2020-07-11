@@ -10,7 +10,7 @@ namespace avoCADo
     public class TorusSurface : ISurface
     {
         public event Action ParametersChanged;
-
+        private ITransform _transform;
         private float _mainR;
         private float _tubeR;
 
@@ -50,58 +50,87 @@ namespace avoCADo
             TubeRadius = tubeRadius;
         }
 
+        public void Initialize(ITransform transform)
+        {
+            _transform = transform;
+        }
+
+        public Vector3 GetVertexLocalSpace(float u, float v)
+        {
+            return new Vector3(
+               (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
+               (float)(TubeRadius * Math.Sin(v)),
+               (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
+           );
+        }
+
         public Vector3 GetVertex(float u, float v)
         {
-                return new Vector3(
+            var vect = new Vector3(
                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
                    (float)(TubeRadius * Math.Sin(v)),
                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
                );
+            return TransformCoord(vect, true);
+        }
+
+        private Vector3 TransformCoord(Vector3 vect, bool translate)
+        {
+            var uni = translate ? 1.0f : 0.0f;
+            var vect4 = new Vector4(vect, uni);
+            var mat = _transform.LocalModelMatrix;
+            var res = vect4 * mat; //TODO: handle nested objects
+            return res.Xyz;
         }
 
         public Vector3 DerivU(float u, float v)
         {
-            return new Vector3(
+            var vect = new Vector3(
                     (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u)),
                     0.0f,
                     (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u))
                 );
+            return TransformCoord(vect, false);
         }
 
         public Vector3 DerivUU(float u, float v)
         {
-            return new Vector3(
+            var vect = new Vector3(
                     (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
                     0.0f,
                     (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
                 );
+            return TransformCoord(vect, false);
         }
 
         public Vector3 DerivV(float u, float v)
         {
-            return new Vector3(
+            var vect = new Vector3(
                     (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u)),
                     (float)(TubeRadius * Math.Cos(v)),
                     (float)(-TubeRadius * Math.Sin(v) * Math.Sin(u))
                 );
+            return TransformCoord(vect, false);
         }
 
         public Vector3 DerivVV(float u, float v)
         {
-            return new Vector3(
+            var vect = new Vector3(
                     (float)(-TubeRadius * Math.Cos(v) * Math.Cos(u)),
                     (float)(-TubeRadius * Math.Sin(v)),
                     (float)(-TubeRadius * Math.Cos(v) * Math.Sin(u))
                 );
+            return TransformCoord(vect, false);
         }
 
         public Vector3 Twist(float u, float v)
         {
-            return new Vector3(
+            var vect = new Vector3(
                     (float)(TubeRadius * Math.Sin(v) * Math.Sin(u)),
                     0.0f,
                     (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u))
                 );
+            return TransformCoord(vect, false);
         }
 
         public Vector3 Normal(float u, float v)

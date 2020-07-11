@@ -11,7 +11,7 @@ namespace avoCADo.Algebra
     {
         public static Vector4 FindStartingPoint(IntersectionData data, Vector4 x0, float epsilon)
         {
-            int maxIterations = 20;
+            int maxIterations = 100;
 
             var x = x0;
             int i = 0;

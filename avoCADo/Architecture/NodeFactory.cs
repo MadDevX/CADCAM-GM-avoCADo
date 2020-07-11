@@ -125,8 +125,10 @@ namespace avoCADo
         public INode CreateTorus(INode parent)
         {
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
-            var generator = new TorusGenerator(30, 30, new TorusSurface(0.5f, 0.2f));
+            var surf = new TorusSurface(0.5f, 0.2f);
+            var generator = new TorusGenerator(30, 30, surf);
             var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator), NameGenerator.GenerateName(parent, DefaultNodeNames.Torus));
+            surf.Initialize(torusNode.Transform);
             torusNode.ObjectType = ObjectType.Torus;
 
             parent.AttachChild(torusNode);
