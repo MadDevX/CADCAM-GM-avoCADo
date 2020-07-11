@@ -49,8 +49,35 @@ namespace avoCADo.Algebra
 
         public static IList<Vector4> FindIntersection(IntersectionData data, Vector3 startingReferencePoint, float knotDistance)
         {
-            //TODO: find Vector4 of parameters closest to startingReferencePoint
-            throw new NotImplementedException();
+            var uv = FindClosestPoint(data.p, startingReferencePoint);
+            var st = FindClosestPoint(data.q, startingReferencePoint);
+
+            return FindIntersection(data, new Vector4(uv.X, uv.Y, st.X, st.Y), knotDistance);
+        }
+
+        private static Vector2 FindClosestPoint(ISurface p, Vector3 startingReferencePoint)
+        {
+            var pURng = p.ParameterURange;
+            var pVRng = p.ParameterVRange;
+            var uLen = pURng.Y - pURng.X;
+            var vLen = pVRng.Y - pVRng.X;
+            var minDist = float.MaxValue;
+            Vector2 minUV = new Vector2(pURng.X + uLen * 0.5f, pVRng.X + vLen * 0.5f);
+            for (var u = pURng.X; u <= pURng.Y; u += uLen * _domainSamplingMult)
+            {
+                for (var v = pVRng.X; v <= pVRng.Y; v += vLen * _domainSamplingMult)
+                {
+                    var uv = SimpleGradientClosestPoint.FindStartingPoint(p, new Vector2(u, v), startingReferencePoint, _epsilon); //FindClosestToP
+                    var pnt = p.GetVertex(uv.X, uv.Y);
+                    var dist = (pnt - startingReferencePoint).Length;
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        minUV = uv;
+                    }
+                }
+            }
+            return minUV;
         }
 
         public static IList<Vector4> FindIntersection(IntersectionData data, Vector4 startingParameters, float knotDistance)
