@@ -77,8 +77,8 @@ namespace avoCADo
 
         private DualGLContext _glContext;
 
-        private ParametricObjectRenderer _rendP;
-        private ParametricObjectRenderer _rendQ;
+        private List<ParametricObjectRenderer> _rendPList = new List<ParametricObjectRenderer>();
+        private List<ParametricObjectRenderer> _rendQList = new List<ParametricObjectRenderer>();
 
         private DummyCamera _cam = new DummyCamera();
         private DummyNode _node = new DummyNode();
@@ -106,8 +106,14 @@ namespace avoCADo
             CompositionTarget.Rendering -= OnTick;
 
             _glContext.Control.Paint -= Control_Paint;
-            _rendP.Dispose();
-            _rendQ.Dispose();
+            foreach (var rend in _rendPList)
+            {
+                rend.Dispose();
+            }
+            foreach (var rend in _rendQList)
+            {
+                rend.Dispose();
+            }
             _glContext.Dispose();
         }
 
@@ -139,23 +145,21 @@ namespace avoCADo
 
         private void Initialize(ISurface p, ISurface q)
         {
-            _rendP = new ParametricObjectRenderer(_glContext.ShaderProvider, new RawDataGenerator());
-            _node.Assign(_rendP);
-            SetupData(p, _rendP);
-
-            _rendQ = new ParametricObjectRenderer(_glContext.ShaderProvider, new RawDataGenerator());
-            _node.Assign(_rendQ);
-            SetupData(q, _rendQ);
+            SetupData(p, q, _rendPList);
+            SetupData(q, p, _rendQList);
         }
 
-        private void SetupData(ISurface surf, ParametricObjectRenderer rend)
+        private void SetupData(ISurface surf, ISurface second, List<ParametricObjectRenderer> rendList)
         {
-            var gen = rend.GetGenerator() as RawDataGenerator;
-            if (gen == null) throw new InvalidOperationException("MeshGenerator is not a RawDataGenerator");
-
             //TODO: handle more curves on surfaces
             foreach(var c in surf.BoundingCurves)
             {
+                if (second.BoundingCurves.Contains(c) == false) continue;
+                var gen = new RawDataGenerator();
+                var rend = new ParametricObjectRenderer(_glContext.ShaderProvider, gen);
+                _node.Assign(rend);
+                rendList.Add(rend);
+
                 var list = c.Curve.GetParameterList(surf);
                 var uRng = surf.ParameterURange;
                 var vRng = surf.ParameterVRange;
@@ -166,11 +170,11 @@ namespace avoCADo
                 ).ToList();
                 var indices = CorrectLooping(positions);
                 gen.SetData(positions, indices);
+                gen.Size = RenderConstants.CURVE_SIZE;
+                gen.SelectedColor = Color4.Red;
+                gen.DefaultColor = Color4.Red;
+                gen.DrawCallShaderType = DrawCallShaderType.Default;
             }
-            gen.Size = RenderConstants.CURVE_SIZE;
-            gen.SelectedColor = Color4.Red;
-            gen.DefaultColor = Color4.Red;
-            gen.DrawCallShaderType = DrawCallShaderType.Default;
         }
 
         private void Render()
@@ -178,17 +182,20 @@ namespace avoCADo
             _glContext.BackgroundManager.BackgroundColor = Color4.White;
             _glContext.ScreenBufferManager.ResetScreenBuffer();
             _glContext.BackgroundManager.BackgroundColor = Color4.Black;
-            Render(_glContext, _rendP, true);
-            Render(_glContext, _rendQ, false);
+            Render(_glContext, _rendPList, true);
+            Render(_glContext, _rendQList, false);
             _glContext.Control.SwapBuffers();
         }
 
-        private void Render(DualGLContext context, ParametricObjectRenderer rend, bool left)
+        private void Render(DualGLContext context, List<ParametricObjectRenderer> rendList, bool left)
         {
             context.MakeCurrent(left);
             context.ScreenBufferManager.ResetScreenBuffer(true);
             context.ShaderProvider.UpdateShadersCameraMatrices(_cam);
-            rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+            foreach (var rend in rendList)
+            {
+                rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+            }
         }
 
         #region Looping corrections
