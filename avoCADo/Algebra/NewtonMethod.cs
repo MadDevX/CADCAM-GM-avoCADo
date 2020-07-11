@@ -75,13 +75,14 @@ namespace avoCADo.Algebra
             return SurfaceConditions.ParametersInBounds(data, pointList.Last());
         }
 
-        private static bool IsLooped(IntersectionData data, Vector4 startingPoint, Vector4 secondPoint, Vector4 currentPoint, float knotDistance)
+        private static bool IsLooped(IntersectionData data, Vector4 startingPoint, Vector4 secondPoint, Vector4 currentPoint, float knotDistance, float epsilon = 0.05f)
         {
+            var eps = knotDistance * epsilon;
             var stepFirst = StepDistance(data, currentPoint, startingPoint, knotDistance);
             var stepSecond = StepDistance(data, currentPoint, secondPoint, knotDistance);
             var distCur = (currentPoint - startingPoint).Length;
             var distSec = (secondPoint - startingPoint).Length;
-            return (stepFirst >= -knotDistance && stepFirst <= 0.0f && stepSecond <= -knotDistance && distCur <= distSec);
+            return (stepFirst >= -knotDistance - eps && stepFirst <= 0.0f + eps && stepSecond <= -knotDistance + eps && distCur <= distSec);
         }
 
         private static Vector4 CalculateNextPoint(IntersectionData data, Vector4 x0, float knotDistance, float epsilon)
