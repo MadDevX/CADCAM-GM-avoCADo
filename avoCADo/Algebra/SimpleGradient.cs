@@ -76,6 +76,7 @@ namespace avoCADo.Algebra
 
         private static float F(IntersectionData data, Vector4 x)
         {
+            if (SurfaceConditions.ParametersInBounds(data, x) == false) return float.MaxValue;
             var diff = data.p.GetVertex(x.X, x.Y) - data.q.GetVertex(x.Z, x.W);
             return Vector3.Dot(diff, diff);
         }

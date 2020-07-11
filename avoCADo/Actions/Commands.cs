@@ -314,9 +314,19 @@ namespace avoCADo
 
         private void FindIntersectionCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var selected = NodeSelection.Manager.SelectedNodes;
-            _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
-                new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), 0.1f));
+            var dialog = new IntersectionFinderSettings();
+            var result = dialog.ShowDialog();
+            if (result.HasValue && result.Value == true)
+            {
+                var selected = NodeSelection.Manager.SelectedNodes;
+                FindIntersectionInstruction.Parameters parameters;
+                if (dialog.UseCursor) parameters = new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), dialog.KnotDistance, _cursor3D.Position);
+                else parameters = new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), dialog.KnotDistance);
+                
+                _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
+                    parameters);
+            }
+
         }
 
         private void ShowParametricExplorerCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)

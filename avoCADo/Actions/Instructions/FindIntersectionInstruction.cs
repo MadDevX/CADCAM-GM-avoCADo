@@ -30,7 +30,22 @@ namespace avoCADo.Actions
                 return false;
             }
 
-            var intersection = IntersectionFinder.FindIntersection(new IntersectionData(p, q), parameters.knotDistance);
+            IList<Vector4> intersection = null;
+            try
+            {
+                if (parameters.useStartingPoint)
+                {
+                    intersection = IntersectionFinder.FindIntersection(new IntersectionData(p, q), parameters.startingPoint, parameters.knotDistance);
+                }
+                else
+                {
+                    intersection = IntersectionFinder.FindIntersection(new IntersectionData(p, q), parameters.knotDistance);
+                }
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show($"Unexpected error occurred:\n + {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             if (intersection == null)
             {
                 MessageBox.Show("No intersection found");

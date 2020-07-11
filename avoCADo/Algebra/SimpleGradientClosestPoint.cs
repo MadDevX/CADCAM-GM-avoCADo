@@ -76,6 +76,7 @@ namespace avoCADo.Algebra
 
         private static float F(ISurface p, Vector2 x, Vector3 C)
         {
+            if (SurfaceConditions.ParametersInBounds(p, x) == false) return float.MaxValue;
             var diff = p.GetVertex(x.X, x.Y) - C;
             return Vector3.Dot(diff, diff);
         }

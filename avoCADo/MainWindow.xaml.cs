@@ -37,6 +37,7 @@ namespace avoCADo
         private NodeExporter _nodeExporter;
         private TransformationsManager _transformationsManager;
         private SceneManager _sceneManager;
+        private Cursor3D _cursor3D;
         private RenderLoop _renderLoop;
         private IInstructionBuffer _instructionBuffer;
 
@@ -62,6 +63,7 @@ namespace avoCADo
                                NodeImporter nodeImporter,
                                NodeExporter nodeExporter,
                                SceneManager sceneManager,
+                               Cursor3D cursor3D,
                                RenderLoop renderLoop,
                                IInstructionBuffer instructionBuffer)
         {
@@ -70,6 +72,7 @@ namespace avoCADo
             _nodeImporter = nodeImporter;
             _nodeExporter = nodeExporter;
             _sceneManager = sceneManager;
+            _cursor3D = cursor3D;
             _renderLoop = renderLoop;
             _instructionBuffer = instructionBuffer;
         }

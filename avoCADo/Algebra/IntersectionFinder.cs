@@ -68,6 +68,7 @@ namespace avoCADo.Algebra
                 for (var v = pVRng.X; v <= pVRng.Y; v += vLen * _domainSamplingMult)
                 {
                     var uv = SimpleGradientClosestPoint.FindStartingPoint(p, new Vector2(u, v), startingReferencePoint, _epsilon); //FindClosestToP
+                    if (float.IsNaN(uv.X)) continue;
                     var pnt = p.GetVertex(uv.X, uv.Y);
                     var dist = (pnt - startingReferencePoint).Length;
                     if (dist < minDist)
@@ -80,7 +81,7 @@ namespace avoCADo.Algebra
             return minUV;
         }
 
-        public static IList<Vector4> FindIntersection(IntersectionData data, Vector4 startingParameters, float knotDistance)
+        private static IList<Vector4> FindIntersection(IntersectionData data, Vector4 startingParameters, float knotDistance)
         {
             var x0 = SimpleGradient.FindStartingPoint(data, startingParameters, _epsilon);
             if (float.IsNaN(x0.X)) return null;

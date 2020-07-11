@@ -96,6 +96,7 @@
     <Compile Include="Algebra\LinearEquationSolver.cs" />
     <Compile Include="Algebra\NewtonMethod.cs" />
     <Compile Include="Algebra\SimpleGradient.cs" />
+    <Compile Include="Algebra\SimpleGradientClosestPoint.cs" />
     <Compile Include="Algebra\SurfaceConditions.cs" />
     <Compile Include="Camera\DummyCamera.cs" />
     <Compile Include="Camera\ICamera.cs" />
@@ -137,6 +138,9 @@
     <Compile Include="Interfaces\IObject.cs" />
     <Compile Include="Interfaces\ISelectionManager.cs" />
     <Compile Include="Interfaces\ISurfaceGenerator.cs" />
+    <Compile Include="IntersectionFinderSettings.xaml.cs">
+      <DependentUpon>IntersectionFinderSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
     <Compile Include="MeshGenerators\RawDataGenerator.cs" />
@@ -291,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Hierarchy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IntersectionFinderSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

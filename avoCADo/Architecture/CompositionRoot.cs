@@ -109,9 +109,9 @@ namespace avoCADo
             _window.transformationsInfo.DataContext = _transformationsManager;
             _window.cameraSettings.DataContext = _cameraModeManager;
 
-            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _renderLoop, _instructionBuffer);
+            _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _cursor, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\multipleIntersectionsTest.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\testCursorIntersection.xml");
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
         }
 

@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.ParametricObjects;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,9 @@ namespace avoCADo
 
         public Vector3 GetVertexLocalSpace(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             return new Vector3(
                (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
                (float)(TubeRadius * Math.Sin(v)),
@@ -66,6 +70,9 @@ namespace avoCADo
 
         public Vector3 GetVertex(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
                    (float)(TubeRadius * Math.Sin(v)),
@@ -85,6 +92,9 @@ namespace avoCADo
 
         public Vector3 DerivU(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                     (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u)),
                     0.0f,
@@ -95,6 +105,9 @@ namespace avoCADo
 
         public Vector3 DerivUU(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                     (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
                     0.0f,
@@ -105,6 +118,9 @@ namespace avoCADo
 
         public Vector3 DerivV(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                     (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u)),
                     (float)(TubeRadius * Math.Cos(v)),
@@ -115,6 +131,9 @@ namespace avoCADo
 
         public Vector3 DerivVV(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                     (float)(-TubeRadius * Math.Cos(v) * Math.Cos(u)),
                     (float)(-TubeRadius * Math.Sin(v)),
@@ -125,6 +144,9 @@ namespace avoCADo
 
         public Vector3 Twist(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             var vect = new Vector3(
                     (float)(TubeRadius * Math.Sin(v) * Math.Sin(u)),
                     0.0f,
@@ -135,6 +157,9 @@ namespace avoCADo
 
         public Vector3 Normal(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             return Vector3.Cross(DerivU(u, v), DerivV(u, v)).Normalized();
         }
     }

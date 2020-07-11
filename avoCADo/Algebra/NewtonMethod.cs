@@ -27,7 +27,6 @@ namespace avoCADo.Algebra
                     break;
                 }
             }
-            //TODO: check if intersection is looped
 
             if(pointList.Count == 1 || pointList.First() != pointList.Last())
             {

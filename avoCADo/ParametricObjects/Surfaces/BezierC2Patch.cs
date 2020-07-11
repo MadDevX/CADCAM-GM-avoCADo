@@ -1,4 +1,5 @@
-﻿using avoCADo.ParametricObjects.Curves;
+﻿using avoCADo.ParametricObjects;
+using avoCADo.ParametricObjects.Curves;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,9 @@ namespace avoCADo
 
         public Vector3 GetVertex(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             int uPatchIdx = (int)u;
             int vPatchIdx = (int)v;
             var uIdx = GetStartingIndex(uPatchIdx, USegments);
@@ -87,6 +91,9 @@ namespace avoCADo
 
         private Vector3 Deriv(float u, float v, bool uDeriv, int order)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             int uPatchIdx = (int)u;
             int vPatchIdx = (int)v;
             var uIdx = GetStartingIndex(uPatchIdx, USegments);
@@ -133,11 +140,17 @@ namespace avoCADo
 
         public Vector3 Normal(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             return Vector3.Cross(DerivU(u, v), DerivV(u, v)).Normalized();
         }
 
         public Vector3 Twist(float u, float v)
         {
+            var uv = ParameterHelper.CorrectUV(this, new Vector2(u, v));
+            u = uv.X;
+            v = uv.Y;
             int uPatchIdx = (int)u;
             int vPatchIdx = (int)v;
             var uIdx = GetStartingIndex(uPatchIdx, USegments);
