@@ -30,5 +30,19 @@ namespace avoCADo.Algebra
                 minS <= s && maxS >= s &&
                 minT <= t && maxT >= t;
         }
+
+        public static bool ParametersInBounds(ISurface p, Vector2 x)
+        {
+            var u = x.X;
+            var v = x.Y;
+            var minU = p.ParameterURange.X;
+            var minV = p.ParameterVRange.X;
+            var maxU = p.ParameterURange.Y;
+            var maxV = p.ParameterVRange.Y;
+
+            return
+                minU <= u && maxU >= u &&
+                minV <= v && maxV >= v;
+        }
     }
 }
