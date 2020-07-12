@@ -309,7 +309,7 @@ namespace avoCADo
         private void FindIntersectionCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var selected = NodeSelection.Manager.SelectedNodes;
-            e.CanExecute = selected.Count == 2 && SurfacesSelected();
+            e.CanExecute = (selected.Count == 2 || selected.Count == 1) && SurfacesSelected();
         }
 
         private void FindIntersectionCmd_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -319,9 +319,12 @@ namespace avoCADo
             if (result.HasValue && result.Value == true)
             {
                 var selected = NodeSelection.Manager.SelectedNodes;
+                var p = selected.ElementAt(0);
+                var q = selected.Count > 1 ? selected.ElementAt(1) : selected.ElementAt(0);
+
                 FindIntersectionInstruction.Parameters parameters;
-                if (dialog.UseCursor) parameters = new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), dialog.KnotDistance, _cursor3D.Position);
-                else parameters = new FindIntersectionInstruction.Parameters(selected.ElementAt(0), selected.ElementAt(1), dialog.KnotDistance);
+                if (dialog.UseCursor) parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance, _cursor3D.Position);
+                else parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance);
                 
                 _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
                     parameters);
@@ -332,16 +335,19 @@ namespace avoCADo
         private void ShowParametricExplorerCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var selected = NodeSelection.Manager.SelectedNodes;
-            e.CanExecute = selected.Count == 2 && SurfacesSelected();
+            e.CanExecute = (selected.Count == 2 || selected.Count == 1) && SurfacesSelected();
         }
 
         private void ShowParametricExplorerCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var selected = NodeSelection.Manager.SelectedNodes;
+            var p = selected.ElementAt(0);
+            var q = selected.Count > 1 ? selected.ElementAt(1) : selected.ElementAt(0);
+
             _renderLoop.Paused = true;
             var window = new ParametricSpaceExplorer();
             window.Owner = this;
-            window.Show(selected.ElementAt(0), selected.ElementAt(1));
+            window.Show(p, q);
             _renderLoop.Paused = false;
         }
 

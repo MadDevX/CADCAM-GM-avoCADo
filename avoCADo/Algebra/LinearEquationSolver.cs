@@ -25,7 +25,7 @@ namespace avoCADo.Algebra
             for (int i = 0; i < 4; i++)
             {
                 var idx = FindMaxAbsInColumn(A, i, i);
-                if (idx == -1) throw new InvalidOperationException("multiple/none solutions exist");
+                if (idx == -1) throw new InvalidOperationException("multiple/no solutions exist");
                 SwapRows(ref A, ref b, idx, i);
                 for (int j = i + 1; j < 4; j++)
                 {
