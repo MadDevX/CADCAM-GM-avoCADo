@@ -36,8 +36,9 @@ namespace avoCADo
             }
         }
 
-        public IList<Vector2> GetParameterList(ISurface surf)
+        public IList<Vector2> GetParameterList(ISurface surf, bool selfIntersectionQ = false)
         {
+            if (selfIntersectionQ && surf == _p && surf == _q) return _parameters.Select(x => x.Zw).ToList();
             if (surf == _p) return _parameters.Select(x => x.Xy).ToList();
             if (surf == _q) return _parameters.Select(x => x.Zw).ToList();
             throw new InvalidOperationException("Provided surface is not described by this intersection curve");

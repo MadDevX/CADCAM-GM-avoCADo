@@ -146,10 +146,17 @@ namespace avoCADo
         private void Initialize(ISurface p, ISurface q)
         {
             SetupData(p, q, _rendPList);
-            SetupData(q, p, _rendQList);
+            if (p == q)
+            {
+                SetupData(q, p, _rendQList, true);
+            }
+            else
+            {
+                SetupData(q, p, _rendQList);
+            }
         }
 
-        private void SetupData(ISurface surf, ISurface second, List<ParametricObjectRenderer> rendList)
+        private void SetupData(ISurface surf, ISurface second, List<ParametricObjectRenderer> rendList, bool selfIntersectionQ = false)
         {
             //TODO: handle more curves on surfaces
             foreach(var c in surf.BoundingCurves)
@@ -160,7 +167,7 @@ namespace avoCADo
                 _node.Assign(rend);
                 rendList.Add(rend);
 
-                var list = c.Curve.GetParameterList(surf);
+                var list = c.Curve.GetParameterList(surf, selfIntersectionQ);
                 var uRng = surf.ParameterURange;
                 var vRng = surf.ParameterVRange;
                 var positions = list.Select(x => new Vector3(
