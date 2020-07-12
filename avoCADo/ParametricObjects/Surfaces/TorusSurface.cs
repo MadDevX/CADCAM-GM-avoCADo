@@ -162,5 +162,7 @@ namespace avoCADo
             v = uv.Y;
             return Vector3.Cross(DerivU(u, v), DerivV(u, v)).Normalized();
         }
+
+        public bool DifferentPatches(float u1, float v1, float u2, float v2) => false;
     }
 }

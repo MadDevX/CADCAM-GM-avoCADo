@@ -172,5 +172,22 @@ namespace avoCADo
                                                 _coordBuffer[2],
                                                 _coordBuffer[3]);
         }
+
+        public bool DifferentPatches(float u1, float v1, float u2, float v2)
+        {
+            var uv1 = ParameterHelper.CorrectUV(this, new Vector2(u1, v1));
+            u1 = uv1.X;
+            v1 = uv1.Y;
+            int u1PatchIdx = (int)u1;
+            int v1PatchIdx = (int)v1;
+
+            var uv2 = ParameterHelper.CorrectUV(this, new Vector2(u2, v2));
+            u2 = uv2.X;
+            v2 = uv2.Y;
+            int u2PatchIdx = (int)u2;
+            int v2PatchIdx = (int)v2;
+
+            return u1PatchIdx != u2PatchIdx || v1PatchIdx != v2PatchIdx;
+        }
     }
 }

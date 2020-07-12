@@ -25,6 +25,8 @@ namespace avoCADo
         Vector3 Twist(float u, float v);
         Vector3 Normal(float u, float v);
 
+
+        bool DifferentPatches(float u1, float v1, float u2, float v2);
         IList<IntersectionCurveData> BoundingCurves { get; }
     }
 }

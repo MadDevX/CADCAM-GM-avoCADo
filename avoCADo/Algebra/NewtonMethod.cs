@@ -11,6 +11,9 @@ namespace avoCADo.Algebra
 {
     public static class NewtonMethod
     {
+        private const int _intersectionPointsLimit = 2000;
+        private const float _pointDistanceEpsilon = 0.001f;
+
         public static IList<Vector4> CalculateIntersectionPoints(IntersectionData data, Vector4 startingPoint, float knotDistance, float epsilon = 0.00001f)
         {
             var pointList = new List<Vector4>();
@@ -20,6 +23,14 @@ namespace avoCADo.Algebra
                 var point = CalculateNextPoint(data, pointList.Last(), knotDistance, epsilon);
                 if (SurfaceConditions.ParametersInBounds(data, point))
                 {
+                    if(pointList.Count > _intersectionPointsLimit)
+                    {
+                        throw new InvalidOperationException("Intersection contains too many points, choose different parameters");
+                    }
+                    if (PointsCloseEnough(data, point, _pointDistanceEpsilon) == false)
+                    {
+                        throw new InvalidOperationException("Intersection error, calculated points too far away, choose different parameters");
+                    }
                     pointList.Add(point);
                 }
                 else
@@ -39,6 +50,15 @@ namespace avoCADo.Algebra
                     var point = CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon);
                     if (SurfaceConditions.ParametersInBounds(data2, point))
                     {
+                        if (pointList2.Count > _intersectionPointsLimit)
+                        {
+                            throw new InvalidOperationException("Intersection contains too many points, choose different parameters");
+                        }
+                        if(PointsCloseEnough(data2, point, _pointDistanceEpsilon) == false)
+                        {
+                            throw new InvalidOperationException("Intersection error, calculated points too far away, choose different parameters");
+                        }
+
                         pointList2.Add(point);
                     }
                     else
@@ -105,6 +125,13 @@ namespace avoCADo.Algebra
                  (Vector3.Dot(data.p.GetVertex(xCur.X, xCur.Y), data.q.GetVertex(xCur.Z, xCur.W)) > epsilon || 
                  Math.Abs(StepDistance(data, xCur, x0, knotDistance)) > epsilon); //TODO: tweak end condition, use previous approx.
         }
+
+        private static bool PointsCloseEnough(IntersectionData data, Vector4 point, float epsilon)
+        {
+            var pointDiff = data.p.GetVertex(point.X, point.Y) - data.q.GetVertex(point.Z, point.W);
+            return pointDiff.LengthSquared <= epsilon;
+        }
+
 
         private static Vector4 NewtonIteration(IntersectionData data, Vector4 xCur, Vector4 x0, float knotDistance)
         {
