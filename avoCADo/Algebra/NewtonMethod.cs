@@ -31,10 +31,10 @@ namespace avoCADo.Algebra
             if(pointList.Count == 1 || pointList.First() != pointList.Last())
             {
                 var data2 = new IntersectionData(data.q, data.p);
-                var pointList2 = new List<Vector4>();
-                pointList2.Add(startingPoint.Zwxy);
+                var pointList2 = Enumerable.Reverse(pointList).Select(x => x.Zwxy).ToList();
+                var startingPoint2 = pointList2[0];
 
-                while (ContinueIntersectionTracing(data2, startingPoint, pointList2, knotDistance))
+                while (ContinueIntersectionTracing(data2, startingPoint2, pointList2, knotDistance))
                 {
                     var point = CalculateNextPoint(data2, pointList2.Last(), knotDistance, epsilon);
                     if (SurfaceConditions.ParametersInBounds(data2, point))
@@ -47,12 +47,8 @@ namespace avoCADo.Algebra
                     }
                 }
 
-                //We go from startingPoint in both directions, thus second list needs to be reversed 
-                //thus, correct order: pointList2.last -> startingPoint -> pointList.last
-                pointList2.Reverse(); 
-                pointList2.RemoveAt(pointList2.Count - 1);//remove startingPoint (it is already included in pointList)
+                pointList2.Reverse(); //not necessary, but it works, TODO: test without reverse
                 pointList2 = pointList2.Select(x => x.Zwxy).ToList();
-                pointList2.AddRange(pointList);
                 return pointList2;
             }
 
@@ -75,7 +71,7 @@ namespace avoCADo.Algebra
             return SurfaceConditions.ParametersInBounds(data, pointList.Last());
         }
 
-        private static bool IsLooped(IntersectionData data, Vector4 startingPoint, Vector4 secondPoint, Vector4 currentPoint, float knotDistance, float epsilon = 0.05f)
+        private static bool IsLooped(IntersectionData data, Vector4 startingPoint, Vector4 secondPoint, Vector4 currentPoint, float knotDistance, float epsilon = 0.5f)
         {
             var eps = knotDistance * epsilon;
             var stepFirst = StepDistance(data, currentPoint, startingPoint, knotDistance);
