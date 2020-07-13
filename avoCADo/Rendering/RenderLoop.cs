@@ -68,6 +68,9 @@ namespace avoCADo
             _framebufferManager.ClearFrameBuffers(_camera.Cycles);
             _framebufferManager.SetTextureUnits();
 
+            GL.Enable(EnableCap.AlphaTest);
+            GL.AlphaFunc(AlphaFunction.Greater, 0.0f);
+
             for (int i = 0; i < _camera.Cycles; i++)
             {
                 //GL.Clear(ClearBufferMask.DepthBufferBit); //-- used for multirendering straight to screen (causes depth buffer issues)
@@ -79,6 +82,8 @@ namespace avoCADo
             }
 
             _quadOverlayRenderer.Render();
+
+            GL.Disable(EnableCap.AlphaTest);
             GL.Finish();
             _glControl.SwapBuffers();
 

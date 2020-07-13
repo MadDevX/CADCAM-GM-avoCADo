@@ -19,6 +19,10 @@ layout(isolines, equal_spacing) in;
 
 out vec2 TexCoords;
 
+uniform vec2 patchCoords;
+uniform vec2 patchDimensions;
+uniform int flipUV;
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -33,7 +37,15 @@ void main() {
    vec3 v4 = bezier4(gl_in[12].gl_Position.xyz, gl_in[13].gl_Position.xyz, gl_in[14].gl_Position.xyz, gl_in[15].gl_Position.xyz, v);
    vec3 pos = bezier4(v1, v2, v3, v4, u);
 
-   TexCoords = vec2(u, v);
+   if(flipUV == 0)
+   {
+        TexCoords = vec2((u + patchCoords.x)/patchDimensions.x, (v + patchCoords.y)/patchDimensions.y);
+   }
+   else
+   {
+        TexCoords = vec2((v + patchCoords.x)/patchDimensions.x, (u + patchCoords.y)/patchDimensions.y);
+   }
+   TexCoords = clamp(TexCoords, vec2(0.0001f, 0.0001f), vec2(0.9999f, 0.9999f));
 
    gl_Position = projection * view * model * vec4(pos, 1.0f);
 }

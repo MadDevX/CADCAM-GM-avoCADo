@@ -73,12 +73,14 @@ namespace avoCADo.Trimming
         public void UpdateTrimTexture(ISurface q, bool isP)
         {
             GL.ActiveTexture(TextureUnit.Texture0);
-            RenderToTexture(q);
-            UpdateOutlineBitmap(isP);
-            UpdateTextureData(isP);
+            if (RenderToTexture(q))
+            {
+                UpdateOutlineBitmap(isP);
+                UpdateTextureData(isP);
+            }
         }
 
-        private void RenderToTexture(ISurface q)
+        private bool RenderToTexture(ISurface q)
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
             GL.Viewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
@@ -90,10 +92,13 @@ namespace avoCADo.Trimming
             foreach(var rend in rends)
             {
                 rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+                //rend.Dispose();
             }
             GL.Enable(EnableCap.DepthTest);
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            return rends.Count > 0;
         }
 
         private List<ParametricObjectRenderer> GetRenderers(ISurface q, ShaderProvider shaderProvider)
@@ -130,8 +135,14 @@ namespace avoCADo.Trimming
 
         public void Dispose()
         {
-            GL.DeleteTextures(1, ref _textureHandle);
-            GL.DeleteBuffers(1, ref _framebufferHandle);
+            //TODO: fix releasing of resources
+            //GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferHandle);
+            //GL.ActiveTexture(TextureUnit.Texture0);
+            //GL.BindTexture(TextureTarget.Texture2D, _textureHandle);
+            //GL.DeleteBuffers(1, ref _framebufferHandle);
+            //GL.DeleteTextures(1, ref _textureHandle);
+            //GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            //GL.BindTexture(TextureTarget.Texture2D, 0);
         }
     }
 }

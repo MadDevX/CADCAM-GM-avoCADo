@@ -115,7 +115,7 @@ namespace avoCADo
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _cursor, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTestLooped.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\multisegmentedTrimmingTest.xml");
             //_cursor.Transform.Position = new Vector3(-4.345058f, -0.1114839f, 1.026099f); //load cursorIntersectionTest - this position generates multiple loop error [FIXED]
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
 

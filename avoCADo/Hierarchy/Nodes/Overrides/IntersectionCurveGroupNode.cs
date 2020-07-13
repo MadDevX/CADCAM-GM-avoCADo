@@ -23,7 +23,8 @@ namespace avoCADo
         {
             _intersectionData.p.BoundingCurves.Remove(_curveData);
             _intersectionData.q.BoundingCurves.Remove(_curveData);
-
+            _intersectionData.p.TrimTexture.UpdateTrimTexture(_intersectionData.q, true);
+            _intersectionData.q.TrimTexture.UpdateTrimTexture(_intersectionData.p, false);
             base.Dispose(); //Renderer gets disposed here, so before that curve must be disposed
         }
     }

@@ -52,6 +52,9 @@ namespace avoCADo
                         GL.PatchParameter(PatchParameterInt.PatchVertices, calls[i].patchCount);
                         tess.SetTessLevelOuter0(calls[i].tessLevelOuter0);
                         tess.SetTessLevelOuter1(calls[i].tessLevelOuter1);
+                        tess.SetPatchCoords(calls[i].patchCoords);
+                        tess.SetPatchDimensions(calls[i].patchDimensions);
+                        tess.SetFlipUV(calls[i].flipUV);
                     }
                 }
                 GL.DrawElements(_primitivesDict[calls[i].shaderType], calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));

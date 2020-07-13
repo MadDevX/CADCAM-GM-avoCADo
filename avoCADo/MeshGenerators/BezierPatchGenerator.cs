@@ -29,18 +29,34 @@ namespace avoCADo
                 if(ShowEdges)
                 {
 
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2, _surfaceIndices.Length/2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
+                    //_drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                    //_drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
+                    SurfaceDrawCalls();
                     _drawCalls.Add(new DrawCall(_surfaceIndices.Length, _edgeIndices.Length, DrawCallShaderType.Default, RenderConstants.POLYGON_SIZE, RenderConstants.POLYGON_DEFAULT_COLOR, RenderConstants.POLYGON_SELECTED_COLOR));
                 }
                 else
                 {
-                    _drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
+                    SurfaceDrawCalls();
+                    //_drawCalls.Add(new DrawCall(0, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64));
+                    //_drawCalls.Add(new DrawCall(_surfaceIndices.Length / 2, _surfaceIndices.Length / 2, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64));
                 }
                 return _drawCalls;
             }
         }
+
+        private void SurfaceDrawCalls()
+        {
+            var dims = new Vector2(Surface.USegments, Surface.VSegments);
+            for(int u = 0; u < Surface.USegments; u++)
+            {
+                for(int v = 0; v < Surface.VSegments; v++)
+                {
+                    _drawCalls.Add(new DrawCall(0                        + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64, new Vector2(u, v), dims, true));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2 + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64, new Vector2(u, v), dims, false));
+                }
+            }
+        }
+
         public event Action OnParametersChanged;
 
         public int IsolineDivisionsU { get; set; } = 4;
