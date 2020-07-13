@@ -10,6 +10,6 @@ uniform mat4 projection;
 
 void main()
 {
-	TexCoords = clamp(aTexCoords, vec2(0.01f, 0.01f), vec2(0.99f, 0.99f));;
+	TexCoords = clamp(aTexCoords, vec2(0.0001f, 0.0001f), vec2(0.9999f, 0.9999f));;
 	gl_Position = projection * view * model * vec4(aPosition, 1.0f);
 }

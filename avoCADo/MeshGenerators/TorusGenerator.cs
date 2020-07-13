@@ -96,7 +96,7 @@ namespace avoCADo
 
         private void GenerateVertices()
         {
-            var newLength = _xDivisions * _yDivisions * 5; //3 for position, 2 for texCoords
+            var newLength = (_xDivisions+1) * (_yDivisions+1) * 5; //3 for position, 2 for texCoords
             if (_vertices == null || _vertices.Length != newLength)
             {
                 _vertices = new float[newLength];
@@ -105,26 +105,22 @@ namespace avoCADo
             var uParamRange = Surface.ParameterURange;
             var vParamRange = Surface.ParameterVRange;
 
-            for (int y = 0; y < _yDivisions; y++)
+            for (int y = 0; y <= _yDivisions; y++)
             {
                 var beta = (((float)y / _yDivisions) * (vParamRange.Y - vParamRange.X)) + vParamRange.X;
-                for (int x = 0; x < _xDivisions; x++)
+                for (int x = 0; x <= _xDivisions; x++)
                 {
                     var alpha = (((float)x / _xDivisions) * (uParamRange.Y - uParamRange.X)) + uParamRange.X;
                     var vertex = _surface.GetVertexLocalSpace(alpha, beta);
                     var texCoords = new Vector2((float)x / _xDivisions, (float)y / _yDivisions);
-                    VBOUtility.SetVertex(_vertices, vertex, texCoords, (x + y * _xDivisions));
+                    VBOUtility.SetVertex(_vertices, vertex, texCoords, (x + y * (_xDivisions+1)));
                 }
             }
         }
 
         private void GenerateIndices()
         {
-            var xDiv = Surface.ULoop ? _xDivisions : (_xDivisions - 1);
-            var yDiv = Surface.VLoop ? _yDivisions : (_yDivisions - 1);
             var newLength = _xDivisions * _yDivisions * 4;
-            //if (Surface.ULoop == false) newLength -= _yDivisions; //TODO : calculate optimal array size (now there are holes in index array with pairs of 0-0 indices)
-            //if (Surface.VLoop == false) newLength -= _xDivisions;
 
 
             if (_indices == null || _indices.Length != newLength)
@@ -137,28 +133,12 @@ namespace avoCADo
                 for (uint x = 0; x < _xDivisions; x++)
                 {
                     uint index = (uint)(x + y * _xDivisions);
+                    uint vertIndex = (uint)(x + y * (_xDivisions+1));
 
-                    if (x != _xDivisions - 1)
-                    {
-                        _indices[index * 4 + 0] = index;
-                        _indices[index * 4 + 1] = index + 1;
-                    }
-                    else if (Surface.ULoop)
-                    {
-                        _indices[index * 4 + 0] = index;
-                        _indices[index * 4 + 1] = index - x;
-                    }
-
-                    if (y != _yDivisions - 1)
-                    {
-                        _indices[index * 4 + 2] = index;
-                        _indices[index * 4 + 3] = index + (uint)_xDivisions;
-                    }
-                    else if (Surface.VLoop)
-                    {
-                        _indices[index * 4 + 2] = index;
-                        _indices[index * 4 + 3] = x;
-                    }
+                    _indices[index * 4 + 0] = vertIndex;
+                    _indices[index * 4 + 1] = vertIndex + 1;
+                    _indices[index * 4 + 2] = vertIndex;
+                    _indices[index * 4 + 3] = vertIndex + (uint)(_xDivisions+1);
                 }
             }
         }
