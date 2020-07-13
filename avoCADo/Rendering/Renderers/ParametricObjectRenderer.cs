@@ -55,6 +55,7 @@ namespace avoCADo
                         tess.SetPatchCoords(calls[i].patchCoords);
                         tess.SetPatchDimensions(calls[i].patchDimensions);
                         tess.SetFlipUV(calls[i].flipUV);
+                        tess.SetFlipTrim(calls[i].flipTrim);
                     }
                 }
                 GL.DrawElements(_primitivesDict[calls[i].shaderType], calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));

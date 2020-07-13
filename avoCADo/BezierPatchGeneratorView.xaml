@@ -20,6 +20,7 @@
             <Slider x:Name="isolineDivisionsV" Minimum="1" Maximum="64" IsSnapToTickEnabled="true" Value="{Binding IsolineDivisionsV}"/>
             <CheckBox x:Name="showEdges" Content="Show Edges" IsChecked="{Binding ShowEdges}" Margin="5"/>
             <CheckBox x:Name="showCP" Content="Show Control Points" IsChecked="{Binding ShowControlPoints}" Margin="5"/>
+            <CheckBox x:Name="flipTrim" Content="Flip trimming" IsChecked="{Binding FlipTrim}" Margin="5"/>
             <TextBlock x:Name="vectorInfo"/>
         </StackPanel>
     </GroupBox>

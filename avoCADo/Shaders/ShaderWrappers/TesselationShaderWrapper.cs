@@ -18,6 +18,7 @@ namespace avoCADo
         private int _shaderPatchCoordsLocation = -1;
         private int _shaderPatchDimensionsLocation = -1;
         private int _shaderFlipUVLocation = -1;
+        private int _shaderFlipTrimLocation = -1;
 
         public TesselationShaderWrapper(Shader shader, bool textured, string name) : base(shader, name)
         {
@@ -28,6 +29,7 @@ namespace avoCADo
                 _shaderPatchCoordsLocation = GL.GetUniformLocation(Shader.Handle, "patchCoords");
                 _shaderPatchDimensionsLocation = GL.GetUniformLocation(Shader.Handle, "patchDimensions");
                 _shaderFlipUVLocation = GL.GetUniformLocation(Shader.Handle, "flipUV");
+                _shaderFlipTrimLocation = GL.GetUniformLocation(Shader.Handle, "flipTrim");
                 SetTrimTexture(0);
             }
         }
@@ -85,6 +87,15 @@ namespace avoCADo
             if (_textured)
             {
                 GL.Uniform1(_shaderFlipUVLocation, flipUV?1:0);
+            }
+        }
+
+        public void SetFlipTrim(bool flipTrim)
+        {
+            CheckShaderBinding();
+            if (_textured)
+            {
+                GL.Uniform1(_shaderFlipTrimLocation, flipTrim ? 1 : 0);
             }
         }
     }

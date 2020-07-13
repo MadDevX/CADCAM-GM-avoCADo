@@ -51,8 +51,8 @@ namespace avoCADo
             {
                 for(int v = 0; v < Surface.VSegments; v++)
                 {
-                    _drawCalls.Add(new DrawCall(0                        + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64, new Vector2(u, v), dims, true));
-                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2 + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64, new Vector2(u, v), dims, false));
+                    _drawCalls.Add(new DrawCall(0                        + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsU, 64, new Vector2(u, v), dims, true, FlipTrim));
+                    _drawCalls.Add(new DrawCall(_surfaceIndices.Length/2 + PatchCount * (u + Surface.USegments * v), 16, SurfaceDrawType, RenderConstants.SURFACE_SIZE, PatchCount, IsolineDivisionsV, 64, new Vector2(u, v), dims, false, FlipTrim));
                 }
             }
         }
@@ -62,6 +62,7 @@ namespace avoCADo
         public int IsolineDivisionsU { get; set; } = 4;
         public int IsolineDivisionsV { get; set; } = 4;
         public bool ShowEdges { get; set; } = false;
+        public bool FlipTrim { get; set; } = false;
 
         private bool _showControlPoints = true; 
         public bool ShowControlPoints 
