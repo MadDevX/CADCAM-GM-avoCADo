@@ -69,22 +69,22 @@ namespace avoCADo
 
         private void UpdateVectorsTextBlock()
         {
-            if (_selectionManager.MainSelection?.Renderer.GetGenerator() is BezierPatchGenerator gen)
-            {
-                var derivU = gen.Surface.DerivU(0.0f, 0.0f);
-                var derivUU = gen.Surface.DerivUU(0.0f, 0.0f);
-                var derivV = gen.Surface.DerivV(0.0f, 0.0f);
-                var derivVV = gen.Surface.DerivVV(0.0f, 0.0f);
-                var twist = gen.Surface.Twist(0.0f, 0.0f);
-                var normal = gen.Surface.Normal(0.5f, 0.5f);
-                vectorInfo.Text =
-                    $"Normal: {normal}\n" +
-                    $"DerivU: {derivU}\n" +
-                    $"DerivUU: {derivUU}\n" +
-                    $"DerivV: {derivV}\n" +
-                    $"DerivVV: {derivVV}\n" +
-                    $"Twist: {twist}";
-            }
+            //if (_selectionManager.MainSelection?.Renderer.GetGenerator() is BezierPatchGenerator gen)
+            //{
+            //    var derivU = gen.Surface.DerivU(0.0f, 0.0f);
+            //    var derivUU = gen.Surface.DerivUU(0.0f, 0.0f);
+            //    var derivV = gen.Surface.DerivV(0.0f, 0.0f);
+            //    var derivVV = gen.Surface.DerivVV(0.0f, 0.0f);
+            //    var twist = gen.Surface.Twist(0.0f, 0.0f);
+            //    var normal = gen.Surface.Normal(0.5f, 0.5f);
+            //    vectorInfo.Text =
+            //        $"Normal: {normal}\n" +
+            //        $"DerivU: {derivU}\n" +
+            //        $"DerivUU: {derivUU}\n" +
+            //        $"DerivV: {derivV}\n" +
+            //        $"DerivVV: {derivVV}\n" +
+            //        $"Twist: {twist}";
+            //}
         }
     }
 }

@@ -33,6 +33,7 @@ namespace avoCADo
         public Vector2 patchCoords;
         public Vector2 patchDimensions;
         public bool flipUV;
+        public bool trim;
         public bool flipTrim;
 
         public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 defaultColor, Color4 selectedColor, int patchCount = 16, int outerTess0 = 0, int outerTess1 = 0)
@@ -49,6 +50,7 @@ namespace avoCADo
             this.patchCoords = Vector2.Zero;
             this.patchDimensions = Vector2.Zero;
             this.flipUV = false;
+            this.trim = false;
             this.flipTrim = false;
         }
 
@@ -56,17 +58,20 @@ namespace avoCADo
             : this(startIndex, elementCount, shaderType, size, RenderConstants.PARAMETRIC_OBJECT_DEFAULT_COLOR, RenderConstants.PARAMETRIC_OBJECT_SELECTED_COLOR, patchCount, outerTess0, outerTess1)
         {}
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 defaultColor, Color4 selectedColor, int patchCount, int outerTess0, int outerTess1, Vector2 patchCoords, Vector2 patchDims, bool flipUV, bool flipTrim)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, Color4 defaultColor, Color4 selectedColor, int patchCount, int outerTess0, int outerTess1, Vector2 patchCoords, Vector2 patchDims, 
+            bool flipUV, bool trim, bool flipTrim)
             : this(startIndex, elementCount, shaderType, size, defaultColor, selectedColor, patchCount, outerTess0, outerTess1)
         {
             this.patchCoords = patchCoords;
             this.patchDimensions = patchDims;
             this.flipUV = flipUV;
+            this.trim = trim;
             this.flipTrim = flipTrim;
         }
 
-        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, int patchCount, int outerTess0, int outerTess1, Vector2 patchCoords, Vector2 patchDims, bool flipUV, bool flipTrim)
-            : this(startIndex, elementCount, shaderType, size, RenderConstants.PARAMETRIC_OBJECT_DEFAULT_COLOR, RenderConstants.PARAMETRIC_OBJECT_SELECTED_COLOR, patchCount, outerTess0, outerTess1, patchCoords, patchDims, flipUV, flipTrim)
+        public DrawCall(int startIndex, int elementCount, DrawCallShaderType shaderType, float size, int patchCount, int outerTess0, int outerTess1, Vector2 patchCoords, Vector2 patchDims, 
+            bool flipUV, bool trim, bool flipTrim)
+            : this(startIndex, elementCount, shaderType, size, RenderConstants.PARAMETRIC_OBJECT_DEFAULT_COLOR, RenderConstants.PARAMETRIC_OBJECT_SELECTED_COLOR, patchCount, outerTess0, outerTess1, patchCoords, patchDims, flipUV, trim, flipTrim)
         {}
     }
 
