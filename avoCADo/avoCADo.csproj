@@ -54,6 +54,15 @@
     <ApplicationIcon>Resources\avoCADo_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.Imaging.2.2.5\lib\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
@@ -90,14 +99,14 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
-    <Compile Include="Algebra\ConjugateGradient.cs" />
-    <Compile Include="Algebra\IntersectionData.cs" />
-    <Compile Include="Algebra\IntersectionFinder.cs" />
-    <Compile Include="Algebra\LinearEquationSolver.cs" />
-    <Compile Include="Algebra\NewtonMethod.cs" />
-    <Compile Include="Algebra\SimpleGradient.cs" />
-    <Compile Include="Algebra\SimpleGradientClosestPoint.cs" />
-    <Compile Include="Algebra\SurfaceConditions.cs" />
+    <Compile Include="Intersections\ConjugateGradient.cs" />
+    <Compile Include="Intersections\IntersectionData.cs" />
+    <Compile Include="Intersections\IntersectionFinder.cs" />
+    <Compile Include="Intersections\LinearEquationSolver.cs" />
+    <Compile Include="Intersections\NewtonMethod.cs" />
+    <Compile Include="Intersections\SimpleGradient.cs" />
+    <Compile Include="Intersections\SimpleGradientClosestPoint.cs" />
+    <Compile Include="Intersections\SurfaceConditions.cs" />
     <Compile Include="Camera\DummyCamera.cs" />
     <Compile Include="Camera\ICamera.cs" />
     <Compile Include="Hierarchy\Nodes\DummyNode.cs" />
@@ -242,6 +251,8 @@
     <Compile Include="Actions\CommandDefinitions.cs" />
     <Compile Include="Actions\Commands.cs" />
     <Compile Include="Architecture\NodeSelection.cs" />
+    <Compile Include="Trimming\TrimTextureGenerator.cs" />
+    <Compile Include="Trimming\TrimTextureProvider.cs" />
     <Compile Include="UI\IconProvider.cs" />
     <Compile Include="UI\TorusGeneratorHandler.cs" />
     <Compile Include="HUD\ScreenSelectionHandler.cs" />

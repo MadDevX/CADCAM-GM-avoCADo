@@ -7,8 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace avoCADo
 {
@@ -114,7 +117,25 @@ namespace avoCADo
             _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\c0SimpleTest.xml");
             //_cursor.Transform.Position = new Vector3(-4.345058f, -0.1114839f, 1.026099f); //load cursorIntersectionTest - this position generates multiple loop error [FIXED]
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
+
+
+            ////var bitMap = new Bitmap("inputImage.bmp");
+            ////var rgbMap = new Bitmap(bitMap.Width, bitMap.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            ////using(var gr = Graphics.FromImage(rgbMap))
+            ////{
+            ////    gr.DrawImage(bitMap, new Rectangle(0, 0, rgbMap.Width, rgbMap.Height));
+            ////}
+
+            ////var result = TrimTextureGenerator.FillBitmap(rgbMap, 15, 15);
+
+            ////rgbMap.Save("convertedImage.bmp");
+            ////result.Save("filledImage.bmp");
+
+            ////rgbMap.Dispose();
+            ////bitMap.Dispose();
+            ////result.Dispose();
         }
+
 
         public void Dispose()
         {
