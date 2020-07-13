@@ -17,7 +17,7 @@ namespace avoCADo.Trimming
     {
         private DummyCamera _cam = new DummyCamera();
 
-        private static int TEXTURE_SIZE = 1024;
+        private static int TEXTURE_SIZE = 2048;
         private static Bitmap _bitmap = new Bitmap(TEXTURE_SIZE, TEXTURE_SIZE, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
         private static Rectangle _rect = new Rectangle(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
         public ISurface Surface { get; }
@@ -89,6 +89,7 @@ namespace avoCADo.Trimming
             GL.Disable(EnableCap.DepthTest);
             var rends = GetRenderers(q, Registry.ShaderProvider);
             Registry.ShaderProvider.UpdateShadersCameraMatrices(_cam);
+            GL.LineWidth(1.0f);
             foreach(var rend in rends)
             {
                 rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);

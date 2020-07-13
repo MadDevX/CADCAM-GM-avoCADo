@@ -33,7 +33,7 @@ namespace avoCADo
         }
 
 
-        public Vector3 GetVertex(float t)
+        public virtual Vector3 GetVertex(float t)
         {
             int segment = (int)t;
             int startIdx;
@@ -61,7 +61,7 @@ namespace avoCADo
             throw new Exception("invalid parameter value");
         }
 
-        public void Refresh()
+        public virtual void Refresh()
         {
             BernsteinControlPoints.Clear();
             

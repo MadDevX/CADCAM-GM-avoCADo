@@ -62,7 +62,13 @@ namespace avoCADo
         public int IsolineDivisionsU { get; set; } = 4;
         public int IsolineDivisionsV { get; set; } = 4;
         public bool ShowEdges { get; set; } = false;
-        public bool FlipTrim { get; set; } = false;
+
+        private bool _flipTrim = false;
+        public bool FlipTrim 
+        {
+            get => _flipTrim && Surface.BoundingCurves.Count > 0;
+            set => _flipTrim = value;
+        }
 
         private bool _showControlPoints = true; 
         public bool ShowControlPoints 
