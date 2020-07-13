@@ -1,4 +1,5 @@
-﻿using avoCADo.ParametricObjects;
+﻿using avoCADo.Intersections;
+using avoCADo.ParametricObjects;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ namespace avoCADo.Algebra
                 }
                 else
                 {
+                    pointList.Add(BoundaryFinder.FindBoundaryPoint(data, pointList.Last(), point));
                     break;
                 }
             }
@@ -64,6 +66,7 @@ namespace avoCADo.Algebra
                     }
                     else
                     {
+                        pointList2.Add(BoundaryFinder.FindBoundaryPoint(data2, pointList2.Last(), point));
                         break;
                     }
                 }

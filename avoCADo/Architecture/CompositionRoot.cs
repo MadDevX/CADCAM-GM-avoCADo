@@ -115,7 +115,7 @@ namespace avoCADo
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _cursor, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\weirdTorus.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\torus-on-cylinder-action.xml");
             _cursor.Transform.Position = new Vector3(-0.413268f, 0.1434115f, 0.2349933f);
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
 

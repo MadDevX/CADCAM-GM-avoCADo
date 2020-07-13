@@ -99,6 +99,7 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
+    <Compile Include="Intersections\BoundaryFinder.cs" />
     <Compile Include="Intersections\ConjugateGradient.cs" />
     <Compile Include="Intersections\IntersectionData.cs" />
     <Compile Include="Intersections\IntersectionFinder.cs" />
