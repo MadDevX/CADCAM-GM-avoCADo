@@ -231,6 +231,7 @@
     <Compile Include="Rendering\Renderers\QuadOverlayRenderer.cs" />
     <Compile Include="Rendering\Renderers\RectangleSelectionRenderer.cs" />
     <Compile Include="Shaders\ShaderBackgroundManager.cs" />
+    <Compile Include="Shaders\ShaderWrappers\ITrimmableShaderWrapper.cs" />
     <Compile Include="Shaders\ShaderWrappers\ShaderWrapper.cs" />
     <Compile Include="Rendering\Renderers\SimpleRenderer.cs" />
     <Compile Include="Shaders\ShaderWrappers\SimpleShaderWrapper.cs" />
@@ -240,6 +241,7 @@
     </Compile>
     <Compile Include="Serialization\NodeImporter.cs" />
     <Compile Include="Serialization\SceneDeserializer.cs" />
+    <Compile Include="Shaders\ShaderWrappers\TorusShaderWrapper.cs" />
     <Compile Include="TorusGeneratorView.xaml.cs">
       <DependentUpon>TorusGeneratorView.xaml</DependentUpon>
     </Compile>
@@ -389,6 +391,7 @@
     <None Include="Shaders\GLSL\teDeBoor.tese" />
     <None Include="Shaders\GLSL\teBezier.tese" />
     <None Include="Shaders\GLSL\simpleVs.vert" />
+    <None Include="Shaders\GLSL\vsTextured.vert" />
     <None Include="Shaders\GLSL\vs.vert" />
     <None Include="Shaders\GLSL\vsQuad.vert" />
   </ItemGroup>

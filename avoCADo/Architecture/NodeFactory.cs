@@ -127,7 +127,7 @@ namespace avoCADo
             if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
             var surf = new TorusSurface(0.5f, 0.2f);
             var generator = new TorusGenerator(30, 30, surf);
-            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator), NameGenerator.GenerateName(parent, DefaultNodeNames.Torus));
+            var torusNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), CreateParametricObjectRenderer(generator, VertexLayout.Type.PositionTexCoord), NameGenerator.GenerateName(parent, DefaultNodeNames.Torus));
             surf.Initialize(torusNode.Transform);
             torusNode.ObjectType = ObjectType.Torus;
 
@@ -262,9 +262,9 @@ namespace avoCADo
         }
 
 
-        private IRenderer CreateParametricObjectRenderer(IMeshGenerator generator)
+        private IRenderer CreateParametricObjectRenderer(IMeshGenerator generator, VertexLayout.Type type = VertexLayout.Type.Position)
         {
-            return new ParametricObjectRenderer(_shaderProvider, generator);
+            return new ParametricObjectRenderer(_shaderProvider, generator, type);
         }
 
         private INode GetDefaultParent()

@@ -11,6 +11,7 @@ namespace avoCADo
         public static readonly string SimpleVSPath = "simpleVs.vert";
         public static readonly string SimpleFSPath = "simpleFs.frag";
         public static readonly string VSPath = "vs.vert";
+        public static readonly string VSTexturedPath = "vsTextured.vert";
         public static readonly string FSPath = "fs.frag";
         public static readonly string FSTexturedPath = "fsTextured.frag";
         public static readonly string VSQuadPath = "vsQuad.vert";

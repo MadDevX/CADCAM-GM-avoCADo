@@ -32,7 +32,7 @@ namespace avoCADo.Utility
 
         private static Mesh CreatePointMesh()
         {
-            var mesh = new Mesh();
+            var mesh = new Mesh(VertexLayout.Type.Position);
             float[] vertices = { 0.0f, 0.0f, 0.0f };
             uint[] indices = { 0 };
             mesh.SetBufferData(vertices, indices, BufferUsageHint.StaticDraw);

@@ -1,5 +1,6 @@
 ﻿using avoCADo.Constants;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace avoCADo
         public ISurface Surface => _surface;
         public event Action OnParametersChanged;
 
-        public IList<DrawCall> DrawCalls => new List<DrawCall>{new DrawCall(0, _indices.Length, DrawCallShaderType.Default, RenderConstants.LINE_SIZE)};
+        public IList<DrawCall> DrawCalls => new List<DrawCall>{new DrawCall(0, _indices.Length, DrawCallShaderType.TexturedDefault, RenderConstants.LINE_SIZE, 16, 0, 0, Vector2.Zero, Vector2.One, false, Trim, FlipTrim)};
 
         public int XDivisions
         { 
@@ -34,6 +35,20 @@ namespace avoCADo
                 _yDivisions = MathHelper.Clamp(value, 3, _maxDivisions);
                 UpdateData();
             }
+        }
+
+        private bool _flipTrim = false;
+        public bool FlipTrim
+        {
+            get => _flipTrim && Surface.BoundingCurves.Count > 0;
+            set => _flipTrim = value;
+        }
+
+        private bool _trim = false;
+        public bool Trim
+        {
+            get => _trim && Surface.BoundingCurves.Count > 0;
+            set => _trim = value;
         }
 
         private int _xDivisions = 3;
@@ -81,7 +96,7 @@ namespace avoCADo
 
         private void GenerateVertices()
         {
-            var newLength = _xDivisions * _yDivisions * 3;
+            var newLength = _xDivisions * _yDivisions * 5; //3 for position, 2 for texCoords
             if (_vertices == null || _vertices.Length != newLength)
             {
                 _vertices = new float[newLength];
@@ -97,7 +112,8 @@ namespace avoCADo
                 {
                     var alpha = (((float)x / _xDivisions) * (uParamRange.Y - uParamRange.X)) + uParamRange.X;
                     var vertex = _surface.GetVertexLocalSpace(alpha, beta);
-                    VBOUtility.SetVertex(_vertices, vertex, (x + y * _xDivisions));
+                    var texCoords = new Vector2((float)x / _xDivisions, (float)y / _yDivisions);
+                    VBOUtility.SetVertex(_vertices, vertex, texCoords, (x + y * _xDivisions));
                 }
             }
         }
@@ -155,6 +171,8 @@ namespace avoCADo
 
         public void RefreshDataPreRender()
         {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, Surface.TrimTexture.TextureHandle);
         }
     }
 }

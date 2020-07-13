@@ -11,22 +11,13 @@ namespace avoCADo
 {
     public class ParametricObjectRenderer : MeshRenderer
     {
-        private ShaderWrapper _curveShaderWrapper;
-        private TesselationShaderWrapper _tessBezierShaderWraper;
-        private TesselationShaderWrapper _tessDeBoorShaderWraper;
-        private TesselationShaderWrapper _tessGregoryShaderWrapper;
-
         private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
         private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;
 
-        public ParametricObjectRenderer(IShaderProvider provider, IMeshGenerator meshGenerator) : base(provider.DefaultShader, meshGenerator)
+        public ParametricObjectRenderer(IShaderProvider provider, IMeshGenerator meshGenerator, VertexLayout.Type type = VertexLayout.Type.Position) : base(provider.DefaultShader, meshGenerator, type)
         {
-            _tessBezierShaderWraper = provider.SurfaceShaderBezier;
-            _tessDeBoorShaderWraper = provider.SurfaceShaderDeBoor;
-            _tessGregoryShaderWrapper = provider.SurfaceShaderGregory;
-            _curveShaderWrapper = provider.CurveShader;
-            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(_shaderWrapper, _curveShaderWrapper, _tessBezierShaderWraper, _tessDeBoorShaderWraper, _tessGregoryShaderWrapper);
-            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches, PrimitiveType.Patches);
+            _shadersDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, ShaderWrapper>(provider.DefaultShader, provider.CurveShader, provider.SurfaceShaderBezier, provider.SurfaceShaderDeBoor, provider.SurfaceShaderGregory, provider.DefaultTexturedShader);
+            _primitivesDict = DictionaryInitializer.InitializeEnumDictionary<DrawCallShaderType, PrimitiveType>(PrimitiveType.Lines, PrimitiveType.LinesAdjacency, PrimitiveType.Patches, PrimitiveType.Patches, PrimitiveType.Patches, PrimitiveType.Lines);
         }
 
         protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
@@ -52,12 +43,15 @@ namespace avoCADo
                         GL.PatchParameter(PatchParameterInt.PatchVertices, calls[i].patchCount);
                         tess.SetTessLevelOuter0(calls[i].tessLevelOuter0);
                         tess.SetTessLevelOuter1(calls[i].tessLevelOuter1);
-                        tess.SetPatchCoords(calls[i].patchCoords);
-                        tess.SetPatchDimensions(calls[i].patchDimensions);
-                        tess.SetFlipUV(calls[i].flipUV);
-                        tess.SetFlipTrim(calls[i].flipTrim);
-                        tess.SetTrim(calls[i].trim);
                     }
+                }
+                if(shaderWrapper is ITrimmableShaderWrapper trimShader)
+                {
+                    trimShader.SetPatchCoords(calls[i].patchCoords);
+                    trimShader.SetPatchDimensions(calls[i].patchDimensions);
+                    trimShader.SetFlipUV(calls[i].flipUV);
+                    trimShader.SetFlipTrim(calls[i].flipTrim);
+                    trimShader.SetTrim(calls[i].trim);
                 }
                 GL.DrawElements(_primitivesDict[calls[i].shaderType], calls[i].elementCount, DrawElementsType.UnsignedInt, calls[i].startIndex * sizeof(uint));
                 currentShader.SetColor(Color4.White);

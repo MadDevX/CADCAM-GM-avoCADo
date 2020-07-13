@@ -20,9 +20,32 @@ namespace avoCADo
     /// </summary>
     public partial class TorusGeneratorView : UserControl
     {
+        private ISelectionManager _selectionManager;
         public TorusGeneratorView()
         {
             InitializeComponent();
+            _selectionManager = NodeSelection.Manager;
+            _selectionManager.OnSelectionChanged += OnSelectionChanged;
+            Unloaded += OnUnload;
+        }
+
+        private void OnUnload(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= OnUnload;
+            _selectionManager.OnSelectionChanged -= OnSelectionChanged;
+        }
+
+        private void OnSelectionChanged()
+        {
+            if (_selectionManager.MainSelection != null)
+            {
+                var gen = _selectionManager.MainSelection.Renderer.GetGenerator() as TorusGenerator;
+                DataContext = gen;
+            }
+            else
+            {
+                DataContext = null;
+            }
         }
     }
 }

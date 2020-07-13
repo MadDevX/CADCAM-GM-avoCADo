@@ -4,6 +4,7 @@
     {
         BufferShaderWrapper BufferShader { get; }
         ShaderWrapper DefaultShader { get; }
+        TorusShaderWrapper DefaultTexturedShader { get; }
         ShaderWrapper CurveShader { get; }
         TesselationShaderWrapper SurfaceShaderBezier { get; }
         TesselationShaderWrapper SurfaceShaderDeBoor { get; }

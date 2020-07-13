@@ -24,10 +24,10 @@ namespace avoCADo
         }
 
 
-        public Renderer(ShaderWrapper shader)
+        public Renderer(ShaderWrapper shader, VertexLayout.Type type = VertexLayout.Type.Position)
         {
             _shaderWrapper = shader;
-            _mesh = new Mesh();
+            _mesh = new Mesh(type);
             _shouldDispose = true;
         }
 

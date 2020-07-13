@@ -14,6 +14,7 @@ namespace avoCADo
         public TesselationShaderWrapper SurfaceShaderBezier { get; }
         public TesselationShaderWrapper SurfaceShaderDeBoor { get; }
         public TesselationShaderWrapper SurfaceShaderGregory { get; }
+        public TorusShaderWrapper DefaultTexturedShader { get; }
         public SimpleShaderWrapper OverlayShader { get; }
 
         public ShaderProvider()
@@ -24,6 +25,7 @@ namespace avoCADo
             SurfaceShaderBezier = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEBezierPath, ShaderPaths.FSTexturedPath), textured:true, nameof(SurfaceShaderBezier));
             SurfaceShaderDeBoor = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESCPath, ShaderPaths.TESEDeBoorPath, ShaderPaths.FSTexturedPath), textured: true, nameof(SurfaceShaderDeBoor));
             SurfaceShaderGregory = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESC20Path, ShaderPaths.TESEGregoryPath, ShaderPaths.FSPath), textured: false, nameof(SurfaceShaderGregory));
+            DefaultTexturedShader = new TorusShaderWrapper(new Shader(ShaderPaths.VSTexturedPath, ShaderPaths.FSTexturedPath), textured: true, nameof(DefaultTexturedShader));
             OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath), nameof(OverlayShader));
         }
 
@@ -39,11 +41,14 @@ namespace avoCADo
             camera.SetCameraMatrices(SurfaceShaderDeBoor);
             SurfaceShaderGregory.Shader.Use();
             camera.SetCameraMatrices(SurfaceShaderGregory);
+            DefaultTexturedShader.Shader.Use();
+            camera.SetCameraMatrices(DefaultTexturedShader);
         }
 
         public void Dispose()
         {
             OverlayShader.Dispose();
+            DefaultTexturedShader.Dispose();
             SurfaceShaderGregory.Dispose();
             SurfaceShaderDeBoor.Dispose();
             SurfaceShaderBezier.Dispose();

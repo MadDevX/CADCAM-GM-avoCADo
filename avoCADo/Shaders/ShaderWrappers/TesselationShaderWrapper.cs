@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class TesselationShaderWrapper : ShaderWrapper
+    public class TesselationShaderWrapper : ShaderWrapper, ITrimmableShaderWrapper
     {
         private int _shaderTessLevelOuter0Location;
         private int _shaderTessLevelOuter1Location;

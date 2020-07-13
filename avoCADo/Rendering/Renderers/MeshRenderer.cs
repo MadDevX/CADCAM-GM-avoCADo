@@ -12,7 +12,7 @@ namespace avoCADo
     {
         protected IMeshGenerator _meshGenerator;
 
-        public MeshRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper)
+        public MeshRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator, VertexLayout.Type type = VertexLayout.Type.Position) : base(shaderWrapper, type)
         {
             _meshGenerator = meshGenerator;
             _meshGenerator.OnParametersChanged += SetBufferData;

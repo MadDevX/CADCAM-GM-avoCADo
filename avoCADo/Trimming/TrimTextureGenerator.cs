@@ -77,6 +77,7 @@ namespace avoCADo
                 }
             }
             return filled;
+            //TODO: handle looping also along x/y edges (also, virtually impossible case)
             //if(x == 0 && y == to) TODO: process all corners (it's virtually impossible though to encounter these)
             //if(x == toFill.Width - 1 )
 
