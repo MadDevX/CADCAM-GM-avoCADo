@@ -38,6 +38,17 @@ namespace avoCADo.Trimming
             {
                 throw new InvalidOperationException();
             }
+
+            ResetTexture();
+        }
+
+        private void ResetTexture()
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
+            GL.Viewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+            GL.ClearColor(Color4.White);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
         private void InitializeTexture()
@@ -45,25 +56,26 @@ namespace avoCADo.Trimming
             GL.CreateFramebuffers(1, out _framebufferHandle);
             GL.CreateTextures(TextureTarget.Texture2D, 1, out _textureHandle);
 
+            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, TextureHandle, 0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
         }
 
-        public void UpdateTrimTexture(ISurface q)
+        public void UpdateTrimTexture(ISurface q, bool isP)
         {
-            RenderToTexture(q);
             GL.ActiveTexture(TextureUnit.Texture0);
-            UpdateOutlineBitmap();
-            UpdateTextureData();
+            RenderToTexture(q);
+            UpdateOutlineBitmap(isP);
+            UpdateTextureData(isP);
         }
 
         private void RenderToTexture(ISurface q)
@@ -71,14 +83,15 @@ namespace avoCADo.Trimming
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
             GL.Viewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
             GL.ClearColor(Color4.White);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Disable(EnableCap.DepthTest);
             var rends = GetRenderers(q, Registry.ShaderProvider);
             Registry.ShaderProvider.UpdateShadersCameraMatrices(_cam);
             foreach(var rend in rends)
             {
                 rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
             }
+            GL.Enable(EnableCap.DepthTest);
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
@@ -87,13 +100,14 @@ namespace avoCADo.Trimming
         {
             var list = new List<ParametricObjectRenderer>();
             //TODO: handle selfintersections
-            ParametricSpaceConverter.SetupData(Surface, q, list, shaderProvider);
+            ParametricSpaceConverter.SetupData(Surface, q, list, shaderProvider, Color4.Black);
             return list;
         }
 
-        private void UpdateTextureData()
+        private void UpdateTextureData(bool isP)
         {
             var result = TrimTextureGenerator.FillBitmap(_bitmap, 0, 0); //TODO: find coords
+            result.Save($"filledTexture{(isP?0:1)}.bmp");
             var bits = result.LockBits(_rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.Rgb, PixelType.UnsignedByte, bits.Scan0);
@@ -102,13 +116,16 @@ namespace avoCADo.Trimming
             result.Dispose();
         }
 
-        private void UpdateOutlineBitmap()
+        private void UpdateOutlineBitmap(bool isP)
         {
             BitmapData bits = _bitmap.LockBits(_rect, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
+            //GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
             GL.ReadPixels(0, 0, TEXTURE_SIZE, TEXTURE_SIZE, PixelFormat.Rgb, PixelType.UnsignedByte, bits.Scan0);
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            //GL.BindTexture(TextureTarget.Texture2D, 0);
             _bitmap.UnlockBits(bits);
+            _bitmap.Save($"renderedTexture{(isP?0:1)}.bmp");
         }
 
         public void Dispose()

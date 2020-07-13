@@ -14,8 +14,8 @@ namespace avoCADo
 
         public BufferShaderWrapper(Shader shader, string name) : base(shader, name)
         {
-            SetTexture1(0);
-            SetTexture2(1);
+            SetTexture1(1);
+            SetTexture2(2);
         }
 
 

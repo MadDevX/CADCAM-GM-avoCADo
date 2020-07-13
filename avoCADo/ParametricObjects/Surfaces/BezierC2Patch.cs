@@ -1,5 +1,6 @@
 ﻿using avoCADo.ParametricObjects;
 using avoCADo.ParametricObjects.Curves;
+using avoCADo.Trimming;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace avoCADo
         public bool ULoop => ControlPoints.DataWidth != ControlPoints.Width;
         public bool VLoop => ControlPoints.DataHeight != ControlPoints.Height;
         public IList<IntersectionCurveData> BoundingCurves { get; } = new List<IntersectionCurveData>();
+        public TrimTextureProvider TrimTexture { get; }
 
         public CoordList<INode> ControlPoints { get; } = new CoordList<INode>();
 
@@ -30,6 +32,11 @@ namespace avoCADo
         /// Used to store weights for 2-step de Casteljeu algorithm (for surfaces)
         /// </summary>
         private Vector3[] _coordBuffer = new Vector3[4];
+
+        public BezierC2Patch()
+        {
+            TrimTexture = new TrimTextureProvider(this);
+        }
 
         public Vector3 GetVertex(float u, float v)
         {

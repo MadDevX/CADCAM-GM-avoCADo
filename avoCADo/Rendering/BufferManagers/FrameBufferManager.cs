@@ -66,7 +66,7 @@ namespace avoCADo
         {
             for (int i = 0; i < _bufferCount; i++)
             {
-                GL.ActiveTexture(TextureUnit.Texture0 + i);
+                GL.ActiveTexture(TextureUnit.Texture1 + i);
                 GL.BindTexture(TextureTarget.Texture2DMultisample, _textures[i]);
                 GL.Enable(EnableCap.Texture2D);
             }

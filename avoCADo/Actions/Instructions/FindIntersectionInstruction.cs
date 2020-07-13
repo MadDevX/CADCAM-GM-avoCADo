@@ -53,6 +53,9 @@ namespace avoCADo.Actions
             }
 
             _createdNode = Registry.NodeFactory.CreateObject(ObjectType.IntersectionCurve, new IntersectionCurveParameters(p, q, intersection));
+
+            p.TrimTexture.UpdateTrimTexture(q, true);
+            q.TrimTexture.UpdateTrimTexture(p, false);
             return true;
         }
 

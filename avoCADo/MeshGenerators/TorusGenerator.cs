@@ -150,6 +150,7 @@ namespace avoCADo
         public void Dispose()
         {
             Surface.ParametersChanged -= UpdateData;
+            Surface.TrimTexture.Dispose();
         }
 
         public void RefreshDataPreRender()

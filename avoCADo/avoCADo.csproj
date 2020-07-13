@@ -104,7 +104,7 @@
     <Compile Include="Intersections\IntersectionFinder.cs" />
     <Compile Include="Intersections\LinearEquationSolver.cs" />
     <Compile Include="Intersections\NewtonMethod.cs" />
-    <Compile Include="Intersections\ParameterSpaceConverter.cs" />
+    <Compile Include="Intersections\ParametricSpaceConverter.cs" />
     <Compile Include="Intersections\SimpleGradient.cs" />
     <Compile Include="Intersections\SimpleGradientClosestPoint.cs" />
     <Compile Include="Intersections\SurfaceConditions.cs" />
@@ -372,6 +372,7 @@
     <None Include="Serialization\format_draft3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Shaders\GLSL\fsTextured.frag" />
     <None Include="Shaders\GLSL\fs.frag" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />

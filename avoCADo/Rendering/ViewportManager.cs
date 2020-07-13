@@ -29,17 +29,22 @@ namespace avoCADo
 
         public void Init()
         {
-            _control.SizeChanged += SetViewport;
+            _control.SizeChanged += UpdateViewport;
             _control.MakeCurrent();
             GL.Viewport(_control.Size);
         }
 
         public void Dispose()
         {
-            _control.SizeChanged -= SetViewport;
+            _control.SizeChanged -= UpdateViewport;
         }
 
-        private void SetViewport(object sender, EventArgs e)
+        private void UpdateViewport(object sender, EventArgs e)
+        {
+            ResetViewport();
+        }
+
+        public void ResetViewport()
         {
             _control.MakeCurrent();
             ViewportLeftUpper = Point.Empty;

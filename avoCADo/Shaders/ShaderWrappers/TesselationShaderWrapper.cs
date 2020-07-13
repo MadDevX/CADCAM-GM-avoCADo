@@ -11,9 +11,11 @@ namespace avoCADo
     {
         private int _shaderTessLevelOuter0Location;
         private int _shaderTessLevelOuter1Location;
-
-        public TesselationShaderWrapper(Shader shader, string name) : base(shader, name)
+        private int _shaderTrimTextureLocation;
+        private bool _textured;
+        public TesselationShaderWrapper(Shader shader, bool textured, string name) : base(shader, name)
         {
+            _textured = textured;
         }
 
         protected override void SetUniformLocations()
@@ -21,6 +23,11 @@ namespace avoCADo
             base.SetUniformLocations();
             _shaderTessLevelOuter0Location = GL.GetUniformLocation(Shader.Handle, "tessLevelOuter0");
             _shaderTessLevelOuter1Location = GL.GetUniformLocation(Shader.Handle, "tessLevelOuter1");
+            if(_textured)
+            {
+                _shaderTrimTextureLocation = GL.GetUniformLocation(Shader.Handle, "trimTexture");
+                SetTrimTexture(0);
+            }
         }
 
         public void SetTessLevelOuter0(int tessLevel)
@@ -33,6 +40,15 @@ namespace avoCADo
         {
             CheckShaderBinding();
             GL.Uniform1(_shaderTessLevelOuter1Location, tessLevel);
+        }
+
+        public void SetTrimTexture(int textureUnit)
+        {
+            CheckShaderBinding();
+            if (_textured)
+            {
+                GL.Uniform1(_shaderTrimTextureLocation, textureUnit);
+            }
         }
     }
 }

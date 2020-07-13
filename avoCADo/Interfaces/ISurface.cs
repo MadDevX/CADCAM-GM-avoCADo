@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Trimming;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +29,6 @@ namespace avoCADo
 
         bool DifferentPatches(float u1, float v1, float u2, float v2);
         IList<IntersectionCurveData> BoundingCurves { get; }
+        TrimTextureProvider TrimTexture { get; }
     }
 }

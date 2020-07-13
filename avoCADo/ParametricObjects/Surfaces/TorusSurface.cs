@@ -1,4 +1,5 @@
 ﻿using avoCADo.ParametricObjects;
+using avoCADo.Trimming;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -45,10 +46,13 @@ namespace avoCADo
 
         public IList<IntersectionCurveData> BoundingCurves { get; } = new List<IntersectionCurveData>();
 
+        public TrimTextureProvider TrimTexture { get; }
+
         public TorusSurface(float mainRadius, float tubeRadius)
         {
             MainRadius = mainRadius;
             TubeRadius = tubeRadius;
+            TrimTexture = new TrimTextureProvider(this);
         }
 
         public void Initialize(ITransform transform)

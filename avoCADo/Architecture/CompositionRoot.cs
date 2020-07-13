@@ -83,7 +83,7 @@ namespace avoCADo
             _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, _nodeImporter, new Scene("Main"));
             _camera = new StereoscopicCamera(_viewportManager);
             _camMovement = new CameraMovement(_camera, _control);
-            _renderLoop = new RenderLoop(_control, _screenBufferManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
+            _renderLoop = new RenderLoop(_control, _screenBufferManager, _viewportManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
 
             _screenSelectionManager = new ScreenSelectionHandler(_control, _camera, _sceneManager, _instructionBuffer);
             _rectangularSelectionDrawer = new RectangularSelectionDrawer(_renderLoop, _screenSelectionManager, _shaderProvider.OverlayShader, _control);
@@ -115,7 +115,7 @@ namespace avoCADo
 
             _window.Initialize(_nodeFactory, _transformationsManager, _nodeImporter, _nodeExporter, _sceneManager, _cursor, _renderLoop, _instructionBuffer);
 
-            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\c0SimpleTest.xml");
+            _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\intersectionTestLooped.xml");
             //_cursor.Transform.Position = new Vector3(-4.345058f, -0.1114839f, 1.026099f); //load cursorIntersectionTest - this position generates multiple loop error [FIXED]
             //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
 

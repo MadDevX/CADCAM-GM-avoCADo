@@ -13,7 +13,7 @@ namespace avoCADo
     {
         private static DummyNode _node = new DummyNode();
 
-        public static void SetupData(ISurface surf, ISurface second, List<ParametricObjectRenderer> rendList, ShaderProvider shaderProvider, bool selfIntersectionQ = false)
+        public static void SetupData(ISurface surf, ISurface second, List<ParametricObjectRenderer> rendList, ShaderProvider shaderProvider, Color4 renderColor, bool selfIntersectionQ = false)
         {
             //TODO: handle more curves on surfaces
             foreach (var c in surf.BoundingCurves)
@@ -35,8 +35,8 @@ namespace avoCADo
                 var indices = CorrectLooping(positions);
                 gen.SetData(positions, indices);
                 gen.Size = RenderConstants.CURVE_SIZE;
-                gen.SelectedColor = Color4.Red;
-                gen.DefaultColor = Color4.Red;
+                gen.SelectedColor = renderColor;
+                gen.DefaultColor = renderColor;
                 gen.DrawCallShaderType = DrawCallShaderType.Default;
             }
         }

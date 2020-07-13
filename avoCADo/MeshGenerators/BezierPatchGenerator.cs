@@ -1,5 +1,6 @@
 ﻿using avoCADo.Constants;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -165,6 +166,7 @@ namespace avoCADo
         public void Dispose()
         {
             _ctrlPointManager.Dispose();
+            Surface.TrimTexture.Dispose();
         }
 
 
@@ -300,6 +302,8 @@ namespace avoCADo
 
         public void RefreshDataPreRender()
         {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, Surface.TrimTexture.TextureHandle);
             if (_ctrlPointManager.ShouldUpdateData)
             {
                 UpdateBufferDataWrapper();

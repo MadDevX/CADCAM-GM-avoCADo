@@ -24,16 +24,18 @@ namespace avoCADo
 
         private GLControl _glControl;
         private ScreenBufferManager _screenBufferManager;
+        private readonly ViewportManager _viewportManager;
         private SceneManager _sceneManager;
         private Camera _camera;
         private QuadOverlayRenderer _quadOverlayRenderer;
         private FramebufferManager _framebufferManager;
         private ShaderProvider _shaderProvider;
 
-        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, SceneManager sceneManager, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer, ShaderProvider shaderProvider)
+        public RenderLoop(GLControl glControl, ScreenBufferManager screenBufferManager, ViewportManager viewportManager, SceneManager sceneManager, Camera camera, FramebufferManager framebufferManager, QuadOverlayRenderer quadRenderer, ShaderProvider shaderProvider)
         {
             _glControl = glControl;
             _screenBufferManager = screenBufferManager;
+            _viewportManager = viewportManager;
             _sceneManager = sceneManager;
             _camera = camera;
             _quadOverlayRenderer = quadRenderer;
@@ -61,6 +63,7 @@ namespace avoCADo
             #endregion
 
             _glControl.MakeCurrent();
+            _viewportManager.ResetViewport();
             _screenBufferManager.ResetScreenBuffer();
             _framebufferManager.ClearFrameBuffers(_camera.Cycles);
             _framebufferManager.SetTextureUnits();

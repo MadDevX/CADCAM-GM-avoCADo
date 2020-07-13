@@ -76,6 +76,7 @@ namespace avoCADo
         }
 
         private DualGLContext _glContext;
+        private Color4 _renderColor = Color4.Red;
 
         private List<ParametricObjectRenderer> _rendPList = new List<ParametricObjectRenderer>();
         private List<ParametricObjectRenderer> _rendQList = new List<ParametricObjectRenderer>();
@@ -145,14 +146,14 @@ namespace avoCADo
 
         private void Initialize(ISurface p, ISurface q)
         {
-            ParametricSpaceConverter.SetupData(p, q, _rendPList, _glContext.ShaderProvider);
+            ParametricSpaceConverter.SetupData(p, q, _rendPList, _glContext.ShaderProvider, _renderColor);
             if (p == q)
             {
-                ParametricSpaceConverter.SetupData(q, p, _rendQList, _glContext.ShaderProvider, true);
+                ParametricSpaceConverter.SetupData(q, p, _rendQList, _glContext.ShaderProvider, _renderColor, true);
             }
             else
             {
-                ParametricSpaceConverter.SetupData(q, p, _rendQList, _glContext.ShaderProvider);
+                ParametricSpaceConverter.SetupData(q, p, _rendQList, _glContext.ShaderProvider, _renderColor);
             }
         }
 
