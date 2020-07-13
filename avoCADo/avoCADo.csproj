@@ -104,6 +104,7 @@
     <Compile Include="Intersections\IntersectionFinder.cs" />
     <Compile Include="Intersections\LinearEquationSolver.cs" />
     <Compile Include="Intersections\NewtonMethod.cs" />
+    <Compile Include="Intersections\ParameterSpaceConverter.cs" />
     <Compile Include="Intersections\SimpleGradient.cs" />
     <Compile Include="Intersections\SimpleGradientClosestPoint.cs" />
     <Compile Include="Intersections\SurfaceConditions.cs" />

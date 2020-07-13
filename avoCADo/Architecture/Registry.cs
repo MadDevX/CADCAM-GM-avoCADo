@@ -41,5 +41,16 @@ namespace avoCADo.Architecture
                 _nodeFactory = value;
             }
         }
+
+        private static ShaderProvider _shaderProvider;
+        public static ShaderProvider ShaderProvider
+        {
+            get => _shaderProvider;
+            set
+            {
+                if (_shaderProvider != null) return;
+                _shaderProvider = value;
+            }
+        }
     }
 }

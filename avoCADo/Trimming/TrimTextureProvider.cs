@@ -1,4 +1,7 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using avoCADo.Architecture;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +15,7 @@ namespace avoCADo.Trimming
     using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
     public class TrimTextureProvider : IDisposable
     {
+        private DummyCamera _cam = new DummyCamera();
 
         private static int TEXTURE_SIZE = 1024;
         private static Bitmap _bitmap = new Bitmap(TEXTURE_SIZE, TEXTURE_SIZE, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -54,11 +58,37 @@ namespace avoCADo.Trimming
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
         }
 
-        public void UpdateTrimTexture()
+        public void UpdateTrimTexture(ISurface q)
         {
+            RenderToTexture(q);
             GL.ActiveTexture(TextureUnit.Texture0);
             UpdateOutlineBitmap();
             UpdateTextureData();
+        }
+
+        private void RenderToTexture(ISurface q)
+        {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle);
+            GL.Viewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+            GL.ClearColor(Color4.White);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            var rends = GetRenderers(q, Registry.ShaderProvider);
+            Registry.ShaderProvider.UpdateShadersCameraMatrices(_cam);
+            foreach(var rend in rends)
+            {
+                rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
+            }
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
+        private List<ParametricObjectRenderer> GetRenderers(ISurface q, ShaderProvider shaderProvider)
+        {
+            var list = new List<ParametricObjectRenderer>();
+            //TODO: handle selfintersections
+            ParametricSpaceConverter.SetupData(Surface, q, list, shaderProvider);
+            return list;
         }
 
         private void UpdateTextureData()
