@@ -136,14 +136,10 @@ namespace avoCADo.Trimming
 
         public void Dispose()
         {
-            //TODO: fix releasing of resources
-            //GL.BindFramebuffer(FramebufferTarget.Framebuffer, _framebufferHandle);
-            //GL.ActiveTexture(TextureUnit.Texture0);
-            //GL.BindTexture(TextureTarget.Texture2D, _textureHandle);
-            //GL.DeleteBuffers(1, ref _framebufferHandle);
-            //GL.DeleteTextures(1, ref _textureHandle);
-            //GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            //GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.DeleteFramebuffers(1, ref _framebufferHandle);
+            GL.DeleteTextures(1, ref _textureHandle);
         }
     }
 }
