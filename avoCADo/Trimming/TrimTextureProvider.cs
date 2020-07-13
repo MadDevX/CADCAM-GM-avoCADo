@@ -17,7 +17,7 @@ namespace avoCADo.Trimming
     {
         private DummyCamera _cam = new DummyCamera();
 
-        private static int TEXTURE_SIZE = 2048;
+        private static int TEXTURE_SIZE = 4096;
         private static Bitmap _bitmap = new Bitmap(TEXTURE_SIZE, TEXTURE_SIZE, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
         private static Rectangle _rect = new Rectangle(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
         public ISurface Surface { get; }
@@ -70,13 +70,18 @@ namespace avoCADo.Trimming
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
         }
 
+        /// <summary>
+        /// ISurface q represents "complimentary" surface to the one we try to trim (only common intersections between p & q are trimmed).
+        /// </summary>
+        /// <param name="q"></param>
+        /// <param name="isP"></param>
         public void UpdateTrimTexture(ISurface q, bool isP)
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             if (RenderToTexture(q))
             {
                 UpdateOutlineBitmap(isP);
-                UpdateTextureData(isP);
+                UpdateTextureData(isP, Surface.ULoop, Surface.VLoop);
             }
         }
 
@@ -110,9 +115,9 @@ namespace avoCADo.Trimming
             return list;
         }
 
-        private void UpdateTextureData(bool isP)
+        private void UpdateTextureData(bool isP, bool uLoop, bool vLoop)
         {
-            var result = TrimTextureGenerator.FillBitmap(_bitmap, 0, 0); //TODO: find coords
+            var result = TrimTextureGenerator.FillBitmap(_bitmap, 0, 0, uLoop, vLoop);
             result.Save($"filledTexture{(isP?0:1)}.bmp");
             var bits = result.LockBits(_rect, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);

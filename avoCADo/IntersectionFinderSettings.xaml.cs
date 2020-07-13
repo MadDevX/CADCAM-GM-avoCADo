@@ -19,8 +19,8 @@ namespace avoCADo
     /// </summary>
     public partial class IntersectionFinderSettings : Window
     {
-        public bool UseCursor { get; set; } = true;
-        public float KnotDistance { get; set; } = 0.1f;
+        public bool UseCursor { get; set; } = false;
+        public float KnotDistance { get; set; } = 0.01f;
         public IntersectionFinderSettings()
         {
             InitializeComponent();
