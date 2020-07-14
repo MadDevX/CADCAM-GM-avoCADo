@@ -32,6 +32,18 @@ namespace avoCADo
     /// </summary>
     public partial class MainWindow : Window, IUpdateLoop
     {
+        public bool FlipLoopP
+        {
+            get => TrimTextureGenerator.FlipLoopP;
+            set => TrimTextureGenerator.FlipLoopP = value;
+        }
+
+        public bool FlipLoopQ
+        {
+            get => TrimTextureGenerator.FlipLoopQ;
+            set => TrimTextureGenerator.FlipLoopQ = value;
+        }
+
         private NodeFactory _nodeFactory;
         private NodeImporter _nodeImporter;
         private NodeExporter _nodeExporter;
@@ -54,7 +66,7 @@ namespace avoCADo
 
             CreateGLControl();
             _compositionRoot = new CompositionRoot(_glControl, this);
-
+            DataContext = this;
             InitLoop();
         }
 

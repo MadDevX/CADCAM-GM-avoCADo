@@ -70,19 +70,27 @@ namespace avoCADo.Trimming
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
         }
 
+
+        private bool _flipLoops = false;
         /// <summary>
         /// ISurface q represents "complimentary" surface to the one we try to trim (only common intersections between p & q are trimmed).
         /// </summary>
         /// <param name="q"></param>
         /// <param name="isP"></param>
-        public void UpdateTrimTexture(ISurface q, bool isP)
+        public void UpdateTrimTexture(ISurface q, bool isP, bool flipLoops)
         {
+            _flipLoops = flipLoops;
             GL.ActiveTexture(TextureUnit.Texture0);
             if (RenderToTexture(q))
             {
                 UpdateOutlineBitmap(isP);
-                UpdateTextureData(isP, Surface.ULoop, Surface.VLoop);
+                UpdateTextureData(isP, flipLoops ? Surface.VLoop : Surface.ULoop, flipLoops ? Surface.ULoop : Surface.VLoop);
             }
+        }
+
+        public void UpdateTrimTexture(ISurface q, bool isP)
+        {
+            UpdateTrimTexture(q, isP, _flipLoops);
         }
 
         private bool RenderToTexture(ISurface q)

@@ -11,6 +11,9 @@ namespace avoCADo
 {
     public static class TrimTextureGenerator
     {
+        public static bool FlipLoopP { get; set; }
+        public static bool FlipLoopQ { get; set; }
+
         private static Color BLANK_COLOR = Color.FromArgb(255, 255, 255, 255);
 
         public static Bitmap FillBitmap(Bitmap toFill, int x, int y, bool uLoop, bool vLoop)

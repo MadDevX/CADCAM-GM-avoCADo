@@ -78,6 +78,9 @@
                     <MenuItem x:Name="menuItemSnapGrid025" Command="local:UtilityCommandDefinitions.SnapGrid025"/>
                     <MenuItem x:Name="menuItemSnapGrid05" Command="local:UtilityCommandDefinitions.SnapGrid05"/>
                 </MenuItem>
+                <Separator/>
+                <CheckBox x:Name="cbFlipLoopP" Content="Flip Loop P" IsChecked="{Binding FlipLoopP}"/>
+                <CheckBox x:Name="cbFlipLoopQ" Content="Flip Loop Q" IsChecked="{Binding FlipLoopQ}"/>
             </MenuItem>
         </Menu>
         <Grid x:Name="GridMain">

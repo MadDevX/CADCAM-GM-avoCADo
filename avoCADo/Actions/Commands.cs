@@ -323,8 +323,8 @@ namespace avoCADo
                 var q = selected.Count > 1 ? selected.ElementAt(1) : selected.ElementAt(0);
 
                 FindIntersectionInstruction.Parameters parameters;
-                if (dialog.UseCursor) parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance, _cursor3D.Position);
-                else parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance);
+                if (dialog.UseCursor) parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance, TrimTextureGenerator.FlipLoopP, TrimTextureGenerator.FlipLoopQ, _cursor3D.Position);
+                else parameters = new FindIntersectionInstruction.Parameters(p, q, dialog.KnotDistance, TrimTextureGenerator.FlipLoopP, TrimTextureGenerator.FlipLoopQ);
                 
                 _instructionBuffer.IssueInstruction<FindIntersectionInstruction, FindIntersectionInstruction.Parameters>(
                     parameters);

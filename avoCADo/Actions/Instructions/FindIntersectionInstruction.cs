@@ -54,8 +54,8 @@ namespace avoCADo.Actions
 
             _createdNode = Registry.NodeFactory.CreateObject(ObjectType.IntersectionCurve, new IntersectionCurveParameters(parameters.a, parameters.b, p, q, intersection));
 
-            p.TrimTexture.UpdateTrimTexture(q, true);
-            q.TrimTexture.UpdateTrimTexture(p, false);
+            p.TrimTexture.UpdateTrimTexture(q, true, parameters.flipLoopsP);
+            q.TrimTexture.UpdateTrimTexture(p, false, parameters.flipLoopsQ);
             return true;
         }
 
@@ -76,17 +76,21 @@ namespace avoCADo.Actions
             public float knotDistance;
             public bool useStartingPoint;
             public Vector3 startingPoint;
+            public bool flipLoopsP;
+            public bool flipLoopsQ;
 
-            public Parameters(INode a, INode b, float knotDistance)
+            public Parameters(INode a, INode b, float knotDistance, bool flipLoopsP, bool flipLoopsQ)
             {
                 this.a = a;
                 this.b = b;
                 this.knotDistance = knotDistance;
                 this.useStartingPoint = false;
                 this.startingPoint = Vector3.Zero;
+                this.flipLoopsP = flipLoopsP;
+                this.flipLoopsQ = flipLoopsQ;
             }
 
-            public Parameters(INode a, INode b, float knotDistance, Vector3 startingPoint) : this(a, b, knotDistance)
+            public Parameters(INode a, INode b, float knotDistance, bool flipLoopsP, bool flipLoopsQ, Vector3 startingPoint) : this(a, b, knotDistance, flipLoopsP, flipLoopsQ)
             {
                 this.useStartingPoint = true;
                 this.startingPoint = startingPoint;
