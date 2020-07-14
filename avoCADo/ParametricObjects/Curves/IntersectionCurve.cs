@@ -28,7 +28,7 @@ namespace avoCADo
         private List<Vector3> _controlPointsWorld = new List<Vector3>();
         private List<Vector3> _controlPoints = new List<Vector3>();
         public override int Segments => ControlPoints.Count - 1;
-        public override IList<Vector3> ControlPoints => _controlPoints;
+        public override IList<Vector3> ControlPoints => _controlPointsWorld;
         private ISurface _p;
         private ISurface _q;
         private List<Vector4> _parameters = new List<Vector4>();

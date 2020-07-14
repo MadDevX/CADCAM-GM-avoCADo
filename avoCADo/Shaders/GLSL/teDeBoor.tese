@@ -65,7 +65,7 @@ void main() {
    {
         TexCoords = vec2((v + patchCoords.x)/patchDimensions.x, (u + patchCoords.y)/patchDimensions.y);
    }
-   TexCoords = clamp(TexCoords, vec2(0.0001f, 0.0001f), vec2(0.9999f, 0.9999f));
+   TexCoords = clamp(TexCoords, vec2(0.001f, 0.001f), vec2(0.999f, 0.999f));
 
    gl_Position = projection * view * model * vec4(pos, 1.0f);
 }

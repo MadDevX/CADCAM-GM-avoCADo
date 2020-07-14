@@ -10,7 +10,7 @@ namespace avoCADo.Intersections
 {
     public static class BoundaryFinder
     {
-        public static Vector4 FindBoundaryPoint(IntersectionData data, Vector4 x0, Vector4 xOut, float epsilon = 0.0001f)
+        public static Vector4 FindBoundaryPoint(IntersectionData data, Vector4 x0, Vector4 xOut, float epsilon = 0.00001f)
         {
             var a = x0; //a is inside bounds
             var b = xOut; //b is outside bounds
