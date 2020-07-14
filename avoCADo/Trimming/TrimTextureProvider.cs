@@ -118,7 +118,6 @@ namespace avoCADo.Trimming
         private List<ParametricObjectRenderer> GetRenderers(ISurface q, ShaderProvider shaderProvider)
         {
             var list = new List<ParametricObjectRenderer>();
-            //TODO: handle selfintersections
             ParametricSpaceConverter.SetupData(Surface, q, list, shaderProvider, Color4.Black);
             return list;
         }
