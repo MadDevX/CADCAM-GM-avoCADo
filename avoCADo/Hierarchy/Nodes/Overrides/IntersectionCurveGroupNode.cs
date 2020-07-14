@@ -22,8 +22,8 @@ namespace avoCADo
             _intersectionData.p.BoundingCurves.Add(_curveData);
             _intersectionData.q.BoundingCurves.Add(_curveData);
 
-            _pNode.PropertyChanged += HandleChange;
-            _qNode.PropertyChanged += HandleChange;
+            //_pNode.PropertyChanged += HandleChange;
+            //_qNode.PropertyChanged += HandleChange;
         }
 
         public void ForceUpdate()
@@ -38,8 +38,8 @@ namespace avoCADo
 
         public override void Dispose()
         {
-            _pNode.PropertyChanged -= HandleChange;
-            _qNode.PropertyChanged -= HandleChange;
+            //_pNode.PropertyChanged -= HandleChange;
+            //_qNode.PropertyChanged -= HandleChange;
             _intersectionData.p.BoundingCurves.Remove(_curveData);
             _intersectionData.q.BoundingCurves.Remove(_curveData);
             _intersectionData.p.TrimTexture.UpdateTrimTexture(_intersectionData.q, true);

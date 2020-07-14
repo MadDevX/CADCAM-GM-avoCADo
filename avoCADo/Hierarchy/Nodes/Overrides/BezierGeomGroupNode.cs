@@ -22,10 +22,10 @@ namespace avoCADo
 
     public class IntersectionCurveData
     {
-        public INode Node { get; }
+        public IntersectionCurveGroupNode Node { get; }
         public IntersectionCurve Curve { get; }
 
-        public IntersectionCurveData(INode node, IntersectionCurve curve)
+        public IntersectionCurveData(IntersectionCurveGroupNode node, IntersectionCurve curve)
         {
             Node = node;
             Curve = curve;

@@ -10,6 +10,20 @@ namespace avoCADo
 {
     public class IntersectionCurve : InterpolatingC2Curve
     {
+        public enum Mode
+        {
+            P,
+            Q,
+            World
+        }
+
+        private Mode _mode;
+        public void SetMode(ISurface surf)
+        {
+            if(surf == _p) { _mode = Mode.P; return; }
+            if(surf == _q) { _mode = Mode.Q; return; }
+            _mode = Mode.World;
+        }
 
         private List<Vector3> _controlPointsWorld = new List<Vector3>();
         private List<Vector3> _controlPoints = new List<Vector3>();
@@ -83,32 +97,41 @@ namespace avoCADo
             BernsteinControlPoints.Clear();
             if (_parameters.Count < 2) return;
 
-            for(int i = 0; i < _parameters.Count - 1; i++)
+            var one3 = 1.0f / 3.0f;
+            var two3 = 2.0f / 3.0f;
+            if (_mode == Mode.World)
             {
-                BernsteinControlPoints.Add(_controlPointsWorld[i]);
-                BernsteinControlPoints.Add(Vector3.Lerp(_controlPointsWorld[i], _controlPointsWorld[i + 1], 1.0f / 3.0f));
-                BernsteinControlPoints.Add(Vector3.Lerp(_controlPointsWorld[i], _controlPointsWorld[i + 1], 2.0f / 3.0f));
-                BernsteinControlPoints.Add(_controlPointsWorld[i+1]);
+                for (int i = 0; i < _parameters.Count - 1; i++)
+                {
+                    BernsteinControlPoints.Add(_controlPointsWorld[i]);
+                    BernsteinControlPoints.Add(Vector3.Lerp(_controlPointsWorld[i], _controlPointsWorld[i + 1], one3));
+                    BernsteinControlPoints.Add(Vector3.Lerp(_controlPointsWorld[i], _controlPointsWorld[i + 1], two3));
+                    BernsteinControlPoints.Add(_controlPointsWorld[i + 1]);
+                }
             }
-
-            for(int i = 0; i < _parameters.Count - 1; i++)
+            else if (_mode == Mode.P)
             {
-                var p0 = _p.GetVertex(_parameters[i].X, _parameters[i].Y);
-                var p3 = _p.GetVertex(_parameters[i + 1].X, _parameters[i + 1].Y);
-                BernsteinControlPoints.Add(p0);
-                BernsteinControlPoints.Add(Vector3.Lerp(p0, p3, 1.0f / 3.0f));
-                BernsteinControlPoints.Add(Vector3.Lerp(p0, p3, 2.0f / 3.0f));
-                BernsteinControlPoints.Add(p3);
+                for (int i = 0; i < _parameters.Count - 1; i++)
+                {
+                    var p0 = _p.GetVertex(_parameters[i].X, _parameters[i].Y);
+                    var p3 = _p.GetVertex(_parameters[i + 1].X, _parameters[i + 1].Y);
+                    BernsteinControlPoints.Add(p0);
+                    BernsteinControlPoints.Add(Vector3.Lerp(p0, p3, one3));
+                    BernsteinControlPoints.Add(Vector3.Lerp(p0, p3, two3));
+                    BernsteinControlPoints.Add(p3);
+                }
             }
-
-            for (int i = 0; i < _parameters.Count - 1; i++)
+            else if (_mode == Mode.Q)
             {
-                var q0 = _q.GetVertex(_parameters[i].Z, _parameters[i].W);
-                var q3 = _q.GetVertex(_parameters[i + 1].Z, _parameters[i + 1].W);
-                BernsteinControlPoints.Add(q0);
-                BernsteinControlPoints.Add(Vector3.Lerp(q0, q3, 1.0f / 3.0f));
-                BernsteinControlPoints.Add(Vector3.Lerp(q0, q3, 2.0f / 3.0f));
-                BernsteinControlPoints.Add(q3);
+                for (int i = 0; i < _parameters.Count - 1; i++)
+                {
+                    var q0 = _q.GetVertex(_parameters[i].Z, _parameters[i].W);
+                    var q3 = _q.GetVertex(_parameters[i + 1].Z, _parameters[i + 1].W);
+                    BernsteinControlPoints.Add(q0);
+                    BernsteinControlPoints.Add(Vector3.Lerp(q0, q3, one3));
+                    BernsteinControlPoints.Add(Vector3.Lerp(q0, q3, two3));
+                    BernsteinControlPoints.Add(q3);
+                }
             }
         }
     }

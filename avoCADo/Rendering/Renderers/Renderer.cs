@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -55,6 +56,36 @@ namespace avoCADo
             SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
             GetGenerator()?.RefreshDataPreRender();
             Draw(camera, localMatrix, parentMatrix);
+            DrawTrim(camera, localMatrix, parentMatrix);
+        }
+
+        private void DrawTrim(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
+        {
+            try
+            {
+                if (_node != null && _node.Transform?.ParentNode != null)
+                {
+                    var gen = _node?.Renderer?.GetGenerator();
+                    if (gen is ISurfaceGenerator surfGen)
+                    {
+                        if (surfGen.Trim)
+                        {
+                            foreach (var c in surfGen.Surface.BoundingCurves)
+                            {
+                                c.Curve.SetMode(surfGen.Surface);
+                                c.Node.ForceUpdate();
+                                c.Node.Render(camera, Matrix4.Identity);
+                                c.Curve.SetMode(null);
+                                c.Node.ForceUpdate();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Trimming curve rendering failed!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         protected void SetShader(ShaderWrapper shaderWrapper, ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)

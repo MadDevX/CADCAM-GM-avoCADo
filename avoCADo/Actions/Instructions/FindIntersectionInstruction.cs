@@ -44,7 +44,7 @@ namespace avoCADo.Actions
             }
             catch(Exception e)
             {
-                MessageBox.Show($"Unexpected error occurred:\n + {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unexpected error occurred:\n + {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             if (intersection == null)
             {
