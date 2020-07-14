@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public interface ISurfaceGenerator
+    public interface ISurfaceGenerator : ITrimmableGenerator
     {
         ISurface Surface { get; }
     }

@@ -14,6 +14,10 @@ namespace avoCADo
         public BezierGeomGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(childrenSource, renderer, dependent, name)
         {
         }
+
+        public BezierGeomGroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(transform, childrenSource, renderer, dependent, name)
+        {
+        }
     }
 
     public class IntersectionCurveData

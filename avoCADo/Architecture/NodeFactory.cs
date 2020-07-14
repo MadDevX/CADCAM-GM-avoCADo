@@ -46,12 +46,16 @@ namespace avoCADo
 
     public struct IntersectionCurveParameters
     {
+        public INode pNode;
+        public INode qNode;
         public ISurface p;
         public ISurface q;
         public IList<Vector4> parameterList;
 
-        public IntersectionCurveParameters(ISurface p, ISurface q, IList<Vector4> parameterList)
+        public IntersectionCurveParameters(INode pNode, INode qNode, ISurface p, ISurface q, IList<Vector4> parameterList)
         {
+            this.pNode = pNode;
+            this.qNode = qNode;
             this.p = p;
             this.q = q;
             this.parameterList = parameterList;
@@ -224,7 +228,7 @@ namespace avoCADo
 
             var generator = new BezierGeneratorGeometry(curve);
             var childCollection = new WpfObservableRangeCollection<INode>();
-            var node = new IntersectionCurveGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, curve, new Algebra.IntersectionData(parameters.p, parameters.q), NameGenerator.GenerateName(parent, DefaultNodeNames.IntersectionCurve));
+            var node = new IntersectionCurveGroupNode(childCollection, CreateParametricObjectRenderer(generator), generator, curve, parameters.pNode, parameters.qNode, parameters.p, parameters.q, NameGenerator.GenerateName(parent, DefaultNodeNames.IntersectionCurve));
             node.ObjectType = ObjectType.IntersectionCurve;
 
             parent.AttachChild(node);

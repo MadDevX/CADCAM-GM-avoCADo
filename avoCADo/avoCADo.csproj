@@ -154,6 +154,7 @@
     </Compile>
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
+    <Compile Include="MeshGenerators\ITrimmableGenerator.cs" />
     <Compile Include="MeshGenerators\RawDataGenerator.cs" />
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />

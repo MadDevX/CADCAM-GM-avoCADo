@@ -19,6 +19,8 @@ namespace avoCADo
         public bool IsSelectable { get; set; } = true;
         public bool IsSelected { get; set; } = false;
         public event PropertyChangedEventHandler PropertyChanged;
+        protected void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) => PropertyChanged?.Invoke(sender, e);
+
         public event Action<INode> OnDisposed;
         public event Action<IDependencyCollector, IDependencyCollector> DependencyReplaced;
 
@@ -44,7 +46,7 @@ namespace avoCADo
             }
         }
 
-        public ITransform Transform { get; } = new GroupTransform();
+        public ITransform Transform { get; }
 
         public IRenderer Renderer { get; }
 
@@ -55,8 +57,9 @@ namespace avoCADo
 
         protected IDependencyCollector _depColl;
 
-        public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
+        public GroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
         {
+            Transform = transform;
             _depColl = new DependencyCollector();
             _children = childrenSource;
             Transform.Node = this;
@@ -64,6 +67,11 @@ namespace avoCADo
             Renderer = renderer;
             Name = name;
             renderer.SetNode(this);
+        }
+
+        public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
+            : this(new GroupTransform(), childrenSource, renderer, dependent, name)
+        {
         }
 
         IList<INode> _nodesToAttachToScene = new List<INode>();
