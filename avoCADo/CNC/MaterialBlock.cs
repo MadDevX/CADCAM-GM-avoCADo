@@ -8,6 +8,26 @@ using System.Threading.Tasks;
 
 namespace avoCADo.CNC
 {
+    public enum ToolType
+    {
+        Round,
+        Flat
+    }
+
+    public struct CNCTool
+    {
+        public readonly ToolType Type;
+        public readonly float Radius;
+        public readonly float RadiusSqr;
+
+        public CNCTool(ToolType type, float radius)
+        {
+            Type = type;
+            Radius = radius;
+            RadiusSqr = Radius * Radius;
+        }
+    }
+
     public class MaterialBlock
     {
         //        _______________
@@ -72,6 +92,15 @@ namespace avoCADo.CNC
             }
         }
 
+        private void DrillPixel(int x, int y, float value)
+        {
+            if (x < Width && y < Height)
+            {
+                var idx = GetIndex(x, y);
+                HeightMap[idx] = Math.Min(HeightMap[idx], value);
+            }
+        }
+
         private (int x, int y) GetCoordsFromPosition(Vector2 worldPosition)
         {
             var localPosition = worldPosition - _blockCenter;
@@ -90,15 +119,10 @@ namespace avoCADo.CNC
             return new Vector2(wX, wY) - _offsetVector;
         }
 
-        public enum ToolType
+        public void DrillCircleAtPosition(Vector3 toolPosition, CNCTool tool)
         {
-            Round,
-            Flat
-        }
-
-        public void DrillCircleAtPosition(Vector3 toolPosition, float radius, ToolType toolType)
-        {
-            var radiusSqr = radius * radius;
+            var radius = tool.Radius;
+            var radiusSqr = tool.RadiusSqr;
             var luPos = new Vector2(toolPosition.X - radius, toolPosition.Y - radius);
             var rbPos = new Vector2(toolPosition.X + radius, toolPosition.Y + radius);
 
@@ -115,17 +139,25 @@ namespace avoCADo.CNC
                     var distSqr = offX * offX + offY * offY;
                     if (distSqr <= radiusSqr)
                     {
-                        SetPixel(x, y, HeightByDist(toolPosition, radius, distSqr, toolType));
+                        DrillPixel(x, y, HeightByDistFromCenter(toolPosition, distSqr, tool));
                     }
                 }
             }
         }
 
 
-        private float HeightByDist(Vector3 toolPosition, float radius, float distanceSqr, ToolType toolType)
+        private float HeightByDistFromCenter(Vector3 toolPosition, float distanceSqr, CNCTool tool)
         {
-            //TODO: implement for round tool
-            return toolPosition.Z; //-radius; //TODO: check if radius should be added for flat tool
+            switch (tool.Type)
+            {
+                case ToolType.Round:
+                    var remaining = tool.RadiusSqr - distanceSqr;
+                    return toolPosition.Z - (float)Math.Sqrt(remaining);
+                case ToolType.Flat:
+                    return toolPosition.Z; //-radius; //TODO: check if radius should be added/subtracted for both tools
+                default:
+                    return 0.0f;
+            }
         }
 
         //void EightWaySymmetricPlot(int xc, int yc, int x, int y, float value)

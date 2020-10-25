@@ -61,13 +61,13 @@ namespace avoCADo
             //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
             //MessageBox.Show(ret.ToString());
 
-            var resX = 100;
-            var resY = 100;
-            var mesh = MeshUtility.CreatePlaneMesh(resX, resY, 1.0f, 1.0f); 
+            var res = 1000;
+            var size = 1.0f;
+            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size); 
 
-            var block = new MaterialBlock(resX, resY, 10.0f, 10.0f, 2.0f);
+            var block = new MaterialBlock(res, res, size, size, 1.0f);
             var texture = new MaterialBlockTextureManager(block);
-            block.DrillCircleAtPosition(Vector3.Zero, 5.0f, MaterialBlock.ToolType.Flat);
+            block.DrillCircleAtPosition(Vector3.Zero, new CNCTool(ToolType.Round, 0.5f));
             texture.UpdateTexture();
 
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), new MeshRenderer(provider.MillableSurfaceShader, mesh, texture), "plane");
