@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class ParametricObjectRenderer : MeshRenderer
+    public class ParametricObjectRenderer : GeneratedMeshRenderer
     {
         private Dictionary<DrawCallShaderType, ShaderWrapper> _shadersDict;
         private Dictionary<DrawCallShaderType, PrimitiveType> _primitivesDict;

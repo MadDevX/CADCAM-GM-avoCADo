@@ -8,44 +8,6 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public static class VertexLayout
-    {
-        public enum Type
-        {
-            Position,
-            PositionTexCoord
-        }
-
-        /// <summary>
-        /// Returns stride of vertex data
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="VAO"></param>
-        /// <returns></returns>
-        public static int SetupVAO(Type type, int VAO)
-        {
-            switch(type)
-            {
-                case Type.Position:
-                    GL.BindVertexArray(VAO);
-                    GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-                    GL.EnableVertexAttribArray(0);
-                    GL.BindVertexArray(0);
-                    return 3;
-                case Type.PositionTexCoord:
-                    GL.BindVertexArray(VAO);
-                    GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-                    GL.EnableVertexAttribArray(0);
-                    GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-                    GL.EnableVertexAttribArray(1);
-                    GL.BindVertexArray(0);
-                    return 5;
-                default:
-                    return 0;
-            }
-        }
-    }
-
     public class Mesh : IDisposable
     {
         private int VAO = 0;
@@ -81,12 +43,17 @@ namespace avoCADo
 
         public void SetBufferData(float[] vertices, uint[] indices, BufferUsageHint dataType)
         {
-            GL.BindVertexArray(VAO);
+            SetBufferData(vertices, dataType);
             IndexCount = indices.Length;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, dataType);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, dataType);
+        }
+
+        public void SetBufferData(float[] vertices, BufferUsageHint dataType)
+        {
+            GL.BindVertexArray(VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, dataType);
         }
 
         private void InitializeGLObjects(VertexLayout.Type type)
@@ -100,7 +67,7 @@ namespace avoCADo
         private void InitializeVAO(VertexLayout.Type type)
         {
             VAO = GL.GenVertexArray();
-            VertexLayout.SetupVAO(type, VAO);
+            VertexLayout.SetLayout(VAO, type);
             GL.BindVertexArray(VAO);
         }
 

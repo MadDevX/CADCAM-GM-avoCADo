@@ -117,7 +117,7 @@ namespace avoCADo
 
             _sceneManager.ImportScene("D:\\Studia\\Semestr I Mag\\MG1\\torusIntersectionTestEdgeCase.xml");
             _cursor.Transform.Position = new Vector3(-0.413268f, 0.1434115f, 0.2349933f);
-            //TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
+            TestSceneInitializer.SpawnTestObjects(_sceneManager.CurrentScene, _nodeFactory, _window, _shaderProvider, _cursor);
 
 
             ////var bitMap = new Bitmap("inputImage.bmp");

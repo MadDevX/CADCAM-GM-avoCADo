@@ -24,6 +24,8 @@ using System.Windows.Media;
 using avoCADo.HUD;
 using avoCADo.Serialization;
 using avoCADo.Miscellaneous;
+using avoCADo.CNC;
+using avoCADo.Utility;
 
 namespace avoCADo
 {

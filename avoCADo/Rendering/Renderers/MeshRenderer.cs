@@ -6,41 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace avoCADo
+namespace avoCADo.Rendering.Renderers
 {
     public class MeshRenderer : Renderer
     {
-        protected IMeshGenerator _meshGenerator;
-
-        public MeshRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator, VertexLayout.Type type = VertexLayout.Type.Position) : base(shaderWrapper, type)
+        private ITextureProvider _textureProvider;
+        public MeshRenderer(ShaderWrapper shader, Mesh mesh, ITextureProvider textureProvider) : base(shader, mesh)
         {
-            _meshGenerator = meshGenerator;
-            _meshGenerator.OnParametersChanged += SetBufferData;
-            SetBufferData();
+            _textureProvider = textureProvider;
         }
 
-        public override void Dispose()
-        {
-            _meshGenerator.OnParametersChanged -= SetBufferData;
-            _meshGenerator.Dispose();
-            base.Dispose();
-        }
-
-        public override IMeshGenerator GetGenerator()
-        {
-            return _meshGenerator;
-        }
+        public override IMeshGenerator GetGenerator() => null;
 
         protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            GL.DrawElements(PrimitiveType.Lines, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
+            if (_textureProvider != null)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, _textureProvider.TextureHandle);
+            }
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            GL.DrawElements(PrimitiveType.Triangles, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
         }
 
         protected override void SetBufferData()
         {
-            float[] vertices = _meshGenerator.GetVertices();
-            uint[] indices = _meshGenerator.GetIndices();
-            _mesh.SetBufferData(vertices, indices, BufferUsageHint.DynamicDraw);
         }
     }
 }

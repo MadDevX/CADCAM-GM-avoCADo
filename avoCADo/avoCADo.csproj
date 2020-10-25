@@ -99,6 +99,9 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
+    <Compile Include="CNC\MaterialBlock.cs" />
+    <Compile Include="CNC\MaterialBlockTextureManager.cs" />
+    <Compile Include="Interfaces\ITextureProvider.cs" />
     <Compile Include="Intersections\BoundaryFinder.cs" />
     <Compile Include="Intersections\ConjugateGradient.cs" />
     <Compile Include="Intersections\IntersectionData.cs" />
@@ -202,6 +205,7 @@
     <Compile Include="ParametricObjects\Surfaces\BezierC0Patch.cs" />
     <Compile Include="ParametricObjects\Surfaces\TorusSurface.cs" />
     <Compile Include="Rendering\Mesh.cs" />
+    <Compile Include="Rendering\Renderers\MeshRenderer.cs" />
     <Compile Include="Serialization\NodeExporter.cs" />
     <Compile Include="Serialization\SceneSerializer.cs" />
     <Compile Include="Serialization\SerializationUtility.cs" />
@@ -227,13 +231,14 @@
     <Compile Include="Rendering\Renderers\GizmoRenderer.cs" />
     <Compile Include="Interfaces\IRenderer.cs" />
     <Compile Include="Rendering\Renderers\LineRenderer.cs" />
-    <Compile Include="Rendering\Renderers\MeshRenderer.cs" />
+    <Compile Include="Rendering\Renderers\GeneratedMeshRenderer.cs" />
     <Compile Include="Rendering\Renderers\PointRenderer.cs" />
     <Compile Include="Rendering\RenderLoop.cs" />
     <Compile Include="Rendering\Renderers\QuadOverlayRenderer.cs" />
     <Compile Include="Rendering\Renderers\RectangleSelectionRenderer.cs" />
     <Compile Include="Shaders\ShaderBackgroundManager.cs" />
     <Compile Include="Shaders\ShaderWrappers\ITrimmableShaderWrapper.cs" />
+    <Compile Include="Shaders\ShaderWrappers\MillableSurfaceShaderWrapper.cs" />
     <Compile Include="Shaders\ShaderWrappers\ShaderWrapper.cs" />
     <Compile Include="Rendering\Renderers\SimpleRenderer.cs" />
     <Compile Include="Shaders\ShaderWrappers\SimpleShaderWrapper.cs" />
@@ -376,6 +381,7 @@
     <None Include="Serialization\format_draft3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Shaders\GLSL\fsMillable.frag" />
     <None Include="Shaders\GLSL\fsTextured.frag" />
     <None Include="Shaders\GLSL\fs.frag" />
     <None Include="OpenTK.dll.config" />
@@ -393,6 +399,7 @@
     <None Include="Shaders\GLSL\teDeBoor.tese" />
     <None Include="Shaders\GLSL\teBezier.tese" />
     <None Include="Shaders\GLSL\simpleVs.vert" />
+    <None Include="Shaders\GLSL\vsMillable.vert" />
     <None Include="Shaders\GLSL\vsTextured.vert" />
     <None Include="Shaders\GLSL\vs.vert" />
     <None Include="Shaders\GLSL\vsQuad.vert" />

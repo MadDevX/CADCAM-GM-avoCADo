@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class LineRenderer : MeshRenderer
+    public class LineRenderer : GeneratedMeshRenderer
     {
         public LineRenderer(ShaderWrapper shaderWrapper, IMeshGenerator meshGenerator) : base(shaderWrapper, meshGenerator)
         {

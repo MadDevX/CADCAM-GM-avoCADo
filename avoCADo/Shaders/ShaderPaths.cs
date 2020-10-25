@@ -22,5 +22,7 @@ namespace avoCADo
         public static readonly string TESEBezierPath = "teBezier.tese";
         public static readonly string TESEDeBoorPath = "teDeBoor.tese";
         public static readonly string TESEGregoryPath = "teGregory.tese";
+        public static readonly string VSMillablePath = "vsMillable.vert";
+        public static readonly string FSMillablePath = "fsMillable.frag";
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using avoCADo.Shaders.ShaderWrappers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace avoCADo
         public TesselationShaderWrapper SurfaceShaderGregory { get; }
         public TorusShaderWrapper DefaultTexturedShader { get; }
         public SimpleShaderWrapper OverlayShader { get; }
+        public MillableSurfaceShaderWrapper MillableSurfaceShader { get; }
 
         public ShaderProvider()
         {
@@ -27,6 +29,7 @@ namespace avoCADo
             SurfaceShaderGregory = new TesselationShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.TESC20Path, ShaderPaths.TESEGregoryPath, ShaderPaths.FSPath), textured: false, nameof(SurfaceShaderGregory));
             DefaultTexturedShader = new TorusShaderWrapper(new Shader(ShaderPaths.VSTexturedPath, ShaderPaths.FSTexturedPath), textured: true, nameof(DefaultTexturedShader));
             OverlayShader = new SimpleShaderWrapper(new Shader(ShaderPaths.SimpleVSPath, ShaderPaths.SimpleFSPath), nameof(OverlayShader));
+            MillableSurfaceShader = new MillableSurfaceShaderWrapper(new Shader(ShaderPaths.VSMillablePath, ShaderPaths.FSMillablePath), nameof(MillableSurfaceShader));
         }
 
         public void UpdateShadersCameraMatrices(ICamera camera)
@@ -43,10 +46,13 @@ namespace avoCADo
             camera.SetCameraMatrices(SurfaceShaderGregory);
             DefaultTexturedShader.Shader.Use();
             camera.SetCameraMatrices(DefaultTexturedShader);
+            MillableSurfaceShader.Shader.Use();
+            camera.SetCameraMatrices(MillableSurfaceShader);
         }
 
         public void Dispose()
         {
+            MillableSurfaceShader.Dispose();
             OverlayShader.Dispose();
             DefaultTexturedShader.Dispose();
             SurfaceShaderGregory.Dispose();
