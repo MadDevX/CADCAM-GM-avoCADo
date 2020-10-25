@@ -31,6 +31,8 @@ namespace avoCADo.CNC
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R32f, _block.Width, _block.Height, 0, PixelFormat.Red, PixelType.Float, IntPtr.Zero); //TODO: verify
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }

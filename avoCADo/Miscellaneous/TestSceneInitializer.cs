@@ -65,9 +65,9 @@ namespace avoCADo
             var size = 1.0f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size); 
 
-            var block = new MaterialBlock(res, res, size, size, 1.0f);
+            var block = new MaterialBlock(res, res, size, size, 0.0f);
             var texture = new MaterialBlockTextureManager(block);
-            block.DrillCircleAtPosition(Vector3.Zero, new CNCTool(ToolType.Round, 0.5f));
+            block.DrillCircleAtSegment(Vector3.UnitX * (-0.5f) + Vector3.UnitY * 0.1f, Vector3.UnitX * 0.5f + Vector3.UnitZ * 0.5f, new CNCTool(ToolType.Round, 0.05f));
             texture.UpdateTexture();
 
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), new MeshRenderer(provider.MillableSurfaceShader, mesh, texture), "plane");

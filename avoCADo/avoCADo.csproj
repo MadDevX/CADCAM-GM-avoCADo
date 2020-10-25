@@ -99,6 +99,7 @@
     <Compile Include="Actions\Instructions\NodeDeletedInstruction.cs" />
     <Compile Include="Actions\Instructions\TransformationInstruction.cs" />
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
+    <Compile Include="CNC\Algorithms.cs" />
     <Compile Include="CNC\MaterialBlock.cs" />
     <Compile Include="CNC\MaterialBlockTextureManager.cs" />
     <Compile Include="Interfaces\ITextureProvider.cs" />

@@ -10,8 +10,8 @@ namespace avoCADo.CNC
 {
     public enum ToolType
     {
-        Round,
-        Flat
+        Round = 0,
+        Flat = 1
     }
 
     public struct CNCTool
@@ -54,8 +54,12 @@ namespace avoCADo.CNC
 
         private Vector2 _blockCenter = Vector2.Zero;
 
+        private Func<float, float, float, float>[] _funcList = new Func<float, float, float, float>[2];
+
         public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultValue)
         {
+            _funcList[0] = HeightByDistFromCenterRound;
+            _funcList[1] = HeightByDistFromCenterFlat;
             //X Y resolution of height texture
             Width = width;
             Height = height;
@@ -79,29 +83,29 @@ namespace avoCADo.CNC
         }
 
 
-        private int GetIndex(int x, int y)
+        private int GetIndex(int x, int z)
         {
-            return x + y * Width;
+            return x + z * Width;
         }
 
-        private void SetPixel(int x, int y, float value)
+        private void SetPixel(int x, int z, float value)
         {
-            if (x < Width && y < Height)
+            if (x < Width && z < Height)
             {
-                HeightMap[GetIndex(x, y)] = value;
+                HeightMap[GetIndex(x, z)] = value;
             }
         }
 
-        private void DrillPixel(int x, int y, float value)
+        private void DrillPixel(int x, int z, float value)
         {
-            if (x < Width && y < Height)
+            if (x >= 0 && x < Width && z >= 0 && z < Height)
             {
-                var idx = GetIndex(x, y);
+                var idx = GetIndex(x, z);
                 HeightMap[idx] = Math.Min(HeightMap[idx], value);
             }
         }
 
-        private (int x, int y) GetCoordsFromPosition(Vector2 worldPosition)
+        private (int x, int z) GetCoordsFromPosition(Vector2 worldPosition)
         {
             var localPosition = worldPosition - _blockCenter;
             var offsetPosition = localPosition + _offsetVector;
@@ -112,52 +116,76 @@ namespace avoCADo.CNC
             return (x, y);
         }
 
-        private Vector2 IdxToWorld(int x, int y)
+        private Vector2 IdxToWorld(int x, int z)
         {
             var wX = x * _indexWidthToWorld;
-            var wY = y * _indexHeightToWorld;
-            return new Vector2(wX, wY) - _offsetVector;
+            var wZ = z * _indexHeightToWorld;
+            return new Vector2(wX, wZ) - _offsetVector;
         }
 
         public void DrillCircleAtPosition(Vector3 toolPosition, CNCTool tool)
         {
             var radius = tool.Radius;
             var radiusSqr = tool.RadiusSqr;
-            var luPos = new Vector2(toolPosition.X - radius, toolPosition.Y - radius);
-            var rbPos = new Vector2(toolPosition.X + radius, toolPosition.Y + radius);
+            var luPos = new Vector2(toolPosition.X - radius, toolPosition.Z - radius);
+            var rbPos = new Vector2(toolPosition.X + radius, toolPosition.Z + radius);
 
             var lu = GetCoordsFromPosition(luPos);
             var rb = GetCoordsFromPosition(rbPos);
+            int toolTypeIdx = (int)tool.Type;
 
-            for(int y = lu.y; y < rb.y; y++)
-            {
-                for(int x = lu.x; x < rb.x; x++)
+            Parallel.For(lu.z, rb.z,
+                (y) =>
                 {
-                    var pos = IdxToWorld(x, y);
-                    var offX = toolPosition.X - pos.X;
-                    var offY = toolPosition.Y - pos.Y;
-                    var distSqr = offX * offX + offY * offY;
-                    if (distSqr <= radiusSqr)
+                    for (int x = lu.x; x < rb.x; x++)
                     {
-                        DrillPixel(x, y, HeightByDistFromCenter(toolPosition, distSqr, tool));
+                        var pos = IdxToWorld(x, y);
+                        var offX = toolPosition.X - pos.X;
+                        var offY = toolPosition.Z - pos.Y;
+                        var distSqr = offX * offX + offY * offY;
+                        if (distSqr <= radiusSqr)
+                        {
+                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool.RadiusSqr));
+                        }
                     }
                 }
+            );
+            
+        }
+
+        private List<Point> _pointBuffer = new List<Point>(1000);
+
+        public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
+        {
+            var startXZ = start.Xz;
+            var endXZ = end.Xz;
+            bool hor = Math.Abs(start.X - end.X) > Math.Abs(start.Y - end.Y); //get bigger difference for numerical stability
+
+            var startIdx = GetCoordsFromPosition(startXZ);
+            var endIdx = GetCoordsFromPosition(endXZ);
+
+            Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
+
+            foreach(var p in _pointBuffer)
+            {
+                var pos = IdxToWorld(p.X, p.Y);
+                var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
+                var y = start.Y + t * (end.Y - start.Y);
+                DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
             }
+
         }
 
 
-        private float HeightByDistFromCenter(Vector3 toolPosition, float distanceSqr, CNCTool tool)
+        private float HeightByDistFromCenterRound(float toolZ, float distanceSqr, float toolRadiusSqr)
         {
-            switch (tool.Type)
-            {
-                case ToolType.Round:
-                    var remaining = tool.RadiusSqr - distanceSqr;
-                    return toolPosition.Z - (float)Math.Sqrt(remaining);
-                case ToolType.Flat:
-                    return toolPosition.Z; //-radius; //TODO: check if radius should be added/subtracted for both tools
-                default:
-                    return 0.0f;
-            }
+            var remaining = toolRadiusSqr - distanceSqr;
+            return toolZ - (float)Math.Sqrt(remaining);
+        }
+
+        private float HeightByDistFromCenterFlat(float toolZ, float distanceSqr, float toolRadiusSqr)
+        {
+            return toolZ; //-radius; //TODO: check if radius should be added/subtracted for both tools
         }
 
         //void EightWaySymmetricPlot(int xc, int yc, int x, int y, float value)
