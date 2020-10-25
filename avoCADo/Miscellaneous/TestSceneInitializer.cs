@@ -2,6 +2,7 @@
 using avoCADo.CNC;
 using avoCADo.Rendering.Renderers;
 using avoCADo.Utility;
+using Microsoft.Win32;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -63,7 +64,9 @@ namespace avoCADo
 
             var res = 1000;
             var size = 1.0f;
-            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size); 
+            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
+
+            var inst = CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\samplepaths\\t1.k16");
 
             var block = new MaterialBlock(res, res, size, size, 0.0f);
             var texture = new MaterialBlockTextureManager(block);
