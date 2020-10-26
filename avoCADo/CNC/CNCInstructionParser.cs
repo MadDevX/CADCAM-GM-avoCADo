@@ -31,6 +31,7 @@ namespace avoCADo.CNC
     public static class CNCInstructionParser
     {
         private static CultureInfo _ci;
+        private static float _unitsMult = 0.001f;
 
         static CNCInstructionParser()
         {
@@ -79,7 +80,7 @@ namespace avoCADo.CNC
                 default:
                     throw new InvalidDataException("Unrecognized file extension format!");
             }
-            radius = float.Parse(extension.Substring(1));
+            radius = float.Parse(extension.Substring(1)) * _unitsMult;
             return new CNCInstructionSet(new CNCTool(type, radius));
         }
 
@@ -111,13 +112,13 @@ namespace avoCADo.CNC
                     instruction.G = int.Parse(value);
                     break;
                 case 'X':
-                    instruction.X = float.Parse(value, _ci);
+                    instruction.X = float.Parse(value, _ci) * _unitsMult;
                     break;
                 case 'Y':
-                    instruction.Y = float.Parse(value, _ci);
+                    instruction.Z = -float.Parse(value, _ci) * _unitsMult; //Z and Y swapped because format intends Z axis as "up", and avoCADo has Y as "up"
                     break;
                 case 'Z':
-                    instruction.Z = float.Parse(value, _ci);
+                    instruction.Y = float.Parse(value, _ci) * _unitsMult;
                     break;
             }
         }

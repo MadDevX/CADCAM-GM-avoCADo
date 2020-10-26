@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace avoCADo.CNC
 {
@@ -105,6 +106,16 @@ namespace avoCADo.CNC
             }
         }
 
+        private bool CheckContactPixel(int x, int z, float value)
+        {
+            if (x >= 0 && x < Width && z >= 0 && z < Height)
+            {
+                var idx = GetIndex(x, z);
+                return HeightMap[idx] > value; //TODO: maybe >=
+            }
+            return false;
+        }
+
         private (int x, int z) GetCoordsFromPosition(Vector2 worldPosition)
         {
             var localPosition = worldPosition - _blockCenter;
@@ -157,35 +168,79 @@ namespace avoCADo.CNC
 
         public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
         {
+            _pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
             var startXZ = start.Xz;
             var endXZ = end.Xz;
-            bool hor = Math.Abs(start.X - end.X) > Math.Abs(start.Y - end.Y); //get bigger difference for numerical stability
+            var diffX = Math.Abs(start.X - end.X);
+            var diffZ = Math.Abs(start.Z - end.Z);
+            bool straightDown = diffX == 0.0f && diffZ == 0.0f;
 
-            var startIdx = GetCoordsFromPosition(startXZ);
-            var endIdx = GetCoordsFromPosition(endXZ);
-
-            Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
-
-            foreach(var p in _pointBuffer)
+            if (straightDown == false)
             {
-                var pos = IdxToWorld(p.X, p.Y);
-                var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
-                var y = start.Y + t * (end.Y - start.Y);
-                DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
+                bool hor = diffX > diffZ; //get bigger difference for numerical stability
+                var startIdx = GetCoordsFromPosition(startXZ);
+                var endIdx = GetCoordsFromPosition(endXZ);
+                Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
+
+                foreach (var p in _pointBuffer)
+                {
+                    var pos = IdxToWorld(p.X, p.Y);
+                    var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
+                    var y = start.Y + t * (end.Y - start.Y);
+                    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
+                }
+            }
+            else if(tool.Type == ToolType.Round)
+            {
+                DrillCircleAtPosition(end, tool);
+            }
+            else if(InContact(end, tool))
+            {
+                MessageBox.Show("InvalidMove"); //TODO: replace with exception and handle outside of this class
             }
 
         }
 
-
-        private float HeightByDistFromCenterRound(float toolZ, float distanceSqr, float toolRadiusSqr)
+        private bool InContact(Vector3 toolPosition, CNCTool tool)
         {
-            var remaining = toolRadiusSqr - distanceSqr;
-            return toolZ - (float)Math.Sqrt(remaining);
+            var radius = tool.Radius;
+            var radiusSqr = tool.RadiusSqr;
+            var luPos = new Vector2(toolPosition.X - radius, toolPosition.Z - radius);
+            var rbPos = new Vector2(toolPosition.X + radius, toolPosition.Z + radius);
+
+            var lu = GetCoordsFromPosition(luPos);
+            var rb = GetCoordsFromPosition(rbPos);
+            int toolTypeIdx = (int)tool.Type;
+
+            for (int y = lu.z; y < rb.z; y++)
+            {
+                for (int x = lu.x; x < rb.x; x++)
+                {
+                    var pos = IdxToWorld(x, y);
+                    var offX = toolPosition.X - pos.X;
+                    var offY = toolPosition.Z - pos.Y;
+                    var distSqr = offX * offX + offY * offY;
+                    if (distSqr <= radiusSqr)
+                    {
+                        if(CheckContactPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool.RadiusSqr)))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
-        private float HeightByDistFromCenterFlat(float toolZ, float distanceSqr, float toolRadiusSqr)
+        private float HeightByDistFromCenterRound(float toolY, float distanceSqr, float toolRadiusSqr)
         {
-            return toolZ; //-radius; //TODO: check if radius should be added/subtracted for both tools
+            var remaining = toolRadiusSqr - distanceSqr;
+            return toolY - (float)Math.Sqrt(remaining) + (float)Math.Sqrt(toolRadiusSqr);
+        }
+
+        private float HeightByDistFromCenterFlat(float toolY, float distanceSqr, float toolRadiusSqr)
+        {
+            return toolY; //TODO: check if radius should be added/subtracted for both tools
         }
 
         //void EightWaySymmetricPlot(int xc, int yc, int x, int y, float value)

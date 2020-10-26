@@ -62,15 +62,26 @@ namespace avoCADo
             //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
             //MessageBox.Show(ret.ToString());
 
-            var res = 1000;
-            var size = 1.0f;
+            var res = 300;
+            var size = 0.18f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
 
-            var inst = CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\samplepaths\\t1.k16");
+            var instSetList = new List<CNCInstructionSet>();
+            instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\1.k16"));
+            instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\2.f12"));
+            instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\3.f10"));
+            instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\4.k08"));
+            instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\5.k01"));
 
-            var block = new MaterialBlock(res, res, size, size, 0.0f);
+            var block = new MaterialBlock(res, res, size, size, 1.0f);
             var texture = new MaterialBlockTextureManager(block);
-            block.DrillCircleAtSegment(Vector3.UnitX * (-0.5f) + Vector3.UnitY * 0.1f, Vector3.UnitX * 0.5f + Vector3.UnitZ * 0.5f, new CNCTool(ToolType.Round, 0.05f));
+            foreach (var set in instSetList)
+            {
+                CNCSimulator.Execute(set, block);
+            }
+            //block.DrillCircleAtSegment((Vector3.UnitX + Vector3.UnitZ) * (-0.5f), (Vector3.UnitX + Vector3.UnitZ) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
+            //block.DrillCircleAtSegment(new Vector3(-1.0f, 0.0f, 1.0f) * 0.5f, new Vector3(1.0f, 0.0f, -1.0f) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
+            //block.DrillCircleAtSegment((Vector3.UnitX + Vector3.UnitZ) * (-0.5f) + Vector3.UnitY * 0.1f, (Vector3.UnitX + Vector3.UnitZ) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
             texture.UpdateTexture();
 
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), new MeshRenderer(provider.MillableSurfaceShader, mesh, texture), "plane");

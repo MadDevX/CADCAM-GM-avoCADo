@@ -101,6 +101,7 @@
     <Compile Include="Actions\TransformationInstructionUtility.cs" />
     <Compile Include="CNC\Algorithms.cs" />
     <Compile Include="CNC\CNCInstructionParser.cs" />
+    <Compile Include="CNC\CNCSimulator.cs" />
     <Compile Include="CNC\MaterialBlock.cs" />
     <Compile Include="CNC\MaterialBlockTextureManager.cs" />
     <Compile Include="Interfaces\ITextureProvider.cs" />
