@@ -14,13 +14,8 @@ namespace avoCADo.CNC
             var currentPosition = Vector3.UnitY;
             foreach(var instruction in instructionSet.Instructions)
             {
-                var newPos = currentPosition;
-                newPos.X = float.IsNaN(instruction.X) ? currentPosition.X : instruction.X;
-                newPos.Y = float.IsNaN(instruction.Y) ? currentPosition.Y : instruction.Y;
-                newPos.Z = float.IsNaN(instruction.Z) ? currentPosition.Z : instruction.Z;
-
-                block.DrillCircleAtSegment(currentPosition, newPos, instructionSet.Tool);
-                currentPosition = newPos;
+                block.DrillCircleAtSegment(currentPosition, instruction.Position, instructionSet.Tool);
+                currentPosition = instruction.Position;
             }
         }
     }

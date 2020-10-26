@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -27,6 +28,8 @@ namespace avoCADo.CNC
         public float X = float.NaN;
         public float Y = float.NaN;
         public float Z = float.NaN;
+
+        public Vector3 Position => new Vector3(X, Y, Z);
     }
     public static class CNCInstructionParser
     {
@@ -55,12 +58,27 @@ namespace avoCADo.CNC
                         }
                     }
                 }
+
+                RemoveNANs(instSet);
+
                 return instSet;
             }
             catch(Exception e)
             {
                 MessageBox.Show($"Path file is corrupted!\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
+            }
+        }
+
+        private static void RemoveNANs(CNCInstructionSet instructionSet)
+        {
+            var currentPosition = Vector3.UnitY;
+            foreach (var instruction in instructionSet.Instructions)
+            {
+                if(float.IsNaN(instruction.X)) instruction.X = currentPosition.X;
+                if(float.IsNaN(instruction.Y)) instruction.Y = currentPosition.Y;
+                if(float.IsNaN(instruction.Z)) instruction.Z = currentPosition.Z;
+                currentPosition = instruction.Position;
             }
         }
 
@@ -80,7 +98,7 @@ namespace avoCADo.CNC
                 default:
                     throw new InvalidDataException("Unrecognized file extension format!");
             }
-            radius = float.Parse(extension.Substring(1)) * _unitsMult;
+            radius = float.Parse(extension.Substring(1)) * _unitsMult * 0.5f;
             return new CNCInstructionSet(new CNCTool(type, radius));
         }
 

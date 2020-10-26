@@ -55,7 +55,7 @@ namespace avoCADo.CNC
 
         private Vector2 _blockCenter = Vector2.Zero;
 
-        private Func<float, float, float, float>[] _funcList = new Func<float, float, float, float>[2];
+        private Func<float, float, CNCTool, float>[] _funcList = new Func<float, float, CNCTool, float>[2];
 
         public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultValue)
         {
@@ -156,7 +156,7 @@ namespace avoCADo.CNC
                         var distSqr = offX * offX + offY * offY;
                         if (distSqr <= radiusSqr)
                         {
-                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool.RadiusSqr));
+                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool));
                         }
                     }
                 }
@@ -165,10 +165,12 @@ namespace avoCADo.CNC
         }
 
         private List<Point> _pointBuffer = new List<Point>(1000);
+        private List<Vector3> _positionsBuffer = new List<Vector3>(1000);
 
         public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
         {
             _pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
+            _positionsBuffer.Clear();
             var startXZ = start.Xz;
             var endXZ = end.Xz;
             var diffX = Math.Abs(start.X - end.X);
@@ -177,18 +179,31 @@ namespace avoCADo.CNC
 
             if (straightDown == false)
             {
-                bool hor = diffX > diffZ; //get bigger difference for numerical stability
                 var startIdx = GetCoordsFromPosition(startXZ);
                 var endIdx = GetCoordsFromPosition(endXZ);
-                Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
 
-                foreach (var p in _pointBuffer)
+                //Slower but more accurate
+                var steps = Math.Max(Math.Abs(startIdx.x - endIdx.x), Math.Abs(startIdx.z - endIdx.z)) + 1;
+                for(int i = 0; i < steps; i++)
                 {
-                    var pos = IdxToWorld(p.X, p.Y);
-                    var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
-                    var y = start.Y + t * (end.Y - start.Y);
-                    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
+                    var interpolated = Vector3.Lerp(start, end, i / (float)(steps - 1));
+                    _positionsBuffer.Add(interpolated);
                 }
+                foreach(var p in _positionsBuffer)
+                {
+                    DrillCircleAtPosition(p, tool);
+                }
+
+                //Faster but much uglier
+                //bool hor = diffX > diffZ; //get bigger difference for numerical stability
+                //Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
+                //foreach (var p in _pointBuffer)
+                //{
+                //    var pos = IdxToWorld(p.X, p.Y);
+                //    var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
+                //    var y = start.Y + MathHelper.Clamp(t, 0.0f, 1.0f) * (end.Y - start.Y);
+                //    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
+                //}
             }
             else if(tool.Type == ToolType.Round)
             {
@@ -222,7 +237,7 @@ namespace avoCADo.CNC
                     var distSqr = offX * offX + offY * offY;
                     if (distSqr <= radiusSqr)
                     {
-                        if(CheckContactPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool.RadiusSqr)))
+                        if(CheckContactPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool)))
                         {
                             return true;
                         }
@@ -232,13 +247,13 @@ namespace avoCADo.CNC
             return false;
         }
 
-        private float HeightByDistFromCenterRound(float toolY, float distanceSqr, float toolRadiusSqr)
+        private float HeightByDistFromCenterRound(float toolY, float distanceSqr, CNCTool tool)
         {
-            var remaining = toolRadiusSqr - distanceSqr;
-            return toolY - (float)Math.Sqrt(remaining) + (float)Math.Sqrt(toolRadiusSqr);
+            var remaining = tool.RadiusSqr - distanceSqr;
+            return toolY - (float)Math.Sqrt(remaining) + tool.Radius;
         }
 
-        private float HeightByDistFromCenterFlat(float toolY, float distanceSqr, float toolRadiusSqr)
+        private float HeightByDistFromCenterFlat(float toolY, float distanceSqr, CNCTool tool)
         {
             return toolY; //TODO: check if radius should be added/subtracted for both tools
         }

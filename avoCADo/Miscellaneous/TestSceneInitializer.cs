@@ -62,7 +62,7 @@ namespace avoCADo
             //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
             //MessageBox.Show(ret.ToString());
 
-            var res = 300;
+            var res = 500;
             var size = 0.18f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
 
