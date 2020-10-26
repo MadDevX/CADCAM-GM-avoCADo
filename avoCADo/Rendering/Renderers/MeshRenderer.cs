@@ -25,9 +25,9 @@ namespace avoCADo.Rendering.Renderers
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, _textureProvider.TextureHandle);
             }
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             GL.DrawElements(PrimitiveType.Triangles, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
         }
 
         protected override void SetBufferData()

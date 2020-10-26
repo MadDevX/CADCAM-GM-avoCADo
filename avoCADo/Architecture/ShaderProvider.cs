@@ -48,6 +48,7 @@ namespace avoCADo
             camera.SetCameraMatrices(DefaultTexturedShader);
             MillableSurfaceShader.Shader.Use();
             camera.SetCameraMatrices(MillableSurfaceShader);
+            MillableSurfaceShader.SetCameraPosition(camera.Position);
         }
 
         public void Dispose()
