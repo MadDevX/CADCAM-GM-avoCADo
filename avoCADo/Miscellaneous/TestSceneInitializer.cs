@@ -62,7 +62,7 @@ namespace avoCADo
             //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
             //MessageBox.Show(ret.ToString());
 
-            var res = 500;
+            var res = 300;
             var size = 0.18f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
 
@@ -73,11 +73,19 @@ namespace avoCADo
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\4.k08"));
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\5.k01"));
 
-            var block = new MaterialBlock(res, res, size, size, 1.0f);
+            var block = new MaterialBlock(res, res, size, size, 1.0f, 0.0f);
             var texture = new MaterialBlockTextureManager(block);
-            foreach (var set in instSetList)
+            try
             {
-                CNCSimulator.Execute(set, block);
+                foreach (var set in instSetList)
+                {
+                    CNCSimulator.Execute(set, block);
+                }
+            }
+            catch(Exception e)
+            {
+                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             //block.DrillCircleAtSegment((Vector3.UnitX + Vector3.UnitZ) * (-0.5f), (Vector3.UnitX + Vector3.UnitZ) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
             //block.DrillCircleAtSegment(new Vector3(-1.0f, 0.0f, 1.0f) * 0.5f, new Vector3(1.0f, 0.0f, -1.0f) * 0.5f, new CNCTool(ToolType.Round, 0.05f));

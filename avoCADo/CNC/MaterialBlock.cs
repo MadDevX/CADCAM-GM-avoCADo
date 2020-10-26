@@ -41,6 +41,8 @@ namespace avoCADo.CNC
         public int Height { get; }
         public int Width { get; }
 
+        public float MinHeightValue { get; }
+
         private float _worldWidth;
         private float _worldHeight;
 
@@ -57,13 +59,14 @@ namespace avoCADo.CNC
 
         private Func<float, float, CNCTool, float>[] _funcList = new Func<float, float, CNCTool, float>[2];
 
-        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultValue)
+        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultHeightValue, float minHeightValue)
         {
             _funcList[0] = HeightByDistFromCenterRound;
             _funcList[1] = HeightByDistFromCenterFlat;
             //X Y resolution of height texture
             Width = width;
             Height = height;
+            MinHeightValue = minHeightValue;
 
             //Scaling used to interpret block/heightmap in world space coordinates
             _worldWidth = worldWidth;
@@ -80,7 +83,7 @@ namespace avoCADo.CNC
             _offsetVector = new Vector2(_worldWidth * 0.5f, _worldHeight * 0.5f);
 
             HeightMap = new float[width * height];
-            for (int i = 0; i < width * height; i++) HeightMap[i] = defaultValue;
+            for (int i = 0; i < width * height; i++) HeightMap[i] = defaultHeightValue;
         }
 
 
@@ -97,11 +100,15 @@ namespace avoCADo.CNC
             }
         }
 
-        private void DrillPixel(int x, int z, float value)
+        private void DrillPixel(int x, int z, float value, Vector3 moveDirection, ToolType type)
         {
             if (x >= 0 && x < Width && z >= 0 && z < Height)
             {
                 var idx = GetIndex(x, z);
+                if(type == ToolType.Flat && moveDirection.Y < 0.0f && value < HeightMap[idx])
+                    throw new InvalidOperationException("Flat tool drills vertically into the material!");
+                if (value < MinHeightValue) 
+                    throw new InvalidOperationException("Tool drills into base of the material!");
                 HeightMap[idx] = Math.Min(HeightMap[idx], value);
             }
         }
@@ -134,7 +141,7 @@ namespace avoCADo.CNC
             return new Vector2(wX, wZ) - _offsetVector;
         }
 
-        public void DrillCircleAtPosition(Vector3 toolPosition, CNCTool tool)
+        public void DrillCircleAtPosition(Vector3 toolPosition, Vector3 moveDirection, CNCTool tool)
         {
             var radius = tool.Radius;
             var radiusSqr = tool.RadiusSqr;
@@ -156,7 +163,7 @@ namespace avoCADo.CNC
                         var distSqr = offX * offX + offY * offY;
                         if (distSqr <= radiusSqr)
                         {
-                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool));
+                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool), moveDirection, tool.Type);
                         }
                     }
                 }
@@ -164,55 +171,44 @@ namespace avoCADo.CNC
             
         }
 
-        private List<Point> _pointBuffer = new List<Point>(1000);
+        //private List<Point> _pointBuffer = new List<Point>(1000);
         private List<Vector3> _positionsBuffer = new List<Vector3>(1000);
 
         public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
         {
-            _pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
+            //_pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
             _positionsBuffer.Clear();
             var startXZ = start.Xz;
             var endXZ = end.Xz;
             var diffX = Math.Abs(start.X - end.X);
             var diffZ = Math.Abs(start.Z - end.Z);
-            bool straightDown = diffX == 0.0f && diffZ == 0.0f;
+            var dir = end - start;
 
-            if (straightDown == false)
-            {
-                var startIdx = GetCoordsFromPosition(startXZ);
-                var endIdx = GetCoordsFromPosition(endXZ);
+            var startIdx = GetCoordsFromPosition(startXZ);
+            var endIdx = GetCoordsFromPosition(endXZ);
 
-                //Slower but more accurate
-                var steps = Math.Max(Math.Abs(startIdx.x - endIdx.x), Math.Abs(startIdx.z - endIdx.z)) + 1;
-                for(int i = 0; i < steps; i++)
-                {
-                    var interpolated = Vector3.Lerp(start, end, i / (float)(steps - 1));
-                    _positionsBuffer.Add(interpolated);
-                }
-                foreach(var p in _positionsBuffer)
-                {
-                    DrillCircleAtPosition(p, tool);
-                }
+            //Slower but more accurate
+            var steps = Math.Max(Math.Abs(startIdx.x - endIdx.x), Math.Abs(startIdx.z - endIdx.z)) + 1;
+            for(int i = 0; i < steps; i++)
+            {
+                var interpolated = Vector3.Lerp(start, end, i / (float)(steps - 1));
+                _positionsBuffer.Add(interpolated);
+            }
+            foreach(var p in _positionsBuffer)
+            {
+                DrillCircleAtPosition(p, dir, tool);
+            }
 
-                //Faster but much uglier
-                //bool hor = diffX > diffZ; //get bigger difference for numerical stability
-                //Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
-                //foreach (var p in _pointBuffer)
-                //{
-                //    var pos = IdxToWorld(p.X, p.Y);
-                //    var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
-                //    var y = start.Y + MathHelper.Clamp(t, 0.0f, 1.0f) * (end.Y - start.Y);
-                //    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
-                //}
-            }
-            else if(tool.Type == ToolType.Round)
-            {
-                DrillCircleAtPosition(end, tool);
-            }
-            else if(InContact(end, tool))
-            {
-                MessageBox.Show("InvalidMove"); //TODO: replace with exception and handle outside of this class
-            }
+            //Faster but much uglier
+            //bool hor = diffX > diffZ; //get bigger difference for numerical stability
+            //Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
+            //foreach (var p in _pointBuffer)
+            //{
+            //    var pos = IdxToWorld(p.X, p.Y);
+            //    var t = hor ? (pos.X - startXZ.X) / (endXZ.X - startXZ.X) : (pos.Y - startXZ.Y) / (endXZ.Y - startXZ.Y);
+            //    var y = start.Y + MathHelper.Clamp(t, 0.0f, 1.0f) * (end.Y - start.Y);
+            //    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
+            //}
 
         }
 
@@ -255,41 +251,8 @@ namespace avoCADo.CNC
 
         private float HeightByDistFromCenterFlat(float toolY, float distanceSqr, CNCTool tool)
         {
-            return toolY; //TODO: check if radius should be added/subtracted for both tools
+            return toolY;
         }
-
-        //void EightWaySymmetricPlot(int xc, int yc, int x, int y, float value)
-        //{
-        //    putpixel(x + xc, y + yc, RED);
-        //    putpixel(x + xc, -y + yc, YELLOW);
-        //    putpixel(-x + xc, -y + yc, GREEN);
-        //    putpixel(-x + xc, y + yc, YELLOW);
-        //    putpixel(y + xc, x + yc, 12);
-        //    putpixel(y + xc, -x + yc, 14);
-        //    putpixel(-y + xc, -x + yc, 15);
-        //    putpixel(-y + xc, x + yc, 6);
-        //}
-
-        //void BresenhamCircle(int xc, int yc, int r)
-        //{
-        //    int x = 0, y = r, d = 3 - (2 * r);
-        //    EightWaySymmetricPlot(xc, yc, x, y);
-
-        //    while (x <= y)
-        //    {
-        //        if (d <= 0)
-        //        {
-        //            d = d + (4 * x) + 6;
-        //        }
-        //        else
-        //        {
-        //            d = d + (4 * x) - (4 * y) + 10;
-        //            y = y - 1;
-        //        }
-        //        x = x + 1;
-        //        EightWaySymmetricPlot(xc, yc, x, y);
-        //    }
-        //}
 
     }
 }
