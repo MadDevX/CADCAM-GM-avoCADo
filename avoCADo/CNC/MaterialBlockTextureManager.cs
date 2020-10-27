@@ -14,21 +14,23 @@ namespace avoCADo.CNC
         public int TextureHandle => _textureHandle;
         
         private int _textureHandle;
-        private readonly MaterialBlock _block;
 
-        public MaterialBlockTextureManager(MaterialBlock block)
+        public MaterialBlockTextureManager(int width, int height)
         {
-            _block = block;
-            InitializeTexture();
+            InitializeTexture(width, height);
         }
 
-        private void InitializeTexture()
+        private void InitializeTexture(int width, int height)
         {
             GL.CreateTextures(TextureTarget.Texture2D, 1, out _textureHandle);
+            ResetTexture(width, height);
+        }
 
+        public void ResetTexture(int width, int height)
+        {
             GL.ActiveTexture(TextureUnit.Texture0); //TODO: check, maybe use different texture unit
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R32f, _block.Width, _block.Height, 0, PixelFormat.Red, PixelType.Float, IntPtr.Zero); //TODO: verify
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R32f, width, height, 0, PixelFormat.Red, PixelType.Float, IntPtr.Zero); //TODO: verify
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
@@ -37,10 +39,10 @@ namespace avoCADo.CNC
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public void UpdateTexture()
+        public void UpdateTexture(int width, int height, float[] heightMap)
         {
             GL.BindTexture(TextureTarget.Texture2D, TextureHandle);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R32f, _block.Width, _block.Height, 0, PixelFormat.Red, PixelType.Float, _block.HeightMap);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R32f, width, height, 0, PixelFormat.Red, PixelType.Float, heightMap);
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 

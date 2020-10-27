@@ -1,5 +1,6 @@
 ﻿using avoCADo.Algebra;
 using avoCADo.CNC;
+using avoCADo.Components;
 using avoCADo.Rendering.Renderers;
 using avoCADo.Utility;
 using Microsoft.Win32;
@@ -61,11 +62,6 @@ namespace avoCADo
 
             //var ret = LinearEquationSolver.Solve(Matrix4.Identity*2.0f, new Vector4(1.0f, 2.0f, 3.0f, 4.0f));
             //MessageBox.Show(ret.ToString());
-
-            var res = 300;
-            var size = 0.18f;
-            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
-
             var instSetList = new List<CNCInstructionSet>();
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\1.k16"));
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\2.f12"));
@@ -73,8 +69,17 @@ namespace avoCADo
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\4.k08"));
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\5.k01"));
 
-            var block = new MaterialBlock(res, res, size, size, 1.0f, 0.0f);
-            var texture = new MaterialBlockTextureManager(block);
+
+            var res = 300;
+            var size = 0.18f;
+            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
+            var meshRenderer = new MeshRenderer(provider.MillableSurfaceShader, mesh, null);
+            var block = new MaterialBlock(res, res, size, size, 0.2f, 0.0f, meshRenderer);
+            var millableSurf = new MillableSurface(block);
+
+            block.Width = 600;
+            block.Height = 600;
+
             try
             {
                 foreach (var set in instSetList)
@@ -87,12 +92,11 @@ namespace avoCADo
                 var message = e.InnerException != null ? e.InnerException.Message : e.Message;
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            //block.DrillCircleAtSegment((Vector3.UnitX + Vector3.UnitZ) * (-0.5f), (Vector3.UnitX + Vector3.UnitZ) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
-            //block.DrillCircleAtSegment(new Vector3(-1.0f, 0.0f, 1.0f) * 0.5f, new Vector3(1.0f, 0.0f, -1.0f) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
-            //block.DrillCircleAtSegment((Vector3.UnitX + Vector3.UnitZ) * (-0.5f) + Vector3.UnitY * 0.1f, (Vector3.UnitX + Vector3.UnitZ) * 0.5f, new CNCTool(ToolType.Round, 0.05f));
-            texture.UpdateTexture();
 
-            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), new MeshRenderer(provider.MillableSurfaceShader, mesh, texture), "plane");
+            block.UpdateTexture();
+
+            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), meshRenderer, "millableSurface");
+            node.AttachComponents(millableSurf);
             scene.AttachChild(node);
         }
 

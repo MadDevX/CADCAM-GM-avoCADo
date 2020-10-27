@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Components;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,5 +37,8 @@ namespace avoCADo
         void AttachChildRange(IList<INode> nodes);
         void DetachChildRange(IList<INode> nodes);
         int GetChildIndex(INode node);
+
+        void AttachComponents(params IMComponent[] components);
+        T GetComponent<T>() where T : MComponent;
     }
 }

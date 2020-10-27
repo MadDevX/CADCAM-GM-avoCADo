@@ -10,20 +10,20 @@ namespace avoCADo.Rendering.Renderers
 {
     public class MeshRenderer : Renderer
     {
-        private ITextureProvider _textureProvider;
+        public ITextureProvider TextureProvider { get; set; }
         public MeshRenderer(ShaderWrapper shader, Mesh mesh, ITextureProvider textureProvider) : base(shader, mesh)
         {
-            _textureProvider = textureProvider;
+            TextureProvider = textureProvider;
         }
 
         public override IMeshGenerator GetGenerator() => null;
 
         protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            if (_textureProvider != null)
+            if (TextureProvider != null)
             {
                 GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, _textureProvider.TextureHandle);
+                GL.BindTexture(TextureTarget.Texture2D, TextureProvider.TextureHandle);
             }
             //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             GL.DrawElements(PrimitiveType.Triangles, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);
@@ -32,6 +32,15 @@ namespace avoCADo.Rendering.Renderers
 
         protected override void SetBufferData()
         {
+        }
+
+        public void SetMesh(Mesh mesh)
+        {
+            if(_mesh != null)
+            {
+                _mesh.Dispose();
+            }
+            _mesh = mesh;
         }
     }
 }

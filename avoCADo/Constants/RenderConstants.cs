@@ -22,6 +22,7 @@ namespace avoCADo.Constants
         public static Color4 PARAMETRIC_OBJECT_SELECTED_COLOR = Color4.Yellow;
         public static Color4 POLYGON_DEFAULT_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
         public static Color4 POLYGON_SELECTED_COLOR = new Color4(0.5f, 0.5f, 0.5f, 1.0f);
+        public static Color4 MILL_PATH_COLOR = new Color4(0.5f, 1.0f, 0.5f, 1.0f);
 
         public static int PATCH_COUNT = 16;
         public static int GREGORY_PATCH_COUNT = 20;

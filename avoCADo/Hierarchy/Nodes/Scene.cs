@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Components;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -57,6 +58,11 @@ namespace avoCADo
 
         public void Dispose()
         {
+            foreach (var comp in _components)
+            {
+                comp.Dispose();
+            }
+            _components.Clear();
             while(Children.Count > 0)
             {
                 Children[Children.Count - 1].Dispose();
@@ -194,5 +200,30 @@ namespace avoCADo
         {
             return Children.IndexOf(node);
         }
+
+        #region Components
+        private IList<IMComponent> _components { get; } = new List<IMComponent>();
+        public void AttachComponents(params IMComponent[] components)
+        {
+            foreach (var component in components)
+            {
+                component.SetOwnerNode(this);
+                _components.Add(component);
+            }
+            foreach (var component in _components)
+            {
+                component.Initialize();
+            }
+        }
+
+        public T GetComponent<T>() where T : MComponent
+        {
+            foreach (var component in _components)
+            {
+                if (component is T tComponent) return tComponent;
+            }
+            return null;
+        }
+        #endregion
     }
 }

@@ -104,6 +104,10 @@
     <Compile Include="CNC\CNCSimulator.cs" />
     <Compile Include="CNC\MaterialBlock.cs" />
     <Compile Include="CNC\MaterialBlockTextureManager.cs" />
+    <Compile Include="Components\Internal\IMComponent.cs" />
+    <Compile Include="Components\Internal\MComponent.cs" />
+    <Compile Include="Components\Internal\UpdatableMComponent.cs" />
+    <Compile Include="Components\MillableSurface.cs" />
     <Compile Include="Interfaces\ITextureProvider.cs" />
     <Compile Include="Intersections\BoundaryFinder.cs" />
     <Compile Include="Intersections\ConjugateGradient.cs" />
@@ -161,7 +165,11 @@
     <Compile Include="MeshGenerators\BezierPatchC2Generator.cs" />
     <Compile Include="MeshGenerators\GregoryPatchGenerator.cs" />
     <Compile Include="MeshGenerators\ITrimmableGenerator.cs" />
+    <Compile Include="MeshGenerators\PathGenerator.cs" />
     <Compile Include="MeshGenerators\RawDataGenerator.cs" />
+    <Compile Include="MillableSurfaceView.xaml.cs">
+      <DependentUpon>MillableSurfaceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />
@@ -339,6 +347,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MillableSurfaceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="NodeHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

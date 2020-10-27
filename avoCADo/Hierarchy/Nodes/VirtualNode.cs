@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Components;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -74,6 +75,11 @@ namespace avoCADo
         {
             Transform.PropertyChanged -= TransformModified;
             Renderer.Dispose();
+            foreach (var comp in _components)
+            {
+                comp.Dispose();
+            }
+            _components.Clear();
             OnDisposed?.Invoke(this);
         }
 
@@ -86,6 +92,31 @@ namespace avoCADo
         {
             Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
         }
+
+        #region Components
+        private IList<IMComponent> _components { get; } = new List<IMComponent>();
+        public void AttachComponents(params IMComponent[] components)
+        {
+            foreach (var component in components)
+            {
+                component.SetOwnerNode(this);
+                _components.Add(component);
+            }
+            foreach (var component in _components)
+            {
+                component.Initialize();
+            }
+        }
+
+        public T GetComponent<T>() where T : MComponent
+        {
+            foreach (var component in _components)
+            {
+                if (component is T tComponent) return tComponent;
+            }
+            return null;
+        }
+        #endregion
 
     }
 }

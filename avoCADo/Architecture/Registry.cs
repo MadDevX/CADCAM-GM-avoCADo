@@ -9,6 +9,17 @@ namespace avoCADo.Architecture
 {
     public static class Registry
     {
+        private static IUpdateLoop _updateLoop = null;
+        public static IUpdateLoop UpdateLoop
+        {
+            get => _updateLoop;
+            set
+            {
+                if (_updateLoop != null) return;
+                _updateLoop = value;
+            }
+        }
+
         private static VirtualNodeFactory _virtualNodeFactory = null;
         public static VirtualNodeFactory VirtualNodeFactory 
         {

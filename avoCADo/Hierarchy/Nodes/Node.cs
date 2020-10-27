@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using avoCADo.Components;
 using OpenTK;
 
 namespace avoCADo
@@ -74,6 +75,11 @@ namespace avoCADo
         {
             Transform.PropertyChanged -= TransformModified;
             Renderer.Dispose();
+            foreach (var comp in _components)
+            {
+                comp.Dispose();
+            }
+            _components.Clear();
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 Children[i].Dispose();
@@ -191,6 +197,31 @@ namespace avoCADo
         {
             return Children.IndexOf(node);
         }
+
+        #region Components
+        private IList<IMComponent> _components { get; } = new List<IMComponent>();
+        public void AttachComponents(params IMComponent[] components)
+        {
+            foreach (var component in components)
+            {
+                component.SetOwnerNode(this);
+                _components.Add(component);
+            }
+            foreach (var component in _components)
+            {
+                component.Initialize();
+            }
+        }
+
+        public T GetComponent<T>() where T : MComponent
+        {
+            foreach (var component in _components)
+            {
+                if (component is T tComponent) return tComponent;
+            }
+            return null;
+        }
+        #endregion
 
         #region Dependency forwarding
         public int UniqueDependencyCount => _depColl.UniqueDependencyCount;

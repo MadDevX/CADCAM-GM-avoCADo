@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="avoCADo.MillableSurfaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:avoCADo"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="200">
+    <Grid>
+        <StackPanel>
+            <Button x:Name="btnLoadFiles" Content="Load Files" Click="btnLoadFiles_Click"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Simulation Speed"  Margin="5"/>
+                <Slider x:Name="sldSimulationSpeed" Margin="5"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="btnStartSimulation" Content="Start Simulation" Click="btnStartSimulation_Click" Margin="5"/>
+                <Button x:Name="btnSkipSimulation" Content="Skip Simulation" Click="btnSkipSimulation_Click" Margin="5"/>
+            </StackPanel>
+            <Button x:Name="btnResetMaterial" Content="Reset Material" Click="btnResetMaterial_Click" Margin="5"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

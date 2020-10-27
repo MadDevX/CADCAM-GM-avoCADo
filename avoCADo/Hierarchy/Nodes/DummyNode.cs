@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Components;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,10 +47,42 @@ namespace avoCADo
 
         public void DetachChildRange(IList<INode> nodes) { }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            foreach (var comp in _components)
+            {
+                comp.Dispose();
+            }
+            _components.Clear();
+        }
 
         public int GetChildIndex(INode node) => -1;
 
         public void Render(ICamera camera, Matrix4 parentMatrix) { }
+
+        #region Components
+        private IList<IMComponent> _components { get; } = new List<IMComponent>();
+        public void AttachComponents(params IMComponent[] components)
+        {
+            foreach (var component in components)
+            {
+                component.SetOwnerNode(this);
+                _components.Add(component);
+            }
+            foreach (var component in _components)
+            {
+                component.Initialize();
+            }
+        }
+
+        public T GetComponent<T>() where T : MComponent
+        {
+            foreach (var component in _components)
+            {
+                if (component is T tComponent) return tComponent;
+            }
+            return null;
+        }
+        #endregion
     }
 }

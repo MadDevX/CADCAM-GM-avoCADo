@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿using avoCADo.Rendering.Renderers;
+using avoCADo.Utility;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,7 +31,7 @@ namespace avoCADo.CNC
         }
     }
 
-    public class MaterialBlock
+    public class MaterialBlock : IDisposable
     {
         //        _______________
         // height|               |
@@ -37,14 +39,63 @@ namespace avoCADo.CNC
         //       |               |
         //      0|_______________|>width
         //        0
-        public float[] HeightMap { get; }
-        public int Height { get; }
-        public int Width { get; }
+        public float[] HeightMap { get; private set; }
+        public float DefaultHeightValue { get; set; }
 
-        public float MinHeightValue { get; }
+        private int _width;
+        private int _height;
+
+        public int Height 
+        {
+            get => _height;
+            set
+            {
+                _height = value;
+                UpdateCoordMappings();
+                UpdateMesh();
+                ResetHeightMap();
+                TextureManager.ResetTexture(Width, Height);
+            }
+        }
+        public int Width 
+        {
+            get => _width;
+            set
+            {
+                _width = value;
+                UpdateCoordMappings();
+                UpdateMesh();
+                ResetHeightMap();
+                TextureManager.ResetTexture(Width, Height);
+            }
+        }
+
+        public float MinHeightValue { get; set; }
 
         private float _worldWidth;
         private float _worldHeight;
+
+        public float WorldWidth 
+        { 
+            get => _worldWidth; 
+            set
+            {
+                _worldWidth = value;
+                UpdateCoordMappings();
+                UpdateMesh();
+            }
+        }
+
+        public float WorldHeight 
+        {
+            get => _worldHeight;
+            set
+            {
+                _worldHeight = value;
+                UpdateCoordMappings();
+                UpdateMesh();
+            }
+        }
 
         //Speedup operations
         private float _worldWidthToIndex;
@@ -59,33 +110,73 @@ namespace avoCADo.CNC
 
         private Func<float, float, CNCTool, float>[] _funcList = new Func<float, float, CNCTool, float>[2];
 
-        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultHeightValue, float minHeightValue)
+        public MaterialBlockTextureManager TextureManager { get; }
+        private MeshRenderer _renderer;
+
+        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultHeightValue, float minHeightValue, MeshRenderer renderer)
         {
             _funcList[0] = HeightByDistFromCenterRound;
             _funcList[1] = HeightByDistFromCenterFlat;
             //X Y resolution of height texture
+            _renderer = renderer;
+            TextureManager = new MaterialBlockTextureManager(width, height);
+            MinHeightValue = minHeightValue;
+            DefaultHeightValue = defaultHeightValue;
             Width = width;
             Height = height;
-            MinHeightValue = minHeightValue;
+
 
             //Scaling used to interpret block/heightmap in world space coordinates
-            _worldWidth = worldWidth;
-            _worldHeight = worldHeight;
+            WorldWidth = worldWidth;
+            WorldHeight = worldHeight;
 
             //Map coords from [(0.0 0.0),(worldWidth, worldHeight)] to [(0.0 0.0),(width, height)]
-            _worldWidthToIndex = (1.0f / _worldWidth) * width;
-            _worldHeightToIndex = (1.0f / _worldHeight) * height;
-
-            _indexWidthToWorld = (1.0f / (Width - 1)) * _worldWidth;
-            _indexHeightToWorld = (1.0f / (Height - 1)) * _worldHeight;
+            UpdateCoordMappings();
 
             //Used to transform worldPosition to localCoordinates (0.0, 0.0) : (_worldWidth, _worldHeight)
-            _offsetVector = new Vector2(_worldWidth * 0.5f, _worldHeight * 0.5f);
+            _offsetVector = new Vector2(WorldWidth * 0.5f, WorldHeight * 0.5f);
 
-            HeightMap = new float[width * height];
-            for (int i = 0; i < width * height; i++) HeightMap[i] = defaultHeightValue;
+            _renderer.TextureProvider = TextureManager;
+            UpdateMesh();
         }
 
+        private void UpdateCoordMappings()
+        {
+            _worldWidthToIndex = (1.0f / WorldWidth) * Width;
+            _worldHeightToIndex = (1.0f / WorldHeight) * Height;
+
+            _indexWidthToWorld = (1.0f / (Width - 1)) * WorldWidth;
+            _indexHeightToWorld = (1.0f / (Height - 1)) * WorldHeight;
+        }
+
+        public void Dispose()
+        {
+            TextureManager.Dispose();
+        }
+
+        public void ResetHeightMap()
+        {
+            HeightMap = new float[Width * Height];
+            ResetHeightMapValues();
+        }
+
+        public void ResetHeightMapValues()
+        {
+            for (int i = 0; i < Width * Height; i++) HeightMap[i] = DefaultHeightValue;
+        }
+
+        public void UpdateTexture()
+        {
+            TextureManager.UpdateTexture(Width, Height, HeightMap);
+        }
+
+        private void UpdateMesh()
+        {
+            if (Width > 1 && Height > 1)
+            {
+                _renderer.SetMesh(MeshUtility.CreatePlaneMesh(Width, Height, WorldWidth, WorldHeight));
+            }
+        }
 
         private int GetIndex(int x, int z)
         {
@@ -253,6 +344,5 @@ namespace avoCADo.CNC
         {
             return toolY;
         }
-
     }
 }

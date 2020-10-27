@@ -26,6 +26,7 @@ using avoCADo.Serialization;
 using avoCADo.Miscellaneous;
 using avoCADo.CNC;
 using avoCADo.Utility;
+using avoCADo.Architecture;
 
 namespace avoCADo
 {
@@ -64,6 +65,7 @@ namespace avoCADo
 
         public MainWindow()
         {
+            Registry.UpdateLoop = this;
             InitializeComponent();
 
             CreateGLControl();
