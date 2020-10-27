@@ -70,34 +70,19 @@ namespace avoCADo
             instSetList.Add(CNCInstructionParser.ParsePathFile("D:\\Studia\\Semestr I Mag\\MG1\\peukpaths\\5.k01"));
 
 
-            var res = 300;
-            var size = 0.18f;
-            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
-            var meshRenderer = new MeshRenderer(provider.MillableSurfaceShader, mesh, null);
-            var block = new MaterialBlock(res, res, size, size, 0.2f, 0.0f, meshRenderer);
-            var millableSurf = new MillableSurface(block);
+            //var res = 300;
+            //var size = 0.18f;
+            //var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
+            //var meshRenderer = new MeshRenderer(provider.MillableSurfaceShader, mesh, null);
+            //var block = new MaterialBlock(res, res, size, size, 0.2f, 0.0f, meshRenderer);
+            //var millableSurf = new MillableSurface(block);
 
-            block.Width = 600;
-            block.Height = 600;
+            //block.Width = 600;
+            //block.Height = 600;
 
-            try
-            {
-                foreach (var set in instSetList)
-                {
-                    CNCSimulator.Execute(set, block);
-                }
-            }
-            catch(Exception e)
-            {
-                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            block.UpdateTexture();
-
-            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), meshRenderer, "millableSurface");
-            node.AttachComponents(millableSurf);
-            scene.AttachChild(node);
+            //var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), meshRenderer, "millableSurface");
+            //node.AttachComponents(millableSurf);
+            //scene.AttachChild(node);
         }
 
     }

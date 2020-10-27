@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace avoCADo.Components
 {
@@ -44,6 +45,24 @@ namespace avoCADo.Components
         {
             //costamcostam
             
+        }
+
+        public void Simulate()
+        {
+            try
+            {
+                foreach (var set in _instructionSets)
+                {
+                    CNCSimulator.Execute(set, _materialBlock);
+                }
+            }
+            catch (Exception e)
+            {
+                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            _materialBlock.UpdateTexture();
         }
     }
 }

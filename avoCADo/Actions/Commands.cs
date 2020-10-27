@@ -1,6 +1,8 @@
 ﻿using avoCADo.Actions;
 using avoCADo.Miscellaneous;
+using avoCADo.Rendering.Renderers;
 using avoCADo.Serialization;
+using avoCADo.Utility;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -150,6 +152,16 @@ namespace avoCADo
                 _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
                     new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.BezierPatchC2, parameters));
             }
+        }
+
+        private void CreateMillableSurfaceCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = NodeSelection.Manager.MainSelection == null;
+        }
+        private void CreateMillableSurfaceCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _instructionBuffer.IssueInstruction<NodeCreatedInstruction, NodeCreatedInstruction.Parameters>(
+                new NodeCreatedInstruction.Parameters(_nodeFactory, ObjectType.MillableSurface, null));
         }
 
         #endregion

@@ -61,6 +61,7 @@ namespace avoCADo
             DataContext = _millable;
         }
 
+        private List<string> _names = new List<string>();
         private void btnLoadFiles_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -70,12 +71,15 @@ namespace avoCADo
                 ofd.ShowDialog();
                 if (ofd.FileNames.Length > 0)
                 {
+                    _names.Clear();
                     var instSetList = new List<CNCInstructionSet>();
                     foreach (var filename in ofd.FileNames)
                     {
                         instSetList.Add(CNCInstructionParser.ParsePathFile(filename));
+                        _names.Add(NameGenerator.DiscardPath(filename, discardExtension: false));
                     }
                     _millable.SetPaths(instSetList);
+                    UpdateLoadedFilesText();
                 }
 
             }
@@ -85,9 +89,20 @@ namespace avoCADo
             }
         }
 
+        private void UpdateLoadedFilesText()
+        {
+            StringBuilder newText = new StringBuilder();
+            newText.Append("Loaded Files:\n");
+            foreach(var name in _names)
+            {
+                newText.Append($"{name}\n");
+            }
+            tbLoadedfiles.Text = newText.ToString();
+        }
+
         private void btnStartSimulation_Click(object sender, RoutedEventArgs e)
         {
-
+            _millable.Simulate();
         }
 
         private void btnSkipSimulation_Click(object sender, RoutedEventArgs e)

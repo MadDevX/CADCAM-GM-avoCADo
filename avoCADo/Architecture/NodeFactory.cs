@@ -1,6 +1,10 @@
 ﻿using avoCADo.Architecture;
+using avoCADo.CNC;
+using avoCADo.Components;
 using avoCADo.Constants;
 using avoCADo.MeshGenerators;
+using avoCADo.Rendering.Renderers;
+using avoCADo.Utility;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -99,9 +103,26 @@ namespace avoCADo
                     return CreateGregoryPatch((IReadOnlyCollection<INode>)parameters);
                 case ObjectType.IntersectionCurve:
                     return CreateIntersectionCurve((IntersectionCurveParameters)parameters);
+                case ObjectType.MillableSurface:
+                    return CreateMillableSurface();
                 default:
                     return null;
             }
+        }
+
+        public INode CreateMillableSurface()
+        {
+            var res = 300;
+            var size = 0.18f;
+            var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
+            var meshRenderer = new MeshRenderer(_shaderProvider.MillableSurfaceShader, mesh, null);
+            var block = new MaterialBlock(res, res, size, size, 0.2f, 0.0f, meshRenderer);
+            var millableSurf = new MillableSurface(block);
+
+            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), meshRenderer, "millableSurface");
+            node.AttachComponents(millableSurf);
+            _sceneManager.CurrentScene.AttachChild(node);
+            return node;
         }
 
         public INode CreateGregoryPatch(IReadOnlyCollection<INode> nodes)

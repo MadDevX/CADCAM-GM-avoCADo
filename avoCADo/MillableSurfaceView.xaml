@@ -9,6 +9,7 @@
     <Grid>
         <StackPanel>
             <Button x:Name="btnLoadFiles" Content="Load Files" Click="btnLoadFiles_Click"/>
+            <TextBlock x:Name="tbLoadedfiles" Text="Loaded Files: " Margin="5" TextWrapping="Wrap"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Simulation Speed"  Margin="5"/>
                 <Slider x:Name="sldSimulationSpeed" Margin="5"/>

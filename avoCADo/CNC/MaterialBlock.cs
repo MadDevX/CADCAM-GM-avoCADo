@@ -138,6 +138,7 @@ namespace avoCADo.CNC
 
             _renderer.TextureProvider = TextureManager;
             UpdateMesh();
+            UpdateTexture();
         }
 
         private void UpdateCoordMappings()

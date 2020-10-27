@@ -18,7 +18,8 @@ namespace avoCADo
         VirtualPoint,
         Scene,
         GregoryPatch,
-        IntersectionCurve
+        IntersectionCurve,
+        MillableSurface
     }
 
     public interface IObject

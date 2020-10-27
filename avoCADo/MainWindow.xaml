@@ -22,6 +22,7 @@
         <CommandBinding Command="local:CommandDefinitions.InterpolatingC2" CanExecute="CreateInterpolatingC2Cmd_CanExecute" Executed="CreateInterpolatingC2Cmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.BezierPatchC0" CanExecute="CreateBezierPatchC0Cmd_CanExecute" Executed="CreatBezierPatchC0Cmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.BezierPatchC2" CanExecute="CreateBezierPatchC2Cmd_CanExecute" Executed="CreatBezierPatchC2Cmd_Executed"/>
+        <CommandBinding Command="local:CommandDefinitions.MillableSurface" CanExecute="CreateMillableSurfaceCmd_CanExecute" Executed="CreateMillableSurfaceCmd_Executed"/>
         
         <CommandBinding Command="local:CommandDefinitions.DeleteNode" CanExecute="DeleteNodeCmd_CanExecute" Executed="DeleteNodeCmd_Executed"/>
         <CommandBinding Command="local:CommandDefinitions.TryDeleteSelected" CanExecute="TryDeleteSelectedCmd_CanExecute" Executed="TryDeleteSelectedCmd_Executed"/>
@@ -56,6 +57,7 @@
                 <MenuItem Command="local:CommandDefinitions.InterpolatingC2"/>
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC0"/>
                 <MenuItem Command="local:CommandDefinitions.BezierPatchC2"/>
+                <MenuItem Command="local:CommandDefinitions.MillableSurface"/>
             </MenuItem>
             <MenuItem Header="Operations">
                 <MenuItem Command="local:CommandDefinitions.MergePoints"/>

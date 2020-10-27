@@ -86,6 +86,17 @@ namespace avoCADo
                 }
             );
 
+        public static readonly RoutedUICommand MillableSurface = new RoutedUICommand
+            (
+                "New Millable Surface",
+                "MillableSurface",
+                typeof(CommandDefinitions),
+                new InputGestureCollection()
+                {
+                    new KeyGesture(Key.M, ModifierKeys.Control | ModifierKeys.Shift)
+                }
+            );
+
         public static readonly RoutedUICommand MergePoints = new RoutedUICommand
             (
                 "Merge Points",

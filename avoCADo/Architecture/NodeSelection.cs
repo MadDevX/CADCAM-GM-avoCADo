@@ -43,7 +43,8 @@ namespace avoCADo
                 0.07f,//VirtualPoint,
                 0.0f,//Scene
                 0.3f,//GregoryPatch
-                0.3f//IntersectionCurve
+                0.3f,//IntersectionCurve
+                0.3f//MillableSurface
             );
     }
 }
