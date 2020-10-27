@@ -69,9 +69,10 @@ namespace avoCADo
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Multiselect = true;
                 ofd.ShowDialog();
-                if (ofd.FileNames.Length > 0)
+                var filesSelected = ofd.FileNames.Length > 0;
+                _names.Clear();
+                if (filesSelected)
                 {
-                    _names.Clear();
                     var instSetList = new List<CNCInstructionSet>();
                     foreach (var filename in ofd.FileNames)
                     {
@@ -79,8 +80,9 @@ namespace avoCADo
                         _names.Add(NameGenerator.DiscardPath(filename, discardExtension: false));
                     }
                     _millable.SetPaths(instSetList);
-                    UpdateLoadedFilesText();
                 }
+                UpdateLoadedFilesText();
+                btnStartSimulation.IsEnabled = filesSelected;
 
             }
             catch (Exception eOfd)
@@ -102,12 +104,13 @@ namespace avoCADo
 
         private void btnStartSimulation_Click(object sender, RoutedEventArgs e)
         {
-            _millable.Simulate();
+            _millable.Paused = !_millable.Paused;
+            btnStartSimulation.Content = _millable.Paused ? "Start Simulation" : "Pause Simulation";
         }
 
         private void btnSkipSimulation_Click(object sender, RoutedEventArgs e)
         {
-
+            _millable.SkipSim();
         }
 
         private void btnResetMaterial_Click(object sender, RoutedEventArgs e)

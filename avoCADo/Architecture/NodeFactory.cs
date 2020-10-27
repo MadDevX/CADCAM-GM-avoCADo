@@ -116,8 +116,8 @@ namespace avoCADo
             var size = 0.18f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
             var meshRenderer = new MeshRenderer(_shaderProvider.MillableSurfaceShader, mesh, null);
-            var block = new MaterialBlock(res, res, size, size, 0.2f, 0.0f, meshRenderer);
-            var millableSurf = new MillableSurface(block);
+            var block = new MaterialBlock(res, res, size, size, 0.05f, 0.0f, meshRenderer);
+            var millableSurf = new MillableSurface(block, this);
 
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), meshRenderer, "millableSurface");
             node.AttachComponents(millableSurf);
@@ -140,6 +140,16 @@ namespace avoCADo
         public INode CreateTorus()
         {
             return CreateTorus(NodeSelection.Manager.MainSelection);
+        }
+
+        public INode CreateTorus(float R, float r)
+        {
+            var t = CreateTorus();
+            var tGen = t.Renderer.GetGenerator() as TorusGenerator;
+            var tSurf = tGen.Surface as TorusSurface;
+            tSurf.MainRadius = R;
+            tSurf.TubeRadius = r;
+            return t;
         }
 
         public INode CreatePoint()

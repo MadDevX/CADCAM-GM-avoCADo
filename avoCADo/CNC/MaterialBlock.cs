@@ -260,15 +260,66 @@ namespace avoCADo.CNC
 
         //private List<Point> _pointBuffer = new List<Point>(1000);
         private List<Vector3> _positionsBuffer = new List<Vector3>(1000);
-
-        public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
+        
+        /// <summary>
+        /// Advances currently processed segment by a distance. Returns position of tool after advancement and whether current segment was finished
+        /// </summary>
+        /// <param name="distance"></param>
+        /// <param name="tool"></param>
+        /// <returns></returns>
+        public (Vector3 toolCurrentPosition, bool finished, float remainingDist) AdvanceSegment(float distance, CNCTool tool, Vector3 toolPos)
         {
-            //_pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
+            Vector3 incrementVector = Vector3.Zero;
+            var drillPos = _positionsBuffer[0];
+            var finished = false;
+            while (distance > 0.0f && _positionsBuffer.Count > 1)
+            {
+                incrementVector = _positionsBuffer[1] - _positionsBuffer[0];
+                var incLen = incrementVector.Length;
+                if(distance < incLen)
+                {
+                    _positionsBuffer[0] = _positionsBuffer[0] + incrementVector.Normalized() * distance;
+                    drillPos = _positionsBuffer[0];
+                    distance = 0.0f;
+                    DrillCircleAtPosition(drillPos, incrementVector, tool);
+                    return (drillPos, finished, distance);
+                }
+                distance -= incrementVector.Length;
+                drillPos = _positionsBuffer[0];
+                DrillCircleAtPosition(drillPos, incrementVector, tool);
+                _positionsBuffer.RemoveAt(0);
+            }
+            if(_positionsBuffer.Count == 1)
+            {
+                incrementVector = _positionsBuffer[0] - toolPos;
+                var incLen = incrementVector.Length;
+                if (distance < incLen)
+                {
+                    toolPos += incrementVector.Normalized() * distance;
+                    drillPos = toolPos;
+                    distance = 0.0f; 
+                    DrillCircleAtPosition(drillPos, incrementVector, tool);
+                    return (drillPos, finished, distance);
+                }
+
+                drillPos = _positionsBuffer[0];
+                DrillCircleAtPosition(drillPos, incrementVector, tool);
+                _positionsBuffer.RemoveAt(0);
+                finished = true;
+            }
+            return (drillPos, finished, distance);
+        }
+
+        /// <summary>
+        /// Setup for incremental drilling
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public void SetSegmentToDrill(Vector3 start, Vector3 end)
+        {
             _positionsBuffer.Clear();
             var startXZ = start.Xz;
             var endXZ = end.Xz;
-            var diffX = Math.Abs(start.X - end.X);
-            var diffZ = Math.Abs(start.Z - end.Z);
             var dir = end - start;
 
             var startIdx = GetCoordsFromPosition(startXZ);
@@ -276,17 +327,36 @@ namespace avoCADo.CNC
 
             //Slower but more accurate
             var steps = Math.Max(Math.Abs(startIdx.x - endIdx.x), Math.Abs(startIdx.z - endIdx.z)) + 1;
-            for(int i = 0; i < steps; i++)
+
+            for (int i = 0; i < steps; i++)
             {
-                var interpolated = Vector3.Lerp(start, end, i / (float)(steps - 1));
-                _positionsBuffer.Add(interpolated);
+                if (steps == 1) _positionsBuffer.Add(end);
+                else
+                {
+                    var interpolated = Vector3.Lerp(start, end, i / (float)(steps - 1));
+                    _positionsBuffer.Add(interpolated);
+                }
             }
+        }
+
+        /// <summary>
+        /// Instant drilling.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="tool"></param>
+        public void DrillCircleAtSegment(Vector3 start, Vector3 end, CNCTool tool)
+        {
+            //_pointBuffer.Clear(); //TODO: first aggregate all points, then simulate
+            SetSegmentToDrill(start, end);
             foreach(var p in _positionsBuffer)
             {
-                DrillCircleAtPosition(p, dir, tool);
+                DrillCircleAtPosition(p, end - start, tool);
             }
 
             //Faster but much uglier
+            //var diffX = Math.Abs(start.X - end.X);
+            //var diffZ = Math.Abs(start.Z - end.Z);
             //bool hor = diffX > diffZ; //get bigger difference for numerical stability
             //Algorithms.Bresenham(startIdx.x, startIdx.z, endIdx.x, endIdx.z, _pointBuffer);
             //foreach (var p in _pointBuffer)

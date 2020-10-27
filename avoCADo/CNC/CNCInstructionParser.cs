@@ -16,9 +16,20 @@ namespace avoCADo.CNC
         public CNCTool Tool;
         public List<CNCInstruction> Instructions = new List<CNCInstruction>();
 
+        public float PathsLength { get; private set; } 
+
         public CNCInstructionSet(CNCTool tool)
         {
             Tool = tool;
+        }
+
+        public void UpdatePathsLength()
+        {
+            PathsLength = 0.0f;
+            for(int i = 0; i < Instructions.Count - 1; i++)
+            {
+                PathsLength += (Instructions[i].Position - Instructions[i + 1].Position).Length;
+            }
         }
     }
     public class CNCInstruction
@@ -60,7 +71,7 @@ namespace avoCADo.CNC
                 }
 
                 RemoveNANs(instSet);
-
+                instSet.UpdatePathsLength();
                 return instSet;
             }
             catch(Exception e)
