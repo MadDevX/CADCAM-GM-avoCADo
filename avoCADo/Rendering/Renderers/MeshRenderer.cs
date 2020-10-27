@@ -22,6 +22,7 @@ namespace avoCADo.Rendering.Renderers
         {
             if (TextureProvider != null)
             {
+                TextureProvider.UpdateTexture();
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, TextureProvider.TextureHandle);
             }

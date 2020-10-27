@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace avoCADo.CNC
 {
-    public class MaterialBlockTextureManager : IDisposable, ITextureProvider
+    public class MaterialBlockTextureManager : IDisposable
     {
         public int TextureHandle => _textureHandle;
         

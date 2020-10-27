@@ -31,8 +31,9 @@ namespace avoCADo.CNC
         }
     }
 
-    public class MaterialBlock : IDisposable
+    public class MaterialBlock : IDisposable, ITextureProvider
     {
+        public int TextureHandle => TextureManager.TextureHandle;
         //        _______________
         // height|               |
         //       |               |
@@ -41,6 +42,8 @@ namespace avoCADo.CNC
         //        0
         public float[] HeightMap { get; private set; }
         public float DefaultHeightValue { get; set; }
+
+        private bool _dirty = true;
 
         private int _width;
         private int _height;
@@ -136,7 +139,7 @@ namespace avoCADo.CNC
             //Used to transform worldPosition to localCoordinates (0.0, 0.0) : (_worldWidth, _worldHeight)
             _offsetVector = new Vector2(WorldWidth * 0.5f, WorldHeight * 0.5f);
 
-            _renderer.TextureProvider = TextureManager;
+            _renderer.TextureProvider = this;
             UpdateMesh();
             UpdateTexture();
         }
@@ -164,11 +167,16 @@ namespace avoCADo.CNC
         public void ResetHeightMapValues()
         {
             for (int i = 0; i < Width * Height; i++) HeightMap[i] = DefaultHeightValue;
+            _dirty = true;
         }
 
         public void UpdateTexture()
         {
-            TextureManager.UpdateTexture(Width, Height, HeightMap);
+            if (_dirty)
+            {
+                TextureManager.UpdateTexture(Width, Height, HeightMap);
+                _dirty = false;
+            }
         }
 
         private void UpdateMesh()
@@ -184,35 +192,22 @@ namespace avoCADo.CNC
             return x + z * Width;
         }
 
-        private void SetPixel(int x, int z, float value)
-        {
-            if (x < Width && z < Height)
-            {
-                HeightMap[GetIndex(x, z)] = value;
-            }
-        }
-
         private void DrillPixel(int x, int z, float value, Vector3 moveDirection, ToolType type)
         {
             if (x >= 0 && x < Width && z >= 0 && z < Height)
             {
                 var idx = GetIndex(x, z);
-                if(type == ToolType.Flat && moveDirection.Y < 0.0f && value < HeightMap[idx])
+                bool willDrill = value < HeightMap[idx];
+                if (type == ToolType.Flat && moveDirection.Y < 0.0f && willDrill)
                     throw new InvalidOperationException("Flat tool drills vertically into the material!");
                 if (value < MinHeightValue) 
                     throw new InvalidOperationException("Tool drills into base of the material!");
-                HeightMap[idx] = Math.Min(HeightMap[idx], value);
+                if (willDrill)
+                {
+                    HeightMap[idx] = value;
+                    _dirty = true;
+                }
             }
-        }
-
-        private bool CheckContactPixel(int x, int z, float value)
-        {
-            if (x >= 0 && x < Width && z >= 0 && z < Height)
-            {
-                var idx = GetIndex(x, z);
-                return HeightMap[idx] > value; //TODO: maybe >=
-            }
-            return false;
         }
 
         private (int x, int z) GetCoordsFromPosition(Vector2 worldPosition)
@@ -302,37 +297,6 @@ namespace avoCADo.CNC
             //    DrillCircleAtPosition(new Vector3(pos.X, y, pos.Y), tool);
             //}
 
-        }
-
-        private bool InContact(Vector3 toolPosition, CNCTool tool)
-        {
-            var radius = tool.Radius;
-            var radiusSqr = tool.RadiusSqr;
-            var luPos = new Vector2(toolPosition.X - radius, toolPosition.Z - radius);
-            var rbPos = new Vector2(toolPosition.X + radius, toolPosition.Z + radius);
-
-            var lu = GetCoordsFromPosition(luPos);
-            var rb = GetCoordsFromPosition(rbPos);
-            int toolTypeIdx = (int)tool.Type;
-
-            for (int y = lu.z; y < rb.z; y++)
-            {
-                for (int x = lu.x; x < rb.x; x++)
-                {
-                    var pos = IdxToWorld(x, y);
-                    var offX = toolPosition.X - pos.X;
-                    var offY = toolPosition.Z - pos.Y;
-                    var distSqr = offX * offX + offY * offY;
-                    if (distSqr <= radiusSqr)
-                    {
-                        if(CheckContactPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool)))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
 
         private float HeightByDistFromCenterRound(float toolY, float distanceSqr, CNCTool tool)

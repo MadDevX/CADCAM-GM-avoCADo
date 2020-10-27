@@ -9,5 +9,6 @@ namespace avoCADo
     public interface ITextureProvider
     {
         int TextureHandle { get; }
+        void UpdateTexture();
     }
 }

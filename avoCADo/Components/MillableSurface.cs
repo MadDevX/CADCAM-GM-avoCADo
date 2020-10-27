@@ -38,7 +38,6 @@ namespace avoCADo.Components
         public void ResetMaterial()
         {
             _materialBlock.ResetHeightMapValues();
-            _materialBlock.UpdateTexture();
         }
 
         protected override void OnUpdate(float deltaTime)
@@ -61,8 +60,6 @@ namespace avoCADo.Components
                 var message = e.InnerException != null ? e.InnerException.Message : e.Message;
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            _materialBlock.UpdateTexture();
         }
     }
 }
