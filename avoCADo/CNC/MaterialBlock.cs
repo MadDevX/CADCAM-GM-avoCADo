@@ -136,9 +136,6 @@ namespace avoCADo.CNC
             //Map coords from [(0.0 0.0),(worldWidth, worldHeight)] to [(0.0 0.0),(width, height)]
             UpdateCoordMappings();
 
-            //Used to transform worldPosition to localCoordinates (0.0, 0.0) : (_worldWidth, _worldHeight)
-            _offsetVector = new Vector2(WorldWidth * 0.5f, WorldHeight * 0.5f);
-
             _renderer.TextureProvider = this;
             UpdateMesh();
             UpdateTexture();
@@ -151,6 +148,9 @@ namespace avoCADo.CNC
 
             _indexWidthToWorld = (1.0f / (Width - 1)) * WorldWidth;
             _indexHeightToWorld = (1.0f / (Height - 1)) * WorldHeight;
+
+            //Used to transform worldPosition to localCoordinates (0.0, 0.0) : (_worldWidth, _worldHeight)
+            _offsetVector = new Vector2(WorldWidth * 0.5f, WorldHeight * 0.5f);
         }
 
         public void Dispose()

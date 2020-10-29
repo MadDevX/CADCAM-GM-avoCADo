@@ -52,12 +52,22 @@ namespace avoCADo.Components
 
         public void SkipSim()
         {
-            while(_simulator != null)
+            try
             {
-                _simulator.AdvanceSimulation(_simulator.DistanceToEnd);
-                _toolNode.Transform.Position = _simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                while (_simulator != null)
+                {
+                    _simulator.AdvanceSimulation(_simulator.DistanceToEnd);
+                    _toolNode.Transform.Position = _simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                    CleanupCNCSim();
+                    UpdateCNCSimulator();
+                }
+            }
+            catch (Exception e)
+            {
+                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
                 CleanupCNCSim();
-                UpdateCNCSimulator();
+                _instructionSets.Clear();
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
