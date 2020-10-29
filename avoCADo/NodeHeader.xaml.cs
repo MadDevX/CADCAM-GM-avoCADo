@@ -163,7 +163,7 @@ namespace avoCADo
         private void UpdateContextMenuOptions()
         {
             var sel = _selectionManager.MainSelection;
-            if (sel != null && sel.GroupNodeType == GroupNodeType.Attachable && Node.Renderer is PointRenderer)
+            if (sel != null && sel.GroupNodeType == GroupNodeType.Attachable && Node.GetComponent<Renderer>() is PointRenderer)
             {
                 if( sel.Children.Contains(Node))
                 {
@@ -257,7 +257,7 @@ namespace avoCADo
         {
             var nodeFactory = Registry.NodeFactory;
 
-            var gen = (Node.Renderer.GetGenerator() as BezierGeneratorGeometry);
+            var gen = (Node.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry);
             var cps = gen.Curve.ControlPoints;
             var uvst = (gen.Curve as IntersectionCurve).Parameters;
 

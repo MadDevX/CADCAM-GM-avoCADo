@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using avoCADo.Components;
+using avoCADo.Miscellaneous;
 using OpenTK;
 
 namespace avoCADo
@@ -49,7 +50,7 @@ namespace avoCADo
 
         public ITransform Transform { get; }
 
-        public IRenderer Renderer { get; }
+        public IList<IRenderer> Renderers => _componentManager.Renderers;
 
         public Matrix4 GlobalModelMatrix { get; } = Matrix4.Identity;
 
@@ -57,21 +58,21 @@ namespace avoCADo
         private WpfObservableRangeCollection<INode> _children;
 
         protected IDependencyCollector _depColl;
+        protected ComponentManager _componentManager;
 
-        public GroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
+        public GroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, T dependent, string name)
         {
             Transform = transform;
             _depColl = new DependencyCollector();
+            _componentManager = new ComponentManager(this);
             _children = childrenSource;
             Transform.Node = this;
             dependent.Initialize(this);
-            Renderer = renderer;
             Name = name;
-            renderer.SetNode(this);
         }
 
-        public GroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, T dependent, string name)
-            : this(new GroupTransform(), childrenSource, renderer, dependent, name)
+        public GroupNode(WpfObservableRangeCollection<INode> childrenSource, T dependent, string name)
+            : this(new GroupTransform(), childrenSource, dependent, name)
         {
         }
 
@@ -187,12 +188,7 @@ namespace avoCADo
 
         public virtual void Dispose()
         {
-            foreach (var comp in _components)
-            {
-                comp.Dispose();
-            }
-            _components.Clear();
-            Renderer.Dispose();
+            _componentManager.Dispose();
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 _children[i].PropertyChanged -= ChildNodeModified;
@@ -205,7 +201,10 @@ namespace avoCADo
 
         public void Render(ICamera camera, Matrix4 parentMatrix)
         {
-            Renderer.Render(camera, Matrix4.Identity, Matrix4.Identity);
+            foreach (var rend in Renderers)
+            {
+                rend.Render(camera, Matrix4.Identity, Matrix4.Identity);
+            }
         }
 
         public void Notify()
@@ -243,28 +242,9 @@ namespace avoCADo
         }
 
         #region Components
-        private IList<IMComponent> _components { get; } = new List<IMComponent>();
-        public void AttachComponents(params IMComponent[] components)
-        {
-            foreach (var component in components)
-            {
-                component.SetOwnerNode(this);
-                _components.Add(component);
-            }
-            foreach (var component in _components)
-            {
-                component.Initialize();
-            }
-        }
+        public void AttachComponents(params IMComponent[] components) => _componentManager.AttachComponents(components);
 
-        public T2 GetComponent<T2>() where T2 : MComponent
-        {
-            foreach (var component in _components)
-            {
-                if (component is T2 tComponent) return tComponent;
-            }
-            return null;
-        }
+        public T2 GetComponent<T2>() where T2 : MComponent => _componentManager.GetComponent<T2>();
         #endregion
 
         #region Dependency forwarding

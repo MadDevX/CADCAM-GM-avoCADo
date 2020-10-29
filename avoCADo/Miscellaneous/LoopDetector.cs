@@ -55,9 +55,9 @@ namespace avoCADo.Miscellaneous
         {
             var coordsLists = new List<CoordList<INode>>();
             var common = CommonCPs(a, b, c);
-            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfA = (a.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (b.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (c.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
             if (common.HasValue == false) throw new InvalidOperationException("Provided surfaces do not create triangular loop");
             var comPts = common.Value;
             var caseA = GetEdgeCase(comPts.ca, comPts.ab, surfA);
@@ -178,9 +178,9 @@ namespace avoCADo.Miscellaneous
 
         public static bool ValidForFilling(INode a, INode b, INode c)
         {
-            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfA = (a.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (b.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (c.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
             if (surfA == null || surfB == null || surfC == null) return false;
             var common = CommonCPs(a, b, c);
             if (common.HasValue == false) return false;
@@ -239,9 +239,9 @@ namespace avoCADo.Miscellaneous
 
         private static (INode ab, INode bc, INode ca)? CommonCPs(INode a, INode b, INode c)
         {
-            var surfA = (a.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfB = (b.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
-            var surfC = (c.Renderer.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfA = (a.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfB = (b.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
+            var surfC = (c.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator).Surface;
 
             var interusedA = GetCornersWithMultipleUniqueDependencies(surfA, b, c);
             var interusedB = GetCornersWithMultipleUniqueDependencies(surfB, a, c);

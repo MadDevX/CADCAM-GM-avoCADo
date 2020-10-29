@@ -29,7 +29,7 @@ namespace avoCADo
                         var pos = node.Transform.WorldPosition;
                         var rot = node.Transform.RotationEulerAngles;
                         var scl = node.Transform.Scale;
-                        var gen = node.Renderer.GetGenerator() as TorusGenerator;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as TorusGenerator;
                         var surf = gen.Surface as TorusSurface;
                         var data = new SceneTorus
                         {
@@ -46,7 +46,7 @@ namespace avoCADo
                     }
                 case ObjectType.BezierCurveC0:
                     {
-                        var gen = node.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         var refs = new SceneBezierC0PointRef[node.Children.Count];
                         for(int i = 0; i < node.Children.Count; i++)
                         {
@@ -62,7 +62,7 @@ namespace avoCADo
                     }
                 case ObjectType.BezierCurveC2:
                     {
-                        var gen = node.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         var refs = new SceneBezierC2PointRef[node.Children.Count];
                         for (int i = 0; i < node.Children.Count; i++)
                         {
@@ -80,7 +80,7 @@ namespace avoCADo
                     }
                 case ObjectType.InterpolatingCurve:
                     {
-                        var gen = node.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         var refs = new SceneBezierInterPointRef[node.Children.Count];
                         for (int i = 0; i < node.Children.Count; i++)
                         {
@@ -96,7 +96,7 @@ namespace avoCADo
                     }
                 case ObjectType.BezierPatchC0:
                     {
-                        var gen = node.Renderer.GetGenerator() as BezierPatchGenerator;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator;
                         var refs = new ScenePatchC0PointRef[node.Children.Count];
                         var coordList = gen.Surface.ControlPoints;
                         var refIdx = 0;
@@ -125,7 +125,7 @@ namespace avoCADo
                     }
                 case ObjectType.BezierPatchC2:
                     {
-                        var gen = node.Renderer.GetGenerator() as BezierPatchC2Generator;
+                        var gen = node.GetComponent<Renderer>()?.GetGenerator() as BezierPatchC2Generator;
                         var refs = new ScenePatchC2PointRef[node.Children.Count];
                         var coordList = gen.Surface.ControlPoints;
                         var refIdx = 0;

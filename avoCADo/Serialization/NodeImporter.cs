@@ -26,7 +26,7 @@ namespace avoCADo
                 case SceneTorus torus:
                     {
                         var createdNode = _nodeFactory.CreateObject(ObjectType.Torus, null);
-                        var generator = createdNode.Renderer.GetGenerator() as TorusGenerator;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as TorusGenerator;
                         generator.XDivisions = int.Parse(torus.HorizontalSlices);
                         generator.YDivisions = int.Parse(torus.VerticalSlices);
                         var surf = generator.Surface as TorusSurface;
@@ -57,7 +57,7 @@ namespace avoCADo
 
                         var createdNode = _nodeFactory.CreateObject(ObjectType.BezierCurveC0, new CurveParameters(cps));
                         createdNode.Name = bc0.Name;
-                        var generator = createdNode.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         generator.ShowEdges = bc0.ShowControlPolygon;
 
                         return createdNode;
@@ -74,7 +74,7 @@ namespace avoCADo
 
                         var createdNode = _nodeFactory.CreateObject(ObjectType.BezierCurveC2, new CurveParameters(cps));
                         createdNode.Name = bc2.Name;
-                        var generator = createdNode.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         generator.ShowEdges = bc2.ShowBernsteinPolygon || bc2.ShowDeBoorPolygon; //TODO: divide de boor polygon representation
                         generator.ShowVirtualControlPoints = bc2.ShowBernsteinPoints;
                         return createdNode;
@@ -91,7 +91,7 @@ namespace avoCADo
 
                         var createdNode = _nodeFactory.CreateObject(ObjectType.InterpolatingCurve, new CurveParameters(cps));
                         createdNode.Name = ic.Name;
-                        var generator = createdNode.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                         generator.ShowEdges = ic.ShowControlPolygon;
                         return createdNode;
                     }
@@ -127,7 +127,7 @@ namespace avoCADo
                         var createdNode = _nodeFactory.CreateObject(ObjectType.BezierPatchC0,
                             new PatchParameters(mode, dims.horizontalPatches, dims.verticalPatches, 0.0f, 0.0f, cps));
                         createdNode.Name = pc0.Name;
-                        var generator = createdNode.Renderer.GetGenerator() as BezierPatchGenerator;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator;
                         generator.ShowEdges = pc0.ShowControlPolygon;
                         generator.IsolineDivisionsU = int.Parse(pc0.ColumnSlices);
                         generator.IsolineDivisionsV = int.Parse(pc0.RowSlices);
@@ -165,7 +165,7 @@ namespace avoCADo
                         var createdNode = _nodeFactory.CreateObject(ObjectType.BezierPatchC2,
                             new PatchParameters(mode, dims.horizontalPatches, dims.verticalPatches, 0.0f, 0.0f, cps));
                         createdNode.Name = pc2.Name;
-                        var generator = createdNode.Renderer.GetGenerator() as BezierPatchGenerator;
+                        var generator = createdNode.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator;
                         generator.ShowEdges = pc2.ShowControlPolygon;
                         generator.IsolineDivisionsU = int.Parse(pc2.ColumnSlices);
                         generator.IsolineDivisionsV = int.Parse(pc2.RowSlices);

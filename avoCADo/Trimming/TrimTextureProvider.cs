@@ -106,7 +106,7 @@ namespace avoCADo.Trimming
             foreach(var rend in rends)
             {
                 rend.Render(_cam, Matrix4.Identity, Matrix4.Identity);
-                //rend.Dispose();
+                rend.Dispose();
             }
             GL.Enable(EnableCap.DepthTest);
 

@@ -45,7 +45,7 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            var gen = _selectionManager.MainSelection?.Renderer.GetGenerator() as BezierPatchGenerator;
+            var gen = _selectionManager.MainSelection?.GetComponent<Renderer>()?.GetGenerator() as BezierPatchGenerator;
             DataContext = gen;
             if (gen != null)
             {
@@ -54,7 +54,7 @@ namespace avoCADo
             }
             else
             {
-                var gen2 = _selectionManager.MainSelection?.Renderer.GetGenerator() as GregoryPatchGenerator;
+                var gen2 = _selectionManager.MainSelection?.GetComponent<Renderer>()?.GetGenerator() as GregoryPatchGenerator;
                 DataContext = gen2;
                 if(gen2 != null)
                 {

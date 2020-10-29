@@ -1,4 +1,5 @@
 ﻿using avoCADo.Components;
+using avoCADo.Miscellaneous;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,10 @@ namespace avoCADo
         public ObjectType ObjectType => ObjectType.VirtualPoint;
         public string Name { get; set; }
         public ITransform Transform { get; }
-        public IRenderer Renderer { get; }
+
+        public IList<IRenderer> Renderers => _componentManager.Renderers;
+
+        private ComponentManager _componentManager;
 
         public Matrix4 GlobalModelMatrix
         {
@@ -38,12 +42,11 @@ namespace avoCADo
 
         private static PropertyChangedEventArgs _transformChangedArgs = new PropertyChangedEventArgs(nameof(Transform));
 
-        public VirtualNode(Transform transform, IRenderer renderer)
+        public VirtualNode(Transform transform)
         {
+            _componentManager = new ComponentManager(this);
             Transform = transform;
-            Renderer = renderer;
             Name = "";
-            renderer.SetNode(this);
             Transform.PropertyChanged += TransformModified;
         }
 
@@ -74,12 +77,7 @@ namespace avoCADo
         public void Dispose()
         {
             Transform.PropertyChanged -= TransformModified;
-            Renderer.Dispose();
-            foreach (var comp in _components)
-            {
-                comp.Dispose();
-            }
-            _components.Clear();
+            _componentManager.Dispose();
             OnDisposed?.Invoke(this);
         }
 
@@ -90,32 +88,18 @@ namespace avoCADo
 
         public void Render(ICamera camera, Matrix4 parentMatrix)
         {
-            Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
+            foreach (var rend in Renderers)
+            {
+                rend.Render(camera, Transform.LocalModelMatrix, parentMatrix);
+            }
         }
 
         #region Components
-        private IList<IMComponent> _components { get; } = new List<IMComponent>();
-        public void AttachComponents(params IMComponent[] components)
-        {
-            foreach (var component in components)
-            {
-                component.SetOwnerNode(this);
-                _components.Add(component);
-            }
-            foreach (var component in _components)
-            {
-                component.Initialize();
-            }
-        }
 
-        public T GetComponent<T>() where T : MComponent
-        {
-            foreach (var component in _components)
-            {
-                if (component is T tComponent) return tComponent;
-            }
-            return null;
-        }
+        public void AttachComponents(params IMComponent[] components) => _componentManager.AttachComponents(components);
+
+        public T GetComponent<T>() where T : MComponent => _componentManager.GetComponent<T>();
+
         #endregion
 
     }

@@ -12,7 +12,7 @@ namespace avoCADo
         private INode _qNode;
         private IntersectionData _intersectionData;
 
-        public IntersectionCurveGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, IntersectionCurve curve, INode pNode, INode qNode, ISurface p, ISurface q, string name) : base(new DummyTransform(), childrenSource, renderer, dependent, name)
+        public IntersectionCurveGroupNode(WpfObservableRangeCollection<INode> childrenSource, BezierGeneratorGeometry dependent, IntersectionCurve curve, INode pNode, INode qNode, ISurface p, ISurface q, string name) : base(new DummyTransform(), childrenSource, dependent, name)
         {
             _pNode = pNode;
             _qNode = qNode;

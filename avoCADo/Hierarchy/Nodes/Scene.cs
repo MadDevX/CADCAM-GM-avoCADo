@@ -1,4 +1,5 @@
 ﻿using avoCADo.Components;
+using avoCADo.Miscellaneous;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace avoCADo
 
         public List<INode> VirtualChildren { get; } = new List<INode>();
 
+        private ComponentManager _componentManager;
+
         public Matrix4 GlobalModelMatrix
         {
             get
@@ -48,21 +51,18 @@ namespace avoCADo
 
         public ITransform Transform { get; } = new DummyTransform();
 
-        public IRenderer Renderer { get; } = new DummyRenderer();
+        public IList<IRenderer> Renderers => _componentManager.Renderers;
 
         public Scene(string name)
         {
+            _componentManager = new ComponentManager(this);
             Name = name;
             Transform.Node = this;
         }
 
         public void Dispose()
         {
-            foreach (var comp in _components)
-            {
-                comp.Dispose();
-            }
-            _components.Clear();
+            _componentManager.Dispose();
             while(Children.Count > 0)
             {
                 Children[Children.Count - 1].Dispose();
@@ -78,6 +78,10 @@ namespace avoCADo
 
         public void Render(ICamera camera)
         {
+            foreach(var rend in Renderers)
+            {
+                rend.Render(camera, Matrix4.Identity, Matrix4.Identity);
+            }
             for(int i = 0; i < Children.Count; i++)
             {
                 Children[i].Render(camera, Matrix4.Identity);
@@ -202,28 +206,9 @@ namespace avoCADo
         }
 
         #region Components
-        private IList<IMComponent> _components { get; } = new List<IMComponent>();
-        public void AttachComponents(params IMComponent[] components)
-        {
-            foreach (var component in components)
-            {
-                component.SetOwnerNode(this);
-                _components.Add(component);
-            }
-            foreach (var component in _components)
-            {
-                component.Initialize();
-            }
-        }
+        public void AttachComponents(params IMComponent[] components) => _componentManager.AttachComponents(components);
 
-        public T GetComponent<T>() where T : MComponent
-        {
-            foreach (var component in _components)
-            {
-                if (component is T tComponent) return tComponent;
-            }
-            return null;
-        }
+        public T GetComponent<T>() where T : MComponent => _componentManager.GetComponent<T>();
         #endregion
     }
 }

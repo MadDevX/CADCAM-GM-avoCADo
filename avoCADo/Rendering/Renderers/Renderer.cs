@@ -4,26 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using avoCADo.Components;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace avoCADo
 {
-    public abstract class Renderer : IRenderer, IDisposable
+    public abstract class Renderer : MComponent, IRenderer, IDisposable
     {
         protected ShaderWrapper _shaderWrapper;
         protected Mesh _mesh;
 
         protected bool _shouldDispose = false;
-
-        protected INode _node = null;
-
-        public void SetNode(INode node)
-        {
-            if (_node != null) throw new InvalidOperationException("Tried to reassign renderer's parent node");
-            _node = node;
-        }
-
 
         public Renderer(ShaderWrapper shader, VertexLayout.Type type = VertexLayout.Type.Position)
         {
@@ -39,33 +31,37 @@ namespace avoCADo
             _shouldDispose = false;
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (_shouldDispose)
             {
                 _mesh.Dispose();
             }
+            base.Dispose();
         }
 
         public abstract IMeshGenerator GetGenerator();
 
         public void Render(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            if (_node != null && _node.IsSelectable == false) return;
-            _mesh.BindMesh();
-            SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
-            GetGenerator()?.RefreshDataPreRender();
-            Draw(camera, localMatrix, parentMatrix);
-            DrawTrim(camera, localMatrix, parentMatrix);
+            if (OwnerNode != null && OwnerNode.IsSelectable == false) return;
+            if (Enabled)
+            {
+                _mesh.BindMesh();
+                SetShader(_shaderWrapper, camera, localMatrix, parentMatrix);
+                GetGenerator()?.RefreshDataPreRender();
+                Draw(camera, localMatrix, parentMatrix);
+                DrawTrim(camera, localMatrix, parentMatrix);
+            }
         }
 
         private void DrawTrim(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
             try
             {
-                if (_node != null && _node.Transform?.ParentNode != null)
+                if (OwnerNode != null && OwnerNode.Transform?.ParentNode != null)
                 {
-                    var gen = _node?.Renderer?.GetGenerator();
+                    var gen = GetGenerator();
                     if (gen is ISurfaceGenerator surfGen)
                     {
                         if (surfGen.Trim)

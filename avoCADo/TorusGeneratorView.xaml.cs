@@ -39,7 +39,7 @@ namespace avoCADo
         {
             if (_selectionManager.MainSelection != null)
             {
-                var gen = _selectionManager.MainSelection.Renderer.GetGenerator() as TorusGenerator;
+                var gen = _selectionManager.MainSelection.GetComponent<Renderer>()?.GetGenerator() as TorusGenerator;
                 DataContext = gen;
             }
             else

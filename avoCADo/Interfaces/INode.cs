@@ -26,7 +26,7 @@ namespace avoCADo
         GroupNodeType GroupNodeType { get; }
         string Name { get; set; }
         ITransform Transform { get; }
-        IRenderer Renderer { get; }
+        IList<IRenderer> Renderers { get; }
         Matrix4 GlobalModelMatrix { get; }
         ObservableCollection<INode> Children { get; }
 
@@ -39,6 +39,7 @@ namespace avoCADo
         int GetChildIndex(INode node);
 
         void AttachComponents(params IMComponent[] components);
+        //void DetachComponents(params IMComponent[] components);
         T GetComponent<T>() where T : MComponent;
     }
 }

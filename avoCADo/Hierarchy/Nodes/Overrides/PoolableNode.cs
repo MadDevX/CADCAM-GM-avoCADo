@@ -12,7 +12,7 @@ namespace avoCADo
         public event Action<PoolableNode> OnReturnToPool;
         public bool IsInPool { get; private set; }
 
-        public PoolableNode(Transform transform, IRenderer renderer, string name) : base(transform, renderer, name)
+        public PoolableNode(Transform transform, string name) : base(transform, name)
         {
         }
 

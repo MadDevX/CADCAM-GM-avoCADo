@@ -170,6 +170,7 @@
     <Compile Include="MillableSurfaceView.xaml.cs">
       <DependentUpon>MillableSurfaceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Miscellaneous\ComponentManager.cs" />
     <Compile Include="Miscellaneous\CountedList.cs" />
     <Compile Include="Miscellaneous\LoopDetector.cs" />
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />

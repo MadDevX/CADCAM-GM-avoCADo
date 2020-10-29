@@ -11,11 +11,11 @@ namespace avoCADo
     public class BezierGeomGroupNode : GroupNode<BezierGeneratorGeometry>
     {
         public override GroupNodeType GroupNodeType => GroupNodeType.Attachable;
-        public BezierGeomGroupNode(WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(childrenSource, renderer, dependent, name)
+        public BezierGeomGroupNode(WpfObservableRangeCollection<INode> childrenSource, BezierGeneratorGeometry dependent, string name) : base(childrenSource, dependent, name)
         {
         }
 
-        public BezierGeomGroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, IRenderer renderer, BezierGeneratorGeometry dependent, string name) : base(transform, childrenSource, renderer, dependent, name)
+        public BezierGeomGroupNode(ITransform transform, WpfObservableRangeCollection<INode> childrenSource, BezierGeneratorGeometry dependent, string name) : base(transform, childrenSource, dependent, name)
         {
         }
     }

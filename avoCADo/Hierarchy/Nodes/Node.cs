@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using avoCADo.Components;
+using avoCADo.Miscellaneous;
 using OpenTK;
 
 namespace avoCADo
@@ -24,8 +25,9 @@ namespace avoCADo
         public GroupNodeType GroupNodeType => GroupNodeType.None;
 
         public ITransform Transform { get; private set; }
-        public IRenderer Renderer { get; private set; }
+        public IList<IRenderer> Renderers => _componentManager.Renderers;
 
+        private ComponentManager _componentManager;
         private string _name;
 
         public string Name
@@ -57,14 +59,13 @@ namespace avoCADo
             }
         }
 
-        public Node(ITransform transform, IRenderer renderer, string name)
+        public Node(ITransform transform, string name)
         {
+            _componentManager = new ComponentManager(this);
             _depColl = new DependencyCollector();
             Transform = transform;
             Transform.Node = this;
-            Renderer = renderer;
             Name = name;
-            renderer.SetNode(this);
             Transform.PropertyChanged += TransformModified;
         }
 
@@ -74,12 +75,7 @@ namespace avoCADo
         public virtual void Dispose()
         {
             Transform.PropertyChanged -= TransformModified;
-            Renderer.Dispose();
-            foreach (var comp in _components)
-            {
-                comp.Dispose();
-            }
-            _components.Clear();
+            _componentManager.Dispose();
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 Children[i].Dispose();
@@ -112,7 +108,10 @@ namespace avoCADo
 
         public void Render(ICamera camera, Matrix4 parentMatrix)
         {
-            Renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
+            foreach (var renderer in Renderers)
+            {
+                renderer.Render(camera, Transform.LocalModelMatrix, parentMatrix);
+            }
             var modelMat = Transform.LocalModelMatrix * parentMatrix;
             for(int i = 0; i < Children.Count; i++)
             {
@@ -199,28 +198,11 @@ namespace avoCADo
         }
 
         #region Components
-        private IList<IMComponent> _components { get; } = new List<IMComponent>();
-        public void AttachComponents(params IMComponent[] components)
-        {
-            foreach (var component in components)
-            {
-                component.SetOwnerNode(this);
-                _components.Add(component);
-            }
-            foreach (var component in _components)
-            {
-                component.Initialize();
-            }
-        }
 
-        public T GetComponent<T>() where T : MComponent
-        {
-            foreach (var component in _components)
-            {
-                if (component is T tComponent) return tComponent;
-            }
-            return null;
-        }
+        public void AttachComponents(params IMComponent[] components) => _componentManager.AttachComponents(components);
+
+        public T GetComponent<T>() where T : MComponent => _componentManager.GetComponent<T>();
+
         #endregion
 
         #region Dependency forwarding

@@ -25,7 +25,8 @@ namespace avoCADo.Architecture
 
             if (_pointPool.Count == 0)
             {
-                pointNode = new PoolableNode(new PointTransform(position, Vector3.Zero, Vector3.One), new PointRenderer(_shaderProvider.DefaultShader, Color4.Orange, Color4.Yellow), NameGenerator.GenerateName(parent, DefaultNodeNames.Point));
+                pointNode = new PoolableNode(new PointTransform(position, Vector3.Zero, Vector3.One), NameGenerator.GenerateName(parent, DefaultNodeNames.Point));
+                pointNode.AttachComponents(new PointRenderer(_shaderProvider.DefaultShader, Color4.Orange, Color4.Yellow));
                 pointNode.ObjectType = ObjectType.Point;
                 pointNode.OnReturnToPool += PointNode_OnReturnToPool;
                 pointNode.GetFromPool();

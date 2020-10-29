@@ -27,7 +27,7 @@ namespace avoCADo
             for (int i = 0; i < calls.Count; i++)
             {
                 GL.LineWidth(calls[i].size);
-                var color = _node.IsSelected ? calls[i].selectedColor : calls[i].defaultColor;
+                var color = OwnerNode.IsSelected ? calls[i].selectedColor : calls[i].defaultColor;
                 var shaderWrapper = _shadersDict[calls[i].shaderType];
                 if(currentShader != shaderWrapper)
                 {

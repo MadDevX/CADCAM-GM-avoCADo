@@ -120,8 +120,8 @@ namespace avoCADo
 
         public void Show(INode pNode, INode qNode)
         {
-            var pGen = (pNode.Renderer.GetGenerator() as ISurfaceGenerator);
-            var qGen = (qNode.Renderer.GetGenerator() as ISurfaceGenerator);
+            var pGen = (pNode.GetComponent<Renderer>()?.GetGenerator() as ISurfaceGenerator);
+            var qGen = (qNode.GetComponent<Renderer>()?.GetGenerator() as ISurfaceGenerator);
             if (pGen == null || qGen == null) throw new InvalidOperationException("Provided nodes do not represent valid surfaces");
             Initialize(pGen.Surface, qGen.Surface);
             SetLabels(pNode, qNode, pGen.Surface, qGen.Surface);

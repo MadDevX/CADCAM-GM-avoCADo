@@ -21,7 +21,7 @@ namespace avoCADo
                 if (second.BoundingCurves.Contains(c) == false) continue;
                 var gen = new RawDataGenerator();
                 var rend = new ParametricObjectRenderer(shaderProvider, gen);
-                _node.Assign(rend);
+                rend.SetOwnerNode(_node);
                 rendList.Add(rend);
 
                 var list = c.Curve.GetParameterList(surf, selfIntersectionQ);

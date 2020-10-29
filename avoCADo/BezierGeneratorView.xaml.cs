@@ -44,7 +44,7 @@ namespace avoCADo
 
         private void OnSelectionChanged()
         {
-            var gen =_selectionManager.MainSelection?.Renderer.GetGenerator() as BezierGenerator;
+            var gen =_selectionManager.MainSelection?.GetComponent<Renderer>()?.GetGenerator() as BezierGenerator;
             if (gen != null)
             {
                 if (gen.Curve is IVirtualControlPoints)
@@ -67,7 +67,7 @@ namespace avoCADo
             }
             else
             {
-                var gen2 = _selectionManager.MainSelection?.Renderer.GetGenerator() as BezierGeneratorGeometry;
+                var gen2 = _selectionManager.MainSelection?.GetComponent<Renderer>()?.GetGenerator() as BezierGeneratorGeometry;
                 if (gen2 != null)
                 {
                     if (gen2.Curve is IVirtualControlPoints)

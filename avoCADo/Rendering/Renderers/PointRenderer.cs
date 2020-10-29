@@ -26,7 +26,7 @@ namespace avoCADo
 
         protected override void Draw(ICamera camera, Matrix4 localMatrix, Matrix4 parentMatrix)
         {
-            if (_node.IsSelected)
+            if (OwnerNode.IsSelected)
             {
                 GL.PointSize(RenderConstants.SELECTED_POINT_SIZE);
                 _shaderWrapper.SetColor(_selectedColor);

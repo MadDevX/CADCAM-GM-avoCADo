@@ -19,7 +19,7 @@ namespace avoCADo.Actions
         {
             ISurface p, q;
 
-            if (parameters.a.Renderer.GetGenerator() is ISurfaceGenerator pGen && parameters.b.Renderer.GetGenerator() is ISurfaceGenerator qGen)
+            if (parameters.a.GetComponent<Renderer>()?.GetGenerator() is ISurfaceGenerator pGen && parameters.b.GetComponent<Renderer>()?.GetGenerator() is ISurfaceGenerator qGen)
             {
                 p = pGen.Surface;
                 q = qGen.Surface;
