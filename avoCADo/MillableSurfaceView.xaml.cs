@@ -94,10 +94,10 @@ namespace avoCADo
         private void UpdateLoadedFilesText()
         {
             StringBuilder newText = new StringBuilder();
-            newText.Append("Loaded Files:\n");
+            newText.Append("Loaded Files: ");
             foreach(var name in _names)
             {
-                newText.Append($"{name}\n");
+                newText.Append($"{name}; ");
             }
             tbLoadedfiles.Text = newText.ToString();
         }
