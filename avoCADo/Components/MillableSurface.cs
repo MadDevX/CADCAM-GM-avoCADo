@@ -11,6 +11,9 @@ namespace avoCADo.Components
 {
     public class MillableSurface : UpdatableMComponent
     {
+        public event Action OnSimulationFinished;
+        public bool SimulationFinished { get; private set; }
+
         public float SimulationSpeed { get; set; } = 0.01f;
         public bool Paused { get; set; } = true;
 
@@ -41,8 +44,7 @@ namespace avoCADo.Components
         public void SetPaths(List<CNCInstructionSet> instructionSets)
         {
             _instructionSets = instructionSets;
-            _currentInstSet = 0;
-            _simulator = null;
+            ResetSimulationState();
         }
 
         public void ResetMaterial()
@@ -50,7 +52,14 @@ namespace avoCADo.Components
             _materialBlock.ResetHeightMapValues();
         }
 
-        public void SkipSim()
+        public void ResetSimulationState()
+        {
+            _simulator = null;
+            _currentInstSet = 0;
+            SimulationFinished = false;
+        }
+
+        public void SkipSimulation()
         {
             try
             {
@@ -107,31 +116,23 @@ namespace avoCADo.Components
 
         private void UpdateCNCSimulator()
         {
-            if (_simulator == null && _currentInstSet < _instructionSets.Count)
+            if (_simulator == null)
             {
-                _simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
-                if (_toolNode != null)
+                if (_currentInstSet < _instructionSets.Count)
                 {
-                    _toolNode.Dispose();
-                    _toolNode = null;
+                    _simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
+                    if (_toolNode != null)
+                    {
+                        _toolNode.Dispose();
+                        _toolNode = null;
+                    }
+                    _toolNode = _nodeFactory.CreateTorus(0.0f, _instructionSets[_currentInstSet].Tool.Radius * 0.95f); 
                 }
-                _toolNode = _nodeFactory.CreateTorus(0.0f, _instructionSets[_currentInstSet].Tool.Radius * 0.95f);
-            }
-        }
-
-        public void Simulate()
-        {
-            try
-            {
-                foreach (var set in _instructionSets)
+                else
                 {
-                    CNCSimulator.Execute(set, _materialBlock);
+                    SimulationFinished = true;
+                    OnSimulationFinished?.Invoke();
                 }
-            }
-            catch (Exception e)
-            {
-                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

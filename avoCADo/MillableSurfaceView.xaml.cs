@@ -49,16 +49,39 @@ namespace avoCADo
         
         private void OnSelectionChanged()
         {
+            if(_millable != null)
+            {
+                _millable.OnSimulationFinished -= OnSimFinished;
+            }
             _millable = _selectionManager.MainSelection?.GetComponent<MillableSurface>();
             if(_millable != null)
             {
                 Visibility = Visibility.Visible;
+                _millable.OnSimulationFinished += OnSimFinished;
+                SetStartButtonText();
             }
             else
             {
                 Visibility = Visibility.Collapsed;
             }
             DataContext = _millable;
+        }
+
+        private void SetStartButtonText()
+        {
+            if(_millable.SimulationFinished)
+            {
+                btnStartSimulation.Content = "Restart Simulation";
+            }
+            else
+            {
+                btnStartSimulation.Content = _millable.Paused ? "Start Simulation" : "Pause Simulation";
+            }
+        }
+
+        private void OnSimFinished()
+        {
+            SetStartButtonText();
         }
 
         private List<string> _names = new List<string>();
@@ -104,13 +127,20 @@ namespace avoCADo
 
         private void btnStartSimulation_Click(object sender, RoutedEventArgs e)
         {
-            _millable.Paused = !_millable.Paused;
-            btnStartSimulation.Content = _millable.Paused ? "Start Simulation" : "Pause Simulation";
+            if (_millable.SimulationFinished == false)
+            {
+                _millable.Paused = !_millable.Paused;
+            }
+            else
+            {
+                _millable.ResetSimulationState();
+            }
+            SetStartButtonText();
         }
 
         private void btnSkipSimulation_Click(object sender, RoutedEventArgs e)
         {
-            _millable.SkipSim();
+            _millable.SkipSimulation();
         }
 
         private void btnResetMaterial_Click(object sender, RoutedEventArgs e)

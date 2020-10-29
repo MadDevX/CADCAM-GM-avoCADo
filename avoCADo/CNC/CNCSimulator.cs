@@ -36,11 +36,11 @@ namespace avoCADo.CNC
             var remainingDist = distance;
             var insts = _instructionSet.Instructions;
 
-            _curDistance = Math.Min(_instructionSet.PathsLength, _curDistance + distance);
+            _curDistance = Math.Min(_instructionSet.PathsLength, _curDistance + remainingDist);
             
             while (remainingDist > 0.0f)
             {
-                var ret = _block.AdvanceSegment(distance, _instructionSet.Tool, CurrentToolPosition);
+                var ret = _block.AdvanceSegment(remainingDist, _instructionSet.Tool, CurrentToolPosition);
                 remainingDist = ret.remainingDist;
                 CurrentToolPosition = ret.toolCurrentPosition;
 
