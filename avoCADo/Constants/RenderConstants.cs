@@ -25,10 +25,10 @@ namespace avoCADo.Constants
 
         public static float MILL_PATH_SIZE = 1.0f; 
         public static float MILL_PATH_CURRENT_SIZE = 2.0f; 
-        public static float MILL_PATH_COMPLETED_SIZE = 0.25f; 
-        public static Color4 MILL_PATH_COLOR = new Color4(1.0f, 0.5f, 0.5f, 1.0f);
+        public static float MILL_PATH_COMPLETED_SIZE = 0.5f; 
+        public static Color4 MILL_PATH_COLOR = new Color4(1.0f, 0.5f, 0.5f, 0.9f);
         public static Color4 MILL_PATH_CURRENT_COLOR = new Color4(1.0f, 1.0f, 0.5f, 1.0f);
-        public static Color4 MILL_PATH_COMPLETED_COLOR = new Color4(0.5f, 1.0f, 0.5f, 1.0f);
+        public static Color4 MILL_PATH_COMPLETED_COLOR = new Color4(0.5f, 1.0f, 0.5f, 0.5f);
 
         public static int PATCH_COUNT = 16;
         public static int GREGORY_PATCH_COUNT = 20;

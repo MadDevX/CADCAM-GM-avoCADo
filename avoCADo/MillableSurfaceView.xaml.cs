@@ -69,14 +69,15 @@ namespace avoCADo
 
         private void SetStartButtonText()
         {
-            btnSkipSimulation.IsEnabled = !_millable.SimulationFinished;
-            if(_millable.SimulationFinished)
+            btnSkipSimulation.IsEnabled = _millable.SimulationInProgress;
+            btnLoadFiles.IsEnabled = !_millable.SimulationInProgress;
+            if (_millable.SimulationInProgress)
             {
-                btnStartSimulation.Content = "Start Simulation";
+                btnStartSimulation.Content = _millable.Paused ? "Resume Simulation" : "Pause Simulation";
             }
             else
             {
-                btnStartSimulation.Content = _millable.Paused ? "Resume Simulation" : "Pause Simulation";
+                btnStartSimulation.Content = "Start Simulation";
             }
         }
 
@@ -106,6 +107,7 @@ namespace avoCADo
                     _millable.SetPaths(instSetList);
                 }
                 UpdateLoadedFilesText();
+                SetStartButtonText();
                 btnStartSimulation.IsEnabled = filesSelected;
 
             }
@@ -128,13 +130,13 @@ namespace avoCADo
 
         private void btnStartSimulation_Click(object sender, RoutedEventArgs e)
         {
-            if (_millable.SimulationFinished == false)
+            if (_millable.SimulationInProgress)
             {
                 _millable.Paused = !_millable.Paused;
             }
             else
             {
-                _millable.ResetSimulationState();
+                _millable.StartSimulation();
             }
             SetStartButtonText();
         }

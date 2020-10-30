@@ -13,10 +13,10 @@ namespace avoCADo.Components
     {
         public event Action OnSimulationFinished;
         public event Action OnCNCSimulatorUpdated;
-        public bool SimulationFinished { get; private set; } = true;
+        public bool SimulationInProgress { get; private set; } = false;
 
         public float SimulationSpeed { get; set; } = 0.01f;
-        public bool Paused { get; set; } = true;
+        public bool Paused { get; set; } = false;
 
         public bool ShowPaths { get => _lineRenderer.Enabled; set => _lineRenderer.Enabled = value; }
 
@@ -62,18 +62,24 @@ namespace avoCADo.Components
             _materialBlock.ResetHeightMapValues();
         }
 
-        public void ResetSimulationState()
+        private void ResetSimulationState()
         {
             Simulator = null;
             _currentInstSet = 0;
-            SimulationFinished = false;
+        }
+
+        public void StartSimulation()
+        {
+            ResetSimulationState();
+            SimulationInProgress = true;
+            Paused = false;
         }
 
         public void SkipSimulation()
         {
             try
             {
-                if(Simulator == null && SimulationFinished == false)
+                if(Simulator == null && SimulationInProgress)
                 {
                     UpdateCNCSimulator();
                 }
@@ -98,7 +104,7 @@ namespace avoCADo.Components
         {
             try
             {
-                if (Paused == false && SimulationFinished == false)
+                if (Paused == false && SimulationInProgress)
                 {
                     UpdateCNCSimulator();
                     if (Simulator != null)
@@ -145,7 +151,7 @@ namespace avoCADo.Components
                 }
                 else
                 {
-                    SimulationFinished = true;
+                    SimulationInProgress = false;
                     OnSimulationFinished?.Invoke();
                 }
             }
