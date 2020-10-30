@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using avoCADo.Shaders.ShaderWrappers;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,10 @@ namespace avoCADo.Rendering.Renderers
     public class MeshRenderer : Renderer
     {
         public ITextureProvider TextureProvider { get; set; }
-        public MeshRenderer(ShaderWrapper shader, Mesh mesh, ITextureProvider textureProvider) : base(shader, mesh)
+        public MillableSurfaceShaderWrapper Shader { get; }
+        public MeshRenderer(MillableSurfaceShaderWrapper shader, Mesh mesh, ITextureProvider textureProvider) : base(shader, mesh)
         {
+            Shader = shader;
             TextureProvider = textureProvider;
         }
 

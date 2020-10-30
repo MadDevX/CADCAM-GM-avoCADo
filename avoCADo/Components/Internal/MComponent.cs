@@ -23,6 +23,9 @@ namespace avoCADo.Components
 
         public virtual void Dispose() { }
 
+        /// <summary>
+        /// Put at the end of the overrides
+        /// </summary>
         public virtual void Initialize() 
         {
             if (_initialized)

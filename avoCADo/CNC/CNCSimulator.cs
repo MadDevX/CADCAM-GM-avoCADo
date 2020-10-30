@@ -9,21 +9,22 @@ namespace avoCADo.CNC
 {
     public class CNCSimulator
     {
-        private readonly CNCInstructionSet _instructionSet;
+        public readonly CNCInstructionSet InstructionSet;
+
         private readonly MaterialBlock _block;
         private int _curInstruction;
-        private float _curDistance;
         public Vector3 CurrentToolPosition { get; private set; }
 
-        public float DistanceToEnd => _instructionSet.PathsLength - _curDistance;
+        public int CurrentInstruction => _curInstruction;
+        public int InstructionCount => InstructionSet.Instructions.Count;
 
         public CNCSimulator(CNCInstructionSet instructionSet, MaterialBlock block, Vector3 currentToolPosition)
         {
             CurrentToolPosition = currentToolPosition;
-            _instructionSet = instructionSet;
+            InstructionSet = instructionSet;
             _block = block;
             _curInstruction = 0;
-            _block.SetSegmentToDrill(Vector3.UnitY, _instructionSet.Instructions[_curInstruction].Position);
+            _block.SetSegmentToDrill(CurrentToolPosition, InstructionSet.Instructions[_curInstruction].Position);
         }
 
         /// <summary>
@@ -34,13 +35,11 @@ namespace avoCADo.CNC
         public bool AdvanceSimulation(float distance)
         {
             var remainingDist = distance;
-            var insts = _instructionSet.Instructions;
-
-            _curDistance = Math.Min(_instructionSet.PathsLength, _curDistance + remainingDist);
+            var insts = InstructionSet.Instructions;
             
             while (remainingDist > 0.0f)
             {
-                var ret = _block.AdvanceSegment(remainingDist, _instructionSet.Tool, CurrentToolPosition);
+                var ret = _block.AdvanceSegment(remainingDist, InstructionSet.Tool, CurrentToolPosition);
                 remainingDist = ret.remainingDist;
                 CurrentToolPosition = ret.toolCurrentPosition;
 
@@ -52,7 +51,7 @@ namespace avoCADo.CNC
                 }
             }
 
-            return _instructionSet.PathsLength <= _curDistance;
+            return _curInstruction == insts.Count;
         }
 
         public static void Execute(CNCInstructionSet instructionSet, MaterialBlock block)

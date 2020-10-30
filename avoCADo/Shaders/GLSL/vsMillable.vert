@@ -8,6 +8,9 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform float worldWidth = 0.18f;
+uniform float worldHeight = 0.18f;
+
 out vec2 TexCoords;
 out vec3 WorldPos;
 out vec3 Normal;
@@ -26,8 +29,8 @@ void main()
 	float diffX = dx2 - dx1;
 	float diffZ = dz2 - dz1;
 
-	float deltaX = 2.0f/(float(size.x)*5.0f); //TODO: maybe scaling factor
-	float deltaZ = 2.0f/(float(size.y)*5.0f);
+	float deltaX = (2.0f * worldWidth)  / float(size.x); //TODO: maybe scaling factor
+	float deltaZ = (2.0f * worldHeight) / float(size.y);
 	
 	vec3 n1 = vec3(deltaX, diffX, 0.0f);
 	vec3 n2 = vec3(0.0f, diffZ, deltaZ);

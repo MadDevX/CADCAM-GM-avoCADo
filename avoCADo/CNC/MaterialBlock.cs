@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace avoCADo.CNC
 {
-    public enum ToolType
+    public enum CNCToolType
     {
         Round = 0,
         Flat = 1
@@ -19,11 +19,11 @@ namespace avoCADo.CNC
 
     public struct CNCTool
     {
-        public readonly ToolType Type;
+        public readonly CNCToolType Type;
         public readonly float Radius;
         public readonly float RadiusSqr;
 
-        public CNCTool(ToolType type, float radius)
+        public CNCTool(CNCToolType type, float radius)
         {
             Type = type;
             Radius = radius;
@@ -184,6 +184,8 @@ namespace avoCADo.CNC
             if (Width > 1 && Height > 1)
             {
                 _renderer.SetMesh(MeshUtility.CreatePlaneMesh(Width, Height, WorldWidth, WorldHeight));
+                _renderer.Shader.SetWorldWidth(WorldWidth);
+                _renderer.Shader.SetWorldHeight(WorldHeight);
             }
         }
 
@@ -192,13 +194,13 @@ namespace avoCADo.CNC
             return x + z * Width;
         }
 
-        private void DrillPixel(int x, int z, float value, Vector3 moveDirection, ToolType type)
+        private void DrillPixel(int x, int z, float value, Vector3 moveDirection, CNCToolType type)
         {
             if (x >= 0 && x < Width && z >= 0 && z < Height)
             {
                 var idx = GetIndex(x, z);
                 bool willDrill = value < HeightMap[idx];
-                if (type == ToolType.Flat && moveDirection.Y < 0.0f && willDrill)
+                if (type == CNCToolType.Flat && moveDirection.Y < 0.0f && willDrill)
                     throw new InvalidOperationException("Flat tool drills vertically into the material!");
                 if (value < MinHeightValue) 
                     throw new InvalidOperationException("Tool drills into base of the material!");
@@ -297,6 +299,7 @@ namespace avoCADo.CNC
                 {
                     toolPos += incrementVector.Normalized() * distance;
                     drillPos = toolPos;
+                    //drillPos.Y = Math.Max(drillPos.Y, _positionsBuffer[0].Y); //to avoid excessive material milling
                     distance = 0.0f; 
                     DrillCircleAtPosition(drillPos, incrementVector, tool);
                     return (drillPos, finished, distance);

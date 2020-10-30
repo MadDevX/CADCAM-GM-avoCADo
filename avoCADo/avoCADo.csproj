@@ -108,6 +108,7 @@
     <Compile Include="Components\Internal\MComponent.cs" />
     <Compile Include="Components\Internal\UpdatableMComponent.cs" />
     <Compile Include="Components\MillableSurface.cs" />
+    <Compile Include="Components\MillPathsManager.cs" />
     <Compile Include="Interfaces\ITextureProvider.cs" />
     <Compile Include="Intersections\BoundaryFinder.cs" />
     <Compile Include="Intersections\ConjugateGradient.cs" />

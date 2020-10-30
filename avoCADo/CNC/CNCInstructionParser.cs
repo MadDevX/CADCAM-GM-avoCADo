@@ -14,7 +14,7 @@ namespace avoCADo.CNC
     public class CNCInstructionSet
     {
         public CNCTool Tool;
-        public List<CNCInstruction> Instructions = new List<CNCInstruction>();
+        public List<CNCInstruction> Instructions { get; } = new List<CNCInstruction>();
 
         public float PathsLength { get; private set; } 
 
@@ -96,15 +96,15 @@ namespace avoCADo.CNC
         private static CNCInstructionSet CreateInstructionSet(string filepath)
         {
             var extension = filepath.Split('.').Last();
-            ToolType type;
+            CNCToolType type;
             float radius;
             switch (extension[0])
             {
                 case 'k':
-                    type = ToolType.Round;
+                    type = CNCToolType.Round;
                     break;
                 case 'f':
-                    type = ToolType.Flat;
+                    type = CNCToolType.Flat;
                     break;
                 default:
                     throw new InvalidDataException("Unrecognized file extension format!");

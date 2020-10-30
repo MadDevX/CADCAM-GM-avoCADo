@@ -12,10 +12,13 @@ namespace avoCADo.Components
     public class MillableSurface : UpdatableMComponent
     {
         public event Action OnSimulationFinished;
+        public event Action OnCNCSimulatorUpdated;
         public bool SimulationFinished { get; private set; }
 
         public float SimulationSpeed { get; set; } = 0.01f;
         public bool Paused { get; set; } = true;
+
+        public bool ShowPaths { get => _lineRenderer.Enabled; set => _lineRenderer.Enabled = value; }
 
         public int TextureWidth { get => _materialBlock.Width; set => _materialBlock.Width = value; }
         public int TextureHeight { get => _materialBlock.Height; set => _materialBlock.Height = value; }
@@ -28,8 +31,9 @@ namespace avoCADo.Components
 
         private MaterialBlock _materialBlock;
         private readonly NodeFactory _nodeFactory;
+        private LineRenderer _lineRenderer;
         private List<CNCInstructionSet> _instructionSets = new List<CNCInstructionSet>();
-        private CNCSimulator _simulator;
+        public CNCSimulator Simulator { get; private set; }
         private int _currentInstSet;
         private INode _toolNode;
 
@@ -39,6 +43,12 @@ namespace avoCADo.Components
         {
             _materialBlock = materialBlock;
             _nodeFactory = nodeFactory;
+        }
+
+        public override void Initialize()
+        {
+            _lineRenderer = OwnerNode.GetComponent<LineRenderer>();
+            base.Initialize();
         }
 
         public void SetPaths(List<CNCInstructionSet> instructionSets)
@@ -54,7 +64,7 @@ namespace avoCADo.Components
 
         public void ResetSimulationState()
         {
-            _simulator = null;
+            Simulator = null;
             _currentInstSet = 0;
             SimulationFinished = false;
         }
@@ -63,10 +73,10 @@ namespace avoCADo.Components
         {
             try
             {
-                while (_simulator != null)
+                while (Simulator != null)
                 {
-                    _simulator.AdvanceSimulation(_simulator.DistanceToEnd);
-                    _toolNode.Transform.Position = _simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                    Simulator.AdvanceSimulation(float.MaxValue); //Simulator.InstructionSet.PathsLength * 10.0f if some numerical errors come out
+                    _toolNode.Transform.Position = Simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
                     CleanupCNCSim();
                     UpdateCNCSimulator();
                 }
@@ -87,10 +97,10 @@ namespace avoCADo.Components
                 if (Paused == false)
                 {
                     UpdateCNCSimulator();
-                    if (_simulator != null)
+                    if (Simulator != null)
                     {
-                        var finished = _simulator.AdvanceSimulation(deltaTime * SimulationSpeed);
-                        _toolNode.Transform.Position = _simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                        var finished = Simulator.AdvanceSimulation(deltaTime * SimulationSpeed);
+                        _toolNode.Transform.Position = Simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
                         if (finished)
                         {
                             CleanupCNCSim();
@@ -109,18 +119,19 @@ namespace avoCADo.Components
 
         private void CleanupCNCSim()
         {
-            _lastToolPos = _simulator.CurrentToolPosition;
-            _simulator = null;
+            _lastToolPos = Simulator.CurrentToolPosition;
+            Simulator = null;
             _currentInstSet++;
         }
 
         private void UpdateCNCSimulator()
         {
-            if (_simulator == null)
+            if (Simulator == null)
             {
                 if (_currentInstSet < _instructionSets.Count)
                 {
-                    _simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
+                    Simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
+                    OnCNCSimulatorUpdated?.Invoke();
                     if (_toolNode != null)
                     {
                         _toolNode.Dispose();
