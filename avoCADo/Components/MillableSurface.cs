@@ -13,7 +13,7 @@ namespace avoCADo.Components
     {
         public event Action OnSimulationFinished;
         public event Action OnCNCSimulatorUpdated;
-        public bool SimulationFinished { get; private set; }
+        public bool SimulationFinished { get; private set; } = true;
 
         public float SimulationSpeed { get; set; } = 0.01f;
         public bool Paused { get; set; } = true;
@@ -73,6 +73,10 @@ namespace avoCADo.Components
         {
             try
             {
+                if(Simulator == null && SimulationFinished == false)
+                {
+                    UpdateCNCSimulator();
+                }
                 while (Simulator != null)
                 {
                     Simulator.AdvanceSimulation(float.MaxValue); //Simulator.InstructionSet.PathsLength * 10.0f if some numerical errors come out
@@ -94,7 +98,7 @@ namespace avoCADo.Components
         {
             try
             {
-                if (Paused == false)
+                if (Paused == false && SimulationFinished == false)
                 {
                     UpdateCNCSimulator();
                     if (Simulator != null)

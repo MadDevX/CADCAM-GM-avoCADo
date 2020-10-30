@@ -53,15 +53,5 @@ namespace avoCADo.CNC
 
             return _curInstruction == insts.Count;
         }
-
-        public static void Execute(CNCInstructionSet instructionSet, MaterialBlock block)
-        {
-            var currentPosition = Vector3.UnitY;
-            foreach(var instruction in instructionSet.Instructions)
-            {
-                block.DrillCircleAtSegment(currentPosition, instruction.Position, instructionSet.Tool);
-                currentPosition = instruction.Position;
-            }
-        }
     }
 }

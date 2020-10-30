@@ -69,13 +69,14 @@ namespace avoCADo
 
         private void SetStartButtonText()
         {
+            btnSkipSimulation.IsEnabled = !_millable.SimulationFinished;
             if(_millable.SimulationFinished)
             {
-                btnStartSimulation.Content = "Restart Simulation";
+                btnStartSimulation.Content = "Start Simulation";
             }
             else
             {
-                btnStartSimulation.Content = _millable.Paused ? "Start Simulation" : "Pause Simulation";
+                btnStartSimulation.Content = _millable.Paused ? "Resume Simulation" : "Pause Simulation";
             }
         }
 
