@@ -183,7 +183,7 @@ namespace avoCADo.CNC
         {
             if (Width > 1 && Height > 1)
             {
-                _renderer.SetMesh(MeshUtility.CreatePlaneMesh(Width, Height, WorldWidth, WorldHeight));
+                _renderer.SetMesh(MeshUtility.CreateMillableMesh(Width, Height, WorldWidth, WorldHeight));
                 _renderer.Shader.SetWorldWidth(WorldWidth);
                 _renderer.Shader.SetWorldHeight(WorldHeight);
             }

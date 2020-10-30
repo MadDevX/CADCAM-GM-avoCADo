@@ -25,5 +25,17 @@ namespace avoCADo
             vertexArray[5 * vertexIndex + 3] = texCoord.X;
             vertexArray[5 * vertexIndex + 4] = texCoord.Y;
         }
+
+        public static void SetVertex(float[] vertexArray, Vector3 vect, Vector3 normal, Vector2 texCoord, int vertexIndex)
+        {
+            vertexArray[8 * vertexIndex + 0] = vect.X;
+            vertexArray[8 * vertexIndex + 1] = vect.Y;
+            vertexArray[8 * vertexIndex + 2] = vect.Z;
+            vertexArray[8 * vertexIndex + 3] = normal.X;
+            vertexArray[8 * vertexIndex + 4] = normal.Y;
+            vertexArray[8 * vertexIndex + 5] = normal.Z;
+            vertexArray[8 * vertexIndex + 6] = texCoord.X;
+            vertexArray[8 * vertexIndex + 7] = texCoord.Y;
+        }
     }
 }
