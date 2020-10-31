@@ -16,6 +16,7 @@ namespace avoCADo.Components
         public bool SimulationInProgress { get; private set; } = false;
 
         public float SimulationSpeed { get; set; } = 0.01f;
+        public float ToolHeight { get; set; } = 0.04f;
         public bool Paused { get; set; } = false;
 
         public bool ShowPaths { get => _lineRenderer.Enabled; set => _lineRenderer.Enabled = value; }
@@ -37,6 +38,9 @@ namespace avoCADo.Components
         public CNCSimulator Simulator { get; private set; }
         private int _currentInstSet;
         private INode _toolNode;
+
+        public IList<string> InstructionSetNames => _instructionSets.Select((x) => x.Name).ToList();
+        public int InstructionSetCount => _instructionSets.Count;
 
         private Vector3 _lastToolPos = Vector3.UnitY * 0.1f;
 
@@ -151,6 +155,11 @@ namespace avoCADo.Components
             _lastToolPos = Simulator.CurrentToolPosition;
             Simulator = null;
             _currentInstSet++;
+            if (_toolNode != null)
+            {
+                _toolNode.Dispose();
+                _toolNode = null;
+            }
         }
 
         private void UpdateCNCSimulator()
@@ -160,29 +169,33 @@ namespace avoCADo.Components
                 if (_currentInstSet < _instructionSets.Count)
                 {
                     Simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
+                    CreateToolGizmo();
                     OnCNCSimulatorUpdated?.Invoke();
-                    if (_toolNode != null)
-                    {
-                        _toolNode.Dispose();
-                        _toolNode = null;
-                    }
-                    var tool = _instructionSets[_currentInstSet].Tool;
-                    if (tool.Type == CNCToolType.Round)
-                    {
-                        _toolNode = _nodeFactory.CreateTorus(0.0f, tool.Radius * _toolRadiusMult);
-                        var cyl = _nodeFactory.CreateCylinder(_toolNode, tool.Radius * _toolRadiusMult, tool.Height);
-                        cyl.Transform.Position = Vector3.Zero;
-                    }
-                    else
-                    {
-                        _toolNode = _nodeFactory.CreateCylinder(OwnerNode, tool.Radius * _toolRadiusMult, tool.Height);
-                    }
                 }
                 else
                 {
                     SimulationInProgress = false;
                     OnSimulationFinished?.Invoke();
                 }
+            }
+        }
+
+        private void CreateToolGizmo()
+        {
+            if (_toolNode != null)
+            {
+                throw new InvalidOperationException("Previous tool gizmo was not properly disposed!");
+            }
+            var tool = _instructionSets[_currentInstSet].Tool;
+            if (tool.Type == CNCToolType.Round)
+            {
+                _toolNode = _nodeFactory.CreateTorus(OwnerNode, 0.0f, tool.Radius * _toolRadiusMult);
+                var cyl = _nodeFactory.CreateCylinder(_toolNode, tool.Radius * _toolRadiusMult, tool.Height);
+                cyl.Transform.Position = Vector3.Zero;
+            }
+            else
+            {
+                _toolNode = _nodeFactory.CreateCylinder(OwnerNode, tool.Radius * _toolRadiusMult, tool.Height);
             }
         }
     }

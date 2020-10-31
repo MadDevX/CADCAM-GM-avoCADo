@@ -26,7 +26,7 @@ namespace avoCADo.CNC
         public readonly float Height;
         public readonly float RadiusSqr;
 
-        public CNCTool(CNCToolType type, float radius, float height = 0.04f)
+        public CNCTool(CNCToolType type, float radius, float height)
         {
             Type = type;
             Radius = radius;
@@ -103,16 +103,7 @@ namespace avoCADo.CNC
             }
         }
 
-        private int _useTexture = 2;
-        public int UseTexture
-        {
-            get => _useTexture;
-            set
-            {
-                _useTexture = value;
-                _renderer.Shader.SetUseTexture(value);
-            }
-        }
+        public int UseTexture { get; set; } = 2;
 
         //Speedup operations
         private float _worldWidthToIndex;
@@ -155,7 +146,6 @@ namespace avoCADo.CNC
             _renderer.TextureProvider = this;
             _renderer.Shader.SetHeightmapTexture(0);
             _renderer.Shader.SetColorTexture(1);
-            _renderer.Shader.SetUseTexture(UseTexture);
             UpdateMesh();
             UpdateTextures();
         }
@@ -196,6 +186,15 @@ namespace avoCADo.CNC
             GL.BindTexture(TextureTarget.Texture2D, TextureManager.TextureHandle);
             GL.ActiveTexture(TextureUnit.Texture1);
             GL.BindTexture(TextureTarget.Texture2D, _colorTexture.TextureHandle);
+
+            UpdateShaderVariables(); //TODO: cleanup code
+        }
+
+        private void UpdateShaderVariables()
+        {
+            _renderer.Shader.SetUseTexture(UseTexture);
+            _renderer.Shader.SetWorldWidth(WorldWidth);
+            _renderer.Shader.SetWorldHeight(WorldHeight);
         }
 
         public void UpdateTextures()

@@ -52,13 +52,17 @@ namespace avoCADo
             if(_millable != null)
             {
                 _millable.OnSimulationFinished -= OnSimFinished;
+                _millable.OnCNCSimulatorUpdated -= UpdateToolInfo;
             }
             _millable = _selectionManager.MainSelection?.GetComponent<MillableSurface>();
             if(_millable != null)
             {
                 Visibility = Visibility.Visible;
                 _millable.OnSimulationFinished += OnSimFinished;
+                _millable.OnCNCSimulatorUpdated += UpdateToolInfo;
                 SetStartButtonText();
+                UpdateToolInfo();
+                UpdateLoadedFilesText();
             }
             else
             {
@@ -67,8 +71,24 @@ namespace avoCADo
             DataContext = _millable;
         }
 
+        private void UpdateToolInfo()
+        {
+            var instSet = _millable?.Simulator?.InstructionSet;
+            if (instSet != null)
+            {
+                var tool = instSet.Tool;
+                tblkToolInfo.Text = $"Tool | Type: {tool.Type}; Radius: {tool.Radius * 1000.0f}mm; Height: {tool.Height * 100.0f}cm";
+            }
+            else
+            {
+                tblkToolInfo.Text = "Tool | No tool info available";
+            }
+        }
+
         private void SetStartButtonText()
         {
+
+            btnStartSimulation.IsEnabled = _millable.InstructionSetCount > 0;
             btnSkipSimulation.IsEnabled = _millable.SimulationInProgress;
             btnLoadFiles.IsEnabled = !_millable.SimulationInProgress;
             if (_millable.SimulationInProgress)
@@ -84,9 +104,9 @@ namespace avoCADo
         private void OnSimFinished()
         {
             SetStartButtonText();
+            UpdateToolInfo();
         }
 
-        private List<string> _names = new List<string>();
         private void btnLoadFiles_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -95,21 +115,18 @@ namespace avoCADo
                 ofd.Multiselect = true;
                 ofd.ShowDialog();
                 var filesSelected = ofd.FileNames.Length > 0;
-                _names.Clear();
                 if (filesSelected)
                 {
                     var instSetList = new List<CNCInstructionSet>();
                     foreach (var filename in ofd.FileNames)
                     {
-                        var instSet = CNCInstructionParser.ParsePathFile(filename);
+                        var instSet = CNCInstructionParser.ParsePathFile(filename, _millable.ToolHeight);
                         instSetList.Add(instSet);
-                        _names.Add(NameGenerator.DiscardPath(filename, discardExtension: false));
                     }
                     _millable.SetPaths(instSetList);
                 }
                 UpdateLoadedFilesText();
                 SetStartButtonText();
-                btnStartSimulation.IsEnabled = filesSelected;
 
             }
             catch (Exception eOfd)
@@ -122,7 +139,7 @@ namespace avoCADo
         {
             StringBuilder newText = new StringBuilder();
             newText.Append("Loaded Files: ");
-            foreach(var name in _names)
+            foreach(var name in _millable.InstructionSetNames)
             {
                 newText.Append($"{name}; ");
             }

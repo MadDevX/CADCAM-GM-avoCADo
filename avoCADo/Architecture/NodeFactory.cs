@@ -121,7 +121,7 @@ namespace avoCADo
             var block = new MaterialBlock(res, res, size, size, 0.05f, 0.0f, meshRenderer, "D:\\Studia\\Semestr I Mag\\MG1\\CADCAM-GM-avoCADo\\resources\\bamboo-wood-semigloss-albedo.png");
             var millableSurf = new MillableSurface(block, this);
             var pathManager = new MillPathsManager();
-            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), NameGenerator.GenerateName(_sceneManager.CurrentScene, DefaultNodeNames.MillableSurface));
+            var node = new Node(new Transform(_cursor.Position, Quaternion.Identity, Vector3.One), NameGenerator.GenerateName(_sceneManager.CurrentScene, DefaultNodeNames.MillableSurface));
             node.ObjectType = ObjectType.MillableSurface;
             node.AttachComponents(meshRenderer, millableSurf, new LineRenderer(_shaderProvider.DefaultShader, pathManager), pathManager);
             _sceneManager.CurrentScene.AttachChild(node);
@@ -165,9 +165,9 @@ namespace avoCADo
             return CreateTorus(NodeSelection.Manager.MainSelection);
         }
 
-        public INode CreateTorus(float R, float r)
+        public INode CreateTorus(INode parent, float R, float r)
         {
-            var t = CreateTorus();
+            var t = CreateTorus(parent);
             var tGen = t.GetComponent<ParametricObjectRenderer>().GetGenerator() as TorusGenerator;
             var tSurf = tGen.Surface as TorusSurface;
             tSurf.MainRadius = R;

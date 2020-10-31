@@ -13,14 +13,16 @@ namespace avoCADo.CNC
 {
     public class CNCInstructionSet
     {
+        public string Name { get; }
         public CNCTool Tool;
         public List<CNCInstruction> Instructions { get; } = new List<CNCInstruction>();
 
         public float PathsLength { get; private set; } 
 
-        public CNCInstructionSet(CNCTool tool)
+        public CNCInstructionSet(CNCTool tool, string name)
         {
             Tool = tool;
+            Name = name;
         }
 
         public void UpdatePathsLength()
@@ -53,9 +55,9 @@ namespace avoCADo.CNC
             _ci.NumberFormat.NumberDecimalSeparator = ".";
         }
 
-        public static CNCInstructionSet ParsePathFile(string filepath)
+        public static CNCInstructionSet ParsePathFile(string filepath, float toolHeight)
         {
-            var instSet = CreateInstructionSet(filepath);
+            var instSet = CreateInstructionSet(filepath, toolHeight);
             using(var sr = new StreamReader(filepath))
             {
                 while(sr.EndOfStream == false)
@@ -85,7 +87,7 @@ namespace avoCADo.CNC
             }
         }
 
-        private static CNCInstructionSet CreateInstructionSet(string filepath)
+        private static CNCInstructionSet CreateInstructionSet(string filepath, float toolHeight)
         {
             var extension = filepath.Split('.').Last();
             CNCToolType type;
@@ -102,7 +104,7 @@ namespace avoCADo.CNC
                     throw new InvalidDataException("Unrecognized file extension format!");
             }
             radius = float.Parse(extension.Substring(1)) * _unitsMult * 0.5f;
-            return new CNCInstructionSet(new CNCTool(type, radius));
+            return new CNCInstructionSet(new CNCTool(type, radius, toolHeight), NameGenerator.DiscardPath(filepath, false));
         }
 
         private static CNCInstruction Parse(string command)
