@@ -1,6 +1,7 @@
 ﻿using avoCADo.Rendering.Renderers;
 using avoCADo.Utility;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,7 +36,6 @@ namespace avoCADo.CNC
 
     public class MaterialBlock : IDisposable, ITextureProvider
     {
-        public int TextureHandle => TextureManager.TextureHandle;
         //        _______________
         // height|               |
         //       |               |
@@ -139,8 +139,10 @@ namespace avoCADo.CNC
             UpdateCoordMappings();
 
             _renderer.TextureProvider = this;
+            _renderer.Shader.SetHeightmapTexture(0);
+            _renderer.Shader.SetColorTexture(1);
             UpdateMesh();
-            UpdateTexture();
+            UpdateTextures();
         }
 
         private void UpdateCoordMappings()
@@ -172,7 +174,13 @@ namespace avoCADo.CNC
             _dirty = true;
         }
 
-        public void UpdateTexture()
+        public void BindTextures()
+        {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, TextureManager.TextureHandle);
+        }
+
+        public void UpdateTextures()
         {
             if (_dirty)
             {

@@ -25,9 +25,8 @@ namespace avoCADo.Rendering.Renderers
         {
             if (TextureProvider != null)
             {
-                TextureProvider.UpdateTexture();
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, TextureProvider.TextureHandle);
+                TextureProvider.UpdateTextures();
+                TextureProvider.BindTextures();
             }
             //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             GL.DrawElements(PrimitiveType.Triangles, _mesh.IndexCount, DrawElementsType.UnsignedInt, 0);

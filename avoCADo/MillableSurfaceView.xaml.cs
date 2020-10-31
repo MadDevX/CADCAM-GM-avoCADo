@@ -101,7 +101,8 @@ namespace avoCADo
                     var instSetList = new List<CNCInstructionSet>();
                     foreach (var filename in ofd.FileNames)
                     {
-                        instSetList.Add(CNCInstructionParser.ParsePathFile(filename));
+                        var instSet = CNCInstructionParser.ParsePathFile(filename);
+                        instSetList.Add(instSet);
                         _names.Add(NameGenerator.DiscardPath(filename, discardExtension: false));
                     }
                     _millable.SetPaths(instSetList);

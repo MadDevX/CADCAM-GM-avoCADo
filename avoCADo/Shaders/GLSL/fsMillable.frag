@@ -5,6 +5,8 @@ in vec3 Normal;
 
 out vec4 FragColor;
 
+uniform sampler2D colorTexture;
+
 uniform vec4 color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 uniform vec4 bgColor = vec4(0.157f, 0.157f, 0.157f, 1.0f);
 uniform vec4 filterColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);

@@ -55,30 +55,22 @@ namespace avoCADo.CNC
 
         public static CNCInstructionSet ParsePathFile(string filepath)
         {
-            try
+            var instSet = CreateInstructionSet(filepath);
+            using(var sr = new StreamReader(filepath))
             {
-                var instSet = CreateInstructionSet(filepath);
-                using(var sr = new StreamReader(filepath))
+                while(sr.EndOfStream == false)
                 {
-                    while(sr.EndOfStream == false)
+                    var inst = Parse(sr.ReadLine());
+                    if (inst != null)
                     {
-                        var inst = Parse(sr.ReadLine());
-                        if (inst != null)
-                        {
-                            instSet.Instructions.Add(inst);
-                        }
+                        instSet.Instructions.Add(inst);
                     }
                 }
+            }
 
-                RemoveNANs(instSet);
-                instSet.UpdatePathsLength();
-                return instSet;
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show($"Path file is corrupted!\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
+            RemoveNANs(instSet);
+            instSet.UpdatePathsLength();
+            return instSet;
         }
 
         private static void RemoveNANs(CNCInstructionSet instructionSet)

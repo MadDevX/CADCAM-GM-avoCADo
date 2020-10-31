@@ -10,14 +10,16 @@ namespace avoCADo.Shaders.ShaderWrappers
 {
     public class MillableSurfaceShaderWrapper : ShaderWrapper
     {
-        private int _shaderTextureLocation;
+        private int _shaderHeightmapTextureLocation;
+        private int _shaderColorTextureLocation;
         private int _shaderCameraPosLocation;
         private int _shaderWorldWidthLocation;
         private int _shaderWorldHeightLocation;
 
         public MillableSurfaceShaderWrapper(Shader shader, string name) : base(shader, name)
         {
-            _shaderTextureLocation = GL.GetUniformLocation(Shader.Handle, "samp");
+            _shaderHeightmapTextureLocation = GL.GetUniformLocation(Shader.Handle, "samp");
+            _shaderColorTextureLocation = GL.GetUniformLocation(Shader.Handle, "colorTexture");
             _shaderCameraPosLocation = GL.GetUniformLocation(Shader.Handle, "cameraPos");
             _shaderWorldWidthLocation = GL.GetUniformLocation(Shader.Handle, "worldWidth");
             _shaderWorldHeightLocation = GL.GetUniformLocation(Shader.Handle, "worldHeight");
@@ -35,10 +37,16 @@ namespace avoCADo.Shaders.ShaderWrappers
             GL.Uniform1(_shaderWorldHeightLocation, worldHeight);
         }
 
-        public void SetTexture(int textureUnit)
+        public void SetColorTexture(int textureUnit)
         {
             CheckShaderBinding();
-            GL.Uniform1(_shaderTextureLocation, textureUnit);
+            GL.Uniform1(_shaderColorTextureLocation, textureUnit);
+        }
+
+        public void SetHeightmapTexture(int textureUnit)
+        {
+            CheckShaderBinding();
+            GL.Uniform1(_shaderHeightmapTextureLocation, textureUnit);
         }
 
         public void SetCameraPosition(Vector3 position)
