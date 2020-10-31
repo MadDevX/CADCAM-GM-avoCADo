@@ -46,6 +46,7 @@ namespace avoCADo.CNC
         public float[] HeightMap { get; private set; }
         public float DefaultHeightValue { get; set; }
 
+        public bool OmitTextureUpdate { get; set; }
         private bool _dirty = true;
 
         private int _width;
@@ -199,7 +200,7 @@ namespace avoCADo.CNC
 
         public void UpdateTextures()
         {
-            if (_dirty)
+            if (OmitTextureUpdate == false && _dirty)
             {
                 TextureManager.UpdateTexture(Width, Height, HeightMap);
                 _dirty = false;

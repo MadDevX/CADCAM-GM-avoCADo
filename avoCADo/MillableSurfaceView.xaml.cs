@@ -53,6 +53,7 @@ namespace avoCADo
             {
                 _millable.OnSimulationFinished -= OnSimFinished;
                 _millable.OnCNCSimulatorUpdated -= UpdateToolInfo;
+                _millable.UpdateProgress -= UpdateProgress;
             }
             _millable = _selectionManager.MainSelection?.GetComponent<MillableSurface>();
             if(_millable != null)
@@ -60,6 +61,7 @@ namespace avoCADo
                 Visibility = Visibility.Visible;
                 _millable.OnSimulationFinished += OnSimFinished;
                 _millable.OnCNCSimulatorUpdated += UpdateToolInfo;
+                _millable.UpdateProgress += UpdateProgress;
                 SetStartButtonText();
                 UpdateToolInfo();
                 UpdateLoadedFilesText();
@@ -69,6 +71,11 @@ namespace avoCADo
                 Visibility = Visibility.Collapsed;
             }
             DataContext = _millable;
+        }
+
+        private void UpdateProgress()
+        {
+            progressBar.Value = _millable.SimulationProgress;
         }
 
         private void UpdateToolInfo()
@@ -88,8 +95,8 @@ namespace avoCADo
         private void SetStartButtonText()
         {
 
-            btnStartSimulation.IsEnabled = _millable.InstructionSetCount > 0;
-            btnSkipSimulation.IsEnabled = _millable.SimulationInProgress;
+            btnStartSimulation.IsEnabled = _millable.InstructionSetCount > 0 && !_millable.IsSkipping;
+            btnSkipSimulation.IsEnabled = _millable.SimulationInProgress && !_millable.IsSkipping;
             btnLoadFiles.IsEnabled = !_millable.SimulationInProgress;
             if (_millable.SimulationInProgress)
             {
@@ -162,6 +169,7 @@ namespace avoCADo
         private void btnSkipSimulation_Click(object sender, RoutedEventArgs e)
         {
             _millable.SkipSimulation();
+            btnSkipSimulation.IsEnabled = !_millable.IsSkipping;
         }
 
         private void btnResetMaterial_Click(object sender, RoutedEventArgs e)

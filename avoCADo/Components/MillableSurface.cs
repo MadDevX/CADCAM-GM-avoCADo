@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,6 +14,7 @@ namespace avoCADo.Components
     {
         public event Action OnSimulationFinished;
         public event Action OnCNCSimulatorUpdated;
+        public event Action UpdateProgress;
         public bool SimulationInProgress { get; private set; } = false;
 
         public float SimulationSpeed { get; set; } = 0.01f;
@@ -31,6 +33,21 @@ namespace avoCADo.Components
         public float DefaultHeight { get => _materialBlock.DefaultHeightValue; set => _materialBlock.DefaultHeightValue = value; }
         public float BaseHeight { get => _materialBlock.MinHeightValue; set => _materialBlock.MinHeightValue = value; }
 
+        public float SimulationProgress
+        {
+            get
+            {
+                if(Simulator != null)
+                {
+                    return Simulator.CurrentInstruction / (float)(Simulator.InstructionCount - 1) * 100.0f;
+                }
+                else
+                {
+                    return 0.0f;
+                }
+            }
+        }
+
         private MaterialBlock _materialBlock;
         private readonly NodeFactory _nodeFactory;
         private LineRenderer _lineRenderer;
@@ -38,6 +55,17 @@ namespace avoCADo.Components
         public CNCSimulator Simulator { get; private set; }
         private int _currentInstSet;
         private INode _toolNode;
+
+        private bool _isSkipping = false;
+        public bool IsSkipping 
+        {
+            get => _isSkipping;
+            private set
+            {
+                _isSkipping = value;
+                _materialBlock.OmitTextureUpdate = value;
+            }
+        }
 
         public IList<string> InstructionSetNames => _instructionSets.Select((x) => x.Name).ToList();
         public int InstructionSetCount => _instructionSets.Count;
@@ -73,6 +101,7 @@ namespace avoCADo.Components
         {
             Simulator = null;
             _currentInstSet = 0;
+            IsSkipping = false;
         }
 
         public void StartSimulation()
@@ -84,26 +113,37 @@ namespace avoCADo.Components
 
         public void SkipSimulation()
         {
-            try
+            if (IsSkipping == false)
             {
-                if(Simulator == null && SimulationInProgress)
-                {
-                    UpdateCNCSimulator();
-                }
-                while (Simulator != null)
-                {
-                    Simulator.AdvanceSimulation(float.MaxValue); //Simulator.InstructionSet.PathsLength * 10.0f if some numerical errors come out
-                    UpdateToolPosition();
-                    CleanupCNCSim();
-                    UpdateCNCSimulator();
-                }
-            }
-            catch (Exception e)
-            {
-                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
-                CleanupCNCSim();
-                _instructionSets.Clear();
-                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                IsSkipping = true;
+                DisposeToolGizmo();
+                var thread = new Thread(
+                    () =>
+                        {
+                            try
+                            {
+                                if (Simulator == null && SimulationInProgress)
+                                {
+                                    UpdateCNCSimulator(false);
+                                }
+                                while (Simulator != null)
+                                {
+                                    Simulator.AdvanceSimulation(float.MaxValue); //Simulator.InstructionSet.PathsLength * 10.0f if some numerical errors come out
+                                    CleanupCNCSim();
+                                    UpdateCNCSimulator(false);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                var message = e.InnerException != null ? e.InnerException.Message : e.Message;
+                                CleanupCNCSim();
+                                _instructionSets.Clear();
+                                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                ResetSimulationState();
+                            }
+                        }
+                    );
+                thread.Start();
             }
         }
 
@@ -127,8 +167,19 @@ namespace avoCADo.Components
         {
             try
             {
-                if (Paused == false && SimulationInProgress)
+                if(IsSkipping)
                 {
+                    UpdateProgress?.Invoke();
+                    if (SimulationInProgress == false)
+                    {
+                        IsSkipping = false;
+                        OnSimulationFinished?.Invoke();
+                    }
+                    
+                }
+                else if (Paused == false && SimulationInProgress)
+                {
+                    UpdateProgress?.Invoke();
                     UpdateCNCSimulator();
                     if (Simulator != null)
                     {
@@ -147,6 +198,7 @@ namespace avoCADo.Components
                 CleanupCNCSim();
                 _instructionSets.Clear();
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ResetSimulationState();
             }
         }
 
@@ -155,6 +207,11 @@ namespace avoCADo.Components
             _lastToolPos = Simulator.CurrentToolPosition;
             Simulator = null;
             _currentInstSet++;
+            DisposeToolGizmo();
+        }
+
+        private void DisposeToolGizmo()
+        {
             if (_toolNode != null)
             {
                 _toolNode.Dispose();
@@ -162,20 +219,26 @@ namespace avoCADo.Components
             }
         }
 
-        private void UpdateCNCSimulator()
+        private void UpdateCNCSimulator(bool realTimeSimulation = true)
         {
             if (Simulator == null)
             {
                 if (_currentInstSet < _instructionSets.Count)
                 {
                     Simulator = new CNCSimulator(_instructionSets[_currentInstSet], _materialBlock, _lastToolPos);
-                    CreateToolGizmo();
-                    OnCNCSimulatorUpdated?.Invoke();
+                    if (realTimeSimulation)
+                    {
+                        CreateToolGizmo();
+                        OnCNCSimulatorUpdated?.Invoke();
+                    }
                 }
                 else
                 {
                     SimulationInProgress = false;
-                    OnSimulationFinished?.Invoke();
+                    if (realTimeSimulation)
+                    {
+                        OnSimulationFinished?.Invoke();
+                    }
                 }
             }
         }
