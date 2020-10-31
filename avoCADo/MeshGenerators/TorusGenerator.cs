@@ -11,7 +11,7 @@ namespace avoCADo
 {
     public class TorusGenerator : IMeshGenerator, ISurfaceGenerator
     {
-        private TorusSurface _surface;
+        private ILocalSpaceSurface _surface;
         public ISurface Surface => _surface;
         public event Action OnParametersChanged;
 
@@ -59,7 +59,7 @@ namespace avoCADo
 
         private static int _maxDivisions = 100;
 
-        public TorusGenerator(int xDivisions, int yDivisions, TorusSurface surface)
+        public TorusGenerator(int xDivisions, int yDivisions, ILocalSpaceSurface surface)
         {
             _xDivisions = xDivisions;
             _yDivisions = yDivisions;

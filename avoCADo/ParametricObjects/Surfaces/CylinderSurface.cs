@@ -9,36 +9,36 @@ using System.Threading.Tasks;
 
 namespace avoCADo
 {
-    public class TorusSurface : ILocalSpaceSurface
+    public class CylinderSurface : ILocalSpaceSurface
     {
         public event Action ParametersChanged;
         private ITransform _transform;
-        private float _mainR;
-        private float _tubeR;
+        private float _r;
+        private float _height;
 
-        public float MainRadius
+        public float Radius
         {
-            get => _mainR;
+            get => _r;
             set
             {
-                _mainR = value;
+                _r = value;
                 ParametersChanged?.Invoke();
             }
         }
 
-        public float TubeRadius
+        public float Height
         {
-            get => _tubeR;
+            get => _height;
             set
             {
-                _tubeR = value;
+                _height = value;
                 ParametersChanged?.Invoke();
             }
         }
 
         public Vector2 ParameterURange { get; } = new Vector2(0.0f, (float)Math.PI * 2.0f);
 
-        public Vector2 ParameterVRange { get; } = new Vector2(0.0f, (float)Math.PI * 2.0f);
+        public Vector2 ParameterVRange { get; } = new Vector2(0.0f, 1.0f);
 
         public bool ULoop => true;
 
@@ -48,10 +48,10 @@ namespace avoCADo
 
         public TrimTextureProvider TrimTexture { get; }
 
-        public TorusSurface(float mainRadius, float tubeRadius)
+        public CylinderSurface(float radius, float height)
         {
-            MainRadius = mainRadius;
-            TubeRadius = tubeRadius;
+            Radius = radius;
+            Height = height;
             TrimTexture = new TrimTextureProvider(this);
         }
 
@@ -66,9 +66,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             return new Vector3(
-               (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
-               (float)(TubeRadius * Math.Sin(v)),
-               (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
+               (float)(Radius * Math.Cos(u)),
+               (float)(Height * v),
+               (float)(Radius * Math.Sin(u))
            );
         }
 
@@ -78,9 +78,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                   (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
-                   (float)(TubeRadius * Math.Sin(v)),
-                   (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
+               (float)(Radius * Math.Cos(u)),
+               (float)(Height * v),
+               (float)(Radius * Math.Sin(u))
                );
             return TransformCoord(vect, true);
         }
@@ -100,9 +100,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                    (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u)),
+                    (float)(-(Radius * Math.Sin(u))),
                     0.0f,
-                    (float)((MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u))
+                    (float)(Radius * Math.Cos(u))
                 );
             return TransformCoord(vect, false);
         }
@@ -113,9 +113,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                    (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Cos(u)),
+                    (float)(-(Radius * Math.Cos(u))),
                     0.0f,
-                    (float)(-(MainRadius + TubeRadius * Math.Cos(v)) * Math.Sin(u))
+                    (float)(-(Radius * Math.Sin(u)))
                 );
             return TransformCoord(vect, false);
         }
@@ -126,9 +126,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                    (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u)),
-                    (float)(TubeRadius * Math.Cos(v)),
-                    (float)(-TubeRadius * Math.Sin(v) * Math.Sin(u))
+                    0.0f,
+                    Height,
+                    0.0f
                 );
             return TransformCoord(vect, false);
         }
@@ -139,9 +139,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                    (float)(-TubeRadius * Math.Cos(v) * Math.Cos(u)),
-                    (float)(-TubeRadius * Math.Sin(v)),
-                    (float)(-TubeRadius * Math.Cos(v) * Math.Sin(u))
+                    0.0f,
+                    0.0f,
+                    0.0f
                 );
             return TransformCoord(vect, false);
         }
@@ -152,9 +152,9 @@ namespace avoCADo
             u = uv.X;
             v = uv.Y;
             var vect = new Vector3(
-                    (float)(TubeRadius * Math.Sin(v) * Math.Sin(u)),
                     0.0f,
-                    (float)(-TubeRadius * Math.Sin(v) * Math.Cos(u))
+                    0.0f,
+                    0.0f
                 );
             return TransformCoord(vect, false);
         }

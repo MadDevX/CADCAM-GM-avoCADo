@@ -9,6 +9,11 @@ using System.Windows;
 
 namespace avoCADo
 {
+    public interface ILocalSpaceSurface : ISurface
+    {
+        Vector3 GetVertexLocalSpace(float u, float v);
+    }
+
     public interface ISurface
     {
         event Action ParametersChanged;

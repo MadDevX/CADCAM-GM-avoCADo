@@ -105,6 +105,8 @@ namespace avoCADo
                     return CreateIntersectionCurve((IntersectionCurveParameters)parameters);
                 case ObjectType.MillableSurface:
                     return CreateMillableSurface();
+                case ObjectType.Cylinder:
+                    return CreateCylinder();
                 default:
                     return null;
             }
@@ -119,10 +121,29 @@ namespace avoCADo
             var block = new MaterialBlock(res, res, size, size, 0.05f, 0.0f, meshRenderer);
             var millableSurf = new MillableSurface(block, this);
             var pathManager = new MillPathsManager();
-            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), "millableSurface");
+            var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), NameGenerator.GenerateName(_sceneManager.CurrentScene, DefaultNodeNames.MillableSurface));
             node.AttachComponents(meshRenderer, millableSurf, new LineRenderer(_shaderProvider.DefaultShader, pathManager), pathManager);
             _sceneManager.CurrentScene.AttachChild(node);
             return node;
+        }
+
+        public INode CreateCylinder()
+        {
+            return CreateCylinder(GetDefaultParent(), 0.5f, 1.0f);
+        }
+
+        public INode CreateCylinder(INode parent, float radius, float height)
+        {
+            if (parent == null || parent.GroupNodeType == GroupNodeType.Fixed) parent = GetDefaultParent();
+            var surf = new CylinderSurface(radius, height);
+            var generator = new TorusGenerator(30, 30, surf);
+            var cylNode = new Node(new Transform(_cursor.Position, Vector3.Zero, Vector3.One), NameGenerator.GenerateName(parent, DefaultNodeNames.Cylinder));
+            cylNode.AttachComponents(CreateParametricObjectRenderer(generator, VertexLayout.Type.PositionTexCoord));
+            surf.Initialize(cylNode.Transform);
+            cylNode.ObjectType = ObjectType.Torus;
+
+            parent.AttachChild(cylNode);
+            return cylNode;
         }
 
         public INode CreateGregoryPatch(IReadOnlyCollection<INode> nodes)

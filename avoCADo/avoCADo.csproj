@@ -177,6 +177,7 @@
     <Compile Include="ParametricObjects\Curves\IntersectionCurve.cs" />
     <Compile Include="ParametricObjects\ParameterHelper.cs" />
     <Compile Include="ParametricObjects\Surfaces\BezierC2Patch.cs" />
+    <Compile Include="ParametricObjects\Surfaces\CylinderSurface.cs" />
     <Compile Include="ParametricSpaceExplorer.xaml.cs">
       <DependentUpon>ParametricSpaceExplorer.xaml</DependentUpon>
     </Compile>

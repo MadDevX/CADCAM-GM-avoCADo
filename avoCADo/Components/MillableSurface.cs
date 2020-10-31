@@ -39,6 +39,8 @@ namespace avoCADo.Components
 
         private Vector3 _lastToolPos = Vector3.UnitY * 0.1f;
 
+        private static float _toolRadiusMult = 0.95f; //to minimize z-fighting and sinking of tool mesh into the material
+
         public MillableSurface(MaterialBlock materialBlock, NodeFactory nodeFactory)
         {
             _materialBlock = materialBlock;
@@ -86,7 +88,7 @@ namespace avoCADo.Components
                 while (Simulator != null)
                 {
                     Simulator.AdvanceSimulation(float.MaxValue); //Simulator.InstructionSet.PathsLength * 10.0f if some numerical errors come out
-                    _toolNode.Transform.Position = Simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                    UpdateToolPosition();
                     CleanupCNCSim();
                     UpdateCNCSimulator();
                 }
@@ -100,6 +102,22 @@ namespace avoCADo.Components
             }
         }
 
+        private void UpdateToolPosition()
+        {
+            if (_toolNode != null)
+            {
+                var tool = _instructionSets[_currentInstSet].Tool;
+                if (tool.Type == CNCToolType.Round)
+                {
+                    _toolNode.Transform.Position = Simulator.CurrentToolPosition + new Vector3(0.0f, tool.Radius, 0.0f);
+                }
+                else
+                {
+                    _toolNode.Transform.Position = Simulator.CurrentToolPosition;
+                }
+            }
+        }
+
         protected override void OnUpdate(float deltaTime)
         {
             try
@@ -110,7 +128,7 @@ namespace avoCADo.Components
                     if (Simulator != null)
                     {
                         var finished = Simulator.AdvanceSimulation(deltaTime * SimulationSpeed);
-                        _toolNode.Transform.Position = Simulator.CurrentToolPosition + new Vector3(0.0f, _instructionSets[_currentInstSet].Tool.Radius, 0.0f);
+                        UpdateToolPosition();
                         if (finished)
                         {
                             CleanupCNCSim();
@@ -147,7 +165,17 @@ namespace avoCADo.Components
                         _toolNode.Dispose();
                         _toolNode = null;
                     }
-                    _toolNode = _nodeFactory.CreateTorus(0.0f, _instructionSets[_currentInstSet].Tool.Radius * 0.95f); 
+                    var tool = _instructionSets[_currentInstSet].Tool;
+                    if (tool.Type == CNCToolType.Round)
+                    {
+                        _toolNode = _nodeFactory.CreateTorus(0.0f, tool.Radius * _toolRadiusMult);
+                        var cyl = _nodeFactory.CreateCylinder(_toolNode, tool.Radius * _toolRadiusMult, tool.Height);
+                        cyl.Transform.Position = Vector3.Zero;
+                    }
+                    else
+                    {
+                        _toolNode = _nodeFactory.CreateCylinder(OwnerNode, tool.Radius * _toolRadiusMult, tool.Height);
+                    }
                 }
                 else
                 {

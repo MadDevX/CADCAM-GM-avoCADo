@@ -46,6 +46,7 @@ namespace avoCADo
             if (_selectionManager.MainSelection != null)
             {
                 _torus = _selectionManager.MainSelection.GetComponent<Renderer>()?.GetGenerator() as TorusGenerator;
+                if (_torus != null && _torus.Surface is TorusSurface == false) _torus = null;
             }
             else
             {

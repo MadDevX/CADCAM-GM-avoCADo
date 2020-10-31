@@ -17,5 +17,7 @@ namespace avoCADo.Constants
         public static string BezierPatchC2 { get; } = "BSplinePatch";
         public static string GregoryPatch { get; } = "GregoryPatch";
         public static string IntersectionCurve { get; } = "IntersectionCurve";
+        public static string MillableSurface { get; } = "MillableSurface";
+        public static string Cylinder { get; } = "Cylinder";
     }
 }

@@ -21,12 +21,14 @@ namespace avoCADo.CNC
     {
         public readonly CNCToolType Type;
         public readonly float Radius;
+        public readonly float Height;
         public readonly float RadiusSqr;
 
-        public CNCTool(CNCToolType type, float radius)
+        public CNCTool(CNCToolType type, float radius, float height = 0.04f)
         {
             Type = type;
             Radius = radius;
+            Height = height;
             RadiusSqr = Radius * Radius;
         }
     }
@@ -194,16 +196,18 @@ namespace avoCADo.CNC
             return x + z * Width;
         }
 
-        private void DrillPixel(int x, int z, float value, Vector3 moveDirection, CNCToolType type)
+        private void DrillPixel(int x, int z, float value, Vector3 moveDirection, CNCTool tool)
         {
             if (x >= 0 && x < Width && z >= 0 && z < Height)
             {
                 var idx = GetIndex(x, z);
                 bool willDrill = value < HeightMap[idx];
-                if (type == CNCToolType.Flat && moveDirection.Y < 0.0f && willDrill)
+                if (tool.Type == CNCToolType.Flat && moveDirection.Y < 0.0f && willDrill)
                     throw new InvalidOperationException("Flat tool drills vertically into the material!");
                 if (value < MinHeightValue) 
                     throw new InvalidOperationException("Tool drills into base of the material!");
+                if (HeightMap[idx] - value > tool.Height)
+                    throw new InvalidOperationException("Tool drills too much material at once (too deep)!");
                 if (willDrill)
                 {
                     HeightMap[idx] = value;
@@ -252,7 +256,7 @@ namespace avoCADo.CNC
                         var distSqr = offX * offX + offY * offY;
                         if (distSqr <= radiusSqr)
                         {
-                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool), moveDirection, tool.Type);
+                            DrillPixel(x, y, _funcList[toolTypeIdx](toolPosition.Y, distSqr, tool), moveDirection, tool);
                         }
                     }
                 }

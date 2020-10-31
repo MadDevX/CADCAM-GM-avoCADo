@@ -19,7 +19,8 @@ namespace avoCADo
         Scene,
         GregoryPatch,
         IntersectionCurve,
-        MillableSurface
+        MillableSurface,
+        Cylinder
     }
 
     public interface IObject
