@@ -158,6 +158,7 @@ namespace avoCADo.Components
                             }
                         }
                     );
+                thread.IsBackground = true;
                 thread.Start();
             }
         }
