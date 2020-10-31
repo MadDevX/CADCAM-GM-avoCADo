@@ -66,6 +66,7 @@ namespace avoCADo
                 SetStartButtonText();
                 UpdateToolInfo();
                 UpdateLoadedFilesText();
+                UpdateProgress();
             }
             else
             {
