@@ -62,6 +62,7 @@ namespace avoCADo
         private Stopwatch _deltaStopwatch;
 
         public event Action<float> OnUpdateLoop;
+        public event Action<float> OnLateUpdateLoop;
 
         public MainWindow()
         {
@@ -124,6 +125,7 @@ namespace avoCADo
             var deltaTime = (float)_deltaStopwatch.Elapsed.TotalSeconds;
             _deltaStopwatch.Restart();
             OnUpdateLoop?.Invoke(deltaTime);
+            OnLateUpdateLoop?.Invoke(deltaTime);
             _glControl.Invalidate();
         }
 

@@ -80,8 +80,9 @@ namespace avoCADo
             _shaderBackgroundManager = new ShaderBackgroundManager(_backgroundManager, _shaderProvider.DefaultShader, _shaderProvider.CurveShader, _shaderProvider.SurfaceShaderBezier, _shaderProvider.SurfaceShaderDeBoor, _shaderProvider.SurfaceShaderGregory);
             _quadRenderer = new QuadOverlayRenderer(_shaderProvider.BufferShader);
 
-            _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, _nodeImporter, new Scene("Main"));
             _camera = new StereoscopicCamera(_viewportManager);
+            Registry.Camera = _camera;
+            _sceneManager = new SceneManager(_window.hierarchy, _instructionBuffer, _nodeImporter, new Scene("Main"));
             _camMovement = new CameraMovement(_camera, _control);
             _renderLoop = new RenderLoop(_control, _screenBufferManager, _viewportManager, _sceneManager, _camera, _framebufferManager, _quadRenderer, _shaderProvider);
 
@@ -151,8 +152,8 @@ namespace avoCADo
             _screenSelectionManager.Dispose();
             _renderLoop.Dispose();
             _camMovement.Dispose();
-            _camera.Dispose();
             _sceneManager.Dispose();
+            _camera.Dispose();
             _quadRenderer.Dispose();
             _shaderBackgroundManager.Dispose();
             _shaderProvider.Dispose();

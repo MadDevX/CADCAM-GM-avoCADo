@@ -104,6 +104,7 @@
     <Compile Include="CNC\CNCSimulator.cs" />
     <Compile Include="CNC\MaterialBlock.cs" />
     <Compile Include="CNC\MaterialBlockTextureManager.cs" />
+    <Compile Include="Components\CameraFollow.cs" />
     <Compile Include="Components\Internal\IMComponent.cs" />
     <Compile Include="Components\Internal\MComponent.cs" />
     <Compile Include="Components\Internal\UpdatableMComponent.cs" />

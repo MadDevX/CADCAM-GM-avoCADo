@@ -9,6 +9,7 @@ namespace avoCADo
     public interface IUpdateLoop
     {
         event Action<float> OnUpdateLoop;
+        event Action<float> OnLateUpdateLoop;
     }
     public interface IRenderLoop
     {

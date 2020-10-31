@@ -58,6 +58,7 @@ namespace avoCADo
             _componentManager = new ComponentManager(this);
             Name = name;
             Transform.Node = this;
+            AttachComponents(new CameraFollow());
         }
 
         public void Dispose()

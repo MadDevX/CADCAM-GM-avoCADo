@@ -9,6 +9,18 @@ namespace avoCADo.Architecture
 {
     public static class Registry
     {
+        private static ICamera _camera = null;
+        public static ICamera Camera
+        {
+            get => _camera;
+            set
+            {
+                if (_camera != null) return;
+                _camera = value;
+            }
+        }
+
+
         private static IUpdateLoop _updateLoop = null;
         public static IUpdateLoop UpdateLoop
         {
