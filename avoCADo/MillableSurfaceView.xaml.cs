@@ -32,6 +32,7 @@ namespace avoCADo
             _selectionManager = NodeSelection.Manager;
 
             Initialize();
+            cbToolType.ItemsSource = Enum.GetValues(typeof(CNCToolType)).Cast<CNCToolType>();
         }
 
 

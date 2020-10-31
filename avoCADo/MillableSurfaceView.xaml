@@ -28,29 +28,38 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="ToolHeight" Margin="5" ToolTip="Reload files to apply changes"/>
-            <Button x:Name="btnLoadFiles" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Load Files" Click="btnLoadFiles_Click"/>
-            <TextBlock x:Name="tbLoadedfiles" Grid.Row="2" Grid.ColumnSpan="2" Text="Loaded Files: " Margin="5" TextWrapping="Wrap"/>
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="TextureWidth"/>
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="TextureHeight"/>
-            <TextBlock Grid.Row="5" Grid.Column="0" Text="WorldWidth"/>
-            <TextBlock Grid.Row="6" Grid.Column="0" Text="WorldHeight"/>
-            <TextBlock Grid.Row="7" Grid.Column="0" Text="MaterialBaseHeight"/>
-            <TextBlock Grid.Row="8" Grid.Column="0" Text="MaterialDefaultHeight"/>
-            <TextBlock Grid.Row="9" Grid.Column="0" Text="{Binding SimulationSpeed, StringFormat='SimulationSpeed: {0}'}"  Margin="5"/>
-
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ToolHeight}" Margin="5" ToolTip="Reload files to apply changes"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding TextureWidth}"/>
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding TextureHeight}"/>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding WorldWidth}"/>
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding WorldHeight}"/>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding BaseHeight}"/>
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding DefaultHeight}"/>
-            <Slider Grid.Row="9" Grid.Column="1"  x:Name="sldSimulationSpeed" Margin="5" Value="{Binding SimulationSpeed}" Minimum="0" Maximum="1"/>
             
-            <CheckBox Grid.Row="10" Grid.Column="0" Content="Show Paths" IsChecked="{Binding ShowPaths}" Margin="5"/>
-            <Grid Grid.Row="10" Grid.Column="1" Margin="5">
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Override Tool Radius [m]"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Override Tool Type"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Tool Height [m]"/>
+            <Button x:Name="btnLoadFiles" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Load Files" Click="btnLoadFiles_Click" Margin="5"/>
+            <TextBlock x:Name="tbLoadedfiles" Grid.Row="5" Grid.ColumnSpan="2" Text="Loaded Files: " Margin="5" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Texture Width"/>
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Texture Height"/>
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="World Width"/>
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="World Height"/>
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Material Base Height"/>
+            <TextBlock Grid.Row="11" Grid.Column="0" Text="Material Default Height"/>
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="{Binding SimulationSpeed, StringFormat='Simulation Speed: {0}'}"  Margin="5"/>
+
+            <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Override Tool Settings" IsChecked="{Binding OverrideToolSettings}" ToolTip="Reload files to apply changes"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OverrideToolRadius}"/>
+            <ComboBox x:Name="cbToolType" Grid.Row="2" Grid.Column="1" SelectedValue="{Binding OverrideToolType}"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding ToolHeight}"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding TextureWidth}"/>
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding TextureHeight}"/>
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding WorldWidth}"/>
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding WorldHeight}"/>
+            <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding BaseHeight}"/>
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding DefaultHeight}"/>
+            <Slider Grid.Row="12" Grid.Column="1"  x:Name="sldSimulationSpeed" Margin="5" Value="{Binding SimulationSpeed}" Minimum="0" Maximum="1"/>
+            
+            <CheckBox Grid.Row="13" Grid.Column="0" Content="Show Paths" IsChecked="{Binding ShowPaths}" Margin="5"/>
+            <Grid Grid.Row="13" Grid.Column="1" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -59,11 +68,11 @@
                 <Slider Grid.Row="0" Grid.Column="1" Value="{Binding UseTexture}" Minimum="0" Maximum="2"/>
             </Grid>
 
-            <Button Grid.Row="11" Grid.Column="0" x:Name="btnStartSimulation" Content="Start Simulation" Click="btnStartSimulation_Click" Margin="5" IsEnabled="False"/>
-            <Button Grid.Row="11" Grid.Column="1" x:Name="btnSkipSimulation" Content="Skip Simulation" Click="btnSkipSimulation_Click" Margin="5"/>
-            <ProgressBar x:Name="progressBar" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Height="40"/>
-            <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" x:Name="tblkToolInfo"/>
-            <Button Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" x:Name="btnResetMaterial" Content="Reset Material" Click="btnResetMaterial_Click" Margin="5"/>
+            <Button Grid.Row="14" Grid.Column="0" x:Name="btnStartSimulation" Content="Start Simulation" Click="btnStartSimulation_Click" Margin="5" IsEnabled="False"/>
+            <Button Grid.Row="14" Grid.Column="1" x:Name="btnSkipSimulation" Content="Skip Simulation" Click="btnSkipSimulation_Click" Margin="5"/>
+            <ProgressBar x:Name="progressBar" Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2" Height="20"/>
+            <TextBlock Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2" x:Name="tblkToolInfo"/>
+            <Button Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="2" x:Name="btnResetMaterial" Content="Reset Material" Click="btnResetMaterial_Click" Margin="5"/>
         </Grid>
     </GroupBox>
 </UserControl>

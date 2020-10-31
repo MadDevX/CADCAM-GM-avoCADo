@@ -19,6 +19,11 @@ namespace avoCADo.Components
 
         public float SimulationSpeed { get; set; } = 0.01f;
         public float ToolHeight { get; set; } = 0.04f;
+        public bool OverrideToolSettings { get; set; }
+        private float _overrideToolRadius;
+        public float OverrideToolRadius { get => _overrideToolRadius; set => _overrideToolRadius = Math.Max(value, 0.0f); }
+        public CNCToolType OverrideToolType { get; set; } = CNCToolType.Flat;
+
         public bool Paused { get; set; } = false;
 
         public bool ShowPaths { get => _lineRenderer.Enabled; set => _lineRenderer.Enabled = value; }
@@ -47,6 +52,8 @@ namespace avoCADo.Components
                 }
             }
         }
+
+
 
         private MaterialBlock _materialBlock;
         private readonly NodeFactory _nodeFactory;
@@ -89,6 +96,14 @@ namespace avoCADo.Components
         public void SetPaths(List<CNCInstructionSet> instructionSets)
         {
             _instructionSets = instructionSets;
+            if(OverrideToolSettings)
+            {
+                var overrideTool = new CNCTool(OverrideToolType, OverrideToolRadius, ToolHeight);
+                foreach(var instSet in _instructionSets)
+                {
+                    instSet.Tool = overrideTool;
+                }
+            }
             ResetSimulationState();
         }
 
