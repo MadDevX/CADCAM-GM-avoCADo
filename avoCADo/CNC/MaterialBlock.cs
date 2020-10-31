@@ -1,4 +1,5 @@
-﻿using avoCADo.Rendering.Renderers;
+﻿using avoCADo.Rendering;
+using avoCADo.Rendering.Renderers;
 using avoCADo.Utility;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -102,6 +103,17 @@ namespace avoCADo.CNC
             }
         }
 
+        private int _useTexture = 2;
+        public int UseTexture
+        {
+            get => _useTexture;
+            set
+            {
+                _useTexture = value;
+                _renderer.Shader.SetUseTexture(value);
+            }
+        }
+
         //Speedup operations
         private float _worldWidthToIndex;
         private float _worldHeightToIndex;
@@ -116,15 +128,17 @@ namespace avoCADo.CNC
         private Func<float, float, CNCTool, float>[] _funcList = new Func<float, float, CNCTool, float>[2];
 
         public MaterialBlockTextureManager TextureManager { get; }
+        private Texture _colorTexture;
         private MeshRenderer _renderer;
 
-        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultHeightValue, float minHeightValue, MeshRenderer renderer)
+        public MaterialBlock(int width, int height, float worldWidth, float worldHeight, float defaultHeightValue, float minHeightValue, MeshRenderer renderer, string texturePath)
         {
             _funcList[0] = HeightByDistFromCenterRound;
             _funcList[1] = HeightByDistFromCenterFlat;
             //X Y resolution of height texture
             _renderer = renderer;
             TextureManager = new MaterialBlockTextureManager(width, height);
+            _colorTexture = new Texture(texturePath);
             MinHeightValue = minHeightValue;
             DefaultHeightValue = defaultHeightValue;
             Width = width;
@@ -141,6 +155,7 @@ namespace avoCADo.CNC
             _renderer.TextureProvider = this;
             _renderer.Shader.SetHeightmapTexture(0);
             _renderer.Shader.SetColorTexture(1);
+            _renderer.Shader.SetUseTexture(UseTexture);
             UpdateMesh();
             UpdateTextures();
         }
@@ -160,6 +175,7 @@ namespace avoCADo.CNC
         public void Dispose()
         {
             TextureManager.Dispose();
+            _colorTexture.Dispose();
         }
 
         public void ResetHeightMap()
@@ -178,6 +194,8 @@ namespace avoCADo.CNC
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, TextureManager.TextureHandle);
+            GL.ActiveTexture(TextureUnit.Texture1);
+            GL.BindTexture(TextureTarget.Texture2D, _colorTexture.TextureHandle);
         }
 
         public void UpdateTextures()

@@ -43,7 +43,15 @@
             <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding WorldHeight}"/>
             <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding BaseHeight}"/>
             <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding DefaultHeight}"/>
-            <CheckBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="Show Paths" IsChecked="{Binding ShowPaths}"/>
+            <CheckBox Grid.Row="9" Grid.Column="0" Content="Show Paths" IsChecked="{Binding ShowPaths}" Margin="5"/>
+            <Grid Grid.Row="9" Grid.Column="1" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding UseTexture, StringFormat='Texture: {0}'}"/>
+                <Slider Grid.Row="0" Grid.Column="1" Value="{Binding UseTexture}" Minimum="0" Maximum="2"/>
+            </Grid>
 
             <Button Grid.Row="10" Grid.Column="0" x:Name="btnStartSimulation" Content="Start Simulation" Click="btnStartSimulation_Click" Margin="5" IsEnabled="False"/>
             <Button Grid.Row="10" Grid.Column="1" x:Name="btnSkipSimulation" Content="Skip Simulation" Click="btnSkipSimulation_Click" Margin="5"/>

@@ -15,6 +15,7 @@ namespace avoCADo.Shaders.ShaderWrappers
         private int _shaderCameraPosLocation;
         private int _shaderWorldWidthLocation;
         private int _shaderWorldHeightLocation;
+        private int _shaderUseTextureLocation;
 
         public MillableSurfaceShaderWrapper(Shader shader, string name) : base(shader, name)
         {
@@ -23,6 +24,13 @@ namespace avoCADo.Shaders.ShaderWrappers
             _shaderCameraPosLocation = GL.GetUniformLocation(Shader.Handle, "cameraPos");
             _shaderWorldWidthLocation = GL.GetUniformLocation(Shader.Handle, "worldWidth");
             _shaderWorldHeightLocation = GL.GetUniformLocation(Shader.Handle, "worldHeight");
+            _shaderUseTextureLocation = GL.GetUniformLocation(Shader.Handle, "useTexture");
+        }
+
+        public void SetUseTexture(int useTexture)
+        {
+            CheckShaderBinding();
+            GL.Uniform1(_shaderUseTextureLocation, useTexture);
         }
 
         public void SetWorldWidth(float worldWidth)

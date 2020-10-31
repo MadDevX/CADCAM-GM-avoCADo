@@ -16,6 +16,8 @@ uniform vec3 lightCol = vec3(1.0f, 1.0f, 1.0f);
 
 uniform vec3 cameraPos;
 
+uniform int useTexture;
+
 float near = 0.01f; //if changed, also change in Camera.cs
 float far = 100.0f; //if changed, also change in Camera.cs
 float fogDistance = 90.0f;
@@ -43,7 +45,20 @@ void main()
     vec3 resultColor = (ambient + diffuse + specular) * color.rgb; //TODO: multiply by texture color
 
     float depth = min(LinearizeDepth(gl_FragCoord.z)/fogDistance, 1.0f);
-	FragColor = vec4(mix(resultColor * filterColor.rgb * vec3(TexCoords, 0.0f), bgColor.rgb * filterColor.rgb, depth), color.a);
+    vec4 texCol;
+    if(useTexture == 0)
+    {
+        texCol = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    else if(useTexture == 1)
+    {
+        texCol = vec4(TexCoords, 0.0f, 1.0f);
+    }
+    else
+    {
+        texCol = texture(colorTexture, TexCoords);
+    }
+	FragColor = vec4(mix(resultColor * filterColor.rgb * texCol.rgb, bgColor.rgb * filterColor.rgb, depth), color.a);
 }
 
 

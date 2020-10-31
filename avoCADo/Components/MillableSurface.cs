@@ -19,6 +19,7 @@ namespace avoCADo.Components
         public bool Paused { get; set; } = false;
 
         public bool ShowPaths { get => _lineRenderer.Enabled; set => _lineRenderer.Enabled = value; }
+        public int UseTexture { get => _materialBlock.UseTexture; set => _materialBlock.UseTexture = value; }
 
         public int TextureWidth { get => _materialBlock.Width; set => _materialBlock.Width = value; }
         public int TextureHeight { get => _materialBlock.Height; set => _materialBlock.Height = value; }

@@ -118,7 +118,7 @@ namespace avoCADo
             var size = 0.18f;
             var mesh = MeshUtility.CreatePlaneMesh(res, res, size, size);
             var meshRenderer = new MeshRenderer(_shaderProvider.MillableSurfaceShader, mesh, null);
-            var block = new MaterialBlock(res, res, size, size, 0.05f, 0.0f, meshRenderer);
+            var block = new MaterialBlock(res, res, size, size, 0.05f, 0.0f, meshRenderer, "D:\\Studia\\Semestr I Mag\\MG1\\CADCAM-GM-avoCADo\\resources\\bamboo-wood-semigloss-albedo.png");
             var millableSurf = new MillableSurface(block, this);
             var pathManager = new MillPathsManager();
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), NameGenerator.GenerateName(_sceneManager.CurrentScene, DefaultNodeNames.MillableSurface));
