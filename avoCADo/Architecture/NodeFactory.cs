@@ -122,6 +122,7 @@ namespace avoCADo
             var millableSurf = new MillableSurface(block, this);
             var pathManager = new MillPathsManager();
             var node = new Node(new Transform(Vector3.Zero, Quaternion.Identity, Vector3.One), NameGenerator.GenerateName(_sceneManager.CurrentScene, DefaultNodeNames.MillableSurface));
+            node.ObjectType = ObjectType.MillableSurface;
             node.AttachComponents(meshRenderer, millableSurf, new LineRenderer(_shaderProvider.DefaultShader, pathManager), pathManager);
             _sceneManager.CurrentScene.AttachChild(node);
             return node;
