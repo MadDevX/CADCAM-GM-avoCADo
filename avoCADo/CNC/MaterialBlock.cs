@@ -305,7 +305,7 @@ namespace avoCADo.CNC
             var finished = false;
             while (distance > 0.0f && _positionsBuffer.Count > 0)
             {
-                incrementVector = _positionsBuffer[0] - toolPos;
+                incrementVector = _positionsBuffer[_positionsBuffer.Count - 1] - toolPos;
                 var incLen = incrementVector.Length;
                 if (distance < incLen)
                 {
@@ -315,9 +315,9 @@ namespace avoCADo.CNC
                     return (toolPos, finished, distance);
                 }
                 distance -= incLen;
-                toolPos = _positionsBuffer[0];
+                toolPos = _positionsBuffer[_positionsBuffer.Count - 1];
                 DrillCircleAtPosition(toolPos, incrementVector, tool);
-                _positionsBuffer.RemoveAt(0);
+                _positionsBuffer.RemoveAt(_positionsBuffer.Count - 1);
             }
             if(_positionsBuffer.Count == 0)
             {
@@ -348,7 +348,7 @@ namespace avoCADo.CNC
 
             var steps = Math.Max(Math.Max(Math.Abs(startIdx.x - endIdx.x), Math.Abs(startIdx.z - endIdx.z)), Math.Abs(startHeightIdx.z- endHeightIdx.z)) + 1;
 
-            for (int i = 0; i < steps; i++)
+            for (int i = steps - 1; i >= 0; i--)
             {
                 if (steps == 1) _positionsBuffer.Add(end);
                 else
